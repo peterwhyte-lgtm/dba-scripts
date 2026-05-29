@@ -12,6 +12,8 @@ This repository is designed to support the DBA Scripts section of the site and t
 - Simple SSMS-first queries with inline comments and practical output
 - PowerShell helpers for local ops, cleanup, and quick triage
 - Lab/test scripts for environment setup and database generation
+- A new category-first layout under categories/ for the DBA workflow
+- Top-level helpers/ and tools/ folders for reusable utilities and repo maintenance
 
 ## What we are optimizing for
 
@@ -22,30 +24,32 @@ This repository is designed to support the DBA Scripts section of the site and t
 
 ## Production DBA categories
 
-- powershell/performance-troubleshooting/ — long-running queries, waits, fragmentation, and session analysis
-- powershell/storage-capacity-management/ — disk and folder usage diagnostics
-- powershell/backups-and-recovery/ — backup and restore helpers
-- powershell/maintenance-and-reliability/ — health checks and reliability scripts
-- powershell/configuration-and-environment/ — instance and environment snapshots
-- powershell/security-and-permissions/ — security and access checks
-- powershell/high-availability-and-disaster-recovery/ — AG and DR operational helpers
-- powershell/dba-lab-scripts/ — local/test database generation and cleanup helpers
+Use the category-first layout under categories/:
 
-- sql/performance-troubleshooting/ — SSMS-ready tuning and wait analysis queries
-- sql/storage-capacity-management/ — database and storage usage queries
-- sql/backups-and-recovery/ — backup coverage and recovery checks
-- sql/maintenance-and-reliability/ — index and health maintenance queries
-- sql/configuration-and-environment/ — instance config and environment review queries
-- sql/security-and-permissions/ — permission and role audit queries
-- sql/high-availability-and-disaster-recovery/ — AG and DR health checks
-- sql/dba-lab-scripts/ — test database creation and lab utility scripts
+- categories/performance-troubleshooting/sql/ — SSMS-ready tuning and wait analysis queries
+- categories/performance-troubleshooting/powershell/ — blocking, wait, and fragmentation helpers
+- categories/storage-capacity-management/sql/ — database and storage usage queries
+- categories/storage-capacity-management/powershell/ — disk and folder usage diagnostics
+- categories/backups-and-recovery/sql/ — backup coverage and recovery checks
+- categories/backups-and-recovery/powershell/ — backup and restore helpers
+- categories/maintenance-and-reliability/sql/ — index and health maintenance queries
+- categories/maintenance-and-reliability/powershell/ — health checks and reliability scripts
+- categories/configuration-and-environment/sql/ — instance config and environment review queries
+- categories/configuration-and-environment/powershell/ — instance and environment snapshots
+- categories/security-and-permissions/sql/ — permission and role audit queries
+- categories/security-and-permissions/powershell/ — security and access checks
+- categories/high-availability-and-disaster-recovery/sql/ — AG and DR health checks
+- categories/high-availability-and-disaster-recovery/powershell/ — AG and DR operational helpers
+- categories/dba-lab-scripts/sql/ — test database creation and lab utility scripts
+- categories/dba-lab-scripts/powershell/ — local/test database generation and cleanup helpers
 
 ## How to use this repo
 
-1. Open the category folder that matches the problem you are troubleshooting.
-2. Copy the SQL script into SSMS or Azure Data Studio.
-3. Run the PowerShell helper when you need a quick automation or local environment check.
-4. Treat the scripts as production-safe starting points and extend them for your environment.
+1. Start in categories/<area>/sql for the SSMS-ready analysis scripts.
+2. Use categories/<area>/powershell for automation and local troubleshooting helpers.
+3. Use helpers/ for repo-wide utilities such as Show-RepoOverview.ps1 and Clear-OutputFiles.ps1.
+4. Use tools/ for repo maintenance and catalog tasks.
+5. Treat the scripts as production-safe starting points and extend them for your environment.
 
 ## Notes
 

@@ -11,8 +11,16 @@ Use this repo as a practical desktop toolkit for day-to-day SQL Server operation
 
 ## Good first scripts to try
 
-- sql/performance-troubleshooting/Get-LongRunningQueries.sql
-- sql/storage-capacity-management/Get-DatabaseSizesAndFreeSpace.sql
-- sql/backups-and-recovery/Get-BackupCoverage.sql
-- sql/configuration-and-environment/Get-InstanceConfigurationSnapshot.sql
-- sql/security-and-permissions/Get-SysadminMembers.sql
+- categories/performance-troubleshooting/sql/Get-LongRunningQueries.sql
+- categories/storage-capacity-management/sql/Get-DatabaseSizesAndFreeSpace.sql
+- categories/backups-and-recovery/sql/Get-BackupCoverage.sql
+- categories/configuration-and-environment/sql/Get-InstanceConfigurationSnapshot.sql
+- categories/security-and-permissions/sql/Get-SysadminMembers.sql
+
+## Best way to start a DBA review
+
+1. Run helpers/Show-RepoOverview.ps1 to see the repo inventory and the fastest entry points.
+2. Use categories/<area>/sql for SSMS-ready analysis and category-specific checks.
+3. Use categories/<area>/powershell for automation and local validation.
+4. Use helpers/Clear-OutputFiles.ps1 when you want to reset output-files before a fresh review run.
+5. Save outputs in your runbook so repeatable checks stay repeatable.

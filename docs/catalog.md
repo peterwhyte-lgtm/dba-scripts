@@ -1,67 +1,61 @@
 # DBA Script Catalog
 
-This catalog mirrors the current production DBA script set in the repo.
+This catalog reflects the current repo layout and the scripts most useful for real DBA operations.
 
-## Performance Troubleshooting
-- Get-BlockingSessions.sql
-- Get-DatabaseIoUsage.sql
-- Get-DeadlockSummary.sql
-- Get-IndexFragmentationAcrossDatabases.sql
-- Get-LongRunningQueries.sql
-- Get-MissingIndexes.sql
-- Get-TopCpuQueries.sql
-- Get-WaitStatistics.sql
-- Get-WorkerThreadsAndActiveSessions.sql
-- Get-BlockingSessions.ps1
-- Get-IndexFragmentation.ps1
+## Performance troubleshooting
+- sql/performance-troubleshooting/Get-BlockingSessions.sql
+- sql/performance-troubleshooting/Get-DeadlockSummary.sql
+- sql/performance-troubleshooting/Get-LongRunningQueries.sql
+- sql/performance-troubleshooting/Get-TopCpuQueries.sql
+- sql/performance-troubleshooting/Get-WaitStatistics.sql
+- powershell/performance-troubleshooting/Get-BlockingSessions.ps1
+- powershell/performance-troubleshooting/Get-IndexFragmentation.ps1
 
-## Backups & Recovery
-- Generate-BackupScript.sql
-- Generate-RestoreScript.sql
-- Get-BackupCoverage.sql
-- Get-BackupRestoreCompletionTime.sql
-- Get-BackupRestoreDurationEstimate.sql
-- Get-DatabaseBackupHistory.sql
-- Get-LastDatabaseBackupTimes.sql
-- Backup-SqlDatabases.ps1
+## Backups and recovery
+- sql/backups-and-recovery/Get-BackupCoverage.sql
+- sql/backups-and-recovery/Get-BackupRestoreDurationEstimate.sql
+- sql/backups-and-recovery/Get-DatabaseBackupHistory.sql
+- sql/backups-and-recovery/Get-LastDatabaseBackupTimes.sql
+- powershell/backups-and-recovery/Backup-SqlDatabases.ps1
+- powershell/backups-and-recovery/Generate-RestoreScript.ps1
 
-## Storage & Capacity Management
-- Get-DatabaseSizesAndFreeSpace.sql
-- Get-DiskSpace.sql
-- Get-TransactionLogSizeAndUsage.sql
-- Get-DiskSpaceSummary.ps1
-- Get-LargestFolders.ps1
+## Storage and capacity
+- sql/storage-capacity-management/Get-DatabaseSizesAndFreeSpace.sql
+- sql/storage-capacity-management/Get-DiskSpace.sql
+- sql/storage-capacity-management/Get-TransactionLogSizeAndUsage.sql
+- powershell/storage-capacity-management/Get-DiskSpaceSummary.ps1
+- powershell/storage-capacity-management/Get-OldestBackupFolderFiles.ps1
 
-## Maintenance & Reliability
-- Get-DatabaseGrowthEvents.sql
-- Get-DatabaseHealth.sql
-- Get-IndexFragmentation.sql
-- Get-TempdbUsage.sql
+## Maintenance and reliability
+- sql/maintenance-and-reliability/Get-DatabaseHealth.sql
+- sql/maintenance-and-reliability/Get-DatabaseIntegrityChecks.sql
+- sql/maintenance-and-reliability/Get-IndexFragmentation.sql
+- sql/maintenance-and-reliability/Get-TempdbUsage.sql
 
-## Configuration & Environment
-- Get-CpuTopologyAndCoreCounts.sql
-- Get-InstanceConfigurationSnapshot.sql
-- Get-LinkedServerAndJobInventory.sql
-- Get-MaxdopConfiguration.sql
-- Get-MemoryConfiguration.sql
-- Get-MemoryConfigurationAndUsage.sql
-- Get-MigrationChecklist.sql
-- Get-ServicesInformation.sql
-- Get-SqlAgentJobFailureSummary.sql
-- Get-SqlAgentJobOverview.sql
-- Get-VersionAndEdition.sql
+## Configuration and environment
+- sql/configuration-and-environment/Get-InstanceConfigurationSnapshot.sql
+- sql/configuration-and-environment/Get-MemoryConfiguration.sql
+- sql/configuration-and-environment/Get-SqlAgentJobOverview.sql
+- sql/configuration-and-environment/Get-SqlAgentJobFailureSummary.sql
+- powershell/configuration-and-environment/Get-InstanceSnapshot.ps1
+- powershell/configuration-and-environment/Get-MemoryAndMaxdop.ps1
 
-## Security & Permissions
-- Get-DatabaseMailAndXpCmdShell.sql
-- Get-SysadminMembers.sql
-- Get-UserPermissionsAudit.sql
+## Security and permissions
+- sql/security-and-permissions/Get-SysadminMembers.sql
+- sql/security-and-permissions/Get-UserPermissionsAudit.sql
+- sql/security-and-permissions/Get-DatabaseMailAndXpCmdShell.sql
 
-## High Availability & Disaster Recovery
-- Get-AvailabilityGroupLatency.sql
-- Get-AvailabilityGroupReplicaState.sql
+## HA / DR
+- sql/high-availability-and-disaster-recovery/Get-AvailabilityGroupLatency.sql
+- sql/high-availability-and-disaster-recovery/Get-AvailabilityGroupReplicaState.sql
 
-## DBA Lab Scripts
-- New-MultipleDatabases.ps1
-- New-TestDatabases.sql
-- Remove-DatabasesByPrefix.ps1
-- Run-CreateTestDatabases.ps1
+## DBA lab helpers
+- powershell/dba-lab-scripts/Run-CreateTestDatabases.ps1
+- powershell/dba-lab-scripts/Cleanup-TestDatabases.ps1
+- powershell/dba-lab-scripts/Generate-TestDatabases.ps1
+
+## Best starting points for a DBA triage session
+1. powershell/helpers/Show-RepoOverview.ps1
+2. sql/storage-capacity-management/Get-DatabaseSizesAndFreeSpace.sql
+3. sql/performance-troubleshooting/Get-BlockingSessions.sql
+4. sql/backups-and-recovery/Get-BackupCoverage.sql
