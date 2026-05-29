@@ -13,7 +13,8 @@ This folder contains the production-focused helpers for running SQL scripts from
 
 1. Run Test-SqlConnectivity.ps1 to confirm the server and authentication path are working.
 2. Run Invoke-RepoSql.ps1 to execute an existing script from categories/ or sql-templates/.
-3. Use -OutputFormat Csv and -OutputPath when you want to save results for later review.
+3. The helper now saves a full CSV copy to output-files/reviews/<category>/<script>-<timestamp>.csv by default, and it also shows the top 25 rows in the terminal for quick review.
+4. Use -OutputFormat Csv and -OutputPath when you want to override the default collection path.
 
 ## Example: top wait statistics
 
