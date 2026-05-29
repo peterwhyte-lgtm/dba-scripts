@@ -13,7 +13,7 @@ param(
     [string]$Category = 'performance-troubleshooting'
 )
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $targetDir = Join-Path $repoRoot "categories/$Category/powershell"
 
 if (-not (Test-Path -LiteralPath $targetDir)) {

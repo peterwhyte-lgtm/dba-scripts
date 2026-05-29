@@ -20,9 +20,9 @@ This repository is designed to support the DBA Scripts section of the site and t
 ## Start here
 
 If you want the fastest path into the repo, use this order:
-1. Run `helpers/Show-RepoOverview.ps1` to get the repo inventory.
+1. Run `helpers/triage/Show-RepoOverview.ps1` to get the repo inventory.
 2. Open the category that matches the incident or task.
-3. Use `helpers/local-sql/Test-SqlConnectivity.ps1` and `helpers/Invoke-SqlFile.ps1` for local SQL validation and execution.
+3. Use `helpers/local-sql/Test-SqlConnectivity.ps1` and `helpers/local-sql/Invoke-SqlFile.ps1` for local SQL validation and execution.
 4. Use `sql-templates/operations` when you need a production-style runbook or change-order template.
 5. Save any outputs you want to reuse under `output-files/`.
 
@@ -62,7 +62,7 @@ Use sql-templates/operations for the production-style runbook templates that com
 1. Start in categories/<area>/sql for the SSMS-ready analysis scripts.
 2. Use categories/<area>/powershell for automation and local troubleshooting helpers.
 3. Use sql-templates/operations for runbook-style SQL templates such as statistics maintenance, CDC, TDE, and upgrade readiness.
-4. Use helpers/ for repo-wide utilities such as Show-RepoOverview.ps1 and Clear-OutputFiles.ps1, and helpers/local-sql/ for local connectivity checks and repo SQL execution.
+4. Use helpers/triage/ for repo inventory and discovery, helpers/maintenance/ for cleanup, and helpers/local-sql/ for local connectivity checks and repo SQL execution.
 5. Use tools/ for repo maintenance and catalog tasks.
 6. Read docs/structure.md for the high-level and low-level repo map.
 7. Treat the scripts as production-safe starting points and extend them for your environment.

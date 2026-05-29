@@ -12,7 +12,7 @@ param(
     [string]$Keyword
 )
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $matches = Get-ChildItem -Path (Join-Path $repoRoot 'categories') -Recurse -File |
     Where-Object {
         $_.FullName -match [regex]::Escape($Keyword)

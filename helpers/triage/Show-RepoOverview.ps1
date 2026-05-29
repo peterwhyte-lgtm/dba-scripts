@@ -7,7 +7,7 @@ Enumerates the SQL and PowerShell script folders and prints a practical summary
 that helps a DBA find the highest-value scripts quickly.
 #>
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $scriptRoots = @(
     @{ Name = 'SQL scripts'; Path = Join-Path $repoRoot 'categories' },
     @{ Name = 'PowerShell scripts'; Path = Join-Path $repoRoot 'categories' }
@@ -63,5 +63,5 @@ Write-Host "Fast-start recommendations:" -ForegroundColor Green
 Write-Host "  1. categories/storage-capacity-management/sql/Get-DatabaseSizesAndFreeSpace.sql" -ForegroundColor DarkGray
 Write-Host "  2. categories/performance-troubleshooting/sql/Get-BlockingSessions.sql" -ForegroundColor DarkGray
 Write-Host "  3. categories/backups-and-recovery/sql/Get-BackupCoverage.sql" -ForegroundColor DarkGray
-Write-Host "  4. helpers/Invoke-SqlFile.ps1" -ForegroundColor DarkGray
+Write-Host "  4. helpers/local-sql/Invoke-SqlFile.ps1" -ForegroundColor DarkGray
 Write-Host "  5. helpers/Run-Helper.ps1" -ForegroundColor DarkGray

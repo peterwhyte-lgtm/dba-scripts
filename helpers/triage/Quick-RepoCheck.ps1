@@ -6,7 +6,7 @@ Performs a fast repo sanity check for the DBA scripts workspace.
 Checks for the main folder layout and key helper scripts so you can quickly verify the repo is ready for DBA work.
 #>
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $required = @(
   'categories',
   'helpers',
@@ -31,10 +31,10 @@ else {
 }
 
 $helperChecks = @(
-  'helpers/Show-RepoOverview.ps1',
-  'helpers/Clear-OutputFiles.ps1',
+  'helpers/triage/Show-RepoOverview.ps1',
+  'helpers/maintenance/Clear-OutputFiles.ps1',
   'helpers/Run-Helper.ps1',
-  'helpers/Invoke-SqlFile.ps1',
+  'helpers/local-sql/Invoke-SqlFile.ps1',
   'helpers/local-sql/Test-SqlConnectivity.ps1',
   'helpers/local-sql/Invoke-RepoSql.ps1'
 )

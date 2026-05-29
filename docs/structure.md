@@ -16,7 +16,7 @@ This file gives both the high-level and low-level view of the DBA scripts repo.
 
 ## Low-level working view
 
-1. Start with helpers/Show-RepoOverview.ps1 to see the current repo inventory.
+1. Start with helpers/triage/Show-RepoOverview.ps1 to see the current repo inventory.
 2. Pick the relevant category under categories/<topic>/.
 3. Use sql/ for analysis and powershell/ for automations.
 4. Use sql-templates/operations for runbook-style DBA execution templates.
@@ -28,12 +28,12 @@ This file gives both the high-level and low-level view of the DBA scripts repo.
 - If you need to inspect a problem, open the SQL script in the matching category.
 - If you need to automate or validate locally, open the matching PowerShell helper under `categories/<topic>/powershell/`.
 - If you need to run SQL from this repo against your local instance, use `helpers/local-sql/Test-SqlConnectivity.ps1` and `helpers/local-sql/Invoke-RepoSql.ps1`.
-- If you need to clean generated output, use `helpers/Clear-OutputFiles.ps1`.
-- If you want a starter script quickly, use `helpers/Generate-NextScript.ps1` or `helpers/Generate-NextPowerShell.ps1`.
+- If you need to clean generated output, use `helpers/maintenance/Clear-OutputFiles.ps1`.
+- If you want a starter script quickly, use `helpers/scaffolding/Generate-NextScript.ps1` or `helpers/scaffolding/Generate-NextPowerShell.ps1`.
 
 ### Example entry points
 
 ```powershell
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\Show-RepoOverview.ps1
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\storage-capacity-management\sql\Get-DatabaseSizesAndFreeSpace.sql
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\triage\Show-RepoOverview.ps1
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\local-sql\Invoke-SqlFile.ps1 -ScriptPath .\categories\storage-capacity-management\sql\Get-DatabaseSizesAndFreeSpace.sql
 ```

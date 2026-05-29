@@ -4,7 +4,7 @@ Runs the database size and free-space review SQL script through the repo helper.
 
 .DESCRIPTION
 Convenience wrapper for validating the storage-capacity script from PowerShell.
-Uses the current helper at helpers/Invoke-SqlFile.ps1.
+Uses the current helper at helpers/local-sql/Invoke-SqlFile.ps1.
 
 .PARAMETER ServerInstance
 SQL Server instance to connect to. Defaults to '.'.
@@ -24,7 +24,7 @@ param(
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = Resolve-Path (Join-Path $scriptDir '..')
-$helperPath = Join-Path $repoRoot 'helpers\Invoke-SqlFile.ps1'
+$helperPath = Join-Path $repoRoot 'helpers\local-sql\Invoke-SqlFile.ps1'
 $sqlScriptPath = Join-Path $repoRoot 'categories\storage-capacity-management\sql\Get-DatabaseSizesAndFreeSpace.sql'
 
 if (-not (Test-Path -LiteralPath $helperPath)) {

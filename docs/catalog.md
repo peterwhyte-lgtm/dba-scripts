@@ -65,7 +65,7 @@ This catalog reflects the current repo layout and the scripts most useful for re
 
 ## Best starting points for a DBA triage session
 
-1. `helpers/Show-RepoOverview.ps1` — inventory the repo and identify the fastest path.
+1. `helpers/triage/Show-RepoOverview.ps1` — inventory the repo and identify the fastest path.
 2. `categories/storage-capacity-management/sql/Get-DatabaseSizesAndFreeSpace.sql` — quick storage and growth review.
 3. `categories/performance-troubleshooting/sql/Get-BlockingSessions.sql` — blocking and wait-first triage.
 4. `categories/backups-and-recovery/sql/Get-BackupCoverage.sql` — backup coverage and recovery readiness.
@@ -74,6 +74,6 @@ This catalog reflects the current repo layout and the scripts most useful for re
 ### Example triage commands
 
 ```powershell
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\Show-RepoOverview.ps1
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\storage-capacity-management\sql\Get-DatabaseSizesAndFreeSpace.sql
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\triage\Show-RepoOverview.ps1
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\local-sql\Invoke-SqlFile.ps1 -ScriptPath .\categories\storage-capacity-management\sql\Get-DatabaseSizesAndFreeSpace.sql
 ```
