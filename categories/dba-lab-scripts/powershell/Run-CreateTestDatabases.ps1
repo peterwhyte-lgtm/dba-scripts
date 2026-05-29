@@ -24,10 +24,10 @@ Initial data file size in MB. Defaults to 25.
 Initial log file size in MB. Defaults to 10.
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\powershell\dba-lab-scripts\Run-CreateTestDatabases.ps1
+powershell -ExecutionPolicy Bypass -File .\categories\dba-lab-scripts\powershell\Run-CreateTestDatabases.ps1
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\powershell\dba-lab-scripts\Run-CreateTestDatabases.ps1 -Count 10 -Prefix demo
+powershell -ExecutionPolicy Bypass -File .\categories\dba-lab-scripts\powershell\Run-CreateTestDatabases.ps1 -Count 10 -Prefix demo
 #>
 
 param(

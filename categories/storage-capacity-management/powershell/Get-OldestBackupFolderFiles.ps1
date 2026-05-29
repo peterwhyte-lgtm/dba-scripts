@@ -16,10 +16,10 @@ Root folder to inspect. Accepts a local path (for example, E:\Backups) or UNC pa
 Age threshold in days for flagging old backup sets. Defaults to 31.
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\powershell\storage-capacity-management\Get-OldestBackupFolderFiles.ps1 -Path E:\Backups
+powershell -ExecutionPolicy Bypass -File .\categories\storage-capacity-management\powershell\Get-OldestBackupFolderFiles.ps1 -Path E:\Backups
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\powershell\storage-capacity-management\Get-OldestBackupFolderFiles.ps1 -Path \\BackupMedia\Backups -ThresholdDays 45
+powershell -ExecutionPolicy Bypass -File .\categories\storage-capacity-management\powershell\Get-OldestBackupFolderFiles.ps1 -Path \\BackupMedia\Backups -ThresholdDays 45
 #>
 
 param(

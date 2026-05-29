@@ -19,10 +19,10 @@ Skips the confirmation prompt.
 Optional server name. Defaults to '.'.
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\PowerShell\Remove-DatabasesByPrefix.ps1 -Prefix migdb -Confirm
+powershell -ExecutionPolicy Bypass -File .\categories\dba-lab-scripts\powershell\Remove-DatabasesByPrefix.ps1 -Prefix migdb -Confirm
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\PowerShell\Remove-DatabasesByPrefix.ps1 -Prefix migdb -Force
+powershell -ExecutionPolicy Bypass -File .\categories\dba-lab-scripts\powershell\Remove-DatabasesByPrefix.ps1 -Prefix migdb -Force
 #>
 
 param(

@@ -1,7 +1,7 @@
 ﻿/*
 Script Name : Get SQL Server Version and Edition
-Description : Returns Version And Edition for DBA review and troubleshooting.
-Author      : Peter Whyte (https://sqldba.blog)
+Description : Returns core instance version, edition, and cluster details for operational reviews.
+Use        : Patch validation, support checks, and environment reporting.
 */
 
 SELECT
@@ -11,7 +11,9 @@ SELECT
     SERVERPROPERTY('ProductVersion') AS product_version,
     SERVERPROPERTY('ProductLevel') AS product_level,
     SERVERPROPERTY('Edition') AS edition,
-    SERVERPROPERTY('IsClustered') AS is_clustered;
+    SERVERPROPERTY('BuildClrVersion') AS clr_version,
+    SERVERPROPERTY('IsClustered') AS is_clustered,
+    SERVERPROPERTY('ComputerNamePhysicalNetBIOS') AS physical_hostname;
 
 
 

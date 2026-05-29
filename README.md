@@ -9,11 +9,30 @@ This repository is designed to support the DBA Scripts section of the site and t
 ## What is included
 
 - Production-safe diagnostics and monitoring scripts for day-to-day DBA work
-- Simple SSMS-first queries with inline comments and practical output
+- SSMS-first SQL queries with practical comments and evidence-oriented output
 - PowerShell helpers for local ops, cleanup, and quick triage
 - Lab/test scripts for environment setup and database generation
-- A new category-first layout under categories/ for the DBA workflow
+- A category-first layout under categories/ for the DBA workflow
+- A dedicated sql-templates/ operations layer for repeatable DBA runbooks and operational templates
 - Top-level helpers/ and tools/ folders for reusable utilities and repo maintenance
+- A small helper layer in helpers/ for quick repo checks, script discovery, and task routing during AI-assisted work
+
+## Start here
+
+If you want the fastest path into the repo, use this order:
+1. Run `helpers/Show-RepoOverview.ps1` to get the repo inventory.
+2. Open the category that matches the incident or task.
+3. Use `helpers/local-sql/Test-SqlConnectivity.ps1` and `helpers/Invoke-SqlFile.ps1` for local SQL validation and execution.
+4. Use `sql-templates/operations` when you need a production-style runbook or change-order template.
+5. Save any outputs you want to reuse under `output-files/`.
+
+### Example commands
+
+```powershell
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\Show-RepoOverview.ps1
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\local-sql\Test-SqlConnectivity.ps1 -ServerInstance . -Database master
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\storage-capacity-management\sql\Get-DatabaseSizesAndFreeSpace.sql
+```
 
 ## What we are optimizing for
 
@@ -22,34 +41,30 @@ This repository is designed to support the DBA Scripts section of the site and t
 - Easy handoff to other production DBAs
 - A solid foundation for future blog posts and runbooks
 
-## Production DBA categories
+## Category map at a glance
 
 Use the category-first layout under categories/:
 
-- categories/performance-troubleshooting/sql/ — SSMS-ready tuning and wait analysis queries
-- categories/performance-troubleshooting/powershell/ — blocking, wait, and fragmentation helpers
-- categories/storage-capacity-management/sql/ — database and storage usage queries
-- categories/storage-capacity-management/powershell/ — disk and folder usage diagnostics
-- categories/backups-and-recovery/sql/ — backup coverage and recovery checks
-- categories/backups-and-recovery/powershell/ — backup and restore helpers
-- categories/maintenance-and-reliability/sql/ — index and health maintenance queries
-- categories/maintenance-and-reliability/powershell/ — health checks and reliability scripts
-- categories/configuration-and-environment/sql/ — instance config and environment review queries
-- categories/configuration-and-environment/powershell/ — instance and environment snapshots
-- categories/security-and-permissions/sql/ — permission and role audit queries
-- categories/security-and-permissions/powershell/ — security and access checks
-- categories/high-availability-and-disaster-recovery/sql/ — AG and DR health checks
-- categories/high-availability-and-disaster-recovery/powershell/ — AG and DR operational helpers
-- categories/dba-lab-scripts/sql/ — test database creation and lab utility scripts
-- categories/dba-lab-scripts/powershell/ — local/test database generation and cleanup helpers
+- performance-troubleshooting — blocking, waits, long-running queries, missing indexes, and I/O analysis
+- storage-capacity-management — database size, disk space, transaction log usage, and growth risk
+- backups-and-recovery — backup coverage, restore prep, backup history, and DR readiness
+- maintenance-and-reliability — integrity checks, fragmentation, TempDB, and health routines
+- configuration-and-environment — instance settings, memory, MAXDOP, jobs, and environment snapshots
+- security-and-permissions — server and database permissions, role audits, and access reviews
+- high-availability-and-disaster-recovery — AG and DR checks, failover prep, and resilience validation
+- dba-lab-scripts — test database creation, cleanup, and lab automation
+
+Use sql-templates/operations for the production-style runbook templates that complement the category scripts.
 
 ## How to use this repo
 
 1. Start in categories/<area>/sql for the SSMS-ready analysis scripts.
 2. Use categories/<area>/powershell for automation and local troubleshooting helpers.
-3. Use helpers/ for repo-wide utilities such as Show-RepoOverview.ps1 and Clear-OutputFiles.ps1.
-4. Use tools/ for repo maintenance and catalog tasks.
-5. Treat the scripts as production-safe starting points and extend them for your environment.
+3. Use sql-templates/operations for runbook-style SQL templates such as statistics maintenance, CDC, TDE, and upgrade readiness.
+4. Use helpers/ for repo-wide utilities such as Show-RepoOverview.ps1 and Clear-OutputFiles.ps1, and helpers/local-sql/ for local connectivity checks and repo SQL execution.
+5. Use tools/ for repo maintenance and catalog tasks.
+6. Read docs/structure.md for the high-level and low-level repo map.
+7. Treat the scripts as production-safe starting points and extend them for your environment.
 
 ## Notes
 

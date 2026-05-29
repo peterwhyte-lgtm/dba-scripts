@@ -13,10 +13,10 @@ Drive to inspect. Defaults to 'C'.
 Number of folders to show. Defaults to 10.
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\PowerShell\Get-LargestFolders.ps1
+powershell -ExecutionPolicy Bypass -File .\categories\storage-capacity-management\powershell\Get-LargestFolders.ps1
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\PowerShell\Get-LargestFolders.ps1 -DriveLetter D -Top 20
+powershell -ExecutionPolicy Bypass -File .\categories\storage-capacity-management\powershell\Get-LargestFolders.ps1 -DriveLetter D -Top 20
 #>
 
 param(

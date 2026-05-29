@@ -1,7 +1,7 @@
 ﻿/*
 Script Name : Get SQL Server Services Information
-Description : Returns Services Information for DBA review and troubleshooting.
-Author      : Peter Whyte (https://sqldba.blog)
+Description : Returns SQL Server service state and startup details for support and patch planning.
+Use        : Service review, cluster checks, and maintenance preparation.
 */
 
 SELECT
@@ -12,8 +12,10 @@ SELECT
     last_startup_time,
     service_account,
     is_clustered,
-    cluster_nodename
-FROM sys.dm_server_services;
+    cluster_nodename,
+    startup_type_desc + ' / ' + status_desc AS startup_status_summary
+FROM sys.dm_server_services
+ORDER BY servicename;
 
 
 

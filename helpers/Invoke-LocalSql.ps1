@@ -30,17 +30,23 @@ Optional friendly alias to show in output (examples: 'local', 'test', 'migration
 .PARAMETER ShowDatabases
 Optional switch to list databases after connection.
 
+.PARAMETER OutputFormat
+Optional output mode. Use 'Table' (default) or 'Csv'.
+
+.PARAMETER OutputPath
+Optional file path to save the query output.
+
 .PARAMETER AsCsv
-Optional switch to output results as CSV text.
+Legacy alias for OutputFormat=Csv.
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\PowerShell\Invoke-LocalSql.ps1 -Query "SELECT @@SERVERNAME, @@VERSION;"
+powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-LocalSql.ps1 -Query "SELECT @@SERVERNAME, @@VERSION;"
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\PowerShell\Invoke-LocalSql.ps1 -Alias local -Query "SELECT name FROM sys.databases ORDER BY name;" -ShowDatabases
+powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-LocalSql.ps1 -Alias local -Query "SELECT name FROM sys.databases ORDER BY name;" -ShowDatabases
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\PowerShell\Invoke-LocalSql.ps1 -Query "SELECT DB_NAME();" -Database master
+powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-LocalSql.ps1 -Query "SELECT DB_NAME();" -Database master
 #>
 
 param(
@@ -53,8 +59,13 @@ param(
     [string]$Password,
     [string]$Alias = 'local',
     [switch]$ShowDatabases,
-    [switch]$AsCsv
+    [switch]$AsCsv,
+    [ValidateSet('Table','Csv')]
+    [string]$OutputFormat = 'Table',
+    [string]$OutputPath
 )
+
+if ($AsCsv) { $OutputFormat = 'Csv' }
 
 function Get-DbConnectionInfo {
     param(
@@ -134,11 +145,24 @@ try {
     $table = New-Object System.Data.DataTable
     $table.Load($reader)
 
-    if ($AsCsv) {
+    $output = if ($OutputFormat -eq 'Csv') {
         $table | ConvertTo-Csv -NoTypeInformation
     }
     else {
         $table | Format-Table -AutoSize
+    }
+
+    if ($OutputPath) {
+        if ($OutputFormat -eq 'Csv') {
+            $output | Set-Content -LiteralPath $OutputPath -Encoding UTF8
+        }
+        else {
+            $output | Out-String | Set-Content -LiteralPath $OutputPath -Encoding UTF8
+        }
+        Write-Host "[local-sql] Output saved to: $OutputPath" -ForegroundColor Green
+    }
+    else {
+        $output
     }
 }
 finally {

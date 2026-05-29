@@ -1,10 +1,8 @@
 ﻿/*
 Script Name : Get-AvailabilityGroupReplicaState
-Description : Returns Availability Group Replica State for DBA review and troubleshooting.
-Author      : Peter Whyte (https://sqldba.blog)
+Description : Returns AG replica health and connection state for HA/DR readiness reviews.
+Use        : Failover planning, replica validation, and operational checks.
 */
--- Review Always On AG replica health and synchronization state.
--- Useful for HA/DR checks and failover readiness reviews.
 
 SELECT
     ag.name AS ag_name,
@@ -17,8 +15,9 @@ SELECT
     ar.last_connect_error_number,
     ar.last_connect_error_description,
     ar.last_connect_error_timestamp
-FROM sys.availability_replicas ar
-JOIN sys.availability_groups ag ON ar.group_id = ag.group_id
+FROM sys.availability_replicas AS ar
+INNER JOIN sys.availability_groups AS ag
+    ON ar.group_id = ag.group_id
 ORDER BY ag.name, ar.replica_server_name;
 
 

@@ -1,26 +1,34 @@
 ﻿/*
 Script Name : Get-DatabaseHealth
-Description : Returns Database Health for DBA review and troubleshooting.
-Author      : Peter Whyte (https://sqldba.blog)
+Description : Returns a compact health summary for user databases.
+Use        : Maintenance reviews, upgrade checks, and operational triage.
 */
--- Quick production health check for a database
-SELECT
-    DB_NAME() AS DatabaseName,
-    CAST(SUM(CASE WHEN type_desc = 'ROWS' THEN size END) * 8. / 1024 AS DECIMAL(10,2)) AS DataSizeGB,
-    CAST(SUM(CASE WHEN type_desc = 'LOG' THEN size END) * 8. / 1024 AS DECIMAL(10,2)) AS LogSizeGB,
-    MAX(CASE WHEN name = 'log_reuse_wait_desc' THEN value END) AS LogReuseWait,
-    MAX(CASE WHEN name = 'recovery_model_desc' THEN value END) AS RecoveryModel
-FROM sys.database_files;
 
 SELECT
-    name,
-    state_desc,
-    user_access_desc,
-    is_read_only,
-    is_auto_close_on,
-    recovery_model_desc
-FROM sys.databases
-WHERE database_id > 4;
+    d.name AS database_name,
+    d.state_desc,
+    d.recovery_model_desc,
+    d.log_reuse_wait_desc,
+    d.user_access_desc,
+    d.is_read_only,
+    d.is_auto_close_on,
+    d.is_auto_shrink_on,
+    ROUND(CAST(SUM(CASE WHEN mf.type_desc = 'ROWS' THEN mf.size END) * 8.0 / 1024 AS DECIMAL(18,2)), 1) AS data_size_mb,
+    ROUND(CAST(SUM(CASE WHEN mf.type_desc = 'LOG' THEN mf.size END) * 8.0 / 1024 AS DECIMAL(18,2)), 1) AS log_size_mb
+FROM sys.databases AS d
+LEFT JOIN sys.master_files AS mf
+    ON d.database_id = mf.database_id
+WHERE d.database_id > 4
+GROUP BY
+    d.name,
+    d.state_desc,
+    d.recovery_model_desc,
+    d.log_reuse_wait_desc,
+    d.user_access_desc,
+    d.is_read_only,
+    d.is_auto_close_on,
+    d.is_auto_shrink_on
+ORDER BY d.name;
 
 
 

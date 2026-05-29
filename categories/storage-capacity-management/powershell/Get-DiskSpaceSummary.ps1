@@ -7,7 +7,7 @@ Displays available drive space for all local fixed drives in a simple terminal-f
 Useful for quick checks before creating large test databases.
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\PowerShell\Get-DiskSpaceSummary.ps1
+powershell -ExecutionPolicy Bypass -File .\categories\storage-capacity-management\powershell\Get-DiskSpaceSummary.ps1
 #>
 
 $drives = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | Sort-Object DeviceID

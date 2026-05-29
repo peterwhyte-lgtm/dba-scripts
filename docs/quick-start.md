@@ -19,8 +19,18 @@ Use this repo as a practical desktop toolkit for day-to-day SQL Server operation
 
 ## Best way to start a DBA review
 
-1. Run helpers/Show-RepoOverview.ps1 to see the repo inventory and the fastest entry points.
-2. Use categories/<area>/sql for SSMS-ready analysis and category-specific checks.
-3. Use categories/<area>/powershell for automation and local validation.
-4. Use helpers/Clear-OutputFiles.ps1 when you want to reset output-files before a fresh review run.
-5. Save outputs in your runbook so repeatable checks stay repeatable.
+1. Run `helpers/Show-RepoOverview.ps1` to see the repo inventory and the fastest entry points.
+2. Use `categories/<area>/sql` for SSMS-ready analysis and category-specific checks.
+3. Use `categories/<area>/powershell` for automation and local validation.
+4. Use `helpers/local-sql/Test-SqlConnectivity.ps1` as a preflight check before running repo scripts locally.
+5. Use `helpers/Invoke-SqlFile.ps1` (or `helpers/local-sql/Invoke-RepoSql.ps1`) to execute a real SQL script from this repo.
+6. Use `sql-templates/operations` when you need a production-style runbook or change-order template.
+7. Use `helpers/Clear-OutputFiles.ps1` when you want to reset `output-files/` before a fresh review run.
+
+### Example commands
+
+```powershell
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\Show-RepoOverview.ps1
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\local-sql\Test-SqlConnectivity.ps1 -ServerInstance . -Database master
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\configuration-and-environment\sql\Get-InstanceConfigurationSnapshot.sql -Database master
+```

@@ -1,11 +1,10 @@
 ﻿/*
 Script Name : I/O Usage by Database
-Description : Returns Database Io Usage for DBA review and troubleshooting.
-Author      : Peter Whyte (https://sqldba.blog)
+Description : Returns database I/O totals for read/write troubleshooting.
+Use        : Performance reviews, storage bottleneck checks, and baseline work.
 */
 
-WITH io_stats AS
-(
+WITH io_stats AS (
     SELECT
         vfs.database_id,
         SUM(vfs.num_of_reads) AS reads,
@@ -18,10 +17,11 @@ WITH io_stats AS
 SELECT
     DB_NAME(io_stats.database_id) AS database_name,
     io_stats.reads,
-    CAST(io_stats.bytes_read / 1024.0 / 1024 AS DECIMAL(18,2)) AS read_mb,
+    ROUND(CAST(io_stats.bytes_read / 1024.0 / 1024 AS DECIMAL(18,2)), 1) AS read_mb,
     io_stats.writes,
-    CAST(io_stats.bytes_written / 1024.0 / 1024 AS DECIMAL(18,2)) AS write_mb
+    ROUND(CAST(io_stats.bytes_written / 1024.0 / 1024 AS DECIMAL(18,2)), 1) AS write_mb
 FROM io_stats
+WHERE io_stats.database_id > 4
 ORDER BY io_stats.bytes_read + io_stats.bytes_written DESC;
 
 

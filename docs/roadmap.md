@@ -12,10 +12,28 @@ The current layout now includes practical coverage for:
 - security and permission auditing
 - HA/DR and lab-style database generation
 - integrity/readiness checks before DBCC validation work
+- category-first navigation under categories/
+- top-level helpers/ and tools/ for quick repo operations and AI-assisted work
 
-## What we should prioritize next
+## What we completed in this pass
 
-This pass has already covered the highest-value operational areas. The remaining next wave should focus on:
+1. Reworked the repo into a DBA-first category structure with SQL and PowerShell under each category.
+2. Added top-level helpers for repo overview, output cleanup, quick task routing, script discovery, and script generation.
+3. Added an output-files skeleton for demo reports, backup-review output, and sample backup fixtures.
+4. Updated the main docs so the repo is easier to navigate from both the high-level and script-specific views.
+
+## Priority areas for the next deep dive
+
+The three highest-value areas to improve next are:
+
+1. Operational template quality
+   - Make sql-templates/operations more production-ready and ServiceNow-style for change orders and runbooks.
+2. Category discoverability
+   - Improve the front-of-repo navigation so DBAs can locate the right category and script faster.
+3. Helper automation quality
+   - Replace starter helpers with real operational scripts for backup age, DR, and maintenance checks.
+
+The next wave should focus on:
 
 1. SQL Agent health and job failure analysis
    - completed: job history and failure visibility via Get-SqlAgentJobOverview.sql and Get-SqlAgentJobFailureSummary.sql
@@ -32,10 +50,11 @@ This pass has already covered the highest-value operational areas. The remaining
 
 ## Work completed in this update
 
-- Added a practical local SQL runner for quick validation: powershell/helpers/Invoke-SqlFile.ps1
-- Fixed the test-database wrapper path and examples: powershell/dba-lab-scripts/Run-CreateTestDatabases.ps1
-- Added integrity and readiness checks for DBCC validation planning: sql/maintenance-and-reliability/Get-DatabaseIntegrityChecks.sql
-- Updated the catalog and quick-start docs to reflect the current script set
+- Added a category-first layout under categories/ for real DBA browsing.
+- Added helper utilities under helpers/ for repo overview, cleanup, routing, and proactive script generation.
+- Added output-files structure for demo reports and backup-review output.
+- Fixed obvious repo path and navigation inconsistencies across README, quick-start, and catalog docs.
+- Added starter script generation helpers so new DBA scripts can be scaffolded quickly.
 
 ## Current focus
 

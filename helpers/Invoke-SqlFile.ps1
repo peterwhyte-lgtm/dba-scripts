@@ -25,13 +25,13 @@ Optional password for SQL authentication.
 Command timeout in seconds. Defaults to 600.
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\powershell\helpers\Invoke-SqlFile.ps1 -ScriptPath .\sql\performance-troubleshooting\Get-LongRunningQueries.sql
+powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\performance-troubleshooting\sql\Get-BlockingSessions.sql
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\powershell\helpers\Invoke-SqlFile.ps1 -ScriptPath .\sql\configuration-and-environment\Get-InstanceConfigurationSnapshot.sql -Database master
+powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\configuration-and-environment\sql\Get-InstanceConfigurationSnapshot.sql -Database master
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\powershell\helpers\Invoke-SqlFile.ps1 -ScriptPath .\MSSQL\create-test-databases.sql -ServerInstance . -Database master
+powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\dba-lab-scripts\sql\New-TestDatabases.sql -ServerInstance . -Database master
 #>
 
 param(
@@ -42,7 +42,10 @@ param(
     [string]$Database = 'master',
     [string]$Username,
     [string]$Password,
-    [int]$QueryTimeout = 600
+    [int]$QueryTimeout = 600,
+    [ValidateSet('Table','Csv')]
+    [string]$OutputFormat = 'Table',
+    [string]$OutputPath
 )
 
 if (-not (Test-Path -LiteralPath $ScriptPath)) {
@@ -52,46 +55,12 @@ if (-not (Test-Path -LiteralPath $ScriptPath)) {
 Write-Host "Running SQL script: $ScriptPath" -ForegroundColor Cyan
 Write-Host "Server: $ServerInstance | Database: $Database" -ForegroundColor DarkCyan
 
-$invokeSqlcmd = Get-Command Invoke-Sqlcmd -ErrorAction SilentlyContinue
-$sqlcmd = Get-Command sqlcmd.exe -ErrorAction SilentlyContinue
-
-if ($invokeSqlcmd) {
-    $params = @{
-        ServerInstance = $ServerInstance
-        Database       = $Database
-        InputFile      = $ScriptPath
-        QueryTimeout   = $QueryTimeout
-        ErrorAction    = 'Stop'
-    }
-
-    if ($Username -and $Password) {
-        $params['Username'] = $Username
-        $params['Password'] = $Password
-    }
-
-    Write-Host "Using Invoke-Sqlcmd" -ForegroundColor Green
-    Invoke-Sqlcmd @params
-    return
-}
-
-if ($sqlcmd) {
-    $args = @('-S', $ServerInstance, '-d', $Database, '-i', $ScriptPath, '-b', '-r', '1', '-t', $QueryTimeout)
-
-    if ($Username -and $Password) {
-        $args += @('-U', $Username, '-P', $Password)
-    }
-    else {
-        $args += '-E'
-    }
-
-    Write-Host "Using sqlcmd.exe" -ForegroundColor Green
-    Write-Host "Command: sqlcmd.exe $($args -join ' ')" -ForegroundColor DarkGray
-
-    & $sqlcmd.Source @args
-    if ($LASTEXITCODE -ne 0) {
-        throw "sqlcmd.exe failed with exit code $LASTEXITCODE"
-    }
-    return
-}
-
-throw 'Neither Invoke-Sqlcmd nor sqlcmd.exe was found on PATH.'
+& (Join-Path $PSScriptRoot 'local-sql\Invoke-RepoSql.ps1') `
+    -ScriptPath $ScriptPath `
+    -ServerInstance $ServerInstance `
+    -Database $Database `
+    -Username $Username `
+    -Password $Password `
+    -QueryTimeout $QueryTimeout `
+    -OutputFormat $OutputFormat `
+    -OutputPath $OutputPath

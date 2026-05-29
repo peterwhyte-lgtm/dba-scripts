@@ -18,6 +18,7 @@ SELECT
 - Prefer SSMS-first SQL scripts for investigation and reporting.
 - Add brief comments at the top for purpose, use, and expected output.
 - Make PowerShell helpers easy to run locally without extra setup.
+- Use sql-templates/operations for production-ready operational templates that are intentionally copy/paste friendly.
 
 ## PowerShell Script Template
 

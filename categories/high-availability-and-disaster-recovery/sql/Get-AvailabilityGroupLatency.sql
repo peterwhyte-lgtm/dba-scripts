@@ -1,17 +1,14 @@
 ﻿/*
 Script Name : Get-AvailabilityGroupLatency
-Description : Returns Availability Group Latency for DBA review and troubleshooting.
-Author      : Peter Whyte (https://sqldba.blog)
+Description : Returns AG replica synchronization timing and queue health details.
+Use        : HA/DR troubleshooting, failover readiness, and replica performance reviews.
 */
--- Quick AG latency review for replica health and synchronization timing.
--- Useful for HA/DR troubleshooting and failover readiness checks.
 
 SELECT
     ag.name AS ag_name,
     ar.replica_server_name,
     ar.role_desc,
-    drs.database_id,
-    db_name(drs.database_id) AS database_name,
+    DB_NAME(drs.database_id) AS database_name,
     drs.synchronization_state_desc,
     drs.synchronization_health_desc,
     drs.last_hardened_time,
@@ -20,9 +17,12 @@ SELECT
     drs.log_send_rate,
     drs.redo_queue_size,
     drs.redo_rate
-FROM sys.dm_hadr_database_replica_states drs
-JOIN sys.availability_replicas ar ON drs.replica_id = ar.replica_id
-JOIN sys.availability_groups ag ON ar.group_id = ag.group_id;
+FROM sys.dm_hadr_database_replica_states AS drs
+INNER JOIN sys.availability_replicas AS ar
+    ON drs.replica_id = ar.replica_id
+INNER JOIN sys.availability_groups AS ag
+    ON ar.group_id = ag.group_id
+ORDER BY ag.name, database_name, ar.replica_server_name;
 
 
 
