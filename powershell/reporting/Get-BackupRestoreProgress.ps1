@@ -1,12 +1,11 @@
 <#
 .SYNOPSIS
-Returns sessions involved in blocking chains with wait type, timing, and current statement.
+Shows active backup/restore progress and estimated completion times.
 
 .NOTES
 ScriptType   : hybrid
 TargetScope  : single server
 RiskLevel    : SAFE
-Purpose      : Show blocking sessions with wait info and current SQL text.
 
 .PARAMETER ServerInstance
 SQL Server instance to query. Defaults to '.'.
@@ -19,27 +18,24 @@ Output mode: 'Table' (default) or 'Csv'.
 
 .PARAMETER OutputPath
 Optional file path to save the output.
-
-.EXAMPLE
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\reporting\Get-BlockingSessions.ps1
-
-.EXAMPLE
-.\run.ps1 Get-BlockingSessions -ServerInstance MYSERVER\INST01
 #>
 
 param(
     [string]$ServerInstance = '.',
-    [string]$Database = 'master',
+    [string]$Database       = 'master',
     [ValidateSet('Table', 'Csv')]
-    [string]$OutputFormat = 'Table',
+    [string]$OutputFormat   = 'Table',
     [string]$OutputPath
 )
 
 $ErrorActionPreference = 'Stop'
 
 $repoRoot  = Resolve-Path (Join-Path $PSScriptRoot '..\..')
-$sqlScript = Join-Path $repoRoot 'sql\performance\Get-BlockingSessions.sql'
+$sqlScript = Join-Path $repoRoot 'sql\performance\Get-BackupRestoreProgress.sql'
 $runner    = Join-Path $repoRoot 'helpers\local-sql\Invoke-RepoSql.ps1'
 
-Write-Host 'Running blocking-sessions review...' -ForegroundColor Cyan
+if (-not (Test-Path -LiteralPath $sqlScript)) { throw "SQL script not found: $sqlScript" }
+if (-not (Test-Path -LiteralPath $runner))    { throw "Runner not found: $runner" }
+
+Write-Host 'Running backup/restore progress review...' -ForegroundColor Cyan
 & $runner -ScriptPath $sqlScript -ServerInstance $ServerInstance -Database $Database -OutputFormat $OutputFormat -OutputPath $OutputPath

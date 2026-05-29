@@ -58,10 +58,63 @@ if ($List -or -not $ScriptName) {
     return
 }
 
-$launcher = Join-Path $repoRoot 'helpers\Run-Helper.ps1'
+# Resolve the script name directly — avoids a second hop through Run-Helper
+# which mangles named parameters during array splatting.
+$searchRoots = @(
+    (Join-Path $repoRoot 'powershell'),
+    (Join-Path $repoRoot 'helpers'),
+    (Join-Path $repoRoot 'sql'),
+    (Join-Path $repoRoot 'hybrid'),
+    (Join-Path $repoRoot 'tools')
+)
 
-if (-not (Test-Path -LiteralPath $launcher)) {
-    throw "Launcher not found: $launcher"
+$candidates = @()
+foreach ($root in $searchRoots) {
+    $candidates += Get-ChildItem -Path $root -Recurse -File -Include '*.ps1' -ErrorAction SilentlyContinue |
+        Where-Object { $_.BaseName -like $ScriptName -or $_.BaseName -like "*$ScriptName*" }
+}
+# Only fall back to .sql if no .ps1 wrapper found
+if ($candidates.Count -eq 0) {
+    foreach ($root in $searchRoots) {
+        $candidates += Get-ChildItem -Path $root -Recurse -File -Include '*.sql' -ErrorAction SilentlyContinue |
+            Where-Object { $_.BaseName -like $ScriptName -or $_.BaseName -like "*$ScriptName*" }
+    }
 }
 
-& $launcher -ScriptName $ScriptName @Arguments
+$unique = $candidates | Sort-Object FullName -Unique
+if ($unique.Count -eq 0) { throw "Script not found: $ScriptName" }
+if ($unique.Count -gt 1) {
+    Write-Host 'Multiple matches:' -ForegroundColor Yellow
+    $unique | ForEach-Object { Write-Host "  $([System.IO.Path]::GetRelativePath($repoRoot, $_.FullName))" -ForegroundColor DarkGray }
+    throw 'Pass a more specific name.'
+}
+
+$target = $unique[0].FullName
+
+# SQL files go through Invoke-RepoSql; PS files are called directly.
+if ($target -like '*.sql') {
+    $runner = Join-Path $repoRoot 'helpers\local-sql\Invoke-RepoSql.ps1'
+    $target = $runner
+    $Arguments = @('-ScriptPath', $unique[0].FullName) + $Arguments
+}
+
+# Parse remaining string args into a hashtable so named params survive splatting.
+$splat = @{}
+$i = 0
+while ($i -lt $Arguments.Count) {
+    if ($Arguments[$i] -match '^-{1,2}(.+)$') {
+        $key = $Matches[1]
+        if (($i + 1) -lt $Arguments.Count -and $Arguments[$i + 1] -notmatch '^-') {
+            $splat[$key] = $Arguments[$i + 1]
+            $i += 2
+        } else {
+            $splat[$key] = $true
+            $i++
+        }
+    } else {
+        $i++
+    }
+}
+
+Write-Host "Running: $([System.IO.Path]::GetRelativePath($repoRoot, $target))" -ForegroundColor Cyan
+if ($splat.Count -gt 0) { & $target @splat } else { & $target }

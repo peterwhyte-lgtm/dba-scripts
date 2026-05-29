@@ -60,6 +60,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$env:DBASCRIPTS_BATCH = '1'  # tells Invoke-RepoSql not to open 19 browser tabs
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $runner   = Join-Path $repoRoot 'helpers\local-sql\Invoke-RepoSql.ps1'
@@ -236,3 +237,4 @@ Write-Host ''
 Write-Host 'Next step: review findings with'
 Write-Host "  .\powershell\reporting\Review-HealthCheckOutput.ps1 -FolderPath '$outFolder'" -ForegroundColor Yellow
 Write-Host ''
+$env:DBASCRIPTS_BATCH = $null

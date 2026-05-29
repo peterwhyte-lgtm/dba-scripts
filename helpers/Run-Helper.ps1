@@ -70,9 +70,24 @@ if (-not (Test-Path -LiteralPath $target)) {
 }
 
 Write-Host "Running: $([System.IO.Path]::GetRelativePath($repoRoot, $target))" -ForegroundColor Cyan
-if ($Arguments.Count -gt 0) {
-    & $target @Arguments
+
+# Array splatting loses named-parameter identity (each element becomes positional).
+# Parse back into a hashtable so -OutputFormat Csv etc. survive the hop correctly.
+$splat = @{}
+$i = 0
+while ($i -lt $Arguments.Count) {
+    if ($Arguments[$i] -match '^-{1,2}(.+)$') {
+        $key = $Matches[1]
+        if (($i + 1) -lt $Arguments.Count -and $Arguments[$i + 1] -notmatch '^-') {
+            $splat[$key] = $Arguments[$i + 1]
+            $i += 2
+        } else {
+            $splat[$key] = $true   # switch parameter
+            $i++
+        }
+    } else {
+        $i++
+    }
 }
-else {
-    & $target
-}
+
+if ($splat.Count -gt 0) { & $target @splat } else { & $target }

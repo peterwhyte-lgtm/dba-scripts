@@ -24,6 +24,26 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+function Open-InWebUi([string]$csvPath, [string]$outputFormat) {
+    if ($env:DBASCRIPTS_BATCH) { return }
+    if ($outputFormat -ne 'Csv') {
+        Write-Host "[repo-sql] Tip: rerun with -OutputFormat Csv to open in web UI." -ForegroundColor DarkGray
+        return
+    }
+    try {
+        $tcp = [System.Net.Sockets.TcpClient]::new('localhost', 8787)
+        $tcp.Close()
+    } catch {
+        Write-Host "[repo-sql] Tip: run .\tools\Start-WebUi.ps1 to view results in browser." -ForegroundColor DarkGray
+        return
+    }
+    $rel = $csvPath.Replace($repoRoot.ToString(), '').TrimStart('\')
+    $enc = [Uri]::EscapeDataString($rel)
+    $url = "http://localhost:8787/csv?p=$enc"
+    Write-Host "[repo-sql] Opening in web UI: $url" -ForegroundColor Cyan
+    Start-Process $url
+}
+
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $resolvedPath = if ([System.IO.Path]::IsPathRooted($ScriptPath)) { $ScriptPath } else { Join-Path $repoRoot $ScriptPath }
 $scriptName = [System.IO.Path]::GetFileNameWithoutExtension($resolvedPath)
@@ -83,6 +103,7 @@ if ($invokeSqlcmd) {
     else {
         Write-Host "[repo-sql] No rows returned." -ForegroundColor Yellow
     }
+    Open-InWebUi $OutputPath $OutputFormat
     return
 }
 
@@ -114,6 +135,7 @@ if ($sqlcmd) {
         else {
             Write-Host "[repo-sql] No rows returned." -ForegroundColor Yellow
         }
+        Open-InWebUi $OutputPath $OutputFormat
     }
     else {
         Write-Host "[repo-sql] sqlcmd.exe completed but no CSV file was produced." -ForegroundColor Yellow
