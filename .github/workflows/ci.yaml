@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  ps-analyze:
+    name: PowerShell Lint
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup PowerShell
+        uses: actions/setup-powershell@v2
+      - name: Install PSScriptAnalyzer
+        run: Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+        shell: pwsh
+      - name: Run PSScriptAnalyzer
+        run: |
+          $paths = @('powershell','helpers','hybrid') | Where-Object { Test-Path $_ }
+          if ($paths.Count -eq 0) { Write-Host "No PS paths found."; exit 0 }
+          $results = Invoke-ScriptAnalyzer -Path $paths -Recurse -Severity Warning,Error
+          $results | Format-Table
+          if ($results | Where-Object { $_.Severity -in 'Error','Warning' }) { exit 1 }
+        shell: pwsh
+
+  markdown:
+    name: Docs Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Markdown lint
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          config: .github/markdownlint.jsonc
+          globs: |
+            **/*.md
+      - name: Link check README and docs
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: >
+            --no-progress
+            --exclude-mail
+            --accept 200,206,429
+            --retry-wait-time 2
+            --max-retries 2
+            README.md docs/**/*.md
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
