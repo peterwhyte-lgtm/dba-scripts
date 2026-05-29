@@ -14,7 +14,7 @@ param(
 )
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
-$targetDir = Join-Path $repoRoot "categories/$Category/powershell"
+$targetDir = Join-Path $repoRoot "powershell/$Category"
 
 if (-not (Test-Path -LiteralPath $targetDir)) {
     New-Item -ItemType Directory -Force -Path $targetDir | Out-Null

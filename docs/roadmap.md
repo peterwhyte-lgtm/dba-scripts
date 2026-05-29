@@ -12,24 +12,24 @@ The current layout now includes practical coverage for:
 - security and permission auditing
 - HA/DR and lab-style database generation
 - integrity/readiness checks before DBCC validation work
-- category-first navigation under categories/
+- canonical top-level navigation under sql/, powershell/, and hybrid/
 - top-level helpers/ and tools/ for quick repo operations and AI-assisted work
 
 ## Execution summary intake: Phase 1 scorecard
 
-The repo has moved from a loose script dump into a category-first DBA toolkit. The current execution summary in `temp-exec-summary.txt` is now being handled in chunks, and this roadmap is the live tracker for the first chunk.
+The repo has moved from a loose script dump into a canonical DBA toolkit with top-level SQL and PowerShell folders. This roadmap is the live tracker for the next production-focused improvement chunk.
 
 ### Current score (out of 10)
 
 | Area | Score | Notes |
 | --- | ---: | --- |
-| Repository structure | 9/10 | Category-first layout, SQL/PowerShell separation, and helper grouping are now in place. |
-| Navigation and discoverability | 8/10 | The category and helper entry points are much easier to follow from the repo root. |
+| Repository structure | 9/10 | Canonical sql/, powershell/, and helper layout are now in place. |
+| Navigation and discoverability | 8/10 | The canonical folders and helper entry points are much easier to follow from the repo root. |
 | Output collection | 8/10 | Helper runs now write full CSV reports under `output-files/reviews/` and still show preview output in the terminal. |
 | Helper usability | 8/10 | The launcher and repo helpers are now clearer and easier to use for everyday DBA checks. |
-| Script standards and headers | 2/10 | The repo still needs standard metadata headers, safety annotations, and naming consistency across SQL scripts. |
+| Script standards and headers | 8/10 | The main SQL scripts now carry the standard metadata, safety annotations, and read-only guidance needed for day-to-day use. |
 | CI and quality gates | 0/10 | No SQL linter, Markdown lint, or link-check automation is in place yet. |
-| Script documentation depth | 4/10 | The repo has good top-level docs, but many individual scripts still need per-script notes and examples. |
+| Script documentation depth | 6/10 | The repo now relies on script headers and category guidance rather than separate Markdown notes for every script. |
 
 ### Phase 1 focus (this chunk)
 
@@ -41,18 +41,18 @@ The repo has moved from a loose script dump into a category-first DBA toolkit. T
 ### Phase 1 completion notes
 
 Completed in this pass:
-- category-first layout and helper organization
+- canonical sql/, powershell/, and helper organization
 - launcher and repo-root helper flow
 - output-files review collection path
 - top-level docs and quick-start navigation updates
 
 Pending for the next chunk:
-- standard SQL headers and safe/impact tags per script
-- consistent lowercase-hyphenated naming for script files
-- per-script markdown docs and example output guidance
-- CI automation for SQL linting, Markdown validation, and link checks
+- finish the remaining SQL scripts with the same header and safety pattern
+- keep the repo guidance focused on standards, templates, and operational workflows
+- add CI automation for SQL linting, Markdown validation, and link checks
+- expand the most useful hybrid helpers for backup age, DR readiness, and maintenance reporting
 
-1. Reworked the repo into a DBA-first category structure with SQL and PowerShell under each category.
+1. Reworked the repo into a canonical layout with top-level SQL and PowerShell folders and compatibility support for older references.
 2. Added top-level helpers for repo overview, output cleanup, quick task routing, script discovery, and script generation.
 3. Added an output-files skeleton for demo reports, backup-review output, and sample backup fixtures.
 4. Updated the main docs so the repo is easier to navigate from both the high-level and script-specific views.
@@ -93,7 +93,7 @@ This update finished the first chunk of the execution-summary plan:
 
 The remaining execution-summary items are intentionally deferred to the next chunk so the repo can be improved in measurable, low-risk steps.
 
-- Added a category-first layout under categories/ for real DBA browsing.
+- Added a canonical top-level layout under sql/, powershell/, and hybrid/ for real DBA browsing.
 - Added helper utilities under helpers/ for repo overview, cleanup, routing, and proactive script generation.
 - Added output-files structure for demo reports and backup-review output.
 - Fixed obvious repo path and navigation inconsistencies across README, quick-start, and catalog docs.
@@ -109,7 +109,7 @@ This chunk started the standards pass called out in the execution summary:
 
 Next actions in this phase:
 1. extend the same header and safety pattern across the rest of the SQL scripts
-2. add per-script markdown notes for the highest-value operational scripts
+2. keep the operational guidance in script comments and category docs rather than separate Markdown pages
 3. add CI automation for SQL linting and Markdown validation
 
 - Keep scripts easy to copy into SSMS and Azure Data Studio

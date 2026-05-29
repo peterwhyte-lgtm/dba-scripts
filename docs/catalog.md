@@ -1,6 +1,6 @@
 # DBA Script Catalog
 
-This catalog reflects the current repo layout and the scripts most useful for real DBA operations.
+This is the legacy compatibility catalog for the old category-first paths while the canonical sql/ and powershell/ layout becomes the main working model.
 
 ## Performance troubleshooting
 - categories/performance-troubleshooting/sql/Get-BlockingSessions.sql
@@ -66,14 +66,14 @@ This catalog reflects the current repo layout and the scripts most useful for re
 ## Best starting points for a DBA triage session
 
 1. `helpers/triage/Show-RepoOverview.ps1` — inventory the repo and identify the fastest path.
-2. `categories/storage-capacity-management/sql/Get-DatabaseSizesAndFreeSpace.sql` — quick storage and growth review.
-3. `categories/performance-troubleshooting/sql/Get-BlockingSessions.sql` — blocking and wait-first triage.
-4. `categories/backups-and-recovery/sql/Get-BackupCoverage.sql` — backup coverage and recovery readiness.
+2. `sql/backups/Get-BackupCoverage.sql` — backup coverage and recovery readiness.
+3. `sql/performance/Get-BlockingSessions.sql` — blocking and wait-first triage.
+4. `powershell/inventory/Get-DatabaseSizesAndFreeSpace.ps1` — quick storage and growth review.
 5. `sql-templates/operations/Pre-OSUpgrade-Readiness.sql` — runbook-ready readiness checks.
 
 ### Example triage commands
 
 ```powershell
 pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\triage\Show-RepoOverview.ps1
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\local-sql\Invoke-SqlFile.ps1 -ScriptPath .\categories\storage-capacity-management\sql\Get-DatabaseSizesAndFreeSpace.sql
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\helpers\local-sql\Invoke-SqlFile.ps1 -ScriptPath .\sql\backups\Get-BackupCoverage.sql
 ```

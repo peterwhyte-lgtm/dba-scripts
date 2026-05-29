@@ -11,4 +11,4 @@ Use the docs in this order:
 6. Use templates.md for the standard script format and documentation style.
 7. Use script-standards.md for the current metadata and safety rules.
 
-The current per-script notes are in `docs/scripts/` for the most common DBA review helpers.
+Operational notes stay in the script headers and category guidance where possible. This keeps the repo practical for production work and avoids duplicating long narrative docs for every SQL script.

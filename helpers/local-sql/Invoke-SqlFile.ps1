@@ -25,13 +25,13 @@ Optional password for SQL authentication.
 Command timeout in seconds. Defaults to 600.
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\performance-troubleshooting\sql\Get-BlockingSessions.sql
+powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\sql\performance\Get-BlockingSessions.sql
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\configuration-and-environment\sql\Get-InstanceConfigurationSnapshot.sql -Database master
+powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\sql\monitoring\Get-InstanceConfigurationSnapshot.sql -Database master
 
 .EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\categories\dba-lab-scripts\sql\New-TestDatabases.sql -ServerInstance . -Database master
+powershell -ExecutionPolicy Bypass -File .\helpers\Invoke-SqlFile.ps1 -ScriptPath .\sql\monitoring\Get-DatabaseHealth.sql -ServerInstance . -Database master
 #>
 
 param(

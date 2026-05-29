@@ -9,8 +9,8 @@ that helps a DBA find the highest-value scripts quickly.
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $scriptRoots = @(
-    @{ Name = 'SQL scripts'; Path = Join-Path $repoRoot 'categories' },
-    @{ Name = 'PowerShell scripts'; Path = Join-Path $repoRoot 'categories' }
+    @{ Name = 'SQL scripts'; Path = Join-Path $repoRoot 'sql' },
+    @{ Name = 'PowerShell scripts'; Path = Join-Path $repoRoot 'powershell' }
 )
 
 $categoryOrder = @(
@@ -26,11 +26,7 @@ $categoryOrder = @(
 
 $summary = foreach ($root in $scriptRoots) {
     $includePattern = if ($root.Name -eq 'SQL scripts') { '*.sql' } else { '*.ps1' }
-    $folderName = if ($root.Name -eq 'SQL scripts') { 'sql' } else { 'powershell' }
-    $files = Get-ChildItem -Path $root.Path -Recurse -File -Include $includePattern -ErrorAction SilentlyContinue |
-        Where-Object {
-            $_.FullName -match "[\\/]categories[\\/][^\\/]+[\\/]$folderName[\\/]"
-        }
+    $files = Get-ChildItem -Path $root.Path -Recurse -File -Include $includePattern -ErrorAction SilentlyContinue
     $byCategory = @{}
 
     foreach ($file in $files) {
@@ -60,8 +56,8 @@ $summary | Format-Table -AutoSize | Out-String | Write-Host
 
 Write-Host "" 
 Write-Host "Fast-start recommendations:" -ForegroundColor Green
-Write-Host "  1. categories/storage-capacity-management/sql/Get-DatabaseSizesAndFreeSpace.sql" -ForegroundColor DarkGray
-Write-Host "  2. categories/performance-troubleshooting/sql/Get-BlockingSessions.sql" -ForegroundColor DarkGray
-Write-Host "  3. categories/backups-and-recovery/sql/Get-BackupCoverage.sql" -ForegroundColor DarkGray
+Write-Host "  1. sql/monitoring/Get-DatabaseSizesAndFreeSpace.sql" -ForegroundColor DarkGray
+Write-Host "  2. sql/performance/Get-BlockingSessions.sql" -ForegroundColor DarkGray
+Write-Host "  3. sql/backups/Get-BackupCoverage.sql" -ForegroundColor DarkGray
 Write-Host "  4. helpers/local-sql/Invoke-SqlFile.ps1" -ForegroundColor DarkGray
 Write-Host "  5. helpers/Run-Helper.ps1" -ForegroundColor DarkGray

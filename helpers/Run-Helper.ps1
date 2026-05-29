@@ -3,7 +3,7 @@
 Simple launcher for the repo PowerShell scripts.
 
 .DESCRIPTION
-This helper makes it easier to run scripts from the category-first structure and the top-level helpers area.
+This helper makes it easier to run scripts from the canonical sql/, powershell/, hybrid/, and helpers/ layout.
 #>
 
 param(
@@ -26,7 +26,9 @@ function Resolve-RepoScript {
     $candidates = @()
     $searchRoots = @(
         (Join-Path $repoRoot 'helpers'),
-        (Join-Path $repoRoot 'categories'),
+        (Join-Path $repoRoot 'sql'),
+        (Join-Path $repoRoot 'powershell'),
+        (Join-Path $repoRoot 'hybrid'),
         (Join-Path $repoRoot 'tools')
     )
 

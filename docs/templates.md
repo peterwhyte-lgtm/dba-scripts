@@ -16,9 +16,10 @@ SELECT
 
 - Keep scripts simple and production-friendly.
 - Prefer SSMS-first SQL scripts for investigation and reporting.
-- Add brief comments at the top for purpose, use, and expected output.
+- Add brief metadata headers and safety annotations directly in the script itself.
 - Make PowerShell helpers easy to run locally without extra setup.
 - Use sql-templates/operations for production-ready operational templates that are intentionally copy/paste friendly.
+- Keep long narrative notes in the repo docs only when they describe workflows, standards, or repo structure.
 
 ## PowerShell Script Template
 

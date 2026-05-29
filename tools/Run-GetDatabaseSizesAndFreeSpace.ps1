@@ -25,7 +25,7 @@ param(
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = Resolve-Path (Join-Path $scriptDir '..')
 $helperPath = Join-Path $repoRoot 'helpers\local-sql\Invoke-SqlFile.ps1'
-$sqlScriptPath = Join-Path $repoRoot 'categories\storage-capacity-management\sql\Get-DatabaseSizesAndFreeSpace.sql'
+$sqlScriptPath = Join-Path $repoRoot 'sql\monitoring\Get-DatabaseSizesAndFreeSpace.sql'
 
 if (-not (Test-Path -LiteralPath $helperPath)) {
     throw "Helper script not found: $helperPath"

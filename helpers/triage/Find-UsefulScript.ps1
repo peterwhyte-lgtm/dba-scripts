@@ -3,7 +3,7 @@
 Finds the most relevant existing DBA script for a quick task.
 
 .DESCRIPTION
-Uses simple keywords to surface likely script paths from the category-first layout.
+Uses simple keywords to surface likely script paths from the canonical sql/, powershell/, hybrid/, and helpers/ layout.
 This reduces AI/assistant token usage by pointing directly to the existing script you need.
 #>
 
@@ -13,7 +13,10 @@ param(
 )
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
-$matches = Get-ChildItem -Path (Join-Path $repoRoot 'categories') -Recurse -File |
+$searchRoots = @('sql', 'powershell', 'hybrid', 'helpers', 'tools')
+$matches = foreach ($root in $searchRoots) {
+    Get-ChildItem -Path (Join-Path $repoRoot $root) -Recurse -File -ErrorAction SilentlyContinue
+} |
     Where-Object {
         $_.FullName -match [regex]::Escape($Keyword)
     }

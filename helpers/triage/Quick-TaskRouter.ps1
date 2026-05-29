@@ -12,16 +12,16 @@ param(
 )
 
 $routes = @{
-  'backup' = 'categories/backups-and-recovery';
-  'restore' = 'categories/backups-and-recovery';
-  'blocking' = 'categories/performance-troubleshooting';
-  'wait' = 'categories/performance-troubleshooting';
-  'fragmentation' = 'categories/maintenance-and-reliability';
-  'disk' = 'categories/storage-capacity-management';
-  'memory' = 'categories/configuration-and-environment';
-  'permission' = 'categories/security-and-permissions';
-  'ag' = 'categories/high-availability-and-disaster-recovery';
-  'lab' = 'categories/dba-lab-scripts'
+  'backup' = 'sql/backups';
+  'restore' = 'sql/backups';
+  'blocking' = 'sql/performance';
+  'wait' = 'sql/performance';
+  'fragmentation' = 'sql/monitoring';
+  'disk' = 'sql/monitoring';
+  'memory' = 'sql/monitoring';
+  'permission' = 'sql/security';
+  'ag' = 'sql/monitoring';
+  'lab' = 'sql/monitoring'
 }
 
 $taskLower = $Task.ToLowerInvariant()

@@ -3,7 +3,7 @@
 Executes a SQL script from this repo against a local SQL Server instance.
 
 .DESCRIPTION
-This helper is built for fast local testing of DBA scripts from categories/ and sql-templates/.
+This helper is built for fast local testing of DBA scripts from the canonical sql/ and powershell/ layout, with support for repo helpers and templates.
 It supports terminal output and CSV export for later review or automation.
 #>
 

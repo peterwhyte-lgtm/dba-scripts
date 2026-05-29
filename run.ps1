@@ -9,7 +9,7 @@ just a script name or relative path, without manually typing long commands.
 .EXAMPLES
   .\run.ps1 Get-WaitStatistics
   .\run.ps1 Get-LongRunningQueries
-  .\run.ps1 categories\performance-troubleshooting\powershell\Get-WaitStatistics.ps1
+  .\run.ps1 powershell\reporting\Get-WaitStatistics.ps1
 #>
 
 param(
