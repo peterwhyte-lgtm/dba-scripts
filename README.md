@@ -5,30 +5,88 @@ A production‑ready SQL Server DBA toolkit for diagnostics, automation, and ope
 
 This repository provides a structured, enterprise‑grade library of SQL and PowerShell tools designed for real‑world DBA work. It focuses on fast troubleshooting, safe investigation, repeatable workflows, and operational consistency across SQL Server environments.
 
+---
+
+## ⚙️ Configure Your Environment
+
+Before running scripts, ensure the following:
+
+### Requirements
+
+- Windows PowerShell 5.1 or PowerShell 7+
+- SQL Server client tools installed (SSMS or ADS)
+- Local SQL instance or remote SQL instance you can connect to
+- Execution policy allowing local scripts:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+### Optional (Recommended)
+
+- Git installed
+- A working directory where you can clone and run the repo
+- A SQL login with read‑only access to system DMVs
+
+Once ready, clone the repo:
+
+```bash
+git clone https://github.com/peterwhyte-lgtm/dba-scripts
+```
+
 ## 🚀 Start Here
 
 If you're new to the repo, begin with this quick path:
 
-Get a full repo overview:
+### 1. Get a full repo overview
+
+This shows you everything available and where to find it.
 
 ```powershell
 .\helpers\triage\Show-RepoOverview.ps1
 ```
 
-Pick the script that matches your task:
+### 2. Run your first script using the runner
 
-- Use `sql/` for SSMS‑ready diagnostics and investigations
-- Use `powershell/` for automation, orchestration, and local execution
+The repo includes a universal runner so you don't need to remember full paths.
 
-Validate SQL connectivity (recommended):
+Example:
+
+```powershell
+.\run.ps1 Get-WaitStatistics
+```
+
+You can call any script by name:
+
+```powershell
+.\run.ps1 IndexFragmentation
+.\run.ps1 PermissionAudit
+.\run.ps1 ServerInventory
+```
+
+The runner automatically finds the script, loads it, and executes it with safe defaults.
+
+### 3. Validate SQL connectivity (recommended)
 
 ```powershell
 .\helpers\local-sql\Test-SqlConnectivity.ps1 -ServerInstance . -Database master
 ```
 
-Use `sql-templates/operations/` for production‑style runbooks and change‑order templates.
+### 4. Use production‑style templates
 
-Save outputs you want to reuse under `output-files/`.
+When you need a runbook or change‑order template:
+
+```
+sql-templates/operations/
+```
+
+### 5. Save outputs
+
+Any reusable output (CSV, JSON, text) can be stored under:
+
+```
+output-files/
+```
 
 ## ⭐ Most Useful Scripts
 
@@ -42,7 +100,7 @@ These are the core scripts most DBAs start with:
 
 ## 📦 Repository Structure
 
-The repo is organized into three practical layers that mirror real DBA workflows:
+The repo is organized into three practical layers that mirror real DBA workflows.
 
 ### SQL Layer
 
