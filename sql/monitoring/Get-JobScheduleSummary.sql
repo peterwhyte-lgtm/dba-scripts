@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-JobScheduleSummary
 Category    : configuration-and-environment
 Purpose     : Show enabled SQL Agent jobs with their schedules and next scheduled run time.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : db_datareader on msdb
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     j.name                                                              AS job_name,

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-IndexFragmentationAcrossDatabases
 Category    : performance-troubleshooting
 Purpose     : Check index fragmentation details across all user databases for maintenance planning.
@@ -8,6 +8,8 @@ Impact      : Medium
 Requires    : VIEW DATABASE STATE on each target database
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Medium
 
 DECLARE @sql NVARCHAR(MAX) = N'';
 

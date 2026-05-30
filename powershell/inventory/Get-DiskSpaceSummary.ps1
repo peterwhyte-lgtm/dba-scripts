@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows a friendly local disk space summary for the current machine.
 
@@ -9,6 +9,7 @@ Useful for quick checks before creating large test databases.
 .EXAMPLE
 powershell -ExecutionPolicy Bypass -File .\powershell\inventory\Get-DiskSpaceSummary.ps1
 #>
+$ErrorActionPreference = 'Stop'
 
 $drives = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | Sort-Object DeviceID
 

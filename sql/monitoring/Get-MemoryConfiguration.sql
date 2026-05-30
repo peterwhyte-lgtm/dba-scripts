@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-MemoryConfiguration
 Category    : configuration-and-environment
 Purpose     : Show configured memory limits alongside current OS-level memory availability.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     (SELECT value_in_use FROM sys.configurations WHERE name = 'min server memory (MB)')         AS min_server_memory_mb,

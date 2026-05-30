@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows memory and MAXDOP related configuration for a server.
 #>
@@ -6,6 +6,7 @@ Shows memory and MAXDOP related configuration for a server.
 param(
     [string]$SqlInstance = '.'
 )
+$ErrorActionPreference = 'Stop'
 
 $connectionString = "Server=$SqlInstance;Database=master;Integrated Security=True;TrustServerCertificate=True"
 

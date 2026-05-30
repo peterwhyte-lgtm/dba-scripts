@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-BlockingSessions
 Category    : performance-troubleshooting
 Purpose     : Show sessions involved in blocking chains with wait type, timing, and current statement.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     s.session_id,

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Generates restore scripts for all user databases.
 
@@ -12,6 +12,7 @@ param(
     [string]$BackupFolder = 'C:\\SQLBackups',
     [string]$OutputPath = '.\\restore-script.sql'
 )
+$ErrorActionPreference = 'Stop'
 
 [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.Smo') | Out-Null
 

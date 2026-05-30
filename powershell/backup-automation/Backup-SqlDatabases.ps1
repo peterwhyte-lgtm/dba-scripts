@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Backs up all user databases to a target folder.
 #>
@@ -8,6 +8,7 @@ param(
     [string]$BackupPath = 'C:\\SQLBackups',
     [string]$BackupType = 'FULL'
 )
+$ErrorActionPreference = 'Stop'
 
 if (-not (Test-Path $BackupPath)) {
     New-Item -ItemType Directory -Path $BackupPath -Force | Out-Null

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-DeadlockSummary
 Category    : performance-troubleshooting
 Purpose     : Show recent deadlock events from the system_health XEvent ring buffer.
@@ -10,6 +10,8 @@ Notes       : Ring buffer holds recent events only (typically last 30–60 min).
               history, query the system_health .xel files directly in SSMS.
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 WITH ring_buffer AS (
     SELECT

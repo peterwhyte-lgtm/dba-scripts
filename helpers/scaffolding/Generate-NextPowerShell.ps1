@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Creates a starter PowerShell helper for a DBA task.
 
@@ -12,6 +12,7 @@ param(
 
     [string]$Category = 'performance-troubleshooting'
 )
+$ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $targetDir = Join-Path $repoRoot "powershell/$Category"

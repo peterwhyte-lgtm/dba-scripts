@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-SlowQueriesFromCache
 Category    : performance-troubleshooting
 Purpose     : Top 20 queries by average elapsed time from the plan cache — identifies habitually slow queries.
@@ -10,6 +10,8 @@ Notes       : Covers cached plans since last restart or plan eviction. Complemen
               Get-LongRunningQueries (live requests) and Get-TopCpuQueries (total CPU).
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT TOP 20
     DB_NAME(st.dbid)                                                        AS database_name,

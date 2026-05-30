@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-WorkerThreadsAndActiveSessions
 Category    : performance-troubleshooting
 Purpose     : Active user sessions with CPU, elapsed time, and current worker thread pool usage.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 -- Get SQL worker threads
 SELECT 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Runs the backup coverage review query for the current SQL Server instance.
 #>
@@ -13,8 +13,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\\..')
-$sqlScript = Join-Path $repoRoot 'sql\\backups\\Get-BackupCoverage.sql'
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+$sqlScript = Join-Path $repoRoot 'sql\backups\Get-BackupCoverage.sql'
 $runner = Join-Path $repoRoot 'helpers\local-sql\Invoke-RepoSql.ps1'
 
 if (-not (Test-Path -LiteralPath $sqlScript)) { throw "Script not found: $sqlScript" }

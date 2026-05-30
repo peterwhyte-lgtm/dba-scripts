@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists the oldest file in each backup subfolder and flags folders older than a threshold.
 
@@ -28,6 +28,7 @@ param(
 
     [int]$ThresholdDays = 31
 )
+$ErrorActionPreference = 'Stop'
 
 if (-not (Test-Path -LiteralPath $Path)) {
     throw "Backup path not found: $Path"

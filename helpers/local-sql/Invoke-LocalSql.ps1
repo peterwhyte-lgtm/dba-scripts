@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Quickly run a SQL query against your local default SQL Server instance.
 
@@ -64,6 +64,7 @@ param(
     [string]$OutputFormat = 'Table',
     [string]$OutputPath
 )
+$ErrorActionPreference = 'Stop'
 
 if ($AsCsv) { $OutputFormat = 'Csv' }
 

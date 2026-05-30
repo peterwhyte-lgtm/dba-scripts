@@ -186,7 +186,9 @@ foreach ($jName in $failedJobs) {
 # ── active-sessions (blocking) ────────────────────────────────────────────────
 $sessions = Read-Csv-Safe 'active-sessions'
 $blocked  = @($sessions | Where-Object {
-    $_.blocking_session_id -and $_.blocking_session_id -ne '' -and $_.blocking_session_id -ne '0'
+    $v = $_.blocking_session_id
+    $n = 0
+    $v -and $v -ne '' -and [int]::TryParse($v, [ref]$n) -and $n -gt 0
 })
 if ($blocked.Count -gt 0) {
     $blockedList = ($blocked | Select-Object -ExpandProperty session_id) -join ', '
@@ -195,7 +197,8 @@ if ($blocked.Count -gt 0) {
 }
 
 $openTx = @($sessions | Where-Object {
-    $_.open_transaction_count -and [int]$_.open_transaction_count -gt 0
+    $n = 0
+    [int]::TryParse($_.open_transaction_count, [ref]$n) -and $n -gt 0
 })
 if ($openTx.Count -gt 0) {
     Add-Finding 'INFO' 'Open Transactions' 'Active sessions' (
@@ -347,10 +350,24 @@ else {
     Write-Host ("  CRITICAL: {0}  |  WARNING: {1}  |  INFO: {2}" -f $critCount, $warnCount, $infoCount) -ForegroundColor Cyan
     Write-Host ''
 
-    if ($OutputFormat -eq 'Csv') {
-        $csvOut = Join-Path $FolderPath 'findings.csv'
-        $sorted | Export-Csv -LiteralPath $csvOut -NoTypeInformation -Encoding UTF8
-        Write-Host "Findings written to: $csvOut" -ForegroundColor Green
-        Write-Host ''
-    }
+    $csvOut = Join-Path $FolderPath 'findings.csv'
+    $sorted | Export-Csv -LiteralPath $csvOut -NoTypeInformation -Encoding UTF8
 }
+
+$uiUp = $false
+try { $tcp = [System.Net.Sockets.TcpClient]::new('localhost', 8787); $tcp.Close(); $uiUp = $true } catch {}
+$folderEnc   = [Uri]::EscapeDataString($FolderPath)
+$dashboardUrl = "http://localhost:8787/review?folder=$folderEnc"
+
+Write-Host ('─' * 64) -ForegroundColor DarkCyan
+if ($findings.Count -gt 0) {
+    Write-Host "  Findings : $(Join-Path $FolderPath 'findings.csv')" -ForegroundColor Green
+}
+if ($uiUp) {
+    Write-Host "  Dashboard: $dashboardUrl" -ForegroundColor Cyan
+} else {
+    Write-Host "  Dashboard: $dashboardUrl" -ForegroundColor DarkGray
+    Write-Host "             (web UI not running — start with: .\tools\Start-WebUi.ps1)" -ForegroundColor DarkGray
+}
+Write-Host ('─' * 64) -ForegroundColor DarkCyan
+Write-Host ''

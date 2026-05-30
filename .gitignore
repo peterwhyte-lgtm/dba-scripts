@@ -1,7 +1,11 @@
-# Generated CSV output from DBA script runs
+# Generated output from DBA script runs
 output-files/**/*.csv
 output-files/**/*.tmp.csv
+output-files/**/*.sql
+output-files/**/*.png
 output-files/healthcheck/
+output-files/migration/
+output-files/reviews/
 
 # Backup files (test fixtures included — use git add -f to force-track if needed)
 output-files/**/*.bak

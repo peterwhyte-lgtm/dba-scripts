@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-InstanceConfigurationSnapshot
 Category    : configuration-and-environment
 Purpose     : Capture all sp_configure settings for baseline review and change tracking.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     name,

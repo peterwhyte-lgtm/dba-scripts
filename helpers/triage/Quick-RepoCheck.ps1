@@ -1,14 +1,16 @@
-<#
+﻿<#
 .SYNOPSIS
 Performs a fast repo sanity check for the DBA scripts workspace.
 
 .DESCRIPTION
 Checks for the main folder layout and key helper scripts so you can quickly verify the repo is ready for DBA work.
 #>
+$ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $required = @(
-  'categories',
+  'sql',
+  'powershell',
   'helpers',
   'tools',
   'output-files'

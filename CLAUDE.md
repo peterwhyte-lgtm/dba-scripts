@@ -76,6 +76,49 @@ blog/                       — draft blog posts for sqldba.blog (one post per s
 
 The `hybrid/` folder exists in the layout but its subfolders are currently empty.
 
+## Running against a remote server
+
+All scripts that call `Invoke-RepoSql.ps1` honour three session-level environment variables. Set them once with `Set-SqlConnection.ps1` and every script picks them up automatically for the rest of the session — no need to repeat `-ServerInstance` on every call.
+
+```powershell
+# Set remote server for this session (Windows auth)
+.\helpers\local-sql\Set-SqlConnection.ps1 -ServerInstance PROD01\SQL2019
+
+# SQL auth (prompts for password)
+.\helpers\local-sql\Set-SqlConnection.ps1 -ServerInstance PROD01 -Username sa
+
+# Named instance with non-default port
+.\helpers\local-sql\Set-SqlConnection.ps1 -ServerInstance "PROD01\INST01,14330"
+
+# See what is currently active
+.\helpers\local-sql\Set-SqlConnection.ps1 -Show
+
+# Reset to local (.) Windows auth
+.\helpers\local-sql\Set-SqlConnection.ps1 -Clear
+```
+
+Or pass `-ServerInstance` directly on any individual call:
+
+```powershell
+.\run.ps1 Get-WaitStatistics -ServerInstance PROD01\SQL2019
+.\powershell\reporting\Get-WaitStatistics.ps1 -ServerInstance PROD01\SQL2019 -OutputFormat Csv
+```
+
+Env vars used internally: `$env:DBASCRIPTS_SERVER`, `$env:DBASCRIPTS_USER`, `$env:DBASCRIPTS_PASS`. Explicit params always win over env vars.
+
+### DDL generator scripts
+
+`powershell/migration/Generate-*.ps1` scripts work differently from normal wrappers — they do **not** go through the CSV pipeline. They call `Invoke-Sqlcmd` with `MaxCharLength 2000000` (or `sqlcmd.exe -y 0`) to capture the full `NVARCHAR(MAX)` DDL string and write it to a `.sql` file in `output-files\migration\`. Never call these through `Invoke-RepoSql.ps1`.
+
+```powershell
+# Migration: generate all three scripts from source server
+.\helpers\local-sql\Set-SqlConnection.ps1 -ServerInstance PROD01\SQL2019
+.\powershell\migration\Generate-LoginScript.ps1
+.\powershell\migration\Generate-AgentJobScript.ps1
+.\powershell\migration\Generate-UserMappingScript.ps1
+# Output: output-files\migration\*.sql  — review, edit owners, run on target
+```
+
 ## How PowerShell wrappers work
 
 Every script in `powershell/**/*.ps1` (except helpers and orchestrators) is a thin wrapper:
@@ -143,6 +186,8 @@ If there is no matching subcategory, add to `powershell/reporting/` for read/que
 | dbcc-checkdb | Get-LastDbccCheckdb.sql |
 | suspect-pages | Get-SuspectPages.sql |
 | io-usage | Get-DatabaseIoUsage.sql |
+| disk-space | Get-DiskSpace.sql |
+| growth-risk | Get-DatabaseGrowthRisk.sql |
 | security-surface-area | Get-DatabaseMailAndXpCmdShell.sql |
 | weak-logins | Get-WeakLoginSettings.sql |
 

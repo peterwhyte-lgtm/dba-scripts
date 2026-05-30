@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows a quick inventory of the DBA scripts repo for triage and navigation.
 
@@ -6,6 +6,7 @@ Shows a quick inventory of the DBA scripts repo for triage and navigation.
 Enumerates the SQL and PowerShell script folders and prints a practical summary
 that helps a DBA find the highest-value scripts quickly.
 #>
+$ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $scriptRoots = @(

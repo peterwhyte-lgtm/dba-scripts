@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Clears the repo output-files folder while preserving the folder structure.
 
@@ -28,6 +28,7 @@ param(
     [int]$BackupAgeDays = 30,
     [switch]$WhatIf
 )
+$ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 

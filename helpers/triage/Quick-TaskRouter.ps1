@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Routes a DBA task to the best existing script path.
 
@@ -10,6 +10,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$Task
 )
+$ErrorActionPreference = 'Stop'
 
 $routes = @{
   'backup' = 'sql/backups';

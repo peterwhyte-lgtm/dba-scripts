@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Runs the instance configuration snapshot review query.
 #>
@@ -13,8 +13,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\\..')
-$sqlScript = Join-Path $repoRoot 'sql\\monitoring\\Get-InstanceConfigurationSnapshot.sql'
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+$sqlScript = Join-Path $repoRoot 'sql\monitoring\Get-InstanceConfigurationSnapshot.sql'
 $runner = Join-Path $repoRoot 'helpers\local-sql\Invoke-RepoSql.ps1'
 
 if (-not (Test-Path -LiteralPath $sqlScript)) { throw "Script not found: $sqlScript" }

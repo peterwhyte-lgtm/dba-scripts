@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Runs the memory configuration and usage review query.
 #>
@@ -13,8 +13,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\\..')
-$sqlScript = Join-Path $repoRoot 'sql\\monitoring\\Get-MemoryConfigurationAndUsage.sql'
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+$sqlScript = Join-Path $repoRoot 'sql\monitoring\Get-MemoryConfigurationAndUsage.sql'
 $runner = Join-Path $repoRoot 'helpers\local-sql\Invoke-RepoSql.ps1'
 
 if (-not (Test-Path -LiteralPath $sqlScript)) { throw "Script not found: $sqlScript" }

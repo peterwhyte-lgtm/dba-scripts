@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Creates many SQL Server test databases with randomised names and configurable sizes.
 
@@ -39,6 +39,7 @@ param(
     [string]$OutputFile      = "$PWD\created_databases.csv",
     [int]   $BatchDelayMs    = 10
 )
+$ErrorActionPreference = 'Stop'
 
 function Get-DefaultPaths-SMO {
     try {

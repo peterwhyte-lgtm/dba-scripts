@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   ps-analyze:
     name: PowerShell Lint
@@ -16,8 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup PowerShell
-        uses: actions/setup-powershell@v2
       - name: Install PSScriptAnalyzer
         run: Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
         shell: pwsh
@@ -38,7 +39,6 @@ jobs:
       - name: Markdown lint
         uses: DavidAnson/markdownlint-cli2-action@v16
         with:
-          config: .github/markdownlint.jsonc
           globs: |
             **/*.md
       - name: Link check README and docs

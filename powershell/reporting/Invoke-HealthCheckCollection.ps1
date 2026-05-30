@@ -32,6 +32,8 @@ Scripts collected:
   dbcc-checkdb          - last successful DBCC CHECKDB per database
   suspect-pages         - any pages in msdb.dbo.suspect_pages
   io-usage              - per-database I/O totals with read/write latency
+  disk-space            - volume mount points with total/used/free GB (SQL-hosting drives only)
+  growth-risk           - databases flagged OK / NEAR_LIMIT / AT_LIMIT vs configured file limits
   security-surface-area - xp_cmdshell, CLR, Database Mail enabled state
   weak-logins           - SQL logins with policy/expiration off or sa enabled
 
@@ -158,6 +160,14 @@ $scripts = @(
         Paths = @('sql\performance\Get-DatabaseIoUsage.sql')
     }
     [PSCustomObject]@{
+        Label = 'disk-space'
+        Paths = @('sql\monitoring\Get-DiskSpace.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'growth-risk'
+        Paths = @('sql\monitoring\Get-DatabaseGrowthRisk.sql')
+    }
+    [PSCustomObject]@{
         Label = 'security-surface-area'
         Paths = @('sql\security\Get-DatabaseMailAndXpCmdShell.sql')
     }
@@ -232,9 +242,22 @@ $failed  = @($summary | Where-Object Status -eq 'FAILED').Count
 $skipped = @($summary | Where-Object Status -eq 'SKIPPED').Count
 Write-Host "  OK: $ok  |  Failed: $failed  |  Skipped: $skipped" -ForegroundColor Cyan
 Write-Host ''
-Write-Host "Output folder: $outFolder" -ForegroundColor Green
+
+$uiUp = $false
+try { $tcp = [System.Net.Sockets.TcpClient]::new('localhost', 8787); $tcp.Close(); $uiUp = $true } catch {}
+$folderEnc  = [Uri]::EscapeDataString($outFolder)
+$reviewUrl  = "http://localhost:8787/review?folder=$folderEnc"
+
+Write-Host ('─' * 64) -ForegroundColor DarkCyan
+Write-Host "  Folder  : $outFolder" -ForegroundColor Green
+if ($uiUp) {
+    Write-Host "  Dashboard: $reviewUrl" -ForegroundColor Cyan
+} else {
+    Write-Host "  Dashboard: $reviewUrl" -ForegroundColor DarkGray
+    Write-Host "             (web UI not running — start with: .\tools\Start-WebUi.ps1)" -ForegroundColor DarkGray
+}
 Write-Host ''
-Write-Host 'Next step: review findings with'
-Write-Host "  .\powershell\reporting\Review-HealthCheckOutput.ps1 -FolderPath '$outFolder'" -ForegroundColor Yellow
+Write-Host "  CLI review: .\powershell\reporting\Review-HealthCheckOutput.ps1" -ForegroundColor DarkGray
+Write-Host ('─' * 64) -ForegroundColor DarkCyan
 Write-Host ''
 $env:DBASCRIPTS_BATCH = $null

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-SqlServerCpuTopologyAndSchedulerDetails
 Category    : configuration-and-environment
 Purpose     : CPU topology, NUMA layout, scheduler summary, and parallelism configuration in one row.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     SERVERPROPERTY('MachineName')                                                   AS machine_name,

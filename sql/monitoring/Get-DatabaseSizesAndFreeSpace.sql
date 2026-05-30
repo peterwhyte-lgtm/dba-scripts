@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-DatabaseSizesAndFreeSpace
 Category    : storage-capacity-management
 Purpose     : Show data and log file sizes with free space for all online user databases.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW ANY DATABASE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 WITH file_stats AS (
     SELECT

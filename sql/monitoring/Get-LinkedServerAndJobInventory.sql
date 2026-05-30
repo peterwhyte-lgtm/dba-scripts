@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-LinkedServerAndJobInventory
 Category    : configuration-and-environment
 Purpose     : Inventory logins, linked servers, and SQL Agent jobs for pre-migration reviews.
@@ -10,6 +10,8 @@ Notes       : Returns three result sets (logins, linked servers, jobs). Run in S
               use the individual focused scripts for CSV export.
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     'LOGIN'           AS object_type,

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-WaitStatistics
 Category    : performance-troubleshooting
 Purpose     : Top wait types since last SQL Server restart, filtered to actionable waits only.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 WITH filtered_waits AS (
     SELECT

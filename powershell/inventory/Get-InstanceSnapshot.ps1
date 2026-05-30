@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Captures a quick SQL Server instance configuration snapshot.
 
@@ -9,6 +9,7 @@ Useful for baseline reviews, migration planning, and incident prep.
 param(
     [string]$SqlInstance = '.'
 )
+$ErrorActionPreference = 'Stop'
 
 $connectionString = "Server=$SqlInstance;Database=master;Integrated Security=True;TrustServerCertificate=True"
 

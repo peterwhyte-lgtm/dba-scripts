@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-DatabaseHealth
 Category    : maintenance-and-reliability
 Purpose     : Review the health and sizing posture of user databases.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW ANY DATABASE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     d.name AS database_name,

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Restores all user databases from backup files in a folder.
 
@@ -12,6 +12,7 @@ param(
     [string]$BackupFolder = 'C:\\SQLBackups',
     [switch]$Replace
 )
+$ErrorActionPreference = 'Stop'
 
 [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.Smo') | Out-Null
 

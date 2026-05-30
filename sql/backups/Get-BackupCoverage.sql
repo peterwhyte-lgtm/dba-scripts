@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-BackupCoverage
 Category    : backups-and-recovery
 Purpose     : Review backup coverage per database with a status flag for quick health assessment.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW ANY DATABASE, db_datareader on msdb
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 WITH latest_backups AS (
     SELECT

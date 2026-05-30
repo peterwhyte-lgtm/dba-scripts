@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-DiskSpace
 Category    : storage-capacity-management
 Purpose     : Show free and used space per volume that hosts SQL Server database files.
@@ -10,6 +10,8 @@ Notes       : Uses sys.dm_os_volume_stats — shows only volumes with at least o
               file. For OS-level disk summary across all drives use Get-DiskSpaceSummary.ps1.
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     vs.volume_mount_point,

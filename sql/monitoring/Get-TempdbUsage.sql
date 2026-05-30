@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-TempdbUsage
 Category    : maintenance-and-reliability
 Purpose     : Show TempDB file sizes, free space, and allocation breakdown per file.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     df.file_id,

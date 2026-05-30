@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Reports index fragmentation for a database.
 #>
@@ -7,6 +7,7 @@ param(
     [string]$SqlInstance = '.',
     [string]$DatabaseName = 'master'
 )
+$ErrorActionPreference = 'Stop'
 
 $connectionString = "Server=$SqlInstance;Database=$DatabaseName;Integrated Security=True;TrustServerCertificate=True"
 

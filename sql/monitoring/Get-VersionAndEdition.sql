@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-VersionAndEdition
 Category    : configuration-and-environment
 Purpose     : Display core instance version, edition, cluster status, and patch level.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : Public (no special permissions required)
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     SERVERPROPERTY('MachineName') AS machine_name,

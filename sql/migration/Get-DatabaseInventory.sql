@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-DatabaseInventory
 Category    : migration
 Purpose     : Inventory user databases for migration readiness — compatibility level, recovery model, state.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW ANY DATABASE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 SELECT
     d.name AS database_name,
     d.database_id,

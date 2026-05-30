@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Simple launcher for the repo PowerShell scripts.
 
@@ -13,6 +13,7 @@ param(
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$Arguments
 )
+$ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
 

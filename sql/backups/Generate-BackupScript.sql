@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Generate-BackupScript
 Category    : backups-and-recovery
 Purpose     : Generate a full backup script for all user databases for SSMS review.
@@ -9,6 +9,8 @@ Requires    : VIEW ANY DATABASE
 */
 -- Copy output into SSMS, verify paths, then execute.
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 -- Configuration
 DECLARE @BackupPath    nvarchar(260) = N'D:\SQL-Backups'; -- no trailing backslash

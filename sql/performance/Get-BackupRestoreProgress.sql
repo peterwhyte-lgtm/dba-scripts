@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-BackupRestoreProgress
 Category    : performance-troubleshooting
 Purpose     : Show active backup/restore progress and estimated completion for long-running operations.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT 
     er.command AS command,

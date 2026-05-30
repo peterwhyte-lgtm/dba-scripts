@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Creates a starter DBA script file for a requested task.
 
@@ -14,6 +14,7 @@ param(
     [string]$Category = 'performance-troubleshooting',
     [string]$Type = 'sql'
 )
+$ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $targetDir = if ($Type -eq 'sql') { Join-Path $repoRoot 'sql' } else { Join-Path $repoRoot 'powershell' }

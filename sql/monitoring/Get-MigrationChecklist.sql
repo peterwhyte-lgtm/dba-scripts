@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-MigrationChecklist
 Category    : configuration-and-environment
 Purpose     : Pre-migration validation checklist for backups, compatibility, jobs, and permissions.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW ANY DATABASE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT 'Pre-migration checklist:' AS note;
 SELECT '1. Confirm backup/restore coverage.' AS checklist_item;

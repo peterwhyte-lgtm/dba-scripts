@@ -24,24 +24,23 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-function Open-InWebUi([string]$csvPath, [string]$outputFormat) {
+function Show-ResultsFooter([string]$csvPath) {
     if ($env:DBASCRIPTS_BATCH) { return }
-    if ($outputFormat -ne 'Csv') {
-        Write-Host "[repo-sql] Tip: rerun with -OutputFormat Csv to open in web UI." -ForegroundColor DarkGray
-        return
+    $relPath = $csvPath.Replace($repoRoot.ToString(), '').TrimStart('\')
+    $enc     = [Uri]::EscapeDataString($relPath)
+    $url     = "http://localhost:8787/csv?p=$enc"
+    $uiUp    = $false
+    try { $tcp = [System.Net.Sockets.TcpClient]::new('localhost', 8787); $tcp.Close(); $uiUp = $true } catch {}
+    Write-Host ''
+    Write-Host ('─' * 64) -ForegroundColor DarkCyan
+    Write-Host "  Saved   : $relPath" -ForegroundColor Green
+    if ($uiUp) {
+        Write-Host "  Review  : $url" -ForegroundColor Cyan
+    } else {
+        Write-Host "  Review  : $url" -ForegroundColor DarkGray
+        Write-Host "            (web UI not running — start with: .\tools\Start-WebUi.ps1)" -ForegroundColor DarkGray
     }
-    try {
-        $tcp = [System.Net.Sockets.TcpClient]::new('localhost', 8787)
-        $tcp.Close()
-    } catch {
-        Write-Host "[repo-sql] Tip: run .\tools\Start-WebUi.ps1 to view results in browser." -ForegroundColor DarkGray
-        return
-    }
-    $rel = $csvPath.Replace($repoRoot.ToString(), '').TrimStart('\')
-    $enc = [Uri]::EscapeDataString($rel)
-    $url = "http://localhost:8787/csv?p=$enc"
-    Write-Host "[repo-sql] Opening in web UI: $url" -ForegroundColor Cyan
-    Start-Process $url
+    Write-Host ('─' * 64) -ForegroundColor DarkCyan
 }
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
@@ -102,18 +101,19 @@ if ($invokeSqlcmd) {
 
     Write-Host "[repo-sql] Using Invoke-Sqlcmd" -ForegroundColor Green
     $results = @(Invoke-Sqlcmd @params)
-
     $results | Export-Csv -LiteralPath $OutputPath -NoTypeInformation -Encoding UTF8
-    Write-Host "[repo-sql] Full CSV written to: $OutputPath" -ForegroundColor Green
 
-    $preview = $results | Select-Object -First $TopResults
-    if ($preview.Count -gt 0) {
-        $preview | Format-Table -AutoSize | Out-String | Write-Host
-    }
-    else {
+    if ($results.Count -eq 0) {
         Write-Host "[repo-sql] No rows returned." -ForegroundColor Yellow
+    } elseif ($OutputFormat -ne 'Csv') {
+        $results | Select-Object -First $TopResults | Format-Table -AutoSize | Out-String | Write-Host
+        if ($results.Count -gt $TopResults) {
+            Write-Host "[repo-sql] $($results.Count) rows — showing first $TopResults. Full results in CSV." -ForegroundColor DarkGray
+        } else {
+            Write-Host "[repo-sql] $($results.Count) row(s)" -ForegroundColor DarkGray
+        }
     }
-    Open-InWebUi $OutputPath $OutputFormat
+    Show-ResultsFooter $OutputPath
     return
 }
 
@@ -134,18 +134,25 @@ if ($sqlcmd) {
     }
 
     if (Test-Path -LiteralPath $tempOutput) {
-        $rows = @(Import-Csv -LiteralPath $tempOutput -ErrorAction Stop)
+        $rawRows = @(Import-Csv -LiteralPath $tempOutput -ErrorAction Stop)
+        # sqlcmd.exe inserts a separator row (all dashes) as the second row — strip it
+        $rows = @($rawRows | Where-Object {
+            $row = $_; $cols = $row.PSObject.Properties.Name
+            -not ($cols | Where-Object { $row.$_ -match '^-+$' })
+        })
         $rows | Export-Csv -LiteralPath $OutputPath -NoTypeInformation -Encoding UTF8
-        Write-Host "[repo-sql] Full CSV written to: $OutputPath" -ForegroundColor Green
 
-        $preview = $rows | Select-Object -First $TopResults
-        if ($preview.Count -gt 0) {
-            $preview | Format-Table -AutoSize | Out-String | Write-Host
-        }
-        else {
+        if ($rows.Count -eq 0) {
             Write-Host "[repo-sql] No rows returned." -ForegroundColor Yellow
+        } elseif ($OutputFormat -ne 'Csv') {
+            $rows | Select-Object -First $TopResults | Format-Table -AutoSize | Out-String | Write-Host
+            if ($rows.Count -gt $TopResults) {
+                Write-Host "[repo-sql] $($rows.Count) rows — showing first $TopResults. Full results in CSV." -ForegroundColor DarkGray
+            } else {
+                Write-Host "[repo-sql] $($rows.Count) row(s)" -ForegroundColor DarkGray
+            }
         }
-        Open-InWebUi $OutputPath $OutputFormat
+        Show-ResultsFooter $OutputPath
     }
     else {
         Write-Host "[repo-sql] sqlcmd.exe completed but no CSV file was produced." -ForegroundColor Yellow

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-SqlAgentJobFailureSummary
 Category    : configuration-and-environment
 Purpose     : Show SQL Agent job failures from the last 7 days with readable timestamps and error messages.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : db_datareader on msdb
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     j.name                                                                      AS job_name,

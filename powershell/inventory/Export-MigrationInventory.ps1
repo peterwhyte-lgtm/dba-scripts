@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Exports a simple migration inventory for jobs, linked servers, and logins.
 
@@ -10,6 +10,7 @@ param(
     [string]$SqlInstance = '.',
     [string]$OutputPath = '.\\migration-inventory.csv'
 )
+$ErrorActionPreference = 'Stop'
 
 Add-Type -AssemblyName System.Data
 

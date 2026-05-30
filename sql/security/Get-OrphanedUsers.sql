@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-OrphanedUsers
 Category    : security-and-permissions
 Purpose     : Find database users with no matching server login — common after migrations or login drops.
@@ -10,6 +10,8 @@ Notes       : Orphaned users cause login failures for that account. Fix with
               ALTER USER [username] WITH LOGIN = [login_name]; or DROP USER [username].
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 IF OBJECT_ID('tempdb..#orphaned') IS NOT NULL DROP TABLE #orphaned;
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Runs a SQL script file against the local SQL Server instance.
 
@@ -47,6 +47,7 @@ param(
     [string]$OutputFormat = 'Table',
     [string]$OutputPath
 )
+$ErrorActionPreference = 'Stop'
 
 if (-not (Test-Path -LiteralPath $ScriptPath)) {
     throw "SQL script not found: $ScriptPath"

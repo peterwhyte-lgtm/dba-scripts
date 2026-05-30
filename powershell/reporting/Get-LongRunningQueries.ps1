@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Runs the long-running query review script for the current SQL Server instance.
 
@@ -36,8 +36,8 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\\..')
-$sqlScript = Join-Path $repoRoot 'sql\\performance\\Get-LongRunningQueries.sql'
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+$sqlScript = Join-Path $repoRoot 'sql\performance\Get-LongRunningQueries.sql'
 $runner = Join-Path $repoRoot 'helpers\local-sql\Invoke-RepoSql.ps1'
 
 if (-not (Test-Path -LiteralPath $sqlScript)) {

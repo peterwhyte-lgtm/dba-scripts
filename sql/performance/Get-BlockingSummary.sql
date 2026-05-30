@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-BlockingSummary
 Category    : performance-troubleshooting
 Purpose     : Head blockers with context — who is blocking, how many sessions, and what they are running.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 WITH blocked_counts AS (
     SELECT

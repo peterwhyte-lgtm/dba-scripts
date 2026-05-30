@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-LastDatabaseBackupTimes
 Category    : backups-and-recovery
 Purpose     : Display the latest backup timestamp per type (Full, Differential, Log) per database.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : db_datareader on msdb
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 WITH latest_backups AS (
     SELECT

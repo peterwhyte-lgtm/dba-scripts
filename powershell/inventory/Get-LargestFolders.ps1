@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows the largest folders on a drive, sorted by size.
 
@@ -25,6 +25,7 @@ param(
     [switch]$IncludeSystemFolders,
     [switch]$IncludeLargestFiles
 )
+$ErrorActionPreference = 'Stop'
 
 $drive = "$DriveLetter`:\"
 

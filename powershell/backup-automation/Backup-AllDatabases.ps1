@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Backs up every user database on the instance to a target folder.
 
@@ -13,6 +13,7 @@ param(
     [switch]$Compress,
     [switch]$CopyOnly
 )
+$ErrorActionPreference = 'Stop'
 
 if (-not (Test-Path $BackupPath)) {
     New-Item -ItemType Directory -Path $BackupPath -Force | Out-Null

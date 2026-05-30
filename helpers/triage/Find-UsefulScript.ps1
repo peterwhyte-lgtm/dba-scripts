@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Finds the most relevant existing DBA script for a quick task.
 
@@ -11,6 +11,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$Keyword
 )
+$ErrorActionPreference = 'Stop'
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $searchRoots = @('sql', 'powershell', 'hybrid', 'helpers', 'tools')

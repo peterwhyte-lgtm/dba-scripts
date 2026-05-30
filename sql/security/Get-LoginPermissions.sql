@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-LoginPermissions
 Category    : security-and-permissions
 Purpose     : Show explicit server-level permissions granted or denied to logins.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW ANY DATABASE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     sp.name                                                     AS grantee,

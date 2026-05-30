@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-OsAndHardwareInfo
 Category    : configuration-and-environment
 Purpose     : Show OS version, hardware specs (CPU, RAM), and SQL Server uptime in one row.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     SERVERPROPERTY('MachineName')                                          AS machine_name,

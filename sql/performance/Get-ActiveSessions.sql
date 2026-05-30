@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-ActiveSessions
 Category    : performance-troubleshooting
 Purpose     : Show all active user sessions with current wait type, blocking, elapsed time, and statement.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     s.session_id,

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : New-TestDatabases
 Category    : dba-lab
 Purpose     : Create multiple test databases with randomised names for lab and migration scenarios.
@@ -12,6 +12,8 @@ Notes       : Edit the DECLARE parameter block before running in SSMS.
 */
 -- WARNING: Creates databases — review @Count and @Prefix before running
 SET NOCOUNT ON;
+-- SAFE:Creates objects
+-- IMPACT:High
 
 -- Parameters (edit these values before running)
 DECLARE @Count      INT     = 10;

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-LinkedServerInventory
 Category    : migration
 Purpose     : Inventory linked servers for migration and connectivity dependency mapping.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW ANY DATABASE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 SELECT
     s.name AS linked_server_name,
     s.product,

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-DatabaseIntegrityChecks
 Category    : maintenance-and-reliability
 Purpose     : Pre-check database readiness and configuration for integrity validation runs.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW ANY DATABASE, db_datareader on msdb
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 -- Use as a pre-check before running DBCC CHECKDB.
 
 

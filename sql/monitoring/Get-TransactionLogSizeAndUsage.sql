@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-TransactionLogSizeAndUsage
 Category    : storage-capacity-management
 Purpose     : Show transaction log size, used space, free space, and percent used per database.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW ANY DATABASE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     d.name                                                                              AS database_name,

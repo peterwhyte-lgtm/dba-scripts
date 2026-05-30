@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name : Get-LongRunningQueries
 Category    : performance-troubleshooting
 Purpose     : Active requests with elapsed and wait details — ordered by elapsed time descending.
@@ -8,6 +8,8 @@ Impact      : Low
 Requires    : VIEW SERVER STATE
 */
 SET NOCOUNT ON;
+-- SAFE:ReadOnly
+-- IMPACT:Low
 
 SELECT
     r.session_id,
