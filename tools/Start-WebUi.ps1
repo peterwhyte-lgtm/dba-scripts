@@ -305,9 +305,9 @@ function Build-ViewPage([string]$relPath) {
 
     # Determine if this script can be run through the web UI
     $isRunnable = $false
-    if ($ext -eq '.sql' -and $relPath -match '[\\/]sql[\\/]') {
+    if ($ext -eq '.sql' -and $relPath -match '(^|[\\/])sql[\\/]') {
         $isRunnable = $true
-    } elseif ($ext -eq '.ps1' -and $relPath -match '[\\/]powershell[\\/]') {
+    } elseif ($ext -eq '.ps1' -and $relPath -match '(^|[\\/])powershell[\\/]') {
         # Standard wrappers have both OutputFormat and OutputPath params
         $isRunnable = ($content -match 'OutputFormat') -and ($content -match 'OutputPath')
     }
@@ -436,9 +436,64 @@ function Build-CsvViewPage([string]$relPath) {
     $name   = [IO.Path]::GetFileNameWithoutExtension($relPath)
     $relEnc = [Uri]::EscapeDataString($relPath)
 
+    # ── find the source script by stripping the timestamp suffix ──────────────
+    $scriptBase   = $name -replace '-\d{8}-\d{6}$', ''
+    $sqlMatch     = Get-ChildItem "$repoRoot\sql"        -Recurse -Filter "$scriptBase.sql" -File -ErrorAction SilentlyContinue | Select-Object -First 1
+    $ps1Match     = Get-ChildItem "$repoRoot\powershell" -Recurse -Filter "$scriptBase.ps1" -File -ErrorAction SilentlyContinue | Select-Object -First 1
+    $srcFile      = if ($sqlMatch) { $sqlMatch } elseif ($ps1Match) { $ps1Match } else { $null }
+    $srcScriptRel = if ($srcFile) { $srcFile.FullName.Replace($repoRoot.ToString(), '').TrimStart('\') } else { '' }
+    $srcScriptEnc = if ($srcScriptRel) { [Uri]::EscapeDataString($srcScriptRel) } else { '' }
+
+    $defaultSrv = if ($env:DBASCRIPTS_SERVER) { Html-Escape $env:DBASCRIPTS_SERVER } else { '' }
+    $srvHint    = if ($env:DBASCRIPTS_SERVER) { $env:DBASCRIPTS_SERVER } else { 'local ( . )' }
+
+    $rerunBar = if ($srcScriptRel) { @"
+  <div class='run-bar'>
+    <label>Server:</label>
+    <input id='srv' class='server-input' placeholder='$srvHint' value='$defaultSrv' autocomplete='off'>
+    <button id='run-btn' class='run-btn' onclick='rerunScript("$srcScriptEnc")'>Rerun &#9654;</button>
+    <a href='/view?p=$srcScriptEnc' style='font-size:.78rem;color:#58a6ff;white-space:nowrap'>view script</a>
+  </div>
+"@ } else { '' }
+
+    $rerunOverlay = if ($srcScriptRel) { @"
+<div id='run-overlay' class='run-overlay'>
+  <div class='run-spinner'></div>
+  <div class='run-spinner-label'>Running $(Html-Escape $scriptBase)…</div>
+</div>
+"@ } else { '' }
+
+    $rerunJs = if ($srcScriptRel) { @"
+<script>
+async function rerunScript(path) {
+  const srv = document.getElementById('srv').value.trim() || '.';
+  const btn = document.getElementById('run-btn');
+  const err = document.getElementById('run-err');
+  document.getElementById('run-overlay').style.display = 'flex';
+  btn.disabled = true; err.style.display = 'none';
+  try {
+    const r = await fetch('/api/run?p=' + path + '&server=' + encodeURIComponent(srv));
+    const d = await r.json();
+    if (d.ok) { window.location.href = d.url; return; }
+    err.textContent = d.error || 'Unknown error'; err.style.display = '';
+  } catch(e) { err.textContent = 'Request failed: ' + e.message; err.style.display = ''; }
+  document.getElementById('run-overlay').style.display = 'none';
+  btn.disabled = false;
+}
+</script>
+"@ } else { '' }
+
+    $errDiv = if ($srcScriptRel) { "<div id='run-err' class='run-error' style='display:none;margin-bottom:8px'></div>" } else { '' }
+
     $body = @"
 <div class='back'><a href='/csvs'>← output CSVs</a></div>
-<div class='script-title'>$(Html-Escape $name)</div>
+<div class='view-toolbar'>
+  <div class='view-toolbar-left'>
+    <div class='script-title'>$(Html-Escape $name)</div>
+  </div>
+  $rerunBar
+</div>
+$errDiv
 <div class='mode-badge' id='mode-badge'>Loading…</div>
 
 <!-- Chart panel — only shown when data has 2+ numeric columns -->
@@ -618,6 +673,8 @@ async function savePng(){
 
 init();
 </script>
+$rerunOverlay
+$rerunJs
 "@
     Wrap-Page $name $body '' 'csvs'
 }
@@ -1107,8 +1164,8 @@ try {
 
                 $sName  = [IO.Path]::GetFileNameWithoutExtension($fullRunPath)
                 $sExt   = [IO.Path]::GetExtension($fullRunPath).ToLower()
-                $cat    = if ($p -match '[\\/]sql[\\/]([^\\/]+)[\\/]')        { $Matches[1] }
-                          elseif ($p -match '[\\/]powershell[\\/]([^\\/]+)[\\/]') { $Matches[1] }
+                $cat    = if ($p -match '(^|[\\/])sql[\\/]([^\\/]+)[\\/]')        { $Matches[2] }
+                          elseif ($p -match '(^|[\\/])powershell[\\/]([^\\/]+)[\\/]') { $Matches[2] }
                           else { 'general' }
                 $ts      = Get-Date -Format 'yyyyMMdd-HHmmss'
                 $csvPath = Join-Path $repoRoot "output-files\reviews\$cat\$sName-$ts.csv"
