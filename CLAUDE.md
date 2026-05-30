@@ -46,7 +46,7 @@ Preflight and discovery:
 
 **Use `sql/` and `powershell/` for all new work.** The `categories/` folder is a legacy compatibility copy; it is stale, not maintained, and exists only so old references don't break.
 
-```
+```text
 sql/
   monitoring/    — health, memory, MAXDOP, jobs, AG, TempDB, DBCC, suspect pages
   performance/   — waits, blocking, long queries, missing indexes, I/O, plan cache

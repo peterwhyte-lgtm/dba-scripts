@@ -4,7 +4,7 @@ Production SQL Server operational scripts and automation — organised by lifecy
 
 ## Structure
 
-```
+```text
 sql-operations/
   change-templates/    — SQL operational runbook templates (CDC, TDE, AG, statistics, etc.)
   installation/        — SQL Server installation automation

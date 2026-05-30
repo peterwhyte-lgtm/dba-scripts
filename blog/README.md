@@ -16,7 +16,7 @@ This folder contains draft blog posts for [sqldba.blog](https://sqldba.blog). Ea
 
 ## Folder structure
 
-```
+```text
 blog/
   README.md                          this file
   _template/

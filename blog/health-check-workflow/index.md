@@ -104,7 +104,7 @@ The review script reads the CSVs and applies 17 rules. Findings are rated CRITIC
 
 ## Example output
 
-```
+```text
 ============================================
   DBA Health Check Review
 ============================================

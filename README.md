@@ -76,7 +76,7 @@ The runner automatically finds the script, loads it, and executes it with safe d
 
 When you need a runbook or change‑order template:
 
-```
+```text
 sql-templates/operations/
 ```
 
@@ -84,7 +84,7 @@ sql-templates/operations/
 
 Any reusable output (CSV, JSON, text) can be stored under:
 
-```
+```text
 output-files/
 ```
 

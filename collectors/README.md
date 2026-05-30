@@ -3,7 +3,7 @@
 Scheduled data collection scripts that build historical records for trend analysis and
 post-incident investigation. Each collector appends timestamped snapshots to daily CSV files.
 
-## Collectors
+## Collector types
 
 | Collector | Source | Interval | Write condition | Delta needed? |
 |-----------|--------|----------|----------------|--------------|
@@ -18,7 +18,7 @@ post-incident investigation. Each collector appends timestamped snapshots to dai
 
 ## Output structure
 
-```
+```text
 output-files/
   collectors/
     wait-stats/         <server>-<YYYYMMDD>.csv + <server>-collector.log
@@ -53,7 +53,7 @@ output-files/
 `wait-stats`, `storage-io`, and `perfmon` rate counters are **cumulative since SQL Server start**.
 Calculate deltas between adjacent snapshots:
 
-```
+```text
 delta_value = snapshot2.value - snapshot1.value
 ```
 
@@ -71,7 +71,7 @@ All jobs follow the same pattern:
 
 ## Correlating collectors
 
-```
+```text
 PAGEIOLATCH_SH spike in wait-stats
   → storage-io: which database file is driving the reads?
   → perfmon: is PLE dropping at the same time? (memory pressure pushing reads to disk)

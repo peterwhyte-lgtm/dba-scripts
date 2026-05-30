@@ -17,7 +17,7 @@ This collector captures the full raw snapshot every 15 minutes so you can answer
 
 Daily CSV files at `output-files/collectors/wait-stats/`:
 
-```
+```text
 <server>-<YYYYMMDD>.csv         wait stats snapshots for that day
 <server>-collector.log          run log (one line per execution)
 ```
@@ -40,7 +40,7 @@ Each row in the CSV is one wait type from one snapshot run. Columns:
 
 The counters are cumulative. To get waits for a specific interval:
 
-```
+```text
 delta_wait_time_ms   = snapshot2.wait_time_ms   - snapshot1.wait_time_ms
 delta_task_count     = snapshot2.waiting_tasks_count - snapshot1.waiting_tasks_count
 avg_wait_ms_interval = delta_wait_time_ms / delta_task_count
