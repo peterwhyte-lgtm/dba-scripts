@@ -1,6 +1,16 @@
 {
+  // Rules disabled repo-wide
+  // MD013 — line length       : blog posts and SQL comments run long by design
+  // MD025 — single H1         : blog frontmatter + body heading pattern is intentional
+  // MD031 — fences blank line : code blocks inside lists and tight prose are fine
+  // MD032 — lists blank line  : tight lists inside prose sections are fine
+  // MD033 — inline HTML       : used in docs intentionally
+  // MD041 — first line H1     : YAML frontmatter sits above the first heading
   "default": true,
   "MD013": false,
+  "MD025": false,
+  "MD031": false,
+  "MD032": false,
   "MD033": false,
   "MD041": false
 }

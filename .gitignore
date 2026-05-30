@@ -1,21 +1,12 @@
-# Generated output from DBA script runs
-output-files/**/*.csv
-output-files/**/*.tmp.csv
-output-files/**/*.sql
-output-files/**/*.png
-output-files/healthcheck/
-output-files/migration/
-output-files/reviews/
-
-# Backup files (test fixtures included — use git add -f to force-track if needed)
-output-files/**/*.bak
+# All generated output — CSVs, logs, SQL scripts, healthcheck folders, install logs
+# Never commit runtime output; re-generate from scripts as needed
+output-files/
 
 # PowerShell artefacts
 *.ps1.bak
 
 # Windows
 Thumbs.db
-Desktop.ini
 [Dd]esktop.ini
 $RECYCLE.BIN/
 

@@ -24,7 +24,7 @@ jobs:
         shell: pwsh
       - name: Run PSScriptAnalyzer
         run: |
-          $paths = @('powershell','helpers','hybrid') | Where-Object { Test-Path $_ }
+          $paths = @('powershell','helpers','hybrid','sql-operations') | Where-Object { Test-Path $_ }
           if ($paths.Count -eq 0) { Write-Host "No PS paths found."; exit 0 }
           # Excluded rules are intentional for this repo:
           #   PSAvoidUsingWriteHost           — terminal DBA scripts; coloured output is by design

@@ -79,11 +79,7 @@ try {
     Add-Check 'Connectivity' 'SQL Server connection' 'FAIL' $_.Exception.Message
 }
 
-if (-not $connected) {
-    Write-Host ""
-    Write-Host "  Cannot connect — skipping configuration checks." -ForegroundColor Red
-    goto summary
-}
+if ($connected) {
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 $configs = Invoke-Sqlcmd -ServerInstance $ServerInstance `
@@ -164,8 +160,11 @@ $authMode = Invoke-Sqlcmd -ServerInstance $ServerInstance `
 Add-Check 'Security' 'Authentication mode' 'PASS' `
     $(if ($authMode.WinOnly -eq 1) {'Windows auth only'} else {'Mixed mode (Windows + SQL)'})
 
+} else {
+    Write-Host "  Cannot connect — skipping configuration, TempDB, network, and security checks." -ForegroundColor Yellow
+}
+
 # ── Summary ───────────────────────────────────────────────────────────────────
-:summary
 Write-Host ""
 Write-Host ("  " + [string]::new('=', 62)) -ForegroundColor DarkCyan
 $summaryColor = if ($fail -gt 0) {'Red'} elseif ($warn -gt 0) {'Yellow'} else {'Green'}
