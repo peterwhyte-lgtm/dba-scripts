@@ -6,6 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A production SQL Server DBA toolkit for Peter Whyte (sqldba.blog). It contains read-only diagnostic SQL scripts, PowerShell orchestration wrappers, a healthcheck collection and review workflow, security audit scripts, and migration inventory helpers. All scripts target SQL Server 2012+. Output goes to `output-files/`.
 
+This repository is **not** a collection of scripts — it is an operational toolkit for managing SQL Server estates. Everything fits into one of three layers:
+
+1. **SQL layer** — DMV queries, performance analysis, configuration inspection, backup validation, blocking/locking analysis
+2. **PowerShell layer** — automation across servers, execution of SQL at scale, scheduling, orchestration, reporting, environment-level operations
+3. **Hybrid layer** — PowerShell executes SQL scripts, results collected, transformed, and reported; operational workflows (backup checks, inventory, monitoring)
+
+## Core principles
+
+- Do **not** change business logic unless required for correctness or safety
+- Preserve intent of all scripts
+- Prioritise production safety over clever optimisation
+- Avoid overengineering
+
 ## How to run scripts
 
 The three entry points, in order of preference:
@@ -131,6 +144,13 @@ Every script in `powershell/**/*.ps1` (except helpers and orchestrators) is a th
 
 `run.ps1` → `helpers\Run-Helper.ps1` → resolves script by name fuzzy match → `& $target @Arguments`. It searches `helpers/`, `sql/`, `powershell/`, `hybrid/`, `tools/` recursively. Throws if more than one match — callers must be specific.
 
+**PowerShell script rules:**
+- Classify script type in `.NOTES`: `runner` / `automation` / `hybrid`
+- State target scope: `single server` or `multi-server`
+- Classify risk in `.NOTES`: `RiskLevel : SAFE` / `MEDIUM` / `HIGH IMPACT`
+- Separate SQL logic from orchestration — SQL lives in external `.sql` files
+- Add error handling; ensure idempotent behaviour where possible
+
 ## SQL script standards
 
 Every SQL script must have this header block then the two safety annotations:
@@ -153,6 +173,14 @@ SET NOCOUNT ON;
 `Safe` values: `Read-only` / `Writes data` / `Creates objects`  
 `Impact` values: `Low` / `Medium` / `High`
 
+**SQL script rules:**
+- Remove or flag unsafe patterns: `WITH (NOLOCK)` (explain risk if present), deprecated catalog views (`sys.sysprocesses`, `sys.sysobjects` etc.)
+- Prefer modern DMVs — `sys.objects` not `sys.sysobjects`, `sys.server_principals` not `sys.syslogins`
+- No `USE database; GO` — `Invoke-Sqlcmd` does not support `GO` batch separators; pass `-Database` at execution time
+- `OUTER APPLY` not `CROSS APPLY` when the applied function may return no rows
+- No trailing blank lines; 0–1 blank lines at end of file
+- Keep output readable and deterministic
+
 **`docs/standards.md` is outdated** — it shows an older header format. The format above is what the scripts actually use.
 
 ## Adding new scripts
@@ -162,6 +190,10 @@ New SQL script: `sql/<category>/Get-Something.sql` using the header above.
 New PS wrapper: copy any existing wrapper in `powershell/<subcategory>/`, update the three variables (`syn`, `$sqlScript` path, `Write-Host` message). The `$PSScriptRoot '..\..'` path is correct for all subfolders one level under `powershell/`.
 
 If there is no matching subcategory, add to `powershell/reporting/` for read/query scripts or `powershell/inventory/` for environment/config scripts.
+
+**When refactoring an existing script, summarise:** improved script, risk classification (`SAFE` / `MEDIUM` / `HIGH IMPACT`), key changes (bullets), suggested folder placement.
+
+**For each major script, document:** purpose in operational terms, example output interpretation, when **not** to use it, required permissions.
 
 ## Healthcheck collection — what it covers
 
@@ -195,7 +227,6 @@ If there is no matching subcategory, add to `powershell/reporting/` for read/que
 
 ## Important caveats
 
-- `categories/` contains stale duplicates of scripts. Never edit files there — edit the canonical `sql/` or `powershell/` versions.
 - AG scripts (`Get-AvailabilityGroupReplicaState.sql`, `Get-AvailabilityGroupLatency.sql`) guard against non-AG instances and return a status row instead of throwing.
 - Multi-result-set SQL scripts cannot be cleanly exported as a single CSV via `Invoke-RepoSql.ps1`. All canonical `sql/` scripts are single-result-set by design.
 - `output-files/` has no `.gitignore` protection — CSV files accumulate there and should not be committed.
