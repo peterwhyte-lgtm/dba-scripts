@@ -66,23 +66,32 @@ function Get-ScriptPurpose([string]$path) {
 
 function Get-ScriptSafety([string]$path) {
     try {
-        foreach ($line in (Get-Content $path -TotalCount 15)) {
-            if ($line -match '--\s*SAFE\s*:\s*(\S+)')  { return $Matches[1] }
-            if ($line -match '\bSafe\s*:\s*(.+)')       { return $Matches[1].Trim() }
+        foreach ($line in (Get-Content $path -TotalCount 20)) {
+            if ($line -match '--\s*SAFE\s*:\s*(\S+)')       { return $Matches[1] }
+            if ($line -match '\bSafe\s*:\s*(.+)')            { return $Matches[1].Trim() }
+            # PS header convention: RiskLevel : SAFE | MEDIUM | HIGH IMPACT
+            if ($line -match '\bRiskLevel\s*:\s*(.+)')       { return $Matches[1].Trim() }
         }
     } catch {}
+    # Fallback: infer from script name verb
+    $name = [System.IO.Path]::GetFileNameWithoutExtension($path)
+    if ($name -match '^(Get|Show|Find|Test|Export|Quick|Generate|Review|Invoke|Run|Check)-') { return 'Read-only' }
+    if ($name -match '^(Restore|Install|New|Create|Remove|Drop|Rebuild)-')                   { return 'Creates objects' }
+    if ($name -match '^(Backup|Set|Update|Clear|Fix|Repair|Apply|Write|Send)-')              { return 'Writes data' }
     return 'Unknown'
 }
 
 function Resolve-SafetyClass([string]$safety) {
-    if ($safety -match 'Read') { return 'safe-readonly' }
-    if ($safety -match 'Writ') { return 'safe-writes'   }
+    if ($safety -match 'Read' -or $safety -eq 'SAFE') { return 'safe-readonly' }
+    if ($safety -match 'Writ' -or $safety -match 'MEDIUM') { return 'safe-writes' }
+    if ($safety -match 'Creat' -or $safety -match 'IMPACT' -or $safety -match 'HIGH') { return 'safe-creates' }
     return 'safe-unknown'
 }
 
 function Resolve-SafetyLabel([string]$safety) {
-    if ($safety -match 'Read') { return 'Read-Only' }
-    if ($safety -match 'Writ') { return 'Writes'    }
+    if ($safety -match 'Read' -or $safety -eq 'SAFE') { return 'Read-Only' }
+    if ($safety -match 'Creat' -or $safety -match 'IMPACT' -or $safety -match 'HIGH') { return 'Creates' }
+    if ($safety -match 'Writ' -or $safety -match 'MEDIUM') { return 'Writes' }
     return '?'
 }
 
@@ -297,6 +306,7 @@ tr:hover td{background:#161b22}
 .safe-badge{display:inline-block;font-size:.7rem;padding:2px 9px;border-radius:10px;font-weight:600;vertical-align:middle}
 .safe-readonly{background:#1a3a2a;color:#3fb950}
 .safe-writes{background:#3a1f00;color:#ffa657}
+.safe-creates{background:#3a1a1a;color:#f78166}
 .safe-unknown{background:#21262d;color:#8b949e}
 .dryrun-wrap{display:flex;align-items:center;gap:5px;font-size:.78rem;color:#8b949e;white-space:nowrap;border:1px solid #30363d;border-radius:6px;padding:4px 10px;background:#0d1117}
 .dryrun-wrap input[type=checkbox]{accent-color:#ffa657;cursor:pointer}
@@ -1579,32 +1589,6 @@ async function runHealthcheck(page){
 
         $html += @"
 <script src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'></script>
-<script>
-(function(){
-const L=[$cLabels],DM=[$cDataMb],LM=[$cLogMb],UM=[$cUsedMb],FM=[$cFreeMb],LUM=[$cLogUsedMb],LFM=[$cLogFreeMb];
-const C=['#58a6ff','#3fb950','#f78166','#d2a8ff','#ffa657','#79c0ff','#56d364','#ff7b72','#e3b341','#a5d6ff','#7ee787','#ffa8a8','#ff9e64'];
-const dOpts={responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'right',
-  labels:{color:'#c9d1d9',boxWidth:11,padding:9,font:{size:11}}}}};
-const bOpts=(label1,label2,c1,c2)=>({responsive:true,indexAxis:'y',
-  plugins:{legend:{labels:{color:'#c9d1d9'}}},
-  scales:{x:{stacked:true,ticks:{color:'#8b949e'},grid:{color:'#21262d'}},
-          y:{stacked:true,ticks:{color:'#8b949e'},grid:{color:'#21262d'}}}});
-new Chart(document.getElementById('ch-data'),{type:'doughnut',
-  data:{labels:L,datasets:[{data:DM,backgroundColor:C.map(c=>c+'cc'),borderColor:C,borderWidth:1}]},options:dOpts});
-new Chart(document.getElementById('ch-log'),{type:'doughnut',
-  data:{labels:L,datasets:[{data:LM,backgroundColor:C.map(c=>c+'cc'),borderColor:C,borderWidth:1}]},options:dOpts});
-new Chart(document.getElementById('ch-bar-data'),{type:'bar',
-  data:{labels:L,datasets:[
-    {label:'Used (MB)',data:UM,backgroundColor:'#58a6ffbb',borderColor:'#58a6ff',borderWidth:1},
-    {label:'Free (MB)',data:FM,backgroundColor:'#3fb95055',borderColor:'#3fb950',borderWidth:1}]},
-  options:bOpts()});
-new Chart(document.getElementById('ch-bar-log'),{type:'bar',
-  data:{labels:L,datasets:[
-    {label:'Used (MB)',data:LUM,backgroundColor:'#d2a8ffbb',borderColor:'#d2a8ff',borderWidth:1},
-    {label:'Free (MB)',data:LFM,backgroundColor:'#3fb95055',borderColor:'#3fb950',borderWidth:1}]},
-  options:bOpts()});
-})();
-</script>
 <div style='display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px'>
   <div class='chart-wrap'>
     <div style='font-size:.75rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px'>Data File Sizes (MB)</div>
@@ -1625,6 +1609,32 @@ new Chart(document.getElementById('ch-bar-log'),{type:'bar',
     <canvas id='ch-bar-log' style='max-height:280px'></canvas>
   </div>
 </div>
+<script>
+(function(){
+const L=[$cLabels],DM=[$cDataMb],LM=[$cLogMb],UM=[$cUsedMb],FM=[$cFreeMb],LUM=[$cLogUsedMb],LFM=[$cLogFreeMb];
+const C=['#58a6ff','#3fb950','#f78166','#d2a8ff','#ffa657','#79c0ff','#56d364','#ff7b72','#e3b341','#a5d6ff','#7ee787','#ffa8a8','#ff9e64'];
+const dOpts={responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'right',
+  labels:{color:'#c9d1d9',boxWidth:11,padding:9,font:{size:11}}}}};
+const bOpts=()=>({responsive:true,indexAxis:'y',
+  plugins:{legend:{labels:{color:'#c9d1d9'}}},
+  scales:{x:{stacked:true,ticks:{color:'#8b949e'},grid:{color:'#21262d'}},
+          y:{stacked:true,ticks:{color:'#8b949e'},grid:{color:'#21262d'}}}});
+new Chart(document.getElementById('ch-data'),{type:'doughnut',
+  data:{labels:L,datasets:[{data:DM,backgroundColor:C.map(c=>c+'cc'),borderColor:C,borderWidth:1}]},options:dOpts});
+new Chart(document.getElementById('ch-log'),{type:'doughnut',
+  data:{labels:L,datasets:[{data:LM,backgroundColor:C.map(c=>c+'cc'),borderColor:C,borderWidth:1}]},options:dOpts});
+new Chart(document.getElementById('ch-bar-data'),{type:'bar',
+  data:{labels:L,datasets:[
+    {label:'Used (MB)',data:UM,backgroundColor:'#58a6ffbb',borderColor:'#58a6ff',borderWidth:1},
+    {label:'Free (MB)',data:FM,backgroundColor:'#3fb95055',borderColor:'#3fb950',borderWidth:1}]},
+  options:bOpts()});
+new Chart(document.getElementById('ch-bar-log'),{type:'bar',
+  data:{labels:L,datasets:[
+    {label:'Used (MB)',data:LUM,backgroundColor:'#d2a8ffbb',borderColor:'#d2a8ff',borderWidth:1},
+    {label:'Free (MB)',data:LFM,backgroundColor:'#3fb95055',borderColor:'#3fb950',borderWidth:1}]},
+  options:bOpts()});
+})();
+</script>
 "@
 
         $html += "<div class='table-wrap'><table><thead><tr><th>Database</th><th>Data (MB)</th><th>Data Free</th><th>Log (MB)</th><th>Log Free</th></tr></thead><tbody>"
