@@ -29,5 +29,11 @@ FROM sys.dm_exec_sessions    AS s
 LEFT  JOIN sys.dm_exec_requests AS r  ON s.session_id = r.session_id
 OUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS t
 WHERE s.is_user_process = 1
-  AND (r.blocking_session_id IS NOT NULL OR r.wait_type IS NOT NULL)
+  AND (
+      r.blocking_session_id > 0                    -- this session is being blocked
+      OR EXISTS (                                  -- this session is blocking someone else
+          SELECT 1 FROM sys.dm_exec_requests r2
+          WHERE r2.blocking_session_id = s.session_id
+      )
+  )
 ORDER BY ISNULL(r.wait_time, 0) DESC;

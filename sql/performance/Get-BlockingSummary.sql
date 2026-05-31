@@ -35,7 +35,9 @@ SELECT
     CAST(ISNULL(r.wait_time, 0) / 1000.0 AS DECIMAL(10,1))        AS head_blocker_wait_sec,
     SUBSTRING(ISNULL(qt.text, ''), 1, 500)                         AS head_blocker_statement
 FROM blocked_counts                  AS bc
-JOIN sys.dm_exec_sessions             AS s   ON bc.blocking_session_id = s.session_id
-LEFT JOIN sys.dm_exec_requests        AS r   ON bc.blocking_session_id = r.session_id
-OUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS qt
+JOIN  sys.dm_exec_sessions            AS s   ON s.session_id  = bc.blocking_session_id
+LEFT JOIN sys.dm_exec_requests        AS r   ON r.session_id  = bc.blocking_session_id
+LEFT JOIN sys.dm_exec_connections     AS c   ON c.session_id  = bc.blocking_session_id
+                                           AND r.session_id  IS NULL
+OUTER APPLY sys.dm_exec_sql_text(COALESCE(r.sql_handle, c.most_recent_sql_handle)) AS qt
 ORDER BY bc.blocked_session_count DESC, bc.max_wait_sec DESC;
