@@ -133,7 +133,7 @@ function Get-CsvJson([string]$fullPath) {
     }
 
     # Detect single-column DDL / script output and reassemble split rows
-    $ddlColNames = @('ddl','script','sql_script','sql','statement','definition','code','t_sql','tsql')
+    $ddlColNames = @('ddl','script','sql_script','sql','statement','definition','sql_text','code','t_sql','tsql')
     $isDdl = $headers.Count -eq 1 -and ($ddlColNames -contains $headers[0].ToLower().Trim())
     if ($isDdl) {
         $ddlText = ($data | ForEach-Object { $_.($headers[0]) }) -join "`n"
@@ -702,15 +702,22 @@ async function init(){
   data=await fetch('/api/csv?p=$relEnc').then(r=>r.json());
 
   if(data.isDdl){
-    document.getElementById('mode-badge').textContent='Script / DDL output';
     document.querySelector('.table-toolbar').style.display='none';
-    document.getElementById('tbl').closest('.table-wrap').outerHTML=
-      "<div class='code-wrap'><button id='ddl-copy' class='copy-btn' onclick='copyDdl()'>Copy</button><pre id='ddl-block' style='max-height:72vh;overflow:auto'>"+esc(data.ddlText)+"</pre></div>";
+    if(!data.ddlText||!data.ddlText.trim()){
+      document.getElementById('mode-badge').textContent='No results returned.';
+      document.getElementById('tbl').closest('.table-wrap').style.display='none';
+    } else {
+      document.getElementById('mode-badge').textContent='Script / DDL output';
+      document.getElementById('tbl').closest('.table-wrap').outerHTML=
+        "<div class='code-wrap'><button id='ddl-copy' class='copy-btn' onclick='copyDdl()'>Copy</button><pre id='ddl-block' style='max-height:72vh;overflow:auto'>"+esc(data.ddlText)+"</pre></div>";
+    }
     return;
   }
 
   if(!data.rows||!data.rows.length){
-    document.getElementById('mode-badge').textContent='No data rows in this file.';
+    document.getElementById('mode-badge').textContent='No results returned.';
+    document.querySelector('.table-toolbar').style.display='none';
+    document.getElementById('tbl').closest('.table-wrap').style.display='none';
     return;
   }
   visRows=[...data.rows];
@@ -1782,9 +1789,22 @@ try {
                     }
 
                     if ($sExt -eq '.sql') {
-                        $runner = Join-Path $repoRoot 'helpers\local-sql\Invoke-RepoSql.ps1'
-                        & $runner -ScriptPath $scriptToRun -ServerInstance $svr -Database 'master' `
-                                  -OutputFormat 'Csv' -OutputPath $csvPath -ErrorAction Stop
+                        # For DDL-generator SQL files (Generate-*), route to the matching PS wrapper
+                        # so MaxCharLength and single-cell CSV are handled correctly.
+                        $psWrapper = $null
+                        if ($sName -match '^Generate-') {
+                            $psWrapper = Get-ChildItem -Path (Join-Path $repoRoot 'powershell') `
+                                -Recurse -Filter "$sName.ps1" -File -ErrorAction SilentlyContinue |
+                                Select-Object -First 1
+                        }
+                        if ($psWrapper) {
+                            & $psWrapper.FullName -ServerInstance $svr -OutputFormat 'Csv' `
+                                                  -OutputPath $csvPath -ErrorAction Stop
+                        } else {
+                            $runner = Join-Path $repoRoot 'helpers\local-sql\Invoke-RepoSql.ps1'
+                            & $runner -ScriptPath $scriptToRun -ServerInstance $svr -Database 'master' `
+                                      -OutputFormat 'Csv' -OutputPath $csvPath -ErrorAction Stop
+                        }
                     } else {
                         & $scriptToRun -ServerInstance $svr -OutputFormat 'Csv' -OutputPath $csvPath -ErrorAction Stop
                     }

@@ -19,7 +19,8 @@ param(
     [ValidateSet('Table','Csv')]
     [string]$OutputFormat = 'Table',
     [string]$OutputPath,
-    [int]$TopResults = 25
+    [int]$TopResults = 25,
+    [switch]$RawOutput
 )
 
 $ErrorActionPreference = 'Stop'
@@ -90,6 +91,7 @@ if ($invokeSqlcmd) {
         Database              = $Database
         InputFile             = $resolvedPath
         QueryTimeout          = $QueryTimeout
+        MaxCharLength         = 2000000
         TrustServerCertificate = $true
         ErrorAction           = 'Stop'
     }
@@ -101,11 +103,19 @@ if ($invokeSqlcmd) {
 
     Write-Host "[repo-sql] Using Invoke-Sqlcmd" -ForegroundColor Green
     $results = @(Invoke-Sqlcmd @params)
-    $results | Export-Csv -LiteralPath $OutputPath -NoTypeInformation -Encoding UTF8
+
+    if ($RawOutput -and $results.Count -gt 0) {
+        $col     = $results[0].PSObject.Properties.Name | Select-Object -First 1
+        $rawText = ($results | ForEach-Object { $_.$col }) -join "`n"
+        [PSCustomObject]@{ script = $rawText } |
+            Export-Csv -LiteralPath $OutputPath -NoTypeInformation -Encoding UTF8
+    } else {
+        $results | Export-Csv -LiteralPath $OutputPath -NoTypeInformation -Encoding UTF8
+    }
 
     if ($results.Count -eq 0) {
         Write-Host "[repo-sql] No rows returned." -ForegroundColor Yellow
-    } elseif ($OutputFormat -ne 'Csv') {
+    } elseif (-not $RawOutput -and $OutputFormat -ne 'Csv') {
         $results | Select-Object -First $TopResults | Format-Table -AutoSize | Out-String | Write-Host
         if ($results.Count -gt $TopResults) {
             Write-Host "[repo-sql] $($results.Count) rows — showing first $TopResults. Full results in CSV." -ForegroundColor DarkGray
@@ -140,11 +150,18 @@ if ($sqlcmd) {
             $row = $_; $cols = $row.PSObject.Properties.Name
             -not ($cols | Where-Object { $row.$_ -match '^-+$' })
         })
-        $rows | Export-Csv -LiteralPath $OutputPath -NoTypeInformation -Encoding UTF8
+        if ($RawOutput -and $rows.Count -gt 0) {
+            $col     = $rows[0].PSObject.Properties.Name | Select-Object -First 1
+            $rawText = ($rows | ForEach-Object { $_.$col }) -join "`n"
+            [PSCustomObject]@{ script = $rawText } |
+                Export-Csv -LiteralPath $OutputPath -NoTypeInformation -Encoding UTF8
+        } else {
+            $rows | Export-Csv -LiteralPath $OutputPath -NoTypeInformation -Encoding UTF8
+        }
 
         if ($rows.Count -eq 0) {
             Write-Host "[repo-sql] No rows returned." -ForegroundColor Yellow
-        } elseif ($OutputFormat -ne 'Csv') {
+        } elseif (-not $RawOutput -and $OutputFormat -ne 'Csv') {
             $rows | Select-Object -First $TopResults | Format-Table -AutoSize | Out-String | Write-Host
             if ($rows.Count -gt $TopResults) {
                 Write-Host "[repo-sql] $($rows.Count) rows — showing first $TopResults. Full results in CSV." -ForegroundColor DarkGray
