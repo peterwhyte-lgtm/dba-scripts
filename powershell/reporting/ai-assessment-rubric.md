@@ -27,7 +27,7 @@ assessment covering performance, security, availability, and operational hygiene
 
 Produce a markdown report with exactly these sections:
 
-```
+```text
 # SQL Server Health Assessment — <server>
 Assessed: <date> · Source: <collection folder> · Assessor: AI-assisted (reviewed by DBA)
 
