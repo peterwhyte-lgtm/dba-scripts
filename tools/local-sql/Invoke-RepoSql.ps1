@@ -39,7 +39,7 @@ function Show-ResultsFooter([string]$csvPath) {
         Write-Host "  Review  : $url" -ForegroundColor Cyan
     } else {
         Write-Host "  Review  : $url" -ForegroundColor DarkGray
-        Write-Host "            (web UI not running — start with: .\tools\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
+        Write-Host "            (web UI not running — start with: .\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
     }
     Write-Host ('─' * 64) -ForegroundColor DarkCyan
 }
@@ -102,7 +102,15 @@ if ($invokeSqlcmd) {
     }
 
     Write-Host "[repo-sql] Using Invoke-Sqlcmd" -ForegroundColor Green
-    $results = @(Invoke-Sqlcmd @params)
+    try {
+        $results = @(Invoke-Sqlcmd @params)
+    } catch {
+        Write-Host "[repo-sql] Connection failed: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "[repo-sql] Running network check for $ServerInstance ..." -ForegroundColor Yellow
+        $netCheck = Join-Path $PSScriptRoot 'Test-ServerNetwork.ps1'
+        if (Test-Path $netCheck) { & $netCheck -ServerInstance $ServerInstance }
+        throw
+    }
 
     if ($RawOutput -and $results.Count -gt 0) {
         $col     = $results[0].PSObject.Properties.Name | Select-Object -First 1
@@ -147,7 +155,12 @@ if ($sqlcmd) {
         if (Test-Path -LiteralPath $tempOutput) {
             $errContent = (Get-Content -LiteralPath $tempOutput -Raw -Encoding UTF8 -EA SilentlyContinue)?.Trim() -replace '\r?\n', ' ' -replace '\s+', ' '
         }
-        throw ($errContent ? $errContent : "sqlcmd.exe failed with exit code $LASTEXITCODE")
+        $msg = $errContent ? $errContent : "sqlcmd.exe failed with exit code $LASTEXITCODE"
+        Write-Host "[repo-sql] Connection failed: $msg" -ForegroundColor Red
+        Write-Host "[repo-sql] Running network check for $ServerInstance ..." -ForegroundColor Yellow
+        $netCheck = Join-Path $PSScriptRoot 'Test-ServerNetwork.ps1'
+        if (Test-Path $netCheck) { & $netCheck -ServerInstance $ServerInstance }
+        throw $msg
     }
 
     if (Test-Path -LiteralPath $tempOutput) {

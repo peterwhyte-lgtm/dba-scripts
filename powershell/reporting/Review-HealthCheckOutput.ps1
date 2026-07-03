@@ -512,7 +512,7 @@ if ($uiUp) {
     Write-Host "  Dashboard: $dashboardUrl" -ForegroundColor Cyan
 } else {
     Write-Host "  Dashboard: $dashboardUrl" -ForegroundColor DarkGray
-    Write-Host "             (web UI not running — start with: .\tools\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
+    Write-Host "             (web UI not running — start with: .\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
 }
 Write-Host ('─' * 64) -ForegroundColor DarkCyan
 Write-Host ''
