@@ -174,6 +174,25 @@ while ($i -lt $Arguments.Count) {
     }
 }
 
+# Common parameter aliases: wrappers declare -ServerInstance, but DBAs type -Server,
+# -ServerName, -Instance or -S (and -Db / -Format). Simple wrapper scripts silently drop
+# unknown named params into $args, so without this mapping the script runs against the
+# DEFAULT instance while looking like it accepted your server name.
+$aliasMap = @{
+    server = 'ServerInstance'; servername = 'ServerInstance'; instance = 'ServerInstance'
+    sqlserver = 'ServerInstance'
+    db = 'Database'; databasename = 'Database'
+    format = 'OutputFormat'; output = 'OutputFormat'
+}
+foreach ($k in @($splat.Keys)) {
+    $canon = $aliasMap[$k.ToLower()]
+    if ($canon -and -not $splat.ContainsKey($canon)) {
+        $splat[$canon] = $splat[$k]
+        [void]$splat.Remove($k)
+        Write-Host "Treating -$k as -$canon." -ForegroundColor DarkGray
+    }
+}
+
 # A bare positional token is almost always a server name typed without -ServerInstance
 # (.\run.ps1 Get-Something MYSERVER). Silently dropping it would run against the wrong
 # server — treat the first one as ServerInstance and say so.
