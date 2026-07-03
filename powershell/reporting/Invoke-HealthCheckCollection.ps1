@@ -237,6 +237,34 @@ $scripts = @(
         Label = 'service-broker'
         Paths = @('sql\monitoring\features\Get-ServiceBrokerHealth.sql')
     }
+    [PSCustomObject]@{
+        Label = 'sysadmin-members'
+        Paths = @('sql\security\access\Get-SysadminMembers.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'instance-config'
+        Paths = @('sql\monitoring\instance\Get-InstanceConfigurationSnapshot.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'top-cpu-queries'
+        Paths = @('sql\performance\queries\Get-TopCpuQueries.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'agent-jobs-overview'
+        Paths = @('sql\monitoring\jobs\Get-SqlAgentJobOverview.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'orphaned-users'
+        Paths = @('sql\security\access\Get-OrphanedUsers.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'certificate-expiry'
+        Paths = @('sql\security\encryption\Get-CertificateExpiryWarnings.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'autogrowth-history'
+        Paths = @('sql\monitoring\disk-space\Get-AutogrowthHistory.sql')
+    }
 )
 
 $summary = [System.Collections.Generic.List[PSObject]]::new()

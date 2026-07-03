@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Prints a descriptive overview of the DBA scripts repo — intended as the first
 thing a new user runs to understand what's here and how to get started.
@@ -90,7 +90,7 @@ Write-Host ""
 Write-Host "  [1]  Verify you can connect to SQL Server" -ForegroundColor Green
 Write-Host "       .\tools\local-sql\Test-SqlConnectivity.ps1 -ServerInstance ." -ForegroundColor White
 Write-Host ""
-Write-Host "  [2]  Run a full healthcheck (collects 32 scripts, surfaces CRITICAL/WARNING)" -ForegroundColor Green
+Write-Host "  [2]  Run a full healthcheck (collects 39 scripts, surfaces CRITICAL/WARNING)" -ForegroundColor Green
 Write-Host "       .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance ." -ForegroundColor White
 Write-Host "       .\powershell\reporting\Review-HealthCheckOutput.ps1" -ForegroundColor White
 Write-Host ""

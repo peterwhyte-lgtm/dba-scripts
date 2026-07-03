@@ -4,6 +4,7 @@ Category    : configuration-and-environment
 Purpose     : Capture all sp_configure settings for baseline review and change tracking.
 Author      : Peter Whyte (https://sqldba.blog)
 Requires    : VIEW SERVER STATE
+HealthCheck : Yes
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low

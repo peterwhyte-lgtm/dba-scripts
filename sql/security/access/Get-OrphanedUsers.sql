@@ -4,6 +4,7 @@ Category    : security-and-permissions
 Purpose     : Find database users with no matching server login — common after migrations or login drops.
 Author      : Peter Whyte (https://sqldba.blog)
 Requires    : VIEW ANY DATABASE
+HealthCheck : Yes
 Notes       : Orphaned users cause login failures for that account. Fix with
               ALTER USER [username] WITH LOGIN = [login_name]; or DROP USER [username].
 */

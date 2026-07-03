@@ -4,6 +4,7 @@ Category    : security
 Purpose     : All user-managed certificates across server and user databases with days until expiry.
 Author      : Peter Whyte (https://sqldba.blog)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
+HealthCheck : Yes
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low

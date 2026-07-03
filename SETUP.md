@@ -122,7 +122,7 @@ Or let the setup script do it: `.\Initialize-Environment.ps1 -ServerInstance PRO
 ## Health check (full instance review)
 
 ```powershell
-# Run 32 scripts against an instance — saves named CSVs
+# Run 39 scripts against an instance — saves named CSVs
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01\SQL2019
 
 # Review the output — surfaces CRITICAL / WARNING / INFO findings
@@ -145,7 +145,7 @@ For a client handover or ownership review:
 A local web interface for browsing scripts and visualising CSV output:
 
 ```powershell
-.\tools\web-ui\Start-WebUi.ps1
+.\web-ui\Start-WebUi.ps1
 # Opens http://localhost:8787
 ```
 
@@ -183,7 +183,7 @@ Enable-PSRemoting -Force
 
 Collectors run on a schedule and build timestamped CSV histories for trend analysis and post-incident review. Set them up once in SQL Agent and forget.
 
-See [collectors/README.md](collectors/README.md) for the full list. Each collector subfolder has a README with the exact SQL Agent T-SQL to create the job.
+See [sql/collectors/](sql/collectors/) for the full list — one `Generate-CollectorJob-*.sql` per collector; running it creates the SQL Agent job and its DBAMonitor table.
 
 **Minimum permissions** for the SQL Agent service account:
 

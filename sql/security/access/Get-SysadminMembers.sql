@@ -4,6 +4,7 @@ Category    : security-and-permissions
 Purpose     : List members of the sysadmin fixed server role for audits and privilege review.
 Author      : Peter Whyte (https://sqldba.blog)
 Requires    : VIEW ANY DATABASE
+HealthCheck : Yes
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low

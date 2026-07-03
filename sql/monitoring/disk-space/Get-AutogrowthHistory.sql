@@ -7,6 +7,7 @@ Purpose     : Reads autogrowth events from the SQL Server default trace.
               Use this to right-size initial file sizes and growth increments.
 Author      : Peter Whyte (https://sqldba.blog)
 Requires    : VIEW SERVER STATE, ALTER TRACE (to read trace files)
+HealthCheck : Yes
 Notes       : Default trace rolls over; history depth depends on server activity.
               Typically covers the last few days to weeks.
               EventClass 92 = Data File Autogrow, 93 = Log File Autogrow.
