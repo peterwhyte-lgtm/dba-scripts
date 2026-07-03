@@ -2,7 +2,7 @@
 Script Name : Get-DatabaseFilesDetail
 Category    : storage-capacity-management
 Purpose     : Show per-file details for all user databases: path, size, max size, growth settings.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-operations/get-database-file-names-and-paths-in-sql-server/)
 Requires    : VIEW ANY DATABASE
 HealthCheck : Yes
 */
