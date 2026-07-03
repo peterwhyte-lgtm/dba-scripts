@@ -2,7 +2,7 @@
   <img src="assets/logo/sqldba-site-logo.png" alt="sqldba.blog" width="220">
 </p>
 
-<h3 align="center">SQL Server Diagnostic & Operational Scripts for Production DBAs</h3>
+<h3 align="center">SQL Server Health, Reviewed by AI — Collection, Dashboard, and Copy/Paste Scripts for Production DBAs</h3>
 
 <p align="center">
   <a href="https://github.com/peterwhyte-lgtm/dba-tools"><img src="https://img.shields.io/badge/SQL%20Server-2016%2B-CC2927?logo=microsoftsqlserver&logoColor=white" alt="SQL Server"></a>
@@ -10,6 +10,25 @@
   <a href="https://github.com/peterwhyte-lgtm/dba-tools/commits/main"><img src="https://img.shields.io/github/last-commit/peterwhyte-lgtm/dba-tools" alt="Last commit"></a>
   <a href="https://sqldba.blog"><img src="https://img.shields.io/badge/blog-sqldba.blog-blue" alt="Blog"></a>
 </p>
+
+---
+
+## What This Is
+
+I'm Peter Whyte — production SQL Server DBA, running [sqldba.blog](https://sqldba.blog). This is the toolkit I actually use, and it's built around one idea: **collect everything a DBA looks at on a server, then have an AI review it with you.**
+
+The core workflow is three steps. A health check collection runs 39 diagnostic scripts against an instance and saves each result as a CSV. A rules review turns those CSVs into deterministic CRITICAL / WARNING / INFO findings. Then an AI assessment reads the whole collection and does what fixed thresholds can't — correlates findings across the CSVs into root causes and writes a prioritized report with evidence and a fix for each issue. It's a second reviewer that has read every output, doesn't get tired, and surfaces the blindspots you'd miss at 2am.
+
+Underneath that sits everything else a production DBA needs, usable on its own:
+
+- **170+ SQL scripts** you open and paste directly into SSMS — no parameters, no magic variables, no install
+- **PowerShell wrappers** that run the same scripts from the terminal and export CSVs
+- **A local web UI** where collections are viewed, verified, and diagnosed — health scorecard, security drill-down, disk capacity, AI reports, live incident triage
+- **Runbooks, change orders, and a migration toolkit** for the planned work when there's time to do it right
+
+Every script came from a real situation: an incident, a migration window, a client handover, or a routine check that needed to be fast and safe. It runs against localhost by default, a named instance when you pass one, or a server list via the multi-server scripts.
+
+Everything is read-only by default. Every script has a header with what permissions it needs and what it touches. Nothing phones home, nothing requires a framework — and nothing is sent to any AI until you run the assessment step yourself.
 
 ---
 
@@ -41,15 +60,64 @@ Once setup passes the server is saved for the session, every script picks it up 
 
 ---
 
-## What This Is
+## The Health Check — Collect, Review, AI-Assess
 
-I'm Peter Whyte — production SQL Server DBA, running [sqldba.blog](https://sqldba.blog). This is the toolkit I actually use. Every script in here came from a real situation: an incident, a migration window, a client handover, or a routine check that needed to be fast and safe.
+The flagship workflow. Three commands take a server from "no idea" to a prioritized written assessment:
 
-You're mid-incident. Blocking is taking down an application, a backup question just landed from management, or a migration window opens in two hours and you still need to know what's on the source server. You know what you need to look at — you just need the query in front of you, fast.
+```powershell
+.\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01\SQL2025   # 1. collect
+.\powershell\reporting\Review-HealthCheckOutput.ps1                                      # 2. rules review
+.\powershell\reporting\Invoke-AiAssessment.ps1                                           # 3. AI assessment
+```
 
-This is a copy-paste toolkit for production SQL Server DBAs. SQL scripts you open and paste directly into SSMS. PowerShell wrappers that run the same scripts at scale and export CSVs. A health check that collects 39 scripts in a single pass, with an AI assessment layer that turns the output into a prioritized written report. Operational runbooks and change orders for the planned work when there's time to do it right.
+<p align="center">
+  <img src="assets/screenshots/04-healthcheck-findings.png" alt="Health check review findings" width="720">
+  <br><em>Review-HealthCheckOutput — CRITICAL / WARNING / INFO findings across the instance</em>
+</p>
 
-Everything is read-only by default. Every script has a header with what permissions it needs and what it touches. Nothing phones home, nothing requires a framework.
+**Step 1** collects 39 scripts in a single pass — backups, waits, blocking, memory, disk, security surface area, agent jobs, integrity checks, and more — into one timestamped folder of CSVs.
+
+**Step 2** applies fixed rules: missing or stale backups, databases not online, stale DBCC CHECKDB, suspect pages, sa enabled, percent-based autogrowth, unconfigured max server memory, I/O latency above threshold, transaction log pressure, high VLF count, maintenance job failures.
+
+**Step 3** is the point of the collection. The AI reads every CSV and correlates what the rules can't: the missing index findings that line up with the top CPU queries, the autogrowth history that explains the VLF count, the weak login that's also a sysadmin. The output is a written report — verdict, priority issues with evidence and a fix for each, security posture, watch list — saved to `output-files\assessments\`.
+
+Two ways to run the AI step, both driven by the same rubric:
+
+- **Claude Code in your editor** — open the repo, sign in, and ask for a health assessment. No key handling.
+- **The API script** — `Invoke-AiAssessment.ps1`, scriptable and schedulable. Works with a personal key at home or a corporate key/gateway at work; nothing account-related is stored in the repo. `-DryRun` writes the exact prompt to a file without calling any API, so a corporate review can see byte-for-byte what would be sent.
+
+Setup for both paths, including the corporate data-review question: [docs/ai-assessment.md](docs/ai-assessment.md)
+
+For a client handover or ownership review, there's also a scored markdown report with no AI dependency:
+
+```powershell
+.\powershell\reporting\Invoke-AssessmentReport.ps1 -ServerInstance PROD01\SQL2025 -AssessedBy "Peter Whyte"
+```
+
+---
+
+## The Web UI — View, Verify, Diagnose
+
+A local browser dashboard where collection output is viewed and signed off. One Collect action feeds every page:
+
+```powershell
+.\web-ui\Start-WebUi.ps1
+# Opens at http://localhost:8787
+```
+
+<p align="center">
+  <img src="assets/screenshots/05-web-ui-scripts.png" alt="Web UI running in VS Code terminal alongside the browser" width="720">
+  <br><em>VS Code terminal (bottom) running Start-WebUi.ps1, browser UI (top) — browse scripts by category, search, and run against any instance</em>
+</p>
+
+- **Health Check** — scorecard with severity and category filters, plus a findings delta against the previous collection: what's new, what's resolved
+- **Security** — surface area and access-risk vitals with three-level drill-down, from a count to the CSV rows to remediation T-SQL
+- **Disk** — capacity through two lenses: % used worst-first across all databases, and the top databases by absolute size
+- **AI Assessment** — read reports in the browser, or run a new assessment from a panel
+- **Triage** — a live incident cockpit: run diagnostic scripts and see results inline, mid-incident
+- **Scripts** — the browse/reference library for the whole repo
+
+Runs on `localhost:8787` only. No external dependencies for the server — Chart.js loads from CDN for the chart view. The UI is optional: every workflow above works from the terminal alone. A multi-server fleet dashboard is on the roadmap.
 
 ---
 
@@ -96,29 +164,6 @@ The same scripts, callable by name from any directory. No paths, no module depen
   <br><em>.\run.ps1 — resolves any script by name, outputs to terminal or CSV</em>
 </p>
 
-### Health Check — 39 Scripts, One Pass, Two Reviewers
-
-```powershell
-.\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01\SQL2025   # 1. collect
-.\powershell\reporting\Review-HealthCheckOutput.ps1                                      # 2. rules review
-.\powershell\reporting\Invoke-AiAssessment.ps1                                           # 3. AI assessment
-```
-
-<p align="center">
-  <img src="assets/screenshots/04-healthcheck-findings.png" alt="Health check review findings" width="720">
-  <br><em>Review-HealthCheckOutput — CRITICAL / WARNING / INFO findings across the instance</em>
-</p>
-
-Flags: missing or stale backups, databases not online, stale DBCC CHECKDB, suspect pages, sa enabled, percent-based autogrowth, unconfigured max server memory, I/O latency above threshold, transaction log pressure, high VLF count, maintenance job failures.
-
-The AI assessment (step 3) does what fixed thresholds can't: it correlates findings across the CSVs into root causes and writes a prioritized report — security, performance, backups, everything — with evidence and a fix for each issue. Works with a personal Claude account at home or a corporate key/gateway at work; nothing account-related is stored in the repo. Setup (including the corporate data-review path with `-DryRun`): [docs/ai-assessment.md](docs/ai-assessment.md).
-
-For a client handover or ownership review, the assessment report generates a scored markdown document:
-
-```powershell
-.\powershell\reporting\Invoke-AssessmentReport.ps1 -ServerInstance PROD01\SQL2025 -AssessedBy "Peter Whyte"
-```
-
 ---
 
 ## Operational Runbooks
@@ -149,24 +194,6 @@ Covers: compatibility gaps, deprecated features in active use, edition-only feat
 
 ---
 
-## Optional: Browser UI
-
-A local web interface for browsing and running scripts without the command line. Not required for any workflow — but useful for exploring the toolkit or walking through findings with someone who doesn't live in SSMS.
-
-```powershell
-.\web-ui\Start-WebUi.ps1
-# Opens at http://localhost:8787
-```
-
-<p align="center">
-  <img src="assets/screenshots/05-web-ui-scripts.png" alt="Web UI running in VS Code terminal alongside the browser" width="720">
-  <br><em>VS Code terminal (bottom) running Start-WebUi.ps1, browser UI (top) — browse scripts by category, search, and run against any instance</em>
-</p>
-
-Runs on `localhost:8787` only. No external dependencies for the server — Chart.js loads from CDN for the chart view.
-
----
-
 ## Requirements
 
 | | Minimum | Recommended |
@@ -179,6 +206,8 @@ Runs on `localhost:8787` only. No external dependencies for the server — Chart
 ```powershell
 Install-Module -Name SqlServer -Scope CurrentUser -Force
 ```
+
+The AI assessment step additionally needs either Claude Code (signed in) or an `ANTHROPIC_API_KEY` — see [docs/ai-assessment.md](docs/ai-assessment.md). Everything else runs fully local.
 
 ---
 

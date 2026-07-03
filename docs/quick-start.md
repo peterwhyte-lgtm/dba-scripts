@@ -93,14 +93,17 @@ Browse all available scripts:
 
 ## 4. Run a health check
 
-Collect all key monitoring data in one pass and review the findings:
+The flagship workflow: collect everything in one pass, review with rules, then have an AI assess the whole collection:
 
 ```powershell
-# Collect 39 scripts, save named CSVs to output-files\healthcheck\<server>-<timestamp>\
+# 1. Collect 39 scripts, save named CSVs to output-files\healthcheck\<server>-<timestamp>\
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01\SQL2019
 
-# Review findings — surfaces CRITICAL / WARNING / INFO
+# 2. Rules review — surfaces CRITICAL / WARNING / INFO
 .\powershell\reporting\Review-HealthCheckOutput.ps1
+
+# 3. AI assessment — correlates findings into a prioritized written report
+.\powershell\reporting\Invoke-AiAssessment.ps1
 ```
 
 <p align="center">
@@ -108,7 +111,9 @@ Collect all key monitoring data in one pass and review the findings:
   <br><em>Review-HealthCheckOutput — CRITICAL / WARNING / INFO findings across the instance</em>
 </p>
 
-What gets flagged: missing backups, stale DBCC CHECKDB, suspect pages, sa enabled, percent-based autogrowth, unconfigured max server memory, high I/O latency, transaction log pressure, and more.
+What the rules flag: missing backups, stale DBCC CHECKDB, suspect pages, sa enabled, percent-based autogrowth, unconfigured max server memory, high I/O latency, transaction log pressure, and more.
+
+The AI step reads every CSV in the collection and writes a prioritized report — root causes, evidence, and a fix for each issue — to `output-files\assessments\`. It runs via Claude Code in your editor or via the API script; setup for both (including the corporate sign-off path with `-DryRun`) is in [docs/ai-assessment.md](ai-assessment.md).
 
 For a scored client report:
 
@@ -151,6 +156,7 @@ Every script in `sql/` is paste-and-run in SSMS. No PowerShell needed:
 
 | Need | Resource |
 |------|----------|
+| AI assessment setup (home and corporate) | [docs/ai-assessment.md](ai-assessment.md) |
 | Full script list with descriptions | [docs/script-catalog.md](script-catalog.md) |
 | Repo folder layout | [docs/repo-structure.md](repo-structure.md) |
 | Prerequisites, permissions, troubleshooting | [SETUP.md](../SETUP.md) |

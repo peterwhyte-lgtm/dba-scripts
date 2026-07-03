@@ -4,15 +4,16 @@ This file is the working operating guide for this repository.
 
 ## Purpose
 
-This repo is a production SQL Server DBA toolkit for Peter Whyte (sqldba.blog). Its job is to help a DBA investigate, troubleshoot, review, and safely operate SQL Server environments.
+This repo is a production SQL Server DBA toolkit for Peter Whyte (sqldba.blog). Its identity: **AI reviewing SQL Server (one or many)** — health check data collection, a web UI dashboard to view and verify it, and copy/paste production DBA scripts underneath. Everything a DBA needs, with an AI helper to surface the blindspots.
 
-The repo is built around three core ideas:
+The repo is built around four core ideas:
 
-1. **Scripts first** — the repo exists to provide usable DBA tooling.
-2. **Run it directly when possible** — scripts should be understandable and runnable in isolation.
-3. **Docs and outputs matter** — the repo should explain what a script does, what it returns, and what to do next.
+1. **The AI assessment is the flagship** — the healthcheck workflow (collect → rules review → AI assessment) is the repo's headline capability; the AI step is the point of the collection.
+2. **Scripts first underneath** — the flagship rests on usable, copy/paste DBA tooling that works with no AI and no web UI.
+3. **Run it directly when possible** — scripts should be understandable and runnable in isolation.
+4. **Docs and outputs matter** — the repo should explain what a script does, what it returns, and what to do next.
 
-The web UI is useful, especially for health checks and discovery, but it is not the primary definition of the repo. The main value is still the scripts, the workflow, and the operational guidance.
+The web UI is where collection output is viewed, verified, and diagnosed — part of the flagship workflow, though every workflow also works from the terminal alone. Multi-server ("the many part") is the planned build-out of the main gig, not yet current scope.
 
 ## Operating rules
 
