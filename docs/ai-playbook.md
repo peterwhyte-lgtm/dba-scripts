@@ -96,17 +96,30 @@ Latency thresholds: >20ms read or >10ms write on data files is concerning.
 
 ---
 
-## Daily health check workflow
+## Health check workflow — collect, review, AI-assess
+
+The healthcheck is the centrepiece of the repo, and it has THREE steps. The whole point of
+collecting 39 CSVs is so that both the rules engine and an AI can review the instance —
+security, performance, backups, everything. Do not stop at step 2.
 
 ```powershell
-# Collect all 32 healthcheck scripts → named CSVs in output-files\healthcheck\
+# 1. Collect all 39 healthcheck scripts → named CSVs in output-files\healthcheck\
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01
 
-# Review findings — surfaces CRITICAL / WARNING / INFO
+# 2. Rules review — surfaces CRITICAL / WARNING / INFO from fixed thresholds
 .\powershell\reporting\Review-HealthCheckOutput.ps1
+
+# 3. AI assessment — correlation, root cause, prioritized written report
+.\powershell\reporting\Invoke-AiAssessment.ps1          # via Claude API (needs ANTHROPIC_API_KEY)
 ```
 
-The 32 scripts in the healthcheck suite are tagged `HealthCheck : Yes` in their headers — the web UI groups them as "Health Check Suite."
+**If you are an AI agent reading this (Claude Code session): step 3 is YOUR job — do not
+call the API script.** Read every CSV in the latest `output-files\healthcheck\<folder>`,
+follow `powershell\reporting\ai-assessment-rubric.md` exactly, and write the report to
+`output-files\assessments\<server>-<timestamp>-claude-code.md`. Treat findings.csv as leads
+to verify and correlate, not as the answer. Setup and corporate guidance: `docs/ai-assessment.md`.
+
+The 39 scripts in the healthcheck suite are tagged `HealthCheck : Yes` in their headers — the web UI groups them as "Health Check Suite."
 
 **Flags raised by Review-HealthCheckOutput:**
 - CRITICAL: suspect pages, SA enabled, database not ONLINE, no full backup ever
@@ -120,7 +133,7 @@ The 32 scripts in the healthcheck suite are tagged `HealthCheck : Yes` in their 
 
 **Everything in `powershell/wrappers/`** — thin wrappers that call Invoke-RepoSql with the matching SQL script. Same safety level as the SQL scripts themselves.
 
-**Orchestrators that collect/report** (`Invoke-HealthCheckCollection`, `Review-HealthCheckOutput`, `Get-BlockingChains`, `Get-ActiveRequests`) — read-only, safe.
+**Reporting orchestrators** (`Invoke-HealthCheckCollection`, `Review-HealthCheckOutput`) and **incident diagnostics** (`powershell/diagnostics/` — `Get-BlockingChains`, `Get-ActiveRequests`) — read-only, safe.
 
 **Requires judgment before running:**
 - `powershell/wrappers/backups/Generate-*` — wrappers for SQL backup/restore DDL generators and backup health queries
@@ -140,6 +153,7 @@ All script runs write to `output-files/`:
 | `output-files\reviews\<category>\<script>-<timestamp>.csv` | `run.ps1` and direct wrapper calls |
 | `output-files\healthcheck\<server>-<timestamp>\*.csv` | `Invoke-HealthCheckCollection` |
 | `output-files\assessment\<server>-<timestamp>.md` | `Invoke-AssessmentReport` |
+| `output-files\assessments\<server>-<timestamp>.md` | `Invoke-AiAssessment` (AI report; `-claude-code` suffix when written by a Claude Code session) |
 | `output-files\migration\*.sql` | `Generate-LoginScript`, etc. |
 | `output-files\collectors\<type>\<server>-<YYYYMMDD>.csv` | Scheduled collectors |
 
@@ -163,8 +177,8 @@ sql/                          ← SQL scripts by category
 powershell/wrappers/          ← thin PS wrappers (one per SQL script; mirrors sql/ categories)
 powershell/migration/         ← migration toolkit (DDL generators, orchestrators)
 powershell/wrappers/maintenance/ ← maintenance job generators (wrappers for sql/maintenance/ DDL generators)
-powershell/reporting/         ← healthcheck collection and reporting
-powershell/collectors/        ← scheduled trend collectors
+powershell/reporting/         ← healthcheck collection, AI assessment, on-demand diagnostics
+sql/collectors/               ← scheduled trend collectors (SQL Agent job DDL generators)
 docs/ops/                     ← runbooks, change orders, SQL templates
 tools/local-sql/              ← Invoke-RepoSql (core runner), Set-SqlConnection
 tools/triage/                 ← Show-RepoOverview, Find-UsefulScript

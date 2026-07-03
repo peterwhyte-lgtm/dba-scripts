@@ -19,6 +19,10 @@ The web UI is useful, especially for health checks and discovery, but it is not 
 These rules apply across the repo:
 
 - Prefer scripts that can be run from the repo **and** copied/pasted into a normal DBA workflow.
+- **Copy/paste-first, zero dependencies:** a DBA who grabs one script (a patch runner, an SSMS
+  installer, a trace, a monitoring query) must be able to run it right away. Where a script has
+  an unavoidable precondition (e.g. traces need an existing output directory), say so in a script
+  comment and/or terminal output — tell the user to create it or amend the parameter.
 - Default to `.` / localhost unless a server is explicitly supplied.
 - Preserve the intent of the script; do not change logic unless needed for safety, correctness, or readability.
 - Prefer deterministic, readable, production-safe logic over clever shortcuts.
@@ -60,17 +64,26 @@ pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\wrappers\perf
 pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\tools\local-sql\Invoke-RepoSql.ps1 -ScriptPath .\sql\performance\Get-WaitStatistics.sql -ServerInstance .
 ```
 
-Full healthcheck workflow:
+Full healthcheck workflow (collect → rules review → AI assessment — the AI step is the
+point of the collection; see `docs/ai-assessment.md`):
 ```powershell
-# Collect 32 scripts, save CSVs to output-files\healthcheck\<server>-<timestamp>\
+# 1. Collect 39 scripts, save CSVs to output-files\healthcheck\<server>-<timestamp>\
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance .
 
-# Review the latest collection folder and surface CRITICAL / WARNING / INFO findings
+# 2. Review the latest collection folder and surface CRITICAL / WARNING / INFO findings
 .\powershell\reporting\Review-HealthCheckOutput.ps1
 
 # Or target a specific folder
 .\powershell\reporting\Review-HealthCheckOutput.ps1 -FolderPath ".\output-files\healthcheck\.-20260529-185000" -OutputFormat Csv
+
+# 3. AI assessment — Claude API path (needs ANTHROPIC_API_KEY; -DryRun previews the prompt)
+.\powershell\reporting\Invoke-AiAssessment.ps1
 ```
+
+**When a Claude Code session is asked for a health assessment, IT performs step 3 itself**
+(instead of calling the API script): read the CSVs in the latest healthcheck folder, follow
+`powershell\reporting\ai-assessment-rubric.md`, write the report to
+`output-files\assessments\<server>-<timestamp>-claude-code.md`.
 
 Preflight and discovery:
 ```powershell
@@ -127,6 +140,7 @@ Use the following primary categories when deciding where a script or post belong
 6. **Meta / system thinking**
    - engineering-notes
    - ai-systems
+   - ai (tips and workflow learnings from building with AI tools — distinct from ai-systems which is technical AI integration)
 7. **Personal / optional**
    - life-work
 8. **Future extensions**
@@ -159,6 +173,7 @@ The `sql/<category>/` directory maps to a blog primary category. The `sql/<categ
 | `sql/high-availability/replication/` | high-availability | replication |
 | `sql/backups/` | backup-recovery | — |
 | `sql/migration/` | migration-upgrades | — |
+| `sql/traces/` | troubleshooting | extended-events, tracing, auditing |
 
 A post series (e.g., wait statistics, index series) can introduce more granular tags than the subfolder suggests — the subfolder is a starting point, not a ceiling.
 
@@ -264,12 +279,24 @@ sql/
                     usage, migration login audit, migration risk assessment, post-migration validation,
                     version upgrade readiness; DDL generators: Generate-Login/AgentJob/UserMapping/
                     LinkedServer/RestoreWithMove scripts; Fix-OrphanedUsers
-  collectors/     — Generate-CollectorJob-*.sql: one script per collector, creates SQL Agent job + DBAMonitor table
+  collectors/     — Generate-CollectorJob-*.sql (12 collectors: ag-health, blocking, database-growth,
+                    deadlocks, errorlog, index-fragmentation, perfmon, query-store, storage-io, tempdb,
+                    vlf-count, wait-stats): each creates a SQL Agent job + DBAMonitor table;
+                    Generate-CollectorAlertJob.sql; Get-*Delta.sql for snapshot-over-time analysis
+  traces/         — Extended Events tooling: Create-* session scripts (decommission audit, login activity,
+                    SP execution), Get-ActiveXeSessions, Get-XeSessionActivity, Remove-XeSession
   lab/            — test scripts — dev/test only
 
 powershell/
-  reporting/          — Invoke-HealthCheckCollection, Review-HealthCheckOutput, Invoke-AssessmentReport,
-                        Invoke-MultiServerHealthCheck, Get-ActiveRequests, Get-BlockingChains
+  reporting/          — on-demand report/analysis orchestrators (real PS logic, human-triggered —
+                        contrast: wrappers/ are thin 1:1 shims; collectors are scheduled Agent jobs):
+                        Invoke-HealthCheckCollection, Review-HealthCheckOutput, Invoke-AssessmentReport,
+                        Invoke-AiAssessment (+ ai-assessment-rubric.md — the shared AI prompt),
+                        Invoke-MultiServerHealthCheck, Get-CapacityProjection (collector trend
+                        analysis), Compare-ConfigurationBaseline (config drift vs saved baseline)
+  diagnostics/        — live incident triage (rich runners with plan export, run DURING an incident):
+                        Get-ActiveRequests (-IncludePlan), Get-BlockingChains (-IncludePlan);
+                        output goes to output-files\diagnostics\
   reporting/multi-server/ — MultiServer-Get*.ps1 scripts (disk, wait stats, patch level, blocking, etc.)
   disk-space/         — Get-DiskSpaceSummary, Get-LargestFolders, Get-OldestBackupFolderFiles, Get-BackupAge
   wrappers/           — thin wrappers; mirror the sql/ category+subfolder structure exactly
@@ -298,6 +325,7 @@ powershell/
       access/           — wrappers for sql/security/access/
       encryption/       — wrappers for sql/security/encryption/
       (root)            — wrappers for sql/security/ root scripts
+    traces/           — wrappers for sql/traces/ scripts
   installation/       — install-sql.ps1, configure-sql.ps1, pre-install-check.ps1, post-install-validation.ps1,
                         uninstall-sql.ps1, generate-install-report.ps1, templates/
   migration/          — Generate-LoginScript, Generate-AgentJobScript, Generate-UserMappingScript,
@@ -308,15 +336,15 @@ powershell/
     sql/              — Invoke-SqlPatch.ps1 (multi-server auto-patch), patch-config.psd1
     ssms/             — install-ssms.ps1 (handles SSMS ≤20 and 21+), uninstall-ssms.ps1
   lab/                — lab and test database scripts (dev/test only)
-  collectors/         — collector SQL queries (<name>.sql) kept for ad-hoc use; Collect-<Name>.ps1
-                        files are being migrated to SQL Agent jobs (see sql/collectors/ below).
-    Collectors: ag-health, blocking, database-growth, deadlocks, errorlog, index-fragmentation,
-                perfmon, query-store, storage-io, tempdb, vlf-count, wait-stats
+  (powershell/collectors/ no longer exists — the Collect-*.ps1 → SQL Agent job migration is
+   complete; all collector tooling lives in sql/collectors/. Analysis over collector history
+   is Get-CapacityProjection in reporting/.)
 
 web-ui/               — browser UI: Start-WebUi.ps1, Generate-ScriptIndex.ps1
 
 tools/
-  local-sql/    — Invoke-RepoSql.ps1 (the core runner), Set-SqlConnection.ps1, Test-SqlConnectivity.ps1
+  local-sql/    — Invoke-RepoSql.ps1 (the core runner), Set-SqlConnection.ps1, Test-SqlConnectivity.ps1,
+                  Test-ServerNetwork.ps1 (DNS/port pre-flight; auto-runs on connection failure)
   triage/       — Show-RepoOverview.ps1, Find-UsefulScript.ps1, Get-StandardsAudit.ps1
   scaffolding/  — New-Wrapper.ps1, New-MultiServerScript.ps1
   maintenance/  — Clear-OutputFiles.ps1
@@ -412,6 +440,8 @@ SET NOCOUNT ON;
 
 Add `HealthCheck : Yes` (after `Requires`) to any script that runs as part of `Invoke-HealthCheckCollection.ps1`. This tag drives the "Health Check Suite" section in the web UI and makes membership machine-readable without needing a separate folder.
 
+**Author URL rule:** The `Author` line uses `https://sqldba.blog` as a placeholder until the script has a published post. Once a post is live, update the URL to the specific post URL (e.g. `Author : Peter Whyte (https://sqldba.blog/dba-operations/get-database-file-names-and-paths-in-sql-server/)`). Do this at the same time as marking the blog post `status: updated` or `status: published`.
+
 **SQL script rules:**
 - Remove or flag unsafe patterns: `WITH (NOLOCK)` (explain risk if present), deprecated catalog views (`sys.sysprocesses`, `sys.sysobjects` etc.)
 - Prefer modern DMVs — `sys.objects` not `sys.sysobjects`, `sys.server_principals` not `sys.syslogins`
@@ -440,7 +470,7 @@ New orchestrator PS script (has real logic, not a thin wrapper): add to `powersh
 
 ## Healthcheck collection — what it covers
 
-`Invoke-HealthCheckCollection.ps1` runs 32 scripts and saves named CSVs:
+`Invoke-HealthCheckCollection.ps1` runs 39 scripts and saves named CSVs:
 
 | CSV label | SQL script |
 |-----------|-----------|
@@ -476,6 +506,13 @@ New orchestrator PS script (has real logic, not a thin wrapper): add to `powersh
 | extended-events | Get-ExtendedEventsSessions.sql |
 | cdc-and-ct | Get-CdcAndChangeTracking.sql |
 | service-broker | Get-ServiceBrokerHealth.sql |
+| sysadmin-members | Get-SysadminMembers.sql |
+| instance-config | Get-InstanceConfigurationSnapshot.sql |
+| top-cpu-queries | Get-TopCpuQueries.sql |
+| agent-jobs-overview | Get-SqlAgentJobOverview.sql |
+| orphaned-users | Get-OrphanedUsers.sql |
+| certificate-expiry | Get-CertificateExpiryWarnings.sql |
+| autogrowth-history | Get-AutogrowthHistory.sql |
 
 `Review-HealthCheckOutput.ps1` reads those CSVs and fires on: databases not ONLINE, missing backups, full backup older than 24h (CRITICAL), stale log backups, tlog >80% used, auto-shrink, auto-close, percent-based autogrowth, DBCC CHECKDB stale >7 days (WARNING) or overdue >14 days / never (CRITICAL), any suspect pages (CRITICAL), SA enabled (CRITICAL), weak SQL login settings, I/O latency >50ms, specific wait type patterns (PAGEIOLATCH, WRITELOG, RESOURCE_SEMAPHORE, CXPACKET), max server memory unconfigured, data files <10% free, VLF count >200 (WARNING) or >1000 (CRITICAL), DBA maintenance job missing/failed/disabled, failed logins (locked accounts and repeated failures), Query Store switched to READ_ONLY, active user Extended Events sessions (INFO), CDC/Change Tracking warnings, and Service Broker CRITICAL/WARNING status.
 

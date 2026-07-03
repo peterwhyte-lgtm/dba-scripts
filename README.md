@@ -47,7 +47,7 @@ I'm Peter Whyte — production SQL Server DBA, running [sqldba.blog](https://sql
 
 You're mid-incident. Blocking is taking down an application, a backup question just landed from management, or a migration window opens in two hours and you still need to know what's on the source server. You know what you need to look at — you just need the query in front of you, fast.
 
-This is a copy-paste toolkit for production SQL Server DBAs. SQL scripts you open and paste directly into SSMS. PowerShell wrappers that run the same scripts at scale and export CSVs. A health check that collects 32 scripts in a single pass. Operational runbooks and change orders for the planned work when there's time to do it right.
+This is a copy-paste toolkit for production SQL Server DBAs. SQL scripts you open and paste directly into SSMS. PowerShell wrappers that run the same scripts at scale and export CSVs. A health check that collects 39 scripts in a single pass, with an AI assessment layer that turns the output into a prioritized written report. Operational runbooks and change orders for the planned work when there's time to do it right.
 
 Everything is read-only by default. Every script has a header with what permissions it needs and what it touches. Nothing phones home, nothing requires a framework.
 
@@ -96,11 +96,12 @@ The same scripts, callable by name from any directory. No paths, no module depen
   <br><em>.\run.ps1 — resolves any script by name, outputs to terminal or CSV</em>
 </p>
 
-### Health Check — 32 Scripts, One Pass
+### Health Check — 39 Scripts, One Pass, Two Reviewers
 
 ```powershell
-.\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01\SQL2025
-.\powershell\reporting\Review-HealthCheckOutput.ps1
+.\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01\SQL2025   # 1. collect
+.\powershell\reporting\Review-HealthCheckOutput.ps1                                      # 2. rules review
+.\powershell\reporting\Invoke-AiAssessment.ps1                                           # 3. AI assessment
 ```
 
 <p align="center">
@@ -109,6 +110,8 @@ The same scripts, callable by name from any directory. No paths, no module depen
 </p>
 
 Flags: missing or stale backups, databases not online, stale DBCC CHECKDB, suspect pages, sa enabled, percent-based autogrowth, unconfigured max server memory, I/O latency above threshold, transaction log pressure, high VLF count, maintenance job failures.
+
+The AI assessment (step 3) does what fixed thresholds can't: it correlates findings across the CSVs into root causes and writes a prioritized report — security, performance, backups, everything — with evidence and a fix for each issue. Works with a personal Claude account at home or a corporate key/gateway at work; nothing account-related is stored in the repo. Setup (including the corporate data-review path with `-DryRun`): [docs/ai-assessment.md](docs/ai-assessment.md).
 
 For a client handover or ownership review, the assessment report generates a scored markdown document:
 
