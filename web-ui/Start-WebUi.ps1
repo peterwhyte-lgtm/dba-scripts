@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     Local web UI for browsing scripts and visualising output CSVs.
 .DESCRIPTION
@@ -309,8 +309,10 @@ tr:hover td{background:#161b22}
 .pie-select{background:#0d1117;border:1px solid #30363d;color:#c9d1d9;border-radius:6px;padding:5px 10px;font-size:.82rem}
 .pie-select:focus{outline:none;border-color:#58a6ff}
 .chart-wrap canvas{max-height:400px}
-.disk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:28px}
-.disk-card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px}
+.disk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:12px;margin-bottom:28px}
+.disk-card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:13px 14px}
+.disk-summary{font-size:.85rem;color:#8b949e;margin-bottom:12px}
+.disk-summary b{color:#e6edf3}
 .disk-card.warn{border-color:#e3b341}.disk-card.crit{border-color:#f78166}
 .disk-mount{font-size:1.05rem;font-weight:600;color:#e6edf3}.disk-vol{font-size:.78rem;color:#8b949e;margin-bottom:10px}
 .bar-track{height:10px;background:#21262d;border-radius:5px;overflow:hidden;margin:8px 0}
@@ -339,6 +341,59 @@ tr:hover td{background:#161b22}
 .vital-label{font-size:.7rem;color:#8b949e;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 .vital-val{font-size:1.1rem;font-weight:600;color:#e6edf3}
 .vital-sub{font-size:.72rem;color:#8b949e;margin-top:2px}
+.data-strip{display:flex;align-items:center;flex-wrap:wrap;gap:10px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.85rem;color:#8b949e}
+.data-strip b{color:#e6edf3}
+.ds-select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;font-size:.82rem;padding:5px 8px;max-width:280px}
+.ds-spacer{flex:1}
+.md-body{max-width:900px;line-height:1.55}
+.md-body h1{font-size:1.35rem;margin:6px 0 4px;border-bottom:1px solid #30363d;padding-bottom:8px}
+.md-body h2{font-size:1.05rem;margin:22px 0 8px;color:#58a6ff}
+.md-body h3{font-size:.95rem;margin:16px 0 6px}
+.md-body p,.md-body li{font-size:.88rem;color:#c9d1d9}
+.md-body ul{padding-left:22px;margin:6px 0}
+.md-body code{background:#21262d;border-radius:4px;padding:1px 5px;font-size:.82rem}
+.md-body pre{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;overflow-x:auto}
+.md-body table{border-collapse:collapse;margin:10px 0}
+.md-body th,.md-body td{border:1px solid #30363d;padding:5px 10px;font-size:.82rem}
+.ai-card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.ai-card .purpose{font-size:.8rem;color:#8b949e;margin-top:4px}
+.badge-ai-cc{background:#1f3a2a;color:#3fb950}
+.badge-ai-api{background:#1a2f47;color:#58a6ff}
+.vital-card.clickable{cursor:pointer;transition:border-color .15s,background .15s}
+.vital-card.clickable:hover{border-color:#58a6ff;background:#1c2128}
+.drill-row{cursor:pointer}
+.drill-row:hover{background:#1c2128}
+.row-detail>td{background:#0d1117 !important;padding:10px 14px !important}
+.rd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:4px 18px;margin-bottom:8px}
+.rd-k{color:#8b949e;font-size:.72rem;margin-right:8px}
+.rd-v{font-size:.78rem;color:#e6edf3;word-break:break-word}
+.rd-fix-label{font-size:.7rem;color:#8b949e;text-transform:uppercase;letter-spacing:.05em;margin:6px 0 4px}
+.rd-fix{background:#161b22;border:1px solid #30363d;border-radius:6px;padding:8px 10px;font-size:.78rem;color:#7ee787;white-space:pre-wrap;margin:0}
+.score-chip{display:inline-block;border:1px solid #30363d;border-radius:14px;padding:3px 12px;margin:0 6px 6px 0;font-size:.78rem;cursor:pointer;background:#161b22;color:#c9d1d9}
+.score-chip.active{border-color:#58a6ff;color:#58a6ff}
+.score-chip .n{font-weight:700}
+.sc-crit{border-left:3px solid #f78166}.sc-warn{border-left:3px solid #ffa657}.sc-info{border-left:3px solid #58a6ff}
+.delta-new{color:#f78166;font-weight:600}.delta-res{color:#3fb950;font-weight:600}
+.tri-row{display:flex;align-items:center;gap:6px}
+.tri-row .triage-link{flex:1}
+.tri-run{font-size:.7rem;padding:2px 9px;flex-shrink:0}
+.tri-result{margin:4px 0 8px;border:1px solid #30363d;border-radius:8px;padding:8px;background:#0d1117;overflow-x:auto;display:none}
+.tri-result table{border-collapse:collapse;width:100%}
+.tri-result th,.tri-result td{border:1px solid #21262d;padding:3px 8px;font-size:.72rem;text-align:left;color:#c9d1d9;white-space:nowrap;max-width:340px;overflow:hidden;text-overflow:ellipsis}
+.tri-result th{color:#8b949e}
+.chip-row{margin:8px 0 2px}
+.chip-row-cats{margin:2px 0 4px;padding-top:8px;border-top:1px dashed #21262d}
+.chip-row-cats .score-chip{font-size:.72rem;padding:2px 10px}
+.chip-row-label{font-size:.68rem;color:#8b949e;text-transform:uppercase;letter-spacing:.06em;margin-right:8px}
+.score-chip:hover{border-color:#58a6ff}
+.ai-card:hover{border-color:#58a6ff}
+.donut{width:70px;height:70px;border-radius:50%;flex-shrink:0;position:relative;background:conic-gradient(var(--dc) calc(var(--p)*1%), #21262d 0)}
+.donut::after{content:attr(data-label);position:absolute;inset:11px;background:#161b22;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:600;color:#e6edf3}
+.donut-sub{font-size:.66rem;color:#8b949e;text-align:center;margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.disk-flex{display:flex;gap:16px;align-items:center}
+.name-cell{position:relative;min-width:190px}
+.name-cell .name-bar{position:absolute;left:2px;top:18%;height:64%;background:#262d38;border-radius:3px;z-index:0;max-width:calc(100% - 4px)}
+.name-cell .name-txt{position:relative;z-index:1}
 .sev-strip{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
 .sev-chip{display:inline-block;padding:5px 16px;border-radius:20px;font-size:.85rem;font-weight:600;border:1px solid}
 .sev-chip.s-crit{background:#3a1a1a;color:#f78166;border-color:#f78166}
@@ -421,11 +476,13 @@ function Wrap-Page([string]$title, [string]$body, [string]$q='', [string]$active
     $navReview   = if ($active -eq 'review')   { "class='active'" } else { '' }
     $navSecurity = if ($active -eq 'security') { "class='active'" } else { '' }
     $navDisk     = if ($active -eq 'disk')     { "class='active'" } else { '' }
+    $navAi       = if ($active -eq 'ai')       { "class='active'" } else { '' }
     $navCsvs     = if ($active -eq 'csvs')     { "class='active'" } else { '' }
     @"
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>$title — dba-tools</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cellipse cx='8' cy='4' rx='6' ry='2.6' fill='%2358a6ff'/%3E%3Cpath d='M2 4v8.2c0 1.4 2.7 2.6 6 2.6s6-1.2 6-2.6V4' fill='none' stroke='%2358a6ff' stroke-width='1.8'/%3E%3Cpath d='M2 8.2c0 1.4 2.7 2.6 6 2.6s6-1.2 6-2.6' fill='none' stroke='%2358a6ff' stroke-width='1.2' opacity='.6'/%3E%3C/svg%3E">
 <style>$CSS</style></head><body>
 <header>
   <h1>dba-tools</h1>
@@ -435,6 +492,7 @@ function Wrap-Page([string]$title, [string]$body, [string]$q='', [string]$active
     <a href="/review" $navReview>Health Check</a>
     <a href="/security" $navSecurity>Security</a>
     <a href="/disk" $navDisk>Disk Space</a>
+    <a href="/ai" $navAi>AI Assessment</a>
     <a href="/csvs" $navCsvs>Output CSVs</a>
   </nav>
   <form class="search-bar" action="/search" method="get">
@@ -470,15 +528,15 @@ function Build-HomePage {
     # ── Top scripts for production DBA ────────────────────────────────────────
     $topDefs = @(
         [ordered]@{P='sql\performance\Get-WaitStatistics.sql';             Desc='Ranked wait types — first stop for unexplained slowness'}
-        [ordered]@{P='sql\performance\Get-BlockingChains.sql';             Desc='Who is blocking whom — head-blocker tree'}
-        [ordered]@{P='sql\performance\Get-ActiveRequests.sql';             Desc='Queries running right now — incident first look'}
-        [ordered]@{P='sql\performance\Get-TopCpuQueries.sql';              Desc='Highest CPU queries from plan cache'}
-        [ordered]@{P='sql\performance\Get-MissingIndexes.sql';             Desc='High-impact missing index recommendations'}
-        [ordered]@{P='sql\monitoring\Get-DatabaseFreeSpaceSummary.sql';    Desc='All databases — allocated, used, and free space ordered by free space'}
+        [ordered]@{P='sql\performance\blocking-locking\Get-BlockingChains.sql';             Desc='Who is blocking whom — head-blocker tree'}
+        [ordered]@{P='sql\performance\active-sessions\Get-ActiveRequests.sql';             Desc='Queries running right now — incident first look'}
+        [ordered]@{P='sql\performance\queries\Get-TopCpuQueries.sql';              Desc='Highest CPU queries from plan cache'}
+        [ordered]@{P='sql\performance\indexes\Get-MissingIndexes.sql';             Desc='High-impact missing index recommendations'}
+        [ordered]@{P='sql\monitoring\disk-space\Get-DatabaseFreeSpaceSummary.sql';    Desc='All databases — allocated, used, and free space ordered by free space'}
         [ordered]@{P='sql\backups\Get-BackupCoverage.sql';                 Desc='Backup currency across all databases'}
-        [ordered]@{P='sql\monitoring\Get-SqlAgentJobFailureSummary.sql';   Desc='Recent job failures and duration outliers'}
-        [ordered]@{P='sql\monitoring\Get-IndexFragmentation.sql';          Desc='Index fragmentation — maintenance candidate list'}
-        [ordered]@{P='sql\monitoring\Get-InstanceConfigurationScore.sql';  Desc='Best-practice configuration score for this instance'}
+        [ordered]@{P='sql\monitoring\jobs\Get-SqlAgentJobFailureSummary.sql';   Desc='Recent job failures and duration outliers'}
+        [ordered]@{P='sql\performance\indexes\Get-IndexFragmentation.sql';          Desc='Index fragmentation — maintenance candidate list'}
+        [ordered]@{P='sql\monitoring\instance\Get-InstanceConfigurationScore.sql';  Desc='Best-practice configuration score for this instance'}
     )
 
     $topCards = ''
@@ -694,53 +752,53 @@ function Build-SearchPage([string]$q) {
 function Build-TriagePage {
     $groups = @(
         [ordered]@{ Title='Right Now'; When='First stop during any active incident — see what is running, waiting, or blocked this moment'; Scripts=@(
-            [ordered]@{P='sql\performance\Get-ActiveRequests.sql';                T='SQL'}
-            [ordered]@{P='sql\performance\Get-ActiveRequestsWithPlan.sql';        T='SQL'}
-            [ordered]@{P='sql\performance\Get-OpenTransactions.sql';              T='SQL'}
-            [ordered]@{P='sql\performance\Get-WorkerThreadsAndActiveSessions.sql';T='SQL'}
+            [ordered]@{P='sql\performance\active-sessions\Get-ActiveRequests.sql';                T='SQL'}
+            [ordered]@{P='sql\performance\active-sessions\Get-ActiveRequestsWithPlan.sql';        T='SQL'}
+            [ordered]@{P='sql\performance\blocking-locking\Get-OpenTransactions.sql';              T='SQL'}
+            [ordered]@{P='sql\performance\active-sessions\Get-WorkerThreadsAndActiveSessions.sql';T='SQL'}
             [ordered]@{P='sql\performance\Get-BackupRestoreProgress.sql';         T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-TempdbHotspots.sql';                 T='SQL'}
+            [ordered]@{P='sql\monitoring\tempdb\Get-TempdbHotspots.sql';                 T='SQL'}
         )}
         [ordered]@{ Title='Blocking & Locks'; When='Users timing out, SSMS hanging, head blocker suspected, long-running transactions'; Scripts=@(
-            [ordered]@{P='sql\performance\Get-BlockingChains.sql';        T='SQL'}
-            [ordered]@{P='sql\performance\Get-BlockingChainsWithPlan.sql';T='SQL'}
-            [ordered]@{P='sql\performance\Get-BlockingSessions.sql';      T='SQL'}
-            [ordered]@{P='sql\performance\Get-BlockingSummary.sql';       T='SQL'}
-            [ordered]@{P='sql\performance\Get-DeadlockSummary.sql';       T='SQL'}
-            [ordered]@{P='sql\performance\Get-ContentionAnalysis.sql';    T='SQL'}
+            [ordered]@{P='sql\performance\blocking-locking\Get-BlockingChains.sql';        T='SQL'}
+            [ordered]@{P='sql\performance\blocking-locking\Get-BlockingChainsWithPlan.sql';T='SQL'}
+            [ordered]@{P='sql\performance\blocking-locking\Get-BlockingSessions.sql';      T='SQL'}
+            [ordered]@{P='sql\performance\blocking-locking\Get-BlockingSummary.sql';       T='SQL'}
+            [ordered]@{P='sql\performance\blocking-locking\Get-DeadlockSummary.sql';       T='SQL'}
+            [ordered]@{P='sql\performance\blocking-locking\Get-ContentionAnalysis.sql';    T='SQL'}
         )}
         [ordered]@{ Title='Slow Queries & High CPU'; When='CPU high, specific queries regressed, plan cache pollution, IO pressure, parameter sniffing suspected, slow stored procedures'; Scripts=@(
-            [ordered]@{P='sql\performance\Get-TopCpuQueries.sql';              T='SQL'}
-            [ordered]@{P='sql\performance\Get-TopIoQueries.sql';               T='SQL'}
-            [ordered]@{P='sql\performance\Get-LongRunningQueries.sql';         T='SQL'}
-            [ordered]@{P='sql\performance\Get-QueryVariance.sql';              T='SQL'}
-            [ordered]@{P='sql\performance\Get-StoredProcedurePerformance.sql'; T='SQL'}
-            [ordered]@{P='sql\performance\Get-SlowQueriesFromCache.sql';       T='SQL'}
+            [ordered]@{P='sql\performance\queries\Get-TopCpuQueries.sql';              T='SQL'}
+            [ordered]@{P='sql\performance\queries\Get-TopIoQueries.sql';               T='SQL'}
+            [ordered]@{P='sql\performance\active-sessions\Get-LongRunningQueries.sql';         T='SQL'}
+            [ordered]@{P='sql\performance\queries\Get-QueryVariance.sql';              T='SQL'}
+            [ordered]@{P='sql\performance\queries\Get-StoredProcedurePerformance.sql'; T='SQL'}
+            [ordered]@{P='sql\performance\queries\Get-SlowQueriesFromCache.sql';       T='SQL'}
             [ordered]@{P='sql\performance\Get-DatabaseIoUsage.sql';            T='SQL'}
-            [ordered]@{P='sql\performance\Get-QueryStoreTopQueries.sql';       T='SQL'}
+            [ordered]@{P='sql\performance\query-store\Get-QueryStoreTopQueries.sql';       T='SQL'}
         )}
         [ordered]@{ Title='Wait Statistics'; When='Unexplained slowness — identify the bottleneck category before digging deeper into queries'; Scripts=@(
             [ordered]@{P='sql\performance\Get-WaitStatistics.sql'; T='SQL'}
         )}
         [ordered]@{ Title='Index & Statistics Health'; When='Queries slowing over time, fragmentation suspected, missing index warnings, heap tables'; Scripts=@(
-            [ordered]@{P='sql\monitoring\Get-IndexFragmentation.sql';           T='SQL'}
-            [ordered]@{P='sql\performance\Get-IndexUsageStats.sql';             T='SQL'}
-            [ordered]@{P='sql\performance\Get-MissingIndexes.sql';              T='SQL'; Fix=$true}
-            [ordered]@{P='sql\performance\Get-UnusedIndexes.sql';               T='SQL'}
-            [ordered]@{P='sql\performance\Get-Heaps.sql';                       T='SQL'}
-            [ordered]@{P='sql\performance\Get-StatisticsHealth.sql';            T='SQL'; Fix=$true}
+            [ordered]@{P='sql\performance\indexes\Get-IndexFragmentation.sql';           T='SQL'}
+            [ordered]@{P='sql\performance\indexes\Get-IndexUsageStats.sql';             T='SQL'}
+            [ordered]@{P='sql\performance\indexes\Get-MissingIndexes.sql';              T='SQL'; Fix=$true}
+            [ordered]@{P='sql\performance\indexes\Get-UnusedIndexes.sql';               T='SQL'}
+            [ordered]@{P='sql\performance\indexes\Get-Heaps.sql';                       T='SQL'}
+            [ordered]@{P='sql\performance\queries\Get-StatisticsHealth.sql';            T='SQL'; Fix=$true}
             [ordered]@{P='sql\maintenance\Generate-IndexMaintenanceScript.sql'; T='SQL'; Fix=$true}
         )}
         [ordered]@{ Title='Disk & Space'; When='Disk alerts, databases growing unexpectedly, transaction log filling up, autogrowth events, filegroup pressure, forgotten snapshots'; Scripts=@(
-            [ordered]@{P='sql\monitoring\Get-DiskSpace.sql';                  T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-DatabaseFreeSpaceSummary.sql';   T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-FilegroupSpace.sql';             T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-DatabaseSnapshotInventory.sql';  T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-DatabaseSizesAndFreeSpace.sql';  T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-TransactionLogSizeAndUsage.sql'; T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-VlfCount.sql';                   T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-AutogrowthHistory.sql';          T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-DatabaseGrowthRisk.sql';         T='SQL'}
+            [ordered]@{P='sql\monitoring\disk-space\Get-DiskSpace.sql';                  T='SQL'}
+            [ordered]@{P='sql\monitoring\disk-space\Get-DatabaseFreeSpaceSummary.sql';   T='SQL'}
+            [ordered]@{P='sql\monitoring\disk-space\Get-FilegroupSpace.sql';             T='SQL'}
+            [ordered]@{P='sql\inventory\Get-DatabaseSnapshotInventory.sql';  T='SQL'}
+            [ordered]@{P='sql\monitoring\disk-space\Get-DatabaseSizesAndFreeSpace.sql';  T='SQL'}
+            [ordered]@{P='sql\monitoring\disk-space\Get-TransactionLogSizeAndUsage.sql'; T='SQL'}
+            [ordered]@{P='sql\monitoring\disk-space\Get-VlfCount.sql';                   T='SQL'}
+            [ordered]@{P='sql\monitoring\disk-space\Get-AutogrowthHistory.sql';          T='SQL'}
+            [ordered]@{P='sql\monitoring\disk-space\Get-DatabaseGrowthRisk.sql';         T='SQL'}
         )}
         [ordered]@{ Title='Backups'; When='Verifying coverage, investigating a missed backup, planning or scripting a restore, validating DR restore tests, sizing backup storage'; Scripts=@(
             [ordered]@{P='sql\backups\Get-BackupCoverage.sql';          T='SQL'}
@@ -752,36 +810,36 @@ function Build-TriagePage {
             [ordered]@{P='sql\backups\Generate-RestoreScript.sql';      T='SQL'; Fix=$true}
         )}
         [ordered]@{ Title='Jobs & Errors'; When='Agent job failures, unexpected error log entries, maintenance jobs not running on schedule, silent duration creep, error pattern analysis'; Scripts=@(
-            [ordered]@{P='sql\monitoring\Get-ErrorLogPatterns.sql';          T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-SqlAgentJobFailureSummary.sql'; T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-JobDurationTrends.sql';         T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-RecentErrorLogEntries.sql';     T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-SqlAgentJobOverview.sql';       T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-SchemaChangeHistory.sql';       T='SQL'}
+            [ordered]@{P='sql\monitoring\error-log\Get-ErrorLogPatterns.sql';          T='SQL'}
+            [ordered]@{P='sql\monitoring\jobs\Get-SqlAgentJobFailureSummary.sql'; T='SQL'}
+            [ordered]@{P='sql\monitoring\jobs\Get-JobDurationTrends.sql';         T='SQL'}
+            [ordered]@{P='sql\monitoring\error-log\Get-RecentErrorLogEntries.sql';     T='SQL'}
+            [ordered]@{P='sql\monitoring\jobs\Get-SqlAgentJobOverview.sql';       T='SQL'}
+            [ordered]@{P='sql\monitoring\error-log\Get-SchemaChangeHistory.sql';       T='SQL'}
         )}
         [ordered]@{ Title='Security'; When='Permissions audit, sysadmin membership review, orphaned users, weak password policy, expiring certificates, login activity review'; Scripts=@(
-            [ordered]@{P='sql\security\Get-SysadminMembers.sql';            T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-LoginLastActivity.sql';         T='SQL'}
-            [ordered]@{P='sql\security\Get-WeakLoginSettings.sql';          T='SQL'}
-            [ordered]@{P='sql\security\Get-UserPermissionsAudit.sql';       T='SQL'}
-            [ordered]@{P='sql\security\Get-OrphanedUsers.sql';              T='SQL'}
-            [ordered]@{P='sql\security\Get-CertificateExpiryWarnings.sql';  T='SQL'}
+            [ordered]@{P='sql\security\access\Get-SysadminMembers.sql';            T='SQL'}
+            [ordered]@{P='sql\security\access\Get-LoginLastActivity.sql';         T='SQL'}
+            [ordered]@{P='sql\security\access\Get-WeakLoginSettings.sql';          T='SQL'}
+            [ordered]@{P='sql\security\access\Get-UserPermissionsAudit.sql';       T='SQL'}
+            [ordered]@{P='sql\security\access\Get-OrphanedUsers.sql';              T='SQL'}
+            [ordered]@{P='sql\security\encryption\Get-CertificateExpiryWarnings.sql';  T='SQL'}
         )}
         [ordered]@{ Title='Instance Configuration'; When='New server review, performance baseline, best practice settings check, integrity, TempDB configuration, linked servers'; Scripts=@(
-            [ordered]@{P='sql\monitoring\Get-Databases.sql';                   T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-InstanceConfigurationScore.sql';  T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-TempDbFileBalance.sql';           T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-CollationConflicts.sql';          T='SQL'}
+            [ordered]@{P='sql\inventory\Get-Databases.sql';                   T='SQL'}
+            [ordered]@{P='sql\monitoring\instance\Get-InstanceConfigurationScore.sql';  T='SQL'}
+            [ordered]@{P='sql\monitoring\tempdb\Get-TempDbFileBalance.sql';           T='SQL'}
+            [ordered]@{P='sql\monitoring\features\Get-CollationConflicts.sql';          T='SQL'}
             [ordered]@{P='sql\monitoring\Get-LinkedServerConnectivity.sql';    T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-MaxdopConfiguration.sql';         T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-MemoryConfigurationAndUsage.sql'; T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-LastDbccCheckdb.sql';             T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-SuspectPages.sql';                T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-DatabaseHealth.sql';              T='SQL'}
+            [ordered]@{P='sql\monitoring\instance\Get-MaxdopConfiguration.sql';         T='SQL'}
+            [ordered]@{P='sql\monitoring\instance\Get-MemoryConfigurationAndUsage.sql'; T='SQL'}
+            [ordered]@{P='sql\monitoring\databases\Get-LastDbccCheckdb.sql';             T='SQL'}
+            [ordered]@{P='sql\monitoring\databases\Get-SuspectPages.sql';                T='SQL'}
+            [ordered]@{P='sql\monitoring\databases\Get-DatabaseHealth.sql';              T='SQL'}
         )}
         [ordered]@{ Title='Decommission & Traces'; When='Retiring a server or database, profiling what stored procedures are being called, auditing who connects and from where — run Get-ActiveConnectionsByDatabase first'; Scripts=@(
             [ordered]@{P='sql\monitoring\Get-ActiveConnectionsByDatabase.sql';  T='SQL'}
-            [ordered]@{P='sql\monitoring\Get-CrossDatabaseDependencies.sql';    T='SQL'}
+            [ordered]@{P='sql\monitoring\features\Get-CrossDatabaseDependencies.sql';    T='SQL'}
             [ordered]@{P='sql\traces\Get-ActiveXeSessions.sql';              T='SQL'}
             [ordered]@{P='sql\traces\Create-DecommissionAuditSession.sql';   T='SQL'}
             [ordered]@{P='sql\traces\Create-LoginActivitySession.sql';       T='SQL'}
@@ -791,7 +849,13 @@ function Build-TriagePage {
         )}
     )
 
-    $html = "<h2>What are you investigating?</h2><div class='triage-grid'>"
+    # ── Stage 5: live incident cockpit — run scripts here, results render inline ──
+    $defaultSrv = if ($env:DBASCRIPTS_SERVER) { Html-Escape $env:DBASCRIPTS_SERVER } else { '' }
+    $srvHint    = if ($env:DBASCRIPTS_SERVER) { $env:DBASCRIPTS_SERVER } else { 'local ( . )' }
+    $html  = "<div class='data-strip'><div><b>Incident cockpit</b> <span class='ds-dim'>— Run &#9654; executes against the target and shows results right here. Read-only Get-* scripts only; generators open as source to review first.</span></div>"
+    $html += "<div class='ds-spacer'></div><label class='ds-dim'>Target:</label> <input id='tri-srv' class='server-input' placeholder='$srvHint' value='$defaultSrv' autocomplete='off'></div>"
+    $html += "<h2>What are you investigating?</h2><div class='triage-grid'>"
+    $rid = 0
     foreach ($g in $groups) {
         $html += "<div class='triage-card'><div class='triage-title'>$(Html-Escape $g.Title)</div><div class='triage-when'>$(Html-Escape $g.When)</div><div class='triage-links'>"
         foreach ($s in $g.Scripts) {
@@ -801,11 +865,49 @@ function Build-TriagePage {
             $enc    = [Uri]::EscapeDataString($s.P)
             $bdgCls = if ($s.T -eq 'SQL') { 'badge-sql' } else { 'badge-ps' }
             $fixTag = if ($s.Fix) { "<span class='triage-fix-tag'>generates fix</span>" } else { '' }
-            $html  += "<a href='/view?p=$enc' class='triage-link'><span class='badge $bdgCls'>$($s.T)</span>$(Html-Escape $name)$fixTag</a>"
+            $runnable = $name -like 'Get-*'
+            $rid++
+            $html += "<div class='tri-row'><a href='/view?p=$enc' class='triage-link'><span class='badge $bdgCls'>$($s.T)</span>$(Html-Escape $name)$fixTag</a>"
+            if ($runnable) { $html += "<button class='run-btn tri-run' onclick=`"runTriage(this,'$enc','tri-res-$rid')`">Run &#9654;</button>" }
+            $html += "</div>"
+            if ($runnable) { $html += "<div class='tri-result' id='tri-res-$rid'></div>" }
         }
         $html += "</div></div>"
     }
     $html += "</div>"
+    $html += @"
+<script>
+function triEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+async function runTriage(btn,p,rid){
+  const srv=document.getElementById('tri-srv').value.trim()||'.';
+  const res=document.getElementById(rid);
+  const old=btn.textContent;btn.disabled=true;btn.textContent='running…';
+  res.style.display='block';res.innerHTML="<span style='color:#8b949e'>Running against "+triEsc(srv)+"…</span>";
+  try{
+    const r=await fetch('/api/run?p='+p+'&server='+encodeURIComponent(srv)+'&dryrun=0');
+    const d=await r.json();
+    if(!d.ok){res.innerHTML="<span style='color:#f78166'>"+triEsc(d.error||'run failed')+"</span>";}
+    else{
+      const cp=new URL(d.url,location.origin).searchParams.get('p');
+      const cr=await fetch('/api/csv?p='+encodeURIComponent(cp));
+      const cd=await cr.json();
+      renderTriResult(res,cd,d.url);
+    }
+  }catch(e){res.innerHTML="<span style='color:#f78166'>"+triEsc(e.message)+"</span>";}
+  btn.disabled=false;btn.textContent=old;
+}
+function renderTriResult(el,d,fullUrl){
+  if(!d.rows||!d.rows.length){el.innerHTML="<span style='color:#3fb950'>No rows returned — clean.</span> <a href='"+fullUrl+"' style='margin-left:8px'>open CSV view</a>";return;}
+  const cols=d.headers.slice(0,8);
+  let h="<div style='margin-bottom:6px;color:#8b949e;font-size:.74rem'>"+d.rows.length+" rows — showing first "+Math.min(20,d.rows.length);
+  h+=(d.headers.length>8?" ("+(d.headers.length-8)+" more columns in full view)":"");
+  h+=" <a href='"+fullUrl+"' style='margin-left:8px'>open full CSV view</a></div><table><thead><tr>";
+  cols.forEach(function(c){h+="<th>"+triEsc(c)+"</th>";});h+="</tr></thead><tbody>";
+  d.rows.slice(0,20).forEach(function(r){h+="<tr>";cols.forEach(function(c){var v=r[c];h+="<td>"+triEsc(v==null?'':v)+"</td>";});h+="</tr>";});
+  h+="</tbody></table>";el.innerHTML=h;
+}
+</script>
+"@
     Wrap-Page 'Triage' $html '' 'triage'
 }
 
@@ -1376,40 +1478,78 @@ $rerunJs
 
 # ── health check review dashboard ──────────────────────────────────────────────
 
-function Build-ReviewPage([string]$folder) {
-    $hcRoot = Join-Path $repoRoot 'output-files\healthcheck'
-    # Resolve bare folder name (e.g. ".-20260531-095824") to full path
-    if ($folder -and -not [System.IO.Path]::IsPathRooted($folder)) {
-        $folder = Join-Path $hcRoot $folder
-    }
-    if (-not $folder) {
-        if (Test-Path $hcRoot) {
-            $latest = Get-ChildItem -LiteralPath $hcRoot -Directory |
-                      Sort-Object LastWriteTime -Descending | Select-Object -First 1
-            if ($latest) { $folder = $latest.FullName }
-        }
-    }
+# ── Shared collection-folder helpers (data strip) ──────────────────────────────
 
-    $folderEnc  = Html-Escape ($folder ?? '')
+function Resolve-HcFolder([string]$folder) {
+    $hcRoot = Join-Path $repoRoot 'output-files\healthcheck'
+    if ($folder -and -not [System.IO.Path]::IsPathRooted($folder)) { $folder = Join-Path $hcRoot $folder }
+    if (-not $folder -and (Test-Path $hcRoot)) {
+        $latest = Get-ChildItem -LiteralPath $hcRoot -Directory |
+                  Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        if ($latest) { $folder = $latest.FullName }
+    }
+    $folder
+}
+
+function Get-HcFolderAge([System.IO.FileSystemInfo]$dir) {
+    $stamp = if ($dir.Name -match '-(\d{8})-(\d{6})$') {
+        try { [datetime]::ParseExact($Matches[1] + $Matches[2], 'yyyyMMddHHmmss', $null) } catch { $dir.LastWriteTime }
+    } else { $dir.LastWriteTime }
+    $span = (Get-Date) - $stamp
+    $age  = if ($span.TotalMinutes -lt 60) { "{0:N0}m ago" -f $span.TotalMinutes }
+            elseif ($span.TotalHours -lt 48) { "{0:N1}h ago" -f $span.TotalHours }
+            else { "{0:N0}d ago" -f $span.TotalDays }
+    [PSCustomObject]@{ Stamp = $stamp; Age = $age }
+}
+
+# One collect action, many lenses: every collection-driven page (review/security/disk/ai)
+# renders this strip instead of its own run button. The dropdown switches which collection
+# folder the page analyses; Collect fresh runs the full 39-script collection once for all pages.
+function Build-DataStrip([string]$folder, [string]$page) {
+    $hcRoot     = Join-Path $repoRoot 'output-files\healthcheck'
     $defaultSrv = if ($env:DBASCRIPTS_SERVER) { Html-Escape $env:DBASCRIPTS_SERVER } else { '' }
     $srvHint    = if ($env:DBASCRIPTS_SERVER) { $env:DBASCRIPTS_SERVER } else { 'local ( . )' }
-    $html = @"
-<div style='display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px'>
-  <form class='folder-row' style='margin:0;flex:1;min-width:0' method='get' action='/review'>
-    <label>Folder:</label>
-    <input class='folder-input' name='folder' value='$folderEnc' placeholder='Leave blank for most recent…'>
-    <button type='submit' class='folder-btn'>Load</button>
-  </form>
-  <div class='run-bar' style='flex-shrink:0'>
-    <label>Server:</label>
-    <input id='hc-srv' class='server-input' placeholder='$srvHint' value='$defaultSrv' autocomplete='off'>
-    <button id='hc-run-btn' class='run-btn' onclick='runHealthcheck("review")'>Run Health Check &#9654;</button>
-  </div>
+
+    $info = "Data: <span class='ds-dim'>no collection yet</span>"
+    $historyOpts = ''
+    if (Test-Path $hcRoot) {
+        $dirs = @(Get-ChildItem -LiteralPath $hcRoot -Directory | Sort-Object LastWriteTime -Descending)
+        foreach ($d in $dirs) {
+            $meta = Get-HcFolderAge $d
+            $sel  = if ($folder -and ($d.FullName -eq $folder)) { ' selected' } else { '' }
+            $historyOpts += "<option value='$(Html-Escape $d.Name)'$sel>$(Html-Escape $d.Name) &middot; $($meta.Age)</option>"
+        }
+    }
+    if ($folder -and (Test-Path -LiteralPath $folder)) {
+        $dir      = Get-Item -LiteralPath $folder
+        $meta     = Get-HcFolderAge $dir
+        $csvCount = @(Get-ChildItem -LiteralPath $folder -Filter '*.csv').Count
+        $svrLabel = ($dir.Name -replace '-\d{8}-\d{6}$', '')
+        $siCsv    = Join-Path $folder 'server-info.csv'
+        if (Test-Path -LiteralPath $siCsv) {
+            $row  = Import-Csv -LiteralPath $siCsv -EA SilentlyContinue | Select-Object -First 1
+            $prop = if ($row) { $row.PSObject.Properties | Where-Object { $_.Name -match 'server' } | Select-Object -First 1 }
+            if ($prop -and $prop.Value) { $svrLabel = $prop.Value }
+        }
+        $info = "Data: <b>$(Html-Escape $svrLabel)</b> &middot; collected $($meta.Stamp.ToString('dd MMM HH:mm')) <span class='ds-dim'>($($meta.Age))</span> &middot; $csvCount CSVs"
+    }
+
+    $historySel = if ($historyOpts) {
+        "<select class='ds-select' onchange=`"if(this.value)window.location='/$page?folder='+encodeURIComponent(this.value)`">$historyOpts</select>"
+    } else { '' }
+
+    @"
+<div class='data-strip'>
+  <div>$info</div>
+  $historySel
+  <div class='ds-spacer'></div>
+  <input id='hc-srv' class='server-input' placeholder='$srvHint' value='$defaultSrv' autocomplete='off' title='Server to collect from'>
+  <button id='hc-run-btn' class='run-btn' onclick='runHealthcheck("$page")'>Collect fresh &#9654;</button>
 </div>
 <div id='hc-run-err' class='run-error' style='display:none;margin-bottom:10px'></div>
 <div id='hc-overlay' class='run-overlay'>
   <div class='run-spinner'></div>
-  <div class='run-spinner-label'>Running health check — collecting 32 scripts, please wait…</div>
+  <div class='run-spinner-label'>Collecting 39 healthcheck scripts — feeds Health Check, Security, Disk, and AI pages…</div>
 </div>
 <script>
 async function runHealthcheck(page){
@@ -1429,10 +1569,198 @@ async function runHealthcheck(page){
 }
 </script>
 "@
+}
+
+# ── AI Assessment page ─────────────────────────────────────────────────────────
+
+function Build-AiPage([string]$folder, [string]$report) {
+    $folder    = Resolve-HcFolder $folder
+    $assessDir = Join-Path $repoRoot 'output-files\assessments'
+    $html      = Build-DataStrip $folder 'ai'
+
+    # ── single report view ─────────────────────────────────────────────────────
+    if ($report) {
+        $reportPath = Join-Path $assessDir ([System.IO.Path]::GetFileName($report))
+        if (-not (Test-Path -LiteralPath $reportPath)) {
+            $html += "<p class='no-data'>Report not found: $(Html-Escape $report)</p>"
+            return Wrap-Page 'AI Assessment' $html '' 'ai'
+        }
+        $md = Get-Content -LiteralPath $reportPath -Raw -Encoding UTF8
+        $rendered = try { (ConvertFrom-Markdown -InputObject $md).Html } catch { "<pre>$(Html-Escape $md)</pre>" }
+        $html += "<div class='back'><a href='/ai'>&#8592; all assessments</a></div>"
+        $html += "<div class='md-body'>$rendered</div>"
+        return Wrap-Page 'AI Assessment' $html '' 'ai'
+    }
+
+    # ── run panel ──────────────────────────────────────────────────────────────
+    $hasKey    = [bool]$env:ANTHROPIC_API_KEY
+    $folderArg = if ($folder) { Html-Escape (Split-Path $folder -Leaf) } else { '' }
+    $runBtns   = "<button class='run-btn' onclick='runAi(1)' title='Builds the exact prompt to a preview file without calling any API'>Preview prompt (DryRun)</button>"
+    if ($hasKey) {
+        $runBtns += " <button class='run-btn' onclick='runAi(0)'>Run AI Assessment &#9654;</button>"
+        $keyNote  = "<span class='ds-dim'>ANTHROPIC_API_KEY detected &middot; model claude-opus-4-8 &middot; typically under `$1 per run</span>"
+    } else {
+        $keyNote  = "<span class='ds-dim'>No ANTHROPIC_API_KEY set — live runs disabled. Ask a Claude Code session to write the assessment instead, or see <a href='/view?p=docs%5Cai-assessment.md'>docs/ai-assessment.md</a> for key setup (home) and gateway repointing (work).</span>"
+    }
+    $html += @"
+<div class='data-strip' style='margin-top:-6px'>
+  <div>AI assessment of the selected collection: $runBtns</div>
+  <div class='ds-spacer'></div>
+  $keyNote
+</div>
+<div id='ai-run-err' class='run-error' style='display:none;margin-bottom:10px'></div>
+<div id='ai-overlay' class='run-overlay'>
+  <div class='run-spinner'></div>
+  <div class='run-spinner-label' id='ai-overlay-label'>Running AI assessment — this can take a few minutes…</div>
+</div>
+<script>
+async function runAi(dry){
+  const err=document.getElementById('ai-run-err');
+  document.getElementById('ai-overlay-label').textContent = dry ? 'Building prompt preview…' : 'Running AI assessment — this can take a few minutes…';
+  document.getElementById('ai-overlay').style.display='flex';
+  err.style.display='none';
+  try{
+    const r=await fetch('/api/run-ai?folder=$folderArg&dryrun='+dry);
+    const d=await r.json();
+    if(d.ok){window.location.href='/ai';return;}
+    err.textContent=d.error||'Unknown error';err.style.display='';
+  }catch(e){err.textContent='Request failed: '+e.message;err.style.display='';}
+  document.getElementById('ai-overlay').style.display='none';
+}
+</script>
+"@
+
+    # ── reports list ───────────────────────────────────────────────────────────
+    $reports = if (Test-Path $assessDir) {
+        @(Get-ChildItem -LiteralPath $assessDir -Filter '*.md' | Sort-Object LastWriteTime -Descending)
+    } else { @() }
+
+    if (-not $reports) {
+        $html += "<p class='no-data'>No assessments yet. Collect a healthcheck above, then run the AI assessment — or ask a Claude Code session for one.</p>"
+    } else {
+        $html += "<div class='vital-row-label'>Assessments ($($reports.Count))</div>"
+        foreach ($r in $reports) {
+            $isCc  = $r.BaseName -match '-claude-code$'
+            $badge = if ($isCc) { "<span class='badge badge-ai-cc'>Claude Code</span>" } else { "<span class='badge badge-ai-api'>API</span>" }
+            $meta  = Get-HcFolderAge $r
+            # Verdict excerpt: first paragraph under '## Verdict'
+            $verdict = ''
+            $lines = Get-Content -LiteralPath $r.FullName -TotalCount 40 -Encoding UTF8
+            $vIdx  = [Array]::IndexOf(($lines | ForEach-Object { $_.Trim() }), '## Verdict')
+            if ($vIdx -ge 0) {
+                $para = $lines[($vIdx+1)..([Math]::Min($vIdx+8, $lines.Count-1))] | Where-Object { $_.Trim() } | Select-Object -First 3
+                $verdict = (($para -join ' ') -replace '\*\*','').Trim()
+                if ($verdict.Length -gt 260) { $verdict = $verdict.Substring(0, 260) + '…' }
+            }
+            $enc = [Uri]::EscapeDataString($r.Name)
+            $html += "<div class='ai-card'>$badge <a href='/ai?report=$enc'>$(Html-Escape $r.BaseName)</a> <span class='ds-dim' style='font-size:.75rem'>&middot; $($meta.Age)</span>"
+            if ($verdict) { $html += "<div class='purpose'>$(Html-Escape $verdict)</div>" }
+            $html += "</div>"
+        }
+    }
+
+    # prompt previews (dry runs)
+    $previews = if (Test-Path $assessDir) {
+        @(Get-ChildItem -LiteralPath $assessDir -Filter 'prompt-preview-*.txt' | Sort-Object LastWriteTime -Descending | Select-Object -First 5)
+    } else { @() }
+    if ($previews) {
+        $html += "<div class='vital-row-label'>Prompt previews (what a run would send)</div>"
+        foreach ($p in $previews) {
+            $rel = "output-files\assessments\$($p.Name)"
+            $enc = [Uri]::EscapeDataString($rel)
+            $html += "<div class='ai-card'><a href='/view?p=$enc'>$(Html-Escape $p.BaseName)</a> <span class='ds-dim' style='font-size:.75rem'>&middot; $([Math]::Round($p.Length/1kb)) KB</span></div>"
+        }
+    }
+
+    Wrap-Page 'AI Assessment' $html '' 'ai'
+}
+
+function Build-ReviewPage([string]$folder) {
+    $folder = Resolve-HcFolder $folder
+    $html   = Build-DataStrip $folder 'review'
 
     if (-not $folder -or -not (Test-Path -LiteralPath $folder)) {
         $html += "<p class='no-data'>No healthcheck folder found. Run <code>Invoke-HealthCheckCollection.ps1</code> first.</p>"
         return Wrap-Page 'Health Check' $html '' 'review'
+    }
+
+    # ── Stage 4: rules-engine scorecard + delta vs previous collection ─────────
+    function Get-FindingsRows([string]$hcFolder) {
+        $fp = Join-Path $hcFolder 'findings.csv'
+        if (-not (Test-Path -LiteralPath $fp)) {
+            $rvw = Join-Path $repoRoot 'powershell\reporting\Review-HealthCheckOutput.ps1'
+            if (Test-Path $rvw) { try { & $rvw -FolderPath $hcFolder -OutputFormat Csv *> $null } catch {} }
+        }
+        if (Test-Path -LiteralPath $fp) { @(Import-Csv -LiteralPath $fp -EA SilentlyContinue) } else { @() }
+    }
+
+    $fx = Get-FindingsRows $folder
+    if ($fx.Count -gt 0) {
+        $nCrit = @($fx | Where-Object Severity -eq 'CRITICAL').Count
+        $nWarn = @($fx | Where-Object Severity -eq 'WARNING').Count
+        $nInfo = @($fx | Where-Object Severity -eq 'INFO').Count
+
+        # delta vs the collection immediately before this one
+        $deltaHtml = ''
+        $hcRootD  = Join-Path $repoRoot 'output-files\healthcheck'
+        $allDirs  = @(Get-ChildItem -LiteralPath $hcRootD -Directory | Sort-Object LastWriteTime -Descending)
+        $curIdx   = [Array]::FindIndex($allDirs, [Predicate[object]]{ param($d) $d.FullName -eq $folder })
+        if ($curIdx -ge 0 -and $curIdx + 1 -lt $allDirs.Count) {
+            $prevDir  = $allDirs[$curIdx + 1]
+            $px       = Get-FindingsRows $prevDir.FullName
+            if ($px.Count -gt 0) {
+                $keyOf    = { "$($args[0].Severity)|$($args[0].Category)|$($args[0].Subject)|$($args[0].Detail)" }
+                $prevKeys = [System.Collections.Generic.HashSet[string]]::new([string[]]@($px | ForEach-Object { & $keyOf $_ }))
+                $curKeys  = [System.Collections.Generic.HashSet[string]]::new([string[]]@($fx | ForEach-Object { & $keyOf $_ }))
+                $newF     = @($fx | Where-Object { -not $prevKeys.Contains((& $keyOf $_)) })
+                $resF     = @($px | Where-Object { -not $curKeys.Contains((& $keyOf $_)) })
+                $deltaHtml = "<span class='delta-box ds-dim'>vs $(Html-Escape $prevDir.Name): <span class='delta-new'>&#9650; $($newF.Count) new</span> &middot; <span class='delta-res'>&#9660; $($resF.Count) resolved</span></span>"
+                if ($newF.Count -gt 0) {
+                    $deltaHtml += "<details style='margin-top:6px'><summary style='font-size:.78rem;color:#f78166;cursor:pointer'>New findings since previous collection</summary><div class='findings-list'>"
+                    foreach ($f in ($newF | Select-Object -First 30)) { $deltaHtml += "<div class='finding-row f-crit'><span class='sv sv-red'>NEW</span><span class='find-cat'>$(Html-Escape $f.Category)</span><span class='find-subj'>$(Html-Escape $f.Subject)</span><div class='find-detail'>$(Html-Escape $f.Detail)</div></div>" }
+                    if ($newF.Count -gt 30) { $deltaHtml += "<p class='no-data'>…and $($newF.Count - 30) more.</p>" }
+                    $deltaHtml += "</div></details>"
+                }
+                if ($resF.Count -gt 0) {
+                    $deltaHtml += "<details style='margin-top:6px'><summary style='font-size:.78rem;color:#3fb950;cursor:pointer'>Resolved since previous collection</summary><div class='findings-list'>"
+                    foreach ($f in ($resF | Select-Object -First 30)) { $deltaHtml += "<div class='finding-row'><span class='sv sv-green'>GONE</span><span class='find-cat'>$(Html-Escape $f.Category)</span><span class='find-subj'>$(Html-Escape $f.Subject)</span><div class='find-detail'>$(Html-Escape $f.Detail)</div></div>" }
+                    if ($resF.Count -gt 30) { $deltaHtml += "<p class='no-data'>…and $($resF.Count - 30) more.</p>" }
+                    $deltaHtml += "</div></details>"
+                }
+            }
+        }
+
+        $sevChips  = "<span class='chip-row-label'>Severity</span>"
+        $sevChips += "<span class='score-chip sc-crit' data-fx='sev:CRITICAL' onclick='fxChip(this)'><span class='n'>$nCrit</span> Critical</span>"
+        $sevChips += "<span class='score-chip sc-warn' data-fx='sev:WARNING' onclick='fxChip(this)'><span class='n'>$nWarn</span> Warning</span>"
+        $sevChips += "<span class='score-chip sc-info' data-fx='sev:INFO' onclick='fxChip(this)'><span class='n'>$nInfo</span> Info</span>"
+        $catChips  = "<span class='chip-row-label'>Category</span>"
+        foreach ($cat in (@($fx | Group-Object Category | Sort-Object Count -Descending))) {
+            $catChips += "<span class='score-chip' data-fx='cat:$(Html-Escape $cat.Name)' onclick='fxChip(this)'><span class='n'>$($cat.Count)</span> $(Html-Escape $cat.Name)</span>"
+        }
+
+        $html += "<details class='rv-section' open><summary>Scorecard — Rules Engine ($($fx.Count) findings)</summary>"
+        $html += "<div class='chip-row'>$sevChips</div><div class='chip-row chip-row-cats'>$catChips</div>$deltaHtml"
+        $html += "<div class='findings-list' id='fx-list' style='margin-top:10px'>"
+        $ordF = @{ CRITICAL = 0; WARNING = 1; INFO = 2 }
+        foreach ($f in ($fx | Sort-Object { $ordF[$_.Severity] }, Category, Subject)) {
+            $tagCls = switch ($f.Severity) { 'CRITICAL' {'sv sv-red'} 'WARNING' {'sv sv-orange'} default {'sv sv-blue'} }
+            $html  += "<div class='finding-row fx-row' data-sev='$($f.Severity)' data-cat='$(Html-Escape $f.Category)'><span class='$tagCls'>$($f.Severity)</span><span class='find-cat'>$(Html-Escape $f.Category)</span><span class='find-subj'>$(Html-Escape $f.Subject)</span><div class='find-detail'>$(Html-Escape $f.Detail)</div></div>"
+        }
+        $html += "</div></details><script>
+function fxChip(el){
+  var f=el.getAttribute('data-fx');var on=el.classList.contains('active');
+  document.querySelectorAll('.score-chip').forEach(function(c){c.classList.remove('active')});
+  document.querySelectorAll('.fx-row').forEach(function(r){r.style.display=''});
+  if(on)return;
+  el.classList.add('active');
+  var kind=f.split(':')[0],val=f.substring(f.indexOf(':')+1);
+  document.querySelectorAll('.fx-row').forEach(function(r){
+    var m=(kind==='sev')?(r.getAttribute('data-sev')===val):(r.getAttribute('data-cat')===val);
+    if(!m)r.style.display='none';
+  });
+}
+</script>"
     }
 
     function Read-RvwCsv([string]$name) {
@@ -2044,6 +2372,54 @@ function filterFindings(btn){
     Wrap-Page 'Health Check' $html '' 'review'
 }
 
+# ── drill-down table (Stage 3): section → sortable table → row detail + fix ────
+
+function Build-DrillTable {
+    param(
+        [string]$Id,
+        [string]$Title,
+        [object[]]$Rows,
+        [string[]]$Cols,
+        [scriptblock]$Remedy,             # optional: param($row) → suggested T-SQL / action text
+        [string]$EmptyNote = 'Nothing found — clean.',
+        [switch]$Open
+    )
+    $openAttr = if ($Open) { ' open' } else { '' }
+    $Rows = @($Rows | Where-Object { $null -ne $_ })   # empty CSVs arrive as $null; @($null).Count is 1
+    $n   = $Rows.Count
+    $out = "<details class='rv-section' id='$Id'$openAttr><summary>$Title ($n)</summary>"
+    if ($n -eq 0) { return $out + "<p class='no-data'>$EmptyNote</p></details>" }
+    if (-not $Cols) { $Cols = @($Rows[0].PSObject.Properties.Name | Select-Object -First 6) }
+    $out += "<p class='no-data' style='margin:2px 0 8px;font-size:.74rem'>Click a row for full detail and the suggested action.</p>"
+    $out += "<div class='table-wrap'><table><thead><tr>"
+    foreach ($c in $Cols) { $out += "<th>$(Html-Escape (($c -replace '_',' ')))</th>" }
+    $out += "</tr></thead><tbody>"
+    foreach ($r in $Rows) {
+        $out += "<tr class='drill-row' onclick='toggleDetail(this)'>"
+        foreach ($c in $Cols) { $out += "<td>$(Html-Escape ([string]$r.$c))</td>" }
+        $out += "</tr>"
+        $detail = "<div class='rd-grid'>"
+        foreach ($p in $r.PSObject.Properties) {
+            $detail += "<div><span class='rd-k'>$(Html-Escape ($p.Name -replace '_',' '))</span><span class='rd-v'>$(Html-Escape ([string]$p.Value))</span></div>"
+        }
+        $detail += "</div>"
+        if ($Remedy) {
+            $fix = try { & $Remedy $r } catch { $null }
+            if ($fix) { $detail += "<div class='rd-fix-label'>Suggested action</div><pre class='rd-fix'>$(Html-Escape $fix)</pre>" }
+        }
+        $out += "<tr class='row-detail' style='display:none'><td colspan='$($Cols.Count)'>$detail</td></tr>"
+    }
+    $out + "</tbody></table></div></details>"
+}
+
+# Shared JS for drill-down pages (emit once per page that uses Build-DrillTable)
+$script:DrillJs = @"
+<script>
+function toggleDetail(tr){var d=tr.nextElementSibling;if(d&&d.classList.contains('row-detail')){d.style.display=(d.style.display==='none')?'':'none';}}
+function drillTo(id){var d=document.getElementById(id);if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});}}
+</script>
+"@
+
 # ── security review page ────────────────────────────────────────────────────────
 
 function Build-SecurityScripts([object[]]$scripts) {
@@ -2088,56 +2464,8 @@ async function runSecScript(path,dryrun){
 }
 
 function Build-SecurityPage([string]$folder) {
-    $hcRoot = Join-Path $repoRoot 'output-files\healthcheck'
-    if ($folder -and -not [System.IO.Path]::IsPathRooted($folder)) { $folder = Join-Path $hcRoot $folder }
-    if (-not $folder) {
-        if (Test-Path $hcRoot) {
-            $latest = Get-ChildItem -LiteralPath $hcRoot -Directory |
-                      Sort-Object LastWriteTime -Descending | Select-Object -First 1
-            if ($latest) { $folder = $latest.FullName }
-        }
-    }
-
-    $folderEnc  = Html-Escape ($folder ?? '')
-    $defaultSrv = if ($env:DBASCRIPTS_SERVER) { Html-Escape $env:DBASCRIPTS_SERVER } else { '' }
-    $srvHint    = if ($env:DBASCRIPTS_SERVER) { $env:DBASCRIPTS_SERVER } else { 'local ( . )' }
-
-    $html = @"
-<div style='display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px'>
-  <form class='folder-row' style='margin:0;flex:1;min-width:0' method='get' action='/security'>
-    <label>Folder:</label>
-    <input class='folder-input' name='folder' value='$folderEnc' placeholder='Leave blank for most recent…'>
-    <button type='submit' class='folder-btn'>Load</button>
-  </form>
-  <div class='run-bar' style='flex-shrink:0'>
-    <label>Server:</label>
-    <input id='hc-srv' class='server-input' placeholder='$srvHint' value='$defaultSrv' autocomplete='off'>
-    <button id='hc-run-btn' class='run-btn' onclick='runHealthcheck("security")'>Run Security Check &#9654;</button>
-  </div>
-</div>
-<div id='hc-run-err' class='run-error' style='display:none;margin-bottom:10px'></div>
-<div id='hc-overlay' class='run-overlay'>
-  <div class='run-spinner'></div>
-  <div class='run-spinner-label'>Running security check — collecting data, please wait…</div>
-</div>
-<script>
-async function runHealthcheck(page){
-  const srv=document.getElementById('hc-srv').value.trim()||'.';
-  const btn=document.getElementById('hc-run-btn');
-  const err=document.getElementById('hc-run-err');
-  document.getElementById('hc-overlay').style.display='flex';
-  btn.disabled=true;err.style.display='none';
-  try{
-    const r=await fetch('/api/run-healthcheck?server='+encodeURIComponent(srv)+'&page='+page);
-    const d=await r.json();
-    if(d.ok){window.location.href=d.url;return;}
-    err.textContent=d.error||'Unknown error';err.style.display='';
-  }catch(e){err.textContent='Request failed: '+e.message;err.style.display='';}
-  document.getElementById('hc-overlay').style.display='none';
-  btn.disabled=false;
-}
-</script>
-"@
+    $folder = Resolve-HcFolder $folder
+    $html   = Build-DataStrip $folder 'security'
 
     $secScripts = @(Get-AllScriptsCached | Where-Object { $_.Type -eq 'SQL' -and $_.Category -eq 'security' } | Sort-Object Name)
 
@@ -2156,6 +2484,10 @@ async function runHealthcheck(page){
     $failedLogins = Read-SecCsv 'failed-logins'
     $surfaceArea  = Read-SecCsv 'security-surface-area'
     $svrInfo      = Read-SecCsv 'server-info'
+    $sysadmins    = Read-SecCsv 'sysadmin-members'
+    $orphans      = Read-SecCsv 'orphaned-users'
+    $certs        = Read-SecCsv 'certificate-expiry'
+    $linkedSec    = Read-SecCsv 'linked-server-security'
 
     # ── meta bar ────────────────────────────────────────────────────────────────
     $folderLeaf  = Split-Path -Leaf $folder
@@ -2190,30 +2522,41 @@ async function runHealthcheck(page){
     $lockedCount = @($failedLogins | Where-Object { $_.is_currently_locked -in @('1','True','true') }).Count
     $bruteCount  = @($failedLogins | Where-Object { $_.status -like 'CRITICAL*' }).Count
 
+    # weak-policy logins that are also sysadmins — the cross-reference that matters
+    $weakNames        = @($logins | Where-Object { $_.risk_flag -ne 'OK' } | ForEach-Object { $_.login_name })
+    $weakSysadmins    = @($sysadmins | Where-Object { $weakNames -contains $_.login_name })
+    $certWarnCount    = @($certs).Count
+    $failedTotal      = @($failedLogins).Count
+
     if ($surfaceArea.Count -gt 0) {
-        $html += "<details class='rv-section' open><summary>Surface Area</summary><div class='vital-grid'>"
+        $html += "<details class='rv-section' open><summary>Surface Area <span class='ds-dim' style='font-weight:400;font-size:.75rem'>— click a card to drill down</span></summary><div class='vital-grid'>"
         $xpCls  = if ($xpEnabled)                          { 'v-crit' } else { 'v-ok' }
-        $html  += "<div class='vital-card $xpCls'><div class='vital-label'>xp_cmdshell</div><div class='vital-val'>$(if ($xpEnabled) {'ENABLED'} else {'Off'})</div><div class='vital-sub'>OS command execution</div></div>"
+        $html  += "<div class='vital-card $xpCls clickable' onclick=`"drillTo('sec-surface')`"><div class='vital-label'>xp_cmdshell</div><div class='vital-val'>$(if ($xpEnabled) {'ENABLED'} else {'Off'})</div><div class='vital-sub'>OS command execution</div></div>"
         $clrCls = if ($clrEnabled -and -not $clrStrict)   { 'v-warn' } elseif ($clrEnabled) { 'v-blue' } else { 'v-ok' }
         $clrSub = if ($clrEnabled -and -not $clrStrict)   { 'strict security OFF' } elseif ($clrEnabled) { 'strict security on' } else { 'not enabled' }
-        $html  += "<div class='vital-card $clrCls'><div class='vital-label'>CLR</div><div class='vital-val'>$(if ($clrEnabled) {'Enabled'} else {'Off'})</div><div class='vital-sub'>$clrSub</div></div>"
+        $html  += "<div class='vital-card $clrCls clickable' onclick=`"drillTo('sec-surface')`"><div class='vital-label'>CLR</div><div class='vital-val'>$(if ($clrEnabled) {'Enabled'} else {'Off'})</div><div class='vital-sub'>$clrSub</div></div>"
         $encCls = if ($encRow -and -not $forceEnc)        { 'v-warn' } elseif ($forceEnc) { 'v-ok' } else { 'v-blue' }
         $encSub = if ($forceEnc)                           { 'all connections encrypted' } elseif ($encRow) { 'unencrypted allowed' } else { 'data not collected' }
-        $html  += "<div class='vital-card $encCls'><div class='vital-label'>Force Encryption</div><div class='vital-val'>$(if ($forceEnc) {'Enforced'} elseif ($encRow) {'Optional'} else {'—'})</div><div class='vital-sub'>$encSub</div></div>"
+        $html  += "<div class='vital-card $encCls clickable' onclick=`"drillTo('sec-surface')`"><div class='vital-label'>Force Encryption</div><div class='vital-val'>$(if ($forceEnc) {'Enforced'} elseif ($encRow) {'Optional'} else {'—'})</div><div class='vital-sub'>$encSub</div></div>"
         $ntlmCls = if ($ntlmCount -gt 0)                  { 'v-warn' } else { 'v-ok' }
-        $html   += "<div class='vital-card $ntlmCls'><div class='vital-label'>NTLM Connections</div><div class='vital-val'>$(if ($ntlmCount -gt 0) {$ntlmCount} else {'None'})</div><div class='vital-sub'>$(if ($ntlmCount -gt 0) {'NTLM sessions (prefer Kerberos)'} else {'no NTLM sessions'})</div></div>"
+        $html   += "<div class='vital-card $ntlmCls clickable' onclick=`"drillTo('sec-surface')`"><div class='vital-label'>NTLM Connections</div><div class='vital-val'>$(if ($ntlmCount -gt 0) {$ntlmCount} else {'None'})</div><div class='vital-sub'>$(if ($ntlmCount -gt 0) {'NTLM sessions (prefer Kerberos)'} else {'no NTLM sessions'})</div></div>"
         $html  += "</div></details>"
     }
 
-    $html += "<details class='rv-section' open><summary>Access Risk</summary><div class='vital-grid'>"
+    $html += "<details class='rv-section' open><summary>Access Risk <span class='ds-dim' style='font-weight:400;font-size:.75rem'>— click a card to drill down</span></summary><div class='vital-grid'>"
     $saCls = if ($saEnabled) { 'v-crit' } else { 'v-ok' }
-    $html += "<div class='vital-card $saCls'><div class='vital-label'>SA Login</div><div class='vital-val'>$(if ($saEnabled) {'ENABLED'} else {'Disabled'})</div><div class='vital-sub'>built-in sysadmin</div></div>"
+    $html += "<div class='vital-card $saCls clickable' onclick=`"drillTo('sec-weak')`"><div class='vital-label'>SA Login</div><div class='vital-val'>$(if ($saEnabled) {'ENABLED'} else {'Disabled'})</div><div class='vital-sub'>built-in sysadmin</div></div>"
+    $sadCls = if ($weakSysadmins.Count -gt 0) { 'v-crit' } elseif (@($sysadmins).Count -gt 3) { 'v-warn' } else { 'v-blue' }
+    $sadSub = if ($weakSysadmins.Count -gt 0) { "$($weakSysadmins.Count) with weak password settings" } else { 'server role members' }
+    $html += "<div class='vital-card $sadCls clickable' onclick=`"drillTo('sec-sysadmin')`"><div class='vital-label'>Sysadmin Members</div><div class='vital-val'>$(@($sysadmins).Count)</div><div class='vital-sub'>$sadSub</div></div>"
     $wkCls = if ($weakCount -gt 5) { 'v-crit' } elseif ($weakCount -gt 0) { 'v-warn' } else { 'v-ok' }
-    $html += "<div class='vital-card $wkCls'><div class='vital-label'>Weak Logins</div><div class='vital-val'>$(if ($weakCount -gt 0) {$weakCount} else {'Clean'})</div><div class='vital-sub'>$(if ($weakCount -gt 0) {'weak SQL logins'} else {'no weak logins'})</div></div>"
-    $lkCls = if ($lockedCount -gt 0) { 'v-crit' } else { 'v-ok' }
-    $html += "<div class='vital-card $lkCls'><div class='vital-label'>Locked Accounts</div><div class='vital-val'>$(if ($lockedCount -gt 0) {$lockedCount} else {'None'})</div><div class='vital-sub'>$(if ($lockedCount -gt 0) {'currently locked out'} else {'none locked'})</div></div>"
-    $brCls = if ($bruteCount -gt 0) { 'v-crit' } else { 'v-ok' }
-    $html += "<div class='vital-card $brCls'><div class='vital-label'>Brute-Force</div><div class='vital-val'>$(if ($bruteCount -gt 0) {$bruteCount} else {'None'})</div><div class='vital-sub'>$(if ($bruteCount -gt 0) {'likely brute-force patterns'} else {'no patterns detected'})</div></div>"
+    $html += "<div class='vital-card $wkCls clickable' onclick=`"drillTo('sec-weak')`"><div class='vital-label'>Weak Logins</div><div class='vital-val'>$(if ($weakCount -gt 0) {$weakCount} else {'Clean'})</div><div class='vital-sub'>$(if ($weakCount -gt 0) {'weak SQL logins'} else {'no weak logins'})</div></div>"
+    $flCls = if ($lockedCount -gt 0 -or $bruteCount -gt 0) { 'v-crit' } elseif ($failedTotal -gt 0) { 'v-warn' } else { 'v-ok' }
+    $html += "<div class='vital-card $flCls clickable' onclick=`"drillTo('sec-failed')`"><div class='vital-label'>Failed Logins</div><div class='vital-val'>$(if ($failedTotal -gt 0) {$failedTotal} else {'None'})</div><div class='vital-sub'>$(if ($lockedCount -gt 0) {"$lockedCount locked out"} elseif ($bruteCount -gt 0) {"$bruteCount brute-force pattern(s)"} elseif ($failedTotal -gt 0) {'logins with failures'} else {'error log clean'})</div></div>"
+    $orCls = if (@($orphans).Count -gt 0) { 'v-warn' } else { 'v-ok' }
+    $html += "<div class='vital-card $orCls clickable' onclick=`"drillTo('sec-orphaned')`"><div class='vital-label'>Orphaned Users</div><div class='vital-val'>$(if (@($orphans).Count -gt 0) {@($orphans).Count} else {'None'})</div><div class='vital-sub'>$(if (@($orphans).Count -gt 0) {'DB users with no login'} else {'all users mapped'})</div></div>"
+    $ceCls = if ($certWarnCount -gt 0) { 'v-warn' } else { 'v-ok' }
+    $html += "<div class='vital-card $ceCls clickable' onclick=`"drillTo('sec-certs')`"><div class='vital-label'>Cert Expiry</div><div class='vital-val'>$(if ($certWarnCount -gt 0) {$certWarnCount} else {'None'})</div><div class='vital-sub'>$(if ($certWarnCount -gt 0) {'certificates approaching expiry'} else {'no expiry warnings'})</div></div>"
     $html += "</div></details>"
 
     # ── findings ────────────────────────────────────────────────────────────────
@@ -2284,6 +2627,62 @@ function filterFindings(btn){
 }
 </script>"
 
+    # ── Stage 3: drill-down sections (vital cards link here) ───────────────────
+    $html += "<hr class='section-sep'>"
+
+    $html += Build-DrillTable -Id 'sec-surface' -Title 'Surface Area Configuration' -Rows $surfaceArea `
+        -Cols @('name','configured_value','running_value','description') -Remedy {
+            param($r)
+            switch ($r.name) {
+                'xp_cmdshell'       { if ($r.running_value -in @('1','True','true')) { "EXEC sp_configure 'show advanced options', 1; RECONFIGURE;`nEXEC sp_configure 'xp_cmdshell', 0; RECONFIGURE;`n-- Verify nothing depends on it first: search Agent job steps and procs for xp_cmdshell." } }
+                'clr enabled'       { if ($r.running_value -in @('1','True','true')) { "-- If CLR is required, keep strict security on:`nEXEC sp_configure 'clr strict security', 1; RECONFIGURE;" } }
+                'force encryption'  { if ($r.running_value -notin @('1','True','true')) { "-- Enable via SQL Server Configuration Manager → Protocols → Force Encryption = Yes`n-- Requires a trusted certificate and a service restart. Test client connections first." } }
+                'ntlm connections'  { if ([int]($r.running_value -as [int]) -gt 0) { "-- Prefer Kerberos: register SPNs for the service account, then verify:`n-- setspn -S MSSQLSvc/<fqdn>:1433 <domain>\<svcaccount>`nSELECT auth_scheme, COUNT(*) FROM sys.dm_exec_connections GROUP BY auth_scheme;" } }
+                'Database Mail XPs' { if ($r.running_value -in @('1','True','true')) { "-- If Database Mail is unused:`nEXEC sp_configure 'Database Mail XPs', 0; RECONFIGURE;" } }
+            }
+        } -EmptyNote 'No surface-area data in this collection.'
+
+    $html += Build-DrillTable -Id 'sec-sysadmin' -Title 'Sysadmin Members' -Rows $sysadmins -Remedy {
+        param($r)
+        $extra = if ($weakNames -contains $r.login_name) { "-- ⚠ This login also has weak password settings (see Weak Logins below).`n" } else { '' }
+        "$extra-- Review whether this membership is still required; to remove:`nALTER SERVER ROLE [sysadmin] DROP MEMBER [$($r.login_name)];"
+    } -EmptyNote 'No sysadmin membership data in this collection (needs the 39-script collection).'
+
+    $html += Build-DrillTable -Id 'sec-weak' -Title 'Weak Login Settings' -Rows $logins `
+        -Cols @('login_name','risk_flag','is_disabled','is_policy_checked','is_expiration_checked','password_last_set') -Remedy {
+            param($r)
+            switch ($r.risk_flag) {
+                'SA_ENABLED'          { "ALTER LOGIN [sa] DISABLE;`n-- Use a named Windows admin instead; verify no application connects as sa first." }
+                'PASSWORD_POLICY_OFF' { "ALTER LOGIN [$($r.login_name)] WITH CHECK_POLICY = ON;`n-- Note: may force a compliant password at next change; coordinate with the app owner." }
+                'EXPIRATION_OFF'      { "ALTER LOGIN [$($r.login_name)] WITH CHECK_EXPIRATION = ON;`n-- Only where rotation is operationally possible (interactive users, not service accounts)." }
+                default               { $null }
+            }
+        } -EmptyNote 'No weak login settings — clean.'
+
+    $html += Build-DrillTable -Id 'sec-failed' -Title 'Failed Logins (current error log)' -Rows $failedLogins -Remedy {
+        param($r)
+        "-- Identify the source at $($r.client_host): app misconfiguration vs probing.`n-- If locked out and legitimate: ALTER LOGIN [$($r.login_name)] WITH PASSWORD = '<new>' UNLOCK;"
+    } -EmptyNote 'No failed login attempts in the current error log.'
+
+    $html += Build-DrillTable -Id 'sec-orphaned' -Title 'Orphaned Users' -Rows $orphans -Remedy {
+        param($r)
+        "USE [$($r.database_name)];`nALTER USER [$($r.user_name)] WITH LOGIN = [$($r.user_name)];  -- if the login exists`n-- or, if genuinely orphaned: DROP USER [$($r.user_name)];"
+    } -EmptyNote 'No orphaned users — all database users map to a login.'
+
+    $html += Build-DrillTable -Id 'sec-certs' -Title 'Certificate Expiry Warnings' -Rows $certs -Remedy {
+        param($r)
+        "-- Renew or rotate before expiry; confirm a backup exists:`n-- BACKUP CERTIFICATE [<name>] TO FILE = ... WITH PRIVATE KEY (...);`n-- TDE certs: an expired cert still works, but restores NEED the cert backup."
+    } -EmptyNote 'No certificates approaching expiry.'
+
+    if (@($linkedSec).Count -gt 0) {
+        $html += Build-DrillTable -Id 'sec-linked' -Title 'Linked Server Security' -Rows $linkedSec -Remedy {
+            param($r)
+            "-- Avoid static sysadmin-mapped credentials on linked servers;`n-- map specific logins with least privilege (sp_addlinkedsrvlogin)."
+        }
+    }
+
+    $html += $script:DrillJs
+
     $html += Build-SecurityScripts $secScripts
     Wrap-Page 'Security' $html '' 'security'
 }
@@ -2291,66 +2690,13 @@ function filterFindings(btn){
 # ── disk dashboard ─────────────────────────────────────────────────────────────
 
 function Build-DiskPage([string]$folder) {
-    $hcRoot = Join-Path $repoRoot 'output-files\healthcheck'
-
-    # Resolve bare folder name (e.g. ".-20260531-095824") to full path
-    if ($folder -and -not [System.IO.Path]::IsPathRooted($folder)) {
-        $folder = Join-Path $hcRoot $folder
-    }
-    if (-not $folder) {
-        if (Test-Path $hcRoot) {
-            $latest = Get-ChildItem -LiteralPath $hcRoot -Directory |
-                      Sort-Object LastWriteTime -Descending | Select-Object -First 1
-            if ($latest) { $folder = $latest.FullName }
-        }
-    }
-
-    $folderEnc  = Html-Escape ($folder ?? '')
-    $defaultSrv = if ($env:DBASCRIPTS_SERVER) { Html-Escape $env:DBASCRIPTS_SERVER } else { '' }
-    $srvHint    = if ($env:DBASCRIPTS_SERVER) { $env:DBASCRIPTS_SERVER } else { 'local ( . )' }
-    $html = @"
-<div style='display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px'>
-  <form class='folder-row' style='margin:0;flex:1;min-width:0' method='get' action='/disk'>
-    <label>Folder:</label>
-    <input class='folder-input' name='folder' value='$folderEnc' placeholder='Leave blank for most recent…'>
-    <button type='submit' class='folder-btn'>Load</button>
-  </form>
-  <div class='run-bar' style='flex-shrink:0'>
-    <label>Server:</label>
-    <input id='hc-srv' class='server-input' placeholder='$srvHint' value='$defaultSrv' autocomplete='off'>
-    <button id='hc-run-btn' class='run-btn' onclick='runHealthcheck("disk")'>Run Disk Check &#9654;</button>
-  </div>
-</div>
-<div id='hc-run-err' class='run-error' style='display:none;margin-bottom:10px'></div>
-<div id='hc-overlay' class='run-overlay'>
-  <div class='run-spinner'></div>
-  <div class='run-spinner-label'>Collecting disk and storage data…</div>
-</div>
-<script>
-async function runHealthcheck(page){
-  const srv=document.getElementById('hc-srv').value.trim()||'.';
-  const btn=document.getElementById('hc-run-btn');
-  const err=document.getElementById('hc-run-err');
-  document.getElementById('hc-overlay').style.display='flex';
-  btn.disabled=true;err.style.display='none';
-  try{
-    const r=await fetch('/api/run-healthcheck?server='+encodeURIComponent(srv)+'&page='+page);
-    const d=await r.json();
-    if(d.ok){window.location.href=d.url;return;}
-    err.textContent=d.error||'Unknown error';err.style.display='';
-  }catch(e){err.textContent='Request failed: '+e.message;err.style.display='';}
-  document.getElementById('hc-overlay').style.display='none';
-  btn.disabled=false;
-}
-</script>
-"@
+    $folder = Resolve-HcFolder $folder
+    $html   = Build-DataStrip $folder 'disk'
 
     if (-not $folder -or -not (Test-Path -LiteralPath $folder)) {
         $html += "<p class='no-data'>No healthcheck folder found. Run <code>Invoke-HealthCheckCollection.ps1</code> first.</p>"
         return Wrap-Page 'Disk Space' $html '' 'disk'
     }
-
-    $html += "<p class='mode-badge'>Folder: $(Html-Escape $folder)</p>"
 
     function Read-DiskCsv([string]$name) {
         $p = Join-Path $folder "$name.csv"
@@ -2369,6 +2715,13 @@ async function runHealthcheck(page){
     if (-not $drives) {
         $html += "<p class='no-data'>No <code>disk-space.csv</code> here — re-run healthcheck with the updated collection script to include volume data.</p>"
     } else {
+        # summary line first — with 4-8 volumes (data/log/tempdb/backups/SAN) this is what a DBA scans for
+        $worst    = $drives | Sort-Object { [double]($_.free_pct -as [double]) } | Select-Object -First 1
+        $totGb    = [Math]::Round((@($drives | ForEach-Object { [double]($_.total_gb -as [double]) }) | Measure-Object -Sum).Sum, 1)
+        $freeGb   = [Math]::Round((@($drives | ForEach-Object { [double]($_.free_gb  -as [double]) }) | Measure-Object -Sum).Sum, 1)
+        $worstPct = Fmt-Pct ([double]($worst.free_pct -as [double]))
+        $worstCls = if ([double]($worst.free_pct -as [double]) -lt 10) { 'sv sv-red' } elseif ([double]($worst.free_pct -as [double]) -lt 20) { 'sv sv-orange' } else { 'sv sv-green' }
+        $html += "<div class='disk-summary'><b>$($drives.Count)</b> volume$(if ($drives.Count -ne 1) {'s'}) &middot; worst: <b>$(Html-Escape $worst.volume_mount_point)</b> <span class='$worstCls'>$worstPct% free</span> &middot; <b>$totGb GB</b> total / <b>$freeGb GB</b> free &middot; sorted worst-first</div>"
         $html += "<div class='disk-grid'>"
         foreach ($d in ($drives | Sort-Object { [double]($_.free_pct -as [double]) })) {
             $freePct = [double]($d.free_pct -as [double])
@@ -2377,15 +2730,23 @@ async function runHealthcheck(page){
             $barCls  = if ($freePct -lt 10) { 'bar-crit' } elseif ($freePct -lt 20) { 'bar-warn' } else { 'bar-ok' }
             $volName = if ($d.logical_volume_name -and $d.logical_volume_name.Trim() -ne '') {
                            Html-Escape $d.logical_volume_name } else { '' }
+            $dColor = if ($freePct -lt 10) { '#f78166' } elseif ($freePct -lt 20) { '#ffa657' } else { '#58a6ff' }
             $html += @"
 <div class='disk-card $cardCls'>
-  <div class='disk-mount'>$(Html-Escape $d.volume_mount_point)</div>
-  <div class='disk-vol'>$volName</div>
-  <div class='bar-track'><div class='bar-fill $barCls' style='width:${usedPct}%'></div></div>
-  <div class='disk-stats'>
-    <span><strong>$([Math]::Round(($d.total_gb -as [double]),2)) GB</strong> total</span>
-    <span><strong>$([Math]::Round(($d.used_gb  -as [double]),2)) GB</strong> used ($(Fmt-Pct $usedPct)%)</span>
-    <span><strong>$([Math]::Round(($d.free_gb  -as [double]),2)) GB</strong> free ($(Fmt-Pct $freePct)%)</span>
+  <div class='disk-flex'>
+    <div>
+      <div class='donut' style='--p:$usedPct;--dc:$dColor' data-label='$(Fmt-Pct $usedPct)%'></div>
+      <div class='donut-sub'>used</div>
+    </div>
+    <div style='flex:1;min-width:0'>
+      <div class='disk-mount'>$(Html-Escape $d.volume_mount_point)</div>
+      <div class='disk-vol'>$volName</div>
+      <div class='disk-stats' style='flex-direction:column;align-items:flex-start;gap:2px'>
+        <span><strong>$([Math]::Round(($d.total_gb -as [double]),2)) GB</strong> total</span>
+        <span><strong>$([Math]::Round(($d.used_gb  -as [double]),2)) GB</strong> used</span>
+        <span><strong>$([Math]::Round(($d.free_gb  -as [double]),2)) GB</strong> free ($(Fmt-Pct $freePct)%)</span>
+      </div>
+    </div>
   </div>
 </div>
 "@
@@ -2456,6 +2817,9 @@ new Chart(document.getElementById('ch-db-log'),{type:'bar',data:{labels:L,datase
 </tr></thead>
 <tbody id='dbsz-tbody'>
 "@
+        # largest database's total size scales the grey name-bars
+        $maxTotalMb = [double](@($dbSorted | ForEach-Object { [double]($_.data_size_mb -as [double]) + [double]($_.log_size_mb -as [double]) } | Measure-Object -Maximum).Maximum)
+        if ($maxTotalMb -le 0) { $maxTotalMb = 1 }
         foreach ($db in $dbSorted) {
             $dfp = [double]($db.data_free_pct -as [double])
             $lfp = [double]($db.log_free_pct  -as [double])
@@ -2463,7 +2827,10 @@ new Chart(document.getElementById('ch-db-log'),{type:'bar',data:{labels:L,datase
             $lbc = if ($lfp -lt 10) { 'bar-crit' } elseif ($lfp -lt 20) { 'bar-warn' } else { 'bar-ok' }
             $dfCell = "$(Fmt-Mb $db.data_free_mb) MB ($(Fmt-Pct $dfp)%)<span class='mini-bar-track'><span class='mini-bar-fill $dbc' style='width:$([Math]::Min($dfp,100))%'></span></span>"
             $lfCell = "$(Fmt-Mb $db.log_free_mb) MB ($(Fmt-Pct $lfp)%)<span class='mini-bar-track'><span class='mini-bar-fill $lbc' style='width:$([Math]::Min($lfp,100))%'></span></span>"
-            $html += "<tr><td>$(Html-Escape $db.database_name)</td><td style='text-align:right'>$(Fmt-Mb $db.data_size_mb)</td><td>$dfCell</td><td style='text-align:right'>$(Fmt-Mb $db.log_size_mb)</td><td>$lfCell</td></tr>`n"
+            $totMb  = [double]($db.data_size_mb -as [double]) + [double]($db.log_size_mb -as [double])
+            $barPct = [Math]::Max([Math]::Round($totMb / $maxTotalMb * 100, 1), 1)
+            $nameCell = "<td class='name-cell'><span class='name-bar' style='width:$barPct%'></span><span class='name-txt'>$(Html-Escape $db.database_name)</span></td>"
+            $html += "<tr>$nameCell<td style='text-align:right'>$(Fmt-Mb $db.data_size_mb)</td><td>$dfCell</td><td style='text-align:right'>$(Fmt-Mb $db.log_size_mb)</td><td>$lfCell</td></tr>`n"
         }
         $html += @"
 </tbody></table></div>
@@ -2497,11 +2864,15 @@ window.dbszSort=function(ci){
         $html += "<p class='no-data'>No <code>tlog-usage.csv</code> in this folder.</p>"
     } else {
         $sorted = @($tlogs | Sort-Object { [double]($_.log_used_pct -as [double]) } -Descending)
+        $maxLogMb = [double](@($sorted | ForEach-Object { [double]($_.log_size_mb -as [double]) } | Measure-Object -Maximum).Maximum)
+        if ($maxLogMb -le 0) { $maxLogMb = 1 }
         $html += "<div class='table-wrap'><table><thead><tr><th>Database</th><th>Recovery</th><th>Log Size (MB)</th><th>Used (MB)</th><th>Free (MB)</th><th>Used %</th></tr></thead><tbody>"
         foreach ($t in $sorted) {
             $pct = [double]($t.log_used_pct -as [double])
             $svCls = if ($pct -gt 80) { 'sv-red' } elseif ($pct -gt 50) { 'sv-orange' } else { 'sv-green' }
-            $html += "<tr><td>$(Html-Escape $t.database_name)</td><td>$($t.recovery_model_desc)</td><td>$(Fmt-Mb $t.log_size_mb)</td><td>$(Fmt-Mb $t.log_used_mb)</td><td>$(Fmt-Mb $t.log_free_mb)</td><td><span class='sv $svCls'>$(Fmt-Pct $pct)%</span></td></tr>"
+            $lbPct = [Math]::Max([Math]::Round([double]($t.log_size_mb -as [double]) / $maxLogMb * 100, 1), 1)
+            $nameCell = "<td class='name-cell'><span class='name-bar' style='width:$lbPct%'></span><span class='name-txt'>$(Html-Escape $t.database_name)</span></td>"
+            $html += "<tr>$nameCell<td>$($t.recovery_model_desc)</td><td>$(Fmt-Mb $t.log_size_mb)</td><td>$(Fmt-Mb $t.log_used_mb)</td><td>$(Fmt-Mb $t.log_free_mb)</td><td><span class='sv $svCls'>$(Fmt-Pct $pct)%</span></td></tr>"
         }
         $html += "</tbody></table></div>"
     }
@@ -2549,7 +2920,20 @@ window.dbszSort=function(ci){
 
 $listener = [System.Net.HttpListener]::new()
 $listener.Prefixes.Add("http://localhost:$Port/")
-$listener.Start()
+try {
+    $listener.Start()
+} catch {
+    if ($_.Exception.Message -match 'conflicts with an existing registration') {
+        Write-Host ''
+        Write-Host "  Port $Port is already in use — the web UI is probably already running." -ForegroundColor Yellow
+        Write-Host "  Open it:            http://localhost:$Port/" -ForegroundColor Cyan
+        Write-Host "  Or restart cleanly: .\web-ui\Restart-WebUi.ps1" -ForegroundColor Cyan
+        Write-Host "  Or use another port: .\web-ui\Start-WebUi.ps1 -Port 8890" -ForegroundColor DarkGray
+        Write-Host ''
+        exit 1
+    }
+    throw
+}
 
 Write-Host "dba-tools UI  →  http://localhost:$Port/"
 Write-Host "Press Ctrl+C to stop."
@@ -2604,6 +2988,7 @@ try {
             '/review'    { Build-ReviewPage   ($qs['folder'] ?? '') }
             '/security'  { Build-SecurityPage ($qs['folder'] ?? '') }
             '/disk'      { Build-DiskPage     ($qs['folder'] ?? '') }
+            '/ai'        { Build-AiPage       ($qs['folder'] ?? '') ($qs['report'] ?? '') }
             '/api/csv'  {
                 $contentType = 'application/json; charset=utf-8'
                 $p = $qs['p'] ?? ''
@@ -2722,6 +3107,32 @@ try {
                     } else {
                         '{"ok":false,"error":"Collection finished but no output folder found."}'
                     }
+                } catch {
+                    $errMsg = $_.Exception.Message -replace '\\','\\' -replace '"','\"' -replace '\r?\n',' '
+                    "{`"ok`":false,`"error`":`"$errMsg`"}"
+                }
+            }
+            '/api/run-ai' {
+                $contentType = 'application/json; charset=utf-8'
+                $aiFolder = ($qs['folder'] ?? '').Trim()
+                $dryRun   = $qs['dryrun'] -eq '1'
+                $aiScript = Join-Path $repoRoot 'powershell\reporting\Invoke-AiAssessment.ps1'
+                if (-not (Test-Path $aiScript)) {
+                    '{"ok":false,"error":"Invoke-AiAssessment.ps1 not found"}'; break
+                }
+                if (-not $dryRun -and -not $env:ANTHROPIC_API_KEY) {
+                    '{"ok":false,"error":"ANTHROPIC_API_KEY is not set — only DryRun is available. See docs/ai-assessment.md."}'; break
+                }
+                try {
+                    $aiParams = @{}
+                    if ($aiFolder) {
+                        $resolvedAi = Resolve-HcFolder $aiFolder
+                        if (-not $resolvedAi -or -not (Test-Path -LiteralPath $resolvedAi)) { throw "Collection folder not found: $aiFolder" }
+                        $aiParams.FolderPath = $resolvedAi
+                    }
+                    if ($dryRun) { $aiParams.DryRun = $true }
+                    & $aiScript @aiParams -ErrorAction Stop | Out-Null
+                    '{"ok":true}'
                 } catch {
                     $errMsg = $_.Exception.Message -replace '\\','\\' -replace '"','\"' -replace '\r?\n',' '
                     "{`"ok`":false,`"error`":`"$errMsg`"}"

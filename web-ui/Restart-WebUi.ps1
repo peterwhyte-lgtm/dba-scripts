@@ -16,8 +16,12 @@ $ErrorActionPreference = 'Stop'
 
 # ── stop any PowerShell process running Start-WebUi.ps1 ───────────────────────
 
+# Match only processes LAUNCHED as the web UI (-File ...\Start-WebUi.ps1). Anything looser
+# (substring / path match) also hits shells whose command TEXT merely mentions the file —
+# including this script's own caller — and kills them mid-run.
 $webUiProcs = @(Get-CimInstance Win32_Process -Filter "Name = 'pwsh.exe' OR Name = 'powershell.exe'" |
-    Where-Object { $_.CommandLine -like '*Start-WebUi*' })
+    Where-Object { $_.ProcessId -ne $PID -and
+                   $_.CommandLine -match '-File\s+"?[^"]*[\\/]Start-WebUi\.ps1' })
 
 if ($webUiProcs) {
     foreach ($p in $webUiProcs) {
