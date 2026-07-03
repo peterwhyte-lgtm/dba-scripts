@@ -62,6 +62,18 @@ is acknowledged **future** work beyond these stages.
 | 4 | **Health Check scorecard + delta** — severity + per-category chips that filter findings; "N new / M resolved" vs previous collection with expandable lists; findings.csv auto-generated when missing | ✅ 2026-07-03 | Delta = keyed diff of two findings.csv files |
 | 5 | **Triage → live incident cockpit** — Get-* entries gain Run ▶ (via /api/run + /api/csv) with results tabled inline; Create-*/Generate-* stay view-first for safety; Scripts stays the browse/reference library | ✅ 2026-07-03 | Mirrors the powershell/diagnostics split in the UI |
 
+## Phase 6.1 — Web UI fixes (started 2026-07-03)
+
+Post-overhaul fixes with a DBA-lens focus: skew-proof visuals and everything ordered by
+production DBA usage. Staged; each stage verified against local SQL before pushing.
+
+| Stage | Item | Status | Notes |
+|-------|------|--------|-------|
+| 1 | **DBA visual pass** — disk page charts redesigned as two lenses (% used worst-first for all DBs = urgency, skew-proof; top-15 absolute GB = capacity), per-bar severity colours, dynamic chart height; table name-bars sqrt-scaled so small DBs stay visible next to a multi-TB outlier; canonical DBA category order (performance, monitoring, backups, security, HA, …, lab) applied to home page SQL + workflow groups with only top-2 expanded; CSV list groups sorted freshest-first; Health Check + Security pages open with a one-line verdict summary (findings counts / SA · xp_cmdshell · sysadmins · weak logins) | ✅ 2026-07-03 | `Get-CategoryRank` + `$script:SqlCategoryOrder` / `$script:PsCategoryOrder` in Start-WebUi.ps1 |
+| 2 | **Quick correctness fixes** — shared `ConvertTo-JsonError` helper for all API handlers (hand-rolled -replace chains missed control chars in SQL error text); direct-PS1 Run ▶ now passes only params the script declares (binding errors / silent-$args, same bug class as run.ps1 alias fix); healthcheck script count derived from Invoke-HealthCheckCollection.ps1 instead of hardcoded 39 | ✅ 2026-07-03 | Suspected unencoded `p=` fetch params turned out fine — values are pre-encoded server-side with `EscapeDataString` |
+| 3 | **Clear Output safety** — `output-files\assessments\` exempt from /api/clear-output so AI sign-off reports survive the wipe; confirm dialog says so | ✅ 2026-07-03 | Verified with a non-destructive dry-run of the filter (641 of 647 files deletable, 6 assessment files kept) |
+| 4 | **Non-blocking collect + progress** — background job + `/api/status` polling; UI stays responsive during collection, shows per-script progress | Planned | Largest item; ships last |
+
 ---
 
 ## Tools enhancements (backlog, no fixed phase)

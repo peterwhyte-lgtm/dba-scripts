@@ -99,6 +99,15 @@ function Get-AllScriptsCached {
     return $enriched
 }
 
+# Production-DBA category order — what a DBA reaches for first comes first.
+# Applied wherever categories are grouped/listed; unknown categories sort after known ones.
+$script:SqlCategoryOrder = @('performance','monitoring','backups','security','high-availability','inventory','maintenance','migration','collectors','traces','lab')
+$script:PsCategoryOrder  = @('diagnostics','reporting','multi-server','disk-space','migration','patching','sql','ssms','installation','maintenance','lab')
+function Get-CategoryRank([string]$name, [string[]]$order) {
+    $i = [Array]::IndexOf($order, $name.ToLower())
+    if ($i -ge 0) { $i } else { $order.Count }
+}
+
 function Html-Escape([string]$s) {
     $s.Replace('&','&amp;').Replace('<','&lt;').Replace('>','&gt;').Replace('"','&quot;')
 }
@@ -223,6 +232,14 @@ function Get-CsvJson([string]$fullPath) {
         isDdl       = $false
         ddlText     = ''
     }
+}
+
+# Error JSON for the /api/* handlers. ConvertTo-Json handles every JSON string escape
+# (quotes, backslashes, control characters) — hand-rolled -replace chains missed tabs
+# and control chars in SQL error text, producing unparseable JSON.
+function ConvertTo-JsonError([string]$message) {
+    $msg = ($message -replace '\r?\n', ' ').Trim()
+    "{`"ok`":false,`"error`":$($msg | ConvertTo-Json)}"
 }
 
 function ConvertTo-Json2([object]$obj) {
@@ -567,11 +584,15 @@ function Build-HomePage {
 
     # ── SQL scripts — collapsible per category, expanded by default ───────────
     $html += "<h2>SQL Scripts ($($sqlScripts.Count))</h2>"
-    foreach ($cat in ($sqlScripts | Group-Object Category | Sort-Object { if ($_.Name -eq 'lab') { 'zzz' } else { $_.Name } })) {
+    $catIdx = 0
+    foreach ($cat in ($sqlScripts | Group-Object Category | Sort-Object { Get-CategoryRank $_.Name $script:SqlCategoryOrder }, Name)) {
         $count   = $cat.Group.Count
         $catName = Html-Escape $cat.Name
         $plural  = if ($count -ne 1) { 's' } else { '' }
-        $html += "<details class='cat-group' open><summary><span>$catName</span><span class='cat-count'>$count script$plural</span></summary><div class='grid'>"
+        # only the top categories start expanded — keeps Start Here + Health Check on the first screen
+        $open    = if ($catIdx -lt 2) { ' open' } else { '' }
+        $catIdx++
+        $html += "<details class='cat-group'$open><summary><span>$catName</span><span class='cat-count'>$count script$plural</span></summary><div class='grid'>"
         foreach ($s in ($cat.Group | Sort-Object Name)) {
             $html += Script-Card $s 'SQL' 'badge-sql'
         }
@@ -581,11 +602,14 @@ function Build-HomePage {
     # ── Workflows & Tools — same collapsible pattern, grouped by subcategory ──
     if ($workflowScripts.Count -gt 0) {
         $html += "<hr class='section-sep' style='margin-top:32px'><h2 style='margin-top:28px'>Workflows &amp; Tools ($($workflowScripts.Count))</h2>"
-        foreach ($cat in ($workflowScripts | Group-Object Category | Sort-Object Name)) {
+        $wfIdx = 0
+        foreach ($cat in ($workflowScripts | Group-Object Category | Sort-Object { Get-CategoryRank $_.Name $script:PsCategoryOrder }, Name)) {
             $count   = $cat.Group.Count
             $catName = Html-Escape $cat.Name
             $plural  = if ($count -ne 1) { 's' } else { '' }
-            $html += "<details class='cat-group' open><summary><span>$catName</span><span class='cat-count'>$count script$plural</span></summary><div class='grid'>"
+            $open    = if ($wfIdx -lt 2) { ' open' } else { '' }
+            $wfIdx++
+            $html += "<details class='cat-group'$open><summary><span>$catName</span><span class='cat-count'>$count script$plural</span></summary><div class='grid'>"
             foreach ($s in ($cat.Group | Sort-Object Name)) {
                 $html += Script-Card $s 'PS1' 'badge-ps'
             }
@@ -920,7 +944,7 @@ function Build-CsvListPage {
     $clearBtn = "<button class='clear-btn' id='clear-btn' onclick='clearOutput()'>Clear All Output</button>
 <script>
 async function clearOutput(){
-  if(!confirm('Delete all files in output-files/?\\n\\nThis removes all CSVs, logs, and generated scripts. Cannot be undone.'))return;
+  if(!confirm('Delete all files in output-files/?\\n\\nThis removes all CSVs, logs, and generated scripts. AI assessment reports (assessments/) are kept. Cannot be undone.'))return;
   const btn=document.getElementById('clear-btn');
   btn.disabled=true;btn.textContent='Clearing…';
   try{
@@ -940,7 +964,8 @@ async function clearOutput(){
     $grouped = $csvs | Group-Object { $_.Directory.FullName.Replace($repoRoot,'').TrimStart('\') }
     $html    = "<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:4px'><h2 style='margin:0;border:none;padding:0'>Output CSVs ($($csvs.Count) files)</h2>$clearBtn</div>"
 
-    foreach ($g in ($grouped | Sort-Object Name)) {
+    # freshest output first — the folder you just wrote to is the one you came to look at
+    foreach ($g in ($grouped | Sort-Object { ($_.Group | Measure-Object LastWriteTime -Maximum).Maximum } -Descending)) {
         $html += "<div class='cat-label'>$(Html-Escape $g.Name)</div><div class='grid'>"
         foreach ($f in $g.Group) {
             $rel    = $f.FullName.Replace($repoRoot,'').TrimStart('\')
@@ -1480,6 +1505,20 @@ $rerunJs
 
 # ── Shared collection-folder helpers (data strip) ──────────────────────────────
 
+# Script count derived from the collection script itself — it went 32→39 in one week;
+# a literal here silently drifts the next time the collection expands.
+$script:HcScriptCount = $null
+function Get-HcScriptCount {
+    if ($script:HcScriptCount) { return $script:HcScriptCount }
+    $coll = Join-Path $repoRoot 'powershell\reporting\Invoke-HealthCheckCollection.ps1'
+    $n = 0
+    if (Test-Path -LiteralPath $coll) {
+        $n = ([regex]::Matches((Get-Content -LiteralPath $coll -Raw), '(?m)^\s*Paths\s*=')).Count
+    }
+    $script:HcScriptCount = if ($n -gt 0) { $n } else { 39 }
+    $script:HcScriptCount
+}
+
 function Resolve-HcFolder([string]$folder) {
     $hcRoot = Join-Path $repoRoot 'output-files\healthcheck'
     if ($folder -and -not [System.IO.Path]::IsPathRooted($folder)) { $folder = Join-Path $hcRoot $folder }
@@ -1504,7 +1543,7 @@ function Get-HcFolderAge([System.IO.FileSystemInfo]$dir) {
 
 # One collect action, many lenses: every collection-driven page (review/security/disk/ai)
 # renders this strip instead of its own run button. The dropdown switches which collection
-# folder the page analyses; Collect fresh runs the full 39-script collection once for all pages.
+# folder the page analyses; Collect fresh runs the full collection once for all pages.
 function Build-DataStrip([string]$folder, [string]$page) {
     $hcRoot     = Join-Path $repoRoot 'output-files\healthcheck'
     $defaultSrv = if ($env:DBASCRIPTS_SERVER) { Html-Escape $env:DBASCRIPTS_SERVER } else { '' }
@@ -1549,7 +1588,7 @@ function Build-DataStrip([string]$folder, [string]$page) {
 <div id='hc-run-err' class='run-error' style='display:none;margin-bottom:10px'></div>
 <div id='hc-overlay' class='run-overlay'>
   <div class='run-spinner'></div>
-  <div class='run-spinner-label'>Collecting 39 healthcheck scripts — feeds Health Check, Security, Disk, and AI pages…</div>
+  <div class='run-spinner-label'>Collecting $(Get-HcScriptCount) healthcheck scripts — feeds Health Check, Security, Disk, and AI pages…</div>
 </div>
 <script>
 async function runHealthcheck(page){
@@ -1738,6 +1777,15 @@ function Build-ReviewPage([string]$folder) {
         foreach ($cat in (@($fx | Group-Object Category | Sort-Object Count -Descending))) {
             $catChips += "<span class='score-chip' data-fx='cat:$(Html-Escape $cat.Name)' onclick='fxChip(this)'><span class='n'>$($cat.Count)</span> $(Html-Escape $cat.Name)</span>"
         }
+
+        # one-line verdict first — the 5-second answer before any drill-down
+        $topCat  = @($fx | Group-Object Category | Sort-Object Count -Descending | Select-Object -First 1)
+        $sumBits = @()
+        $sumBits += if ($nCrit -gt 0) { "<span class='sv sv-red'>$nCrit CRITICAL</span>" } else { "<span class='sv sv-green'>0 critical</span>" }
+        if ($nWarn -gt 0) { $sumBits += "<span class='sv sv-orange'>$nWarn WARNING</span>" }
+        if ($nInfo -gt 0) { $sumBits += "$nInfo info" }
+        if ($topCat)      { $sumBits += "top category: <b>$(Html-Escape $topCat.Name)</b> ($($topCat.Count))" }
+        $html += "<div class='disk-summary'><b>$($fx.Count)</b> finding$(if ($fx.Count -ne 1) {'s'}) &middot; $($sumBits -join ' &middot; ')</div>"
 
         $html += "<details class='rv-section' open><summary>Scorecard — Rules Engine ($($fx.Count) findings)</summary>"
         $html += "<div class='chip-row'>$sevChips</div><div class='chip-row chip-row-cats'>$catChips</div>$deltaHtml"
@@ -2528,6 +2576,16 @@ function Build-SecurityPage([string]$folder) {
     $certWarnCount    = @($certs).Count
     $failedTotal      = @($failedLogins).Count
 
+    # one-line verdict first — SA and xp_cmdshell are the two things a DBA checks before anything else
+    $secBits  = @()
+    $secBits += if ($saEnabled)  { "SA <span class='sv sv-red'>ENABLED</span>" }  else { "SA <span class='sv sv-green'>disabled</span>" }
+    $secBits += if ($xpEnabled)  { "xp_cmdshell <span class='sv sv-red'>ENABLED</span>" } else { "xp_cmdshell <span class='sv sv-green'>off</span>" }
+    $secBits += "<b>$(@($sysadmins).Count)</b> sysadmin$(if (@($sysadmins).Count -ne 1) {'s'})$(if ($weakSysadmins.Count -gt 0) { " (<span class='sv sv-red'>$($weakSysadmins.Count) weak</span>)" })"
+    $secBits += if ($weakCount -gt 0)   { "<span class='sv sv-orange'>$weakCount weak login$(if ($weakCount -ne 1) {'s'})</span>" } else { 'no weak logins' }
+    if ($lockedCount -gt 0)   { $secBits += "<span class='sv sv-red'>$lockedCount locked out</span>" }
+    if ($certWarnCount -gt 0) { $secBits += "<span class='sv sv-orange'>$certWarnCount cert warning$(if ($certWarnCount -ne 1) {'s'})</span>" }
+    $html += "<div class='disk-summary'>$($secBits -join ' &middot; ')</div>"
+
     if ($surfaceArea.Count -gt 0) {
         $html += "<details class='rv-section' open><summary>Surface Area <span class='ds-dim' style='font-weight:400;font-size:.75rem'>— click a card to drill down</span></summary><div class='vital-grid'>"
         $xpCls  = if ($xpEnabled)                          { 'v-crit' } else { 'v-ok' }
@@ -2646,7 +2704,7 @@ function filterFindings(btn){
         param($r)
         $extra = if ($weakNames -contains $r.login_name) { "-- ⚠ This login also has weak password settings (see Weak Logins below).`n" } else { '' }
         "$extra-- Review whether this membership is still required; to remove:`nALTER SERVER ROLE [sysadmin] DROP MEMBER [$($r.login_name)];"
-    } -EmptyNote 'No sysadmin membership data in this collection (needs the 39-script collection).'
+    } -EmptyNote 'No sysadmin membership data in this collection (needs the full healthcheck collection).'
 
     $html += Build-DrillTable -Id 'sec-weak' -Title 'Weak Login Settings' -Rows $logins `
         -Cols @('login_name','risk_flag','is_disabled','is_policy_checked','is_expiration_checked','password_last_set') -Remedy {
@@ -2759,45 +2817,81 @@ function Build-DiskPage([string]$folder) {
     if (-not $dbSizes) {
         $html += "<p class='no-data'>No <code>database-sizes.csv</code> in this folder.</p>"
     } else {
-        # Top 20 by total size go to charts; all rows go to table
-        $TOP_N   = 20
-        $dbSorted   = @($dbSizes | Sort-Object { [double]($_.data_size_mb -as [double]) + [double]($_.log_size_mb -as [double]) } -Descending)
-        $chartRows  = if ($dbSorted.Count -gt $TOP_N) { @($dbSorted[0..($TOP_N-1)]) } else { $dbSorted }
-        $chartNote  = if ($dbSorted.Count -gt $TOP_N) { " &nbsp;·&nbsp; top $TOP_N of $($dbSorted.Count)" } else { '' }
+        # Two lenses, two DBA questions — a linear MB chart can't answer either once one
+        # multi-TB database shares an instance with many small ones:
+        #   % used  — which databases are running out of internal free space (skew-proof, all DBs)
+        #   top-N GB — which databases are big (capacity planning, absolute)
+        $dbSorted = @($dbSizes | Sort-Object { [double]($_.data_size_mb -as [double]) + [double]($_.log_size_mb -as [double]) } -Descending)
 
-        $cL  = ($chartRows | ForEach-Object { $_.database_name | ConvertTo-Json }) -join ','
-        $cDU = ($chartRows | ForEach-Object { [Math]::Max([Math]::Round(([double]($_.data_size_mb -as [double])) - ([double]($_.data_free_mb -as [double])), 1), 0) }) -join ','
-        $cDF = ($chartRows | ForEach-Object { [Math]::Max([Math]::Round([double]($_.data_free_mb -as [double]), 1), 0) }) -join ','
-        $cLU = ($chartRows | ForEach-Object { [Math]::Max([Math]::Round(([double]($_.log_size_mb  -as [double])) - ([double]($_.log_free_mb  -as [double])), 1), 0) }) -join ','
-        $cLF = ($chartRows | ForEach-Object { [Math]::Max([Math]::Round([double]($_.log_free_mb  -as [double]), 1), 0) }) -join ','
+        $pctRows = @($dbSizes | ForEach-Object {
+            $dSize = [double]($_.data_size_mb -as [double]); $dFree = [double]($_.data_free_mb -as [double])
+            $lSize = [double]($_.log_size_mb  -as [double]); $lFree = [double]($_.log_free_mb  -as [double])
+            [PSCustomObject]@{
+                Name    = $_.database_name
+                DataPct = if ($dSize -gt 0) { [Math]::Round((1 - ($dFree / $dSize)) * 100, 1) } else { 0 }
+                LogPct  = if ($lSize -gt 0) { [Math]::Round((1 - ($lFree / $lSize)) * 100, 1) } else { 0 }
+                DataMb  = [Math]::Round($dSize, 1)
+                LogMb   = [Math]::Round($lSize, 1)
+            }
+        })
+        $pctD = @($pctRows | Sort-Object DataPct -Descending)
+        $pctL = @($pctRows | Sort-Object LogPct  -Descending)
+        $jDL = ($pctD | ForEach-Object { $_.Name | ConvertTo-Json }) -join ','
+        $jDP = ($pctD | ForEach-Object { $_.DataPct }) -join ','
+        $jDS = ($pctD | ForEach-Object { $_.DataMb }) -join ','
+        $jLL = ($pctL | ForEach-Object { $_.Name | ConvertTo-Json }) -join ','
+        $jLP = ($pctL | ForEach-Object { $_.LogPct }) -join ','
+        $jLS = ($pctL | ForEach-Object { $_.LogMb }) -join ','
+
+        $TOP_N   = 15
+        $capRows = if ($dbSorted.Count -gt $TOP_N) { @($dbSorted[0..($TOP_N-1)]) } else { $dbSorted }
+        $capNote = if ($dbSorted.Count -gt $TOP_N) { " &nbsp;·&nbsp; top $TOP_N of $($dbSorted.Count)" } else { '' }
+        $jCL = ($capRows | ForEach-Object { $_.database_name | ConvertTo-Json }) -join ','
+        $jCD = ($capRows | ForEach-Object { [Math]::Round([double]($_.data_size_mb -as [double]) / 1024, 2) }) -join ','
+        $jCG = ($capRows | ForEach-Object { [Math]::Round([double]($_.log_size_mb  -as [double]) / 1024, 2) }) -join ','
 
         $html += @"
 <script src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'></script>
-<div style='display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px'>
-  <div class='chart-wrap'>
-    <div style='font-size:.75rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px'>Data Files — Used vs Free (MB)$chartNote</div>
-    <canvas id='ch-db-data'></canvas>
+<div style='display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px'>
+  <div class='chart-wrap' style='margin-bottom:0'>
+    <div style='font-size:.75rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px'>Data Files — % Used, Worst First (all $($pctRows.Count))</div>
+    <div style='position:relative'><canvas id='ch-db-datapct' style='max-height:none'></canvas></div>
   </div>
-  <div class='chart-wrap'>
-    <div style='font-size:.75rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px'>Log Files — Used vs Free (MB)$chartNote</div>
-    <canvas id='ch-db-log'></canvas>
+  <div class='chart-wrap' style='margin-bottom:0'>
+    <div style='font-size:.75rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px'>Log Files — % Used, Worst First (all $($pctRows.Count))</div>
+    <div style='position:relative'><canvas id='ch-db-logpct' style='max-height:none'></canvas></div>
   </div>
+</div>
+<div class='chart-wrap' style='margin-bottom:20px'>
+  <div style='font-size:.75rem;color:#8b949e;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px'>Largest Databases — GB$capNote</div>
+  <div style='position:relative'><canvas id='ch-db-size' style='max-height:none'></canvas></div>
 </div>
 <script>
 (function(){
-const L=[$cL],DU=[$cDU],DF=[$cDF],LU=[$cLU],LF=[$cLF];
-const bOpts=()=>({responsive:true,indexAxis:'y',
+const DL=[$jDL],DP=[$jDP],DS=[$jDS],LL=[$jLL],LP=[$jLP],LS=[$jLS];
+function cols(a){return a.map(function(p){return p>=90?'#f78166':p>=80?'#ffa657':'#58a6ff';});}
+function fmtMb(mb){return mb>=1048576?(mb/1048576).toFixed(2)+' TB':mb>=1024?(mb/1024).toFixed(1)+' GB':Math.round(mb)+' MB';}
+function pctChart(id,labels,pcts,sizes){
+  const el=document.getElementById(id);
+  el.parentElement.style.height=Math.max(150,labels.length*16+50)+'px';
+  new Chart(el,{type:'bar',data:{labels:labels,datasets:[{label:'% used',data:pcts,backgroundColor:cols(pcts),borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.parsed.x+'% used of '+fmtMb(sizes[c.dataIndex]);}}}},
+      scales:{x:{min:0,max:100,ticks:{color:'#8b949e',callback:function(v){return v+'%';}},grid:{color:'#21262d'}},
+              y:{ticks:{color:'#8b949e',font:{size:11},autoSkip:false},grid:{display:false}}}}});
+}
+pctChart('ch-db-datapct',DL,DP,DS);
+pctChart('ch-db-logpct',LL,LP,LS);
+const CL=[$jCL],CD=[$jCD],CG=[$jCG];
+const cEl=document.getElementById('ch-db-size');
+cEl.parentElement.style.height=Math.max(150,CL.length*22+70)+'px';
+new Chart(cEl,{type:'bar',data:{labels:CL,datasets:[
+  {label:'Data (GB)',data:CD,backgroundColor:'#58a6ffbb',borderColor:'#58a6ff',borderWidth:1},
+  {label:'Log (GB)',data:CG,backgroundColor:'#d2a8ffbb',borderColor:'#d2a8ff',borderWidth:1}
+]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
   plugins:{legend:{labels:{color:'#c9d1d9'}}},
   scales:{x:{stacked:true,ticks:{color:'#8b949e'},grid:{color:'#21262d'}},
-          y:{stacked:true,ticks:{color:'#8b949e',font:{size:11}},grid:{color:'#21262d'}}}});
-new Chart(document.getElementById('ch-db-data'),{type:'bar',data:{labels:L,datasets:[
-  {label:'Used (MB)',data:DU,backgroundColor:'#58a6ffbb',borderColor:'#58a6ff',borderWidth:1},
-  {label:'Free (MB)',data:DF,backgroundColor:'#3fb95044',borderColor:'#3fb950',borderWidth:1}
-]},options:bOpts()});
-new Chart(document.getElementById('ch-db-log'),{type:'bar',data:{labels:L,datasets:[
-  {label:'Used (MB)',data:LU,backgroundColor:'#d2a8ffbb',borderColor:'#d2a8ff',borderWidth:1},
-  {label:'Free (MB)',data:LF,backgroundColor:'#3fb95044',borderColor:'#3fb950',borderWidth:1}
-]},options:bOpts()});
+          y:{stacked:true,ticks:{color:'#8b949e',font:{size:11},autoSkip:false},grid:{display:false}}}}});
 })();
 </script>
 "@
@@ -2828,7 +2922,8 @@ new Chart(document.getElementById('ch-db-log'),{type:'bar',data:{labels:L,datase
             $dfCell = "$(Fmt-Mb $db.data_free_mb) MB ($(Fmt-Pct $dfp)%)<span class='mini-bar-track'><span class='mini-bar-fill $dbc' style='width:$([Math]::Min($dfp,100))%'></span></span>"
             $lfCell = "$(Fmt-Mb $db.log_free_mb) MB ($(Fmt-Pct $lfp)%)<span class='mini-bar-track'><span class='mini-bar-fill $lbc' style='width:$([Math]::Min($lfp,100))%'></span></span>"
             $totMb  = [double]($db.data_size_mb -as [double]) + [double]($db.log_size_mb -as [double])
-            $barPct = [Math]::Max([Math]::Round($totMb / $maxTotalMb * 100, 1), 1)
+            # sqrt scale — keeps small databases visible next to a multi-TB outlier
+            $barPct = [Math]::Max([Math]::Round([Math]::Sqrt($totMb / $maxTotalMb) * 100, 1), 1)
             $nameCell = "<td class='name-cell'><span class='name-bar' style='width:$barPct%'></span><span class='name-txt'>$(Html-Escape $db.database_name)</span></td>"
             $html += "<tr>$nameCell<td style='text-align:right'>$(Fmt-Mb $db.data_size_mb)</td><td>$dfCell</td><td style='text-align:right'>$(Fmt-Mb $db.log_size_mb)</td><td>$lfCell</td></tr>`n"
         }
@@ -2870,7 +2965,7 @@ window.dbszSort=function(ci){
         foreach ($t in $sorted) {
             $pct = [double]($t.log_used_pct -as [double])
             $svCls = if ($pct -gt 80) { 'sv-red' } elseif ($pct -gt 50) { 'sv-orange' } else { 'sv-green' }
-            $lbPct = [Math]::Max([Math]::Round([double]($t.log_size_mb -as [double]) / $maxLogMb * 100, 1), 1)
+            $lbPct = [Math]::Max([Math]::Round([Math]::Sqrt([double]($t.log_size_mb -as [double]) / $maxLogMb) * 100, 1), 1)
             $nameCell = "<td class='name-cell'><span class='name-bar' style='width:$lbPct%'></span><span class='name-txt'>$(Html-Escape $t.database_name)</span></td>"
             $html += "<tr>$nameCell<td>$($t.recovery_model_desc)</td><td>$(Fmt-Mb $t.log_size_mb)</td><td>$(Fmt-Mb $t.log_used_mb)</td><td>$(Fmt-Mb $t.log_free_mb)</td><td><span class='sv $svCls'>$(Fmt-Pct $pct)%</span></td></tr>"
         }
@@ -3008,7 +3103,7 @@ try {
                 $fullRunPath = Join-Path $repoRoot $p
                 $resolvedRun = try { (Resolve-Path -LiteralPath $fullRunPath -ErrorAction Stop).Path } catch { $null }
                 if (-not $resolvedRun -or -not $resolvedRun.StartsWith($repoRoot.ToString(), [StringComparison]::OrdinalIgnoreCase)) {
-                    "{`"ok`":false,`"error`":`"Script not found: $(($p -replace '"','\"'))`"}"
+                    ConvertTo-JsonError "Script not found: $p"
                     break
                 }
                 $fullRunPath = $resolvedRun
@@ -3066,7 +3161,19 @@ try {
                                       -OutputFormat 'Csv' -OutputPath $csvPath -ErrorAction Stop
                         }
                     } else {
-                        & $scriptToRun -ServerInstance $svr -OutputFormat 'Csv' -OutputPath $csvPath -ErrorAction Stop
+                        # Direct PS1 run — only pass params the script declares. Reporting and
+                        # diagnostics scripts vary; unknown named params would either bind-fail
+                        # or silently fall into $args (the run.ps1 alias-mapping bug class).
+                        $cmdInfo  = Get-Command $scriptToRun -ErrorAction SilentlyContinue
+                        $psParams = @{}
+                        if ($cmdInfo -and $cmdInfo.Parameters) {
+                            if ($cmdInfo.Parameters.ContainsKey('ServerInstance')) { $psParams.ServerInstance = $svr }
+                            if ($cmdInfo.Parameters.ContainsKey('OutputFormat'))   { $psParams.OutputFormat   = 'Csv' }
+                            if ($cmdInfo.Parameters.ContainsKey('OutputPath'))     { $psParams.OutputPath     = $csvPath }
+                        } else {
+                            $psParams = @{ ServerInstance = $svr; OutputFormat = 'Csv'; OutputPath = $csvPath }
+                        }
+                        & $scriptToRun @psParams -ErrorAction Stop
                     }
 
                     if (Test-Path -LiteralPath $csvPath) {
@@ -3078,8 +3185,7 @@ try {
                         "{`"ok`":false,`"error`":`"$msg`"}"
                     }
                 } catch {
-                    $errMsg = ($_.Exception.Message -replace '\\','\\' -replace '"','\"' -replace '\r?\n',' ')
-                    "{`"ok`":false,`"error`":`"$errMsg`"}"
+                    ConvertTo-JsonError $_.Exception.Message
                 } finally {
                     $env:DBASCRIPTS_BATCH = $null
                     if ($tmpFile -and (Test-Path $tmpFile)) { Remove-Item $tmpFile -ErrorAction SilentlyContinue }
@@ -3108,8 +3214,7 @@ try {
                         '{"ok":false,"error":"Collection finished but no output folder found."}'
                     }
                 } catch {
-                    $errMsg = $_.Exception.Message -replace '\\','\\' -replace '"','\"' -replace '\r?\n',' '
-                    "{`"ok`":false,`"error`":`"$errMsg`"}"
+                    ConvertTo-JsonError $_.Exception.Message
                 }
             }
             '/api/run-ai' {
@@ -3134,8 +3239,7 @@ try {
                     & $aiScript @aiParams -ErrorAction Stop | Out-Null
                     '{"ok":true}'
                 } catch {
-                    $errMsg = $_.Exception.Message -replace '\\','\\' -replace '"','\"' -replace '\r?\n',' '
-                    "{`"ok`":false,`"error`":`"$errMsg`"}"
+                    ConvertTo-JsonError $_.Exception.Message
                 }
             }
             '/api/clear-output' {
@@ -3143,22 +3247,23 @@ try {
                 if ($req.HttpMethod -ne 'POST') { '{"ok":false,"error":"POST required"}'; break }
                 try {
                     $outDir  = Join-Path $repoRoot 'output-files'
+                    # assessments\ holds AI sign-off reports — deliberately survives the wipe
+                    $keepDir = Join-Path $outDir 'assessments'
                     $deleted = 0
                     if (Test-Path $outDir) {
                         $files = Get-ChildItem -Path $outDir -Recurse -File -ErrorAction SilentlyContinue |
-                                 Where-Object { $_.Name -ne '.gitkeep' }
+                                 Where-Object { $_.Name -ne '.gitkeep' -and -not $_.FullName.StartsWith($keepDir, [StringComparison]::OrdinalIgnoreCase) }
                         $deleted = $files.Count
                         $files | Remove-Item -Force -ErrorAction SilentlyContinue
                         # Remove empty subdirectories deepest-first
                         Get-ChildItem -Path $outDir -Recurse -Directory -ErrorAction SilentlyContinue |
                             Sort-Object FullName -Descending |
-                            Where-Object { @(Get-ChildItem $_.FullName -ErrorAction SilentlyContinue).Count -eq 0 } |
+                            Where-Object { $_.FullName -ne $keepDir -and @(Get-ChildItem $_.FullName -ErrorAction SilentlyContinue).Count -eq 0 } |
                             Remove-Item -Force -ErrorAction SilentlyContinue
                     }
                     "{`"ok`":true,`"deleted`":$deleted}"
                 } catch {
-                    $errMsg = $_.Exception.Message -replace '\\','\\' -replace '"','\"' -replace '\r?\n',' '
-                    "{`"ok`":false,`"error`":`"$errMsg`"}"
+                    ConvertTo-JsonError $_.Exception.Message
                 }
             }
             '/api/save-png' {
@@ -3178,8 +3283,7 @@ try {
                     $shortName = [System.IO.Path]::GetFileName($pngFull)
                     "{`"ok`":true,`"file`":`"$shortName`"}"
                 } catch {
-                    $errMsg = $_.Exception.Message -replace '\\','\\' -replace '"','\"' -replace '\r?\n',' '
-                    "{`"ok`":false,`"error`":`"$errMsg`"}"
+                    ConvertTo-JsonError $_.Exception.Message
                 }
             }
             default     { $statusCode = 404; Wrap-Page '404' "<p class='empty'>Page not found: $(Html-Escape $url)</p>" }
