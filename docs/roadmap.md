@@ -76,10 +76,12 @@ production DBA usage. Staged; each stage verified against local SQL before pushi
 
 ---
 
-## Collector blindspots backlog (added 2026-07-03 — from Peter's production environment)
+## Health check collection blindspots (added 2026-07-03 — from Peter's production environment)
 
-The AI assessment is only as good as what gets collected. Known coverage gaps to build out,
-in Peter's environment terms; ask Peter for topology specifics before designing each one.
+The AI assessment is only as good as what the health check collection suite gathers
+(`Invoke-HealthCheckCollection.ps1`, currently 39 scripts — not sql/collectors/ Agent jobs).
+Coverage gaps to add to the suite, in Peter's environment terms; ask Peter for topology
+specifics before designing each one.
 
 | Item | Why it's a blindspot | Notes |
 |------|----------------------|-------|
@@ -87,7 +89,7 @@ in Peter's environment terms; ask Peter for topology specifics before designing 
 | CDC on AG environments | CDC×AG interaction (capture/cleanup job behaviour across failovers) | Pair with existing Get-CdcAndChangeTracking |
 | AG-aware checks | AG is everywhere: node blips, failover history, is-this-the-primary awareness | Checks must know their replica role before judging |
 | Backups on secondaries | Tlog + full (copy-only) backups run on the SECONDARY — backup-currency checks must read AG-wide history, not local-only, or primaries false-alarm | Affects Get-BackupCoverage / Get-LastDatabaseBackupTimes rules |
-| SQL Server 2025 features | New-version feature usage is an anticipated unknown-unknown | Collector for 2025 feature adoption/config |
+| SQL Server 2025 features | New-version feature usage is an anticipated unknown-unknown | Collection script for 2025 feature adoption/config |
 
 **Open design question (to discuss):** split collection runs into 3 categories — security /
 disk space / full health check (incl. AI) — or keep the single full collection feeding all
