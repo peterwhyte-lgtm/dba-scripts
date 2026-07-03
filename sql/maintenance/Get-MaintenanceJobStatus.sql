@@ -2,7 +2,7 @@
 Script Name : Get-MaintenanceJobStatus
 Category    : maintenance
 Purpose     : Reports last run outcome, duration, and next scheduled run for all
-              DBA maintenance jobs (any job whose name starts with 'DBA - ').
+              DBA maintenance jobs (any job whose name starts with 'DBA').
               Use after deploying the maintenance framework to confirm jobs are
               running on schedule and not failing silently.
 Author      : Peter Whyte (https://sqldba.blog)
@@ -73,5 +73,5 @@ OUTER APPLY (
     ORDER BY js.next_run_date, js.next_run_time
 ) sch
 
-WHERE j.name LIKE N'DBA - %'
+WHERE j.name LIKE N'DBA %'  -- matches 'DBA - X' and 'DBA X' naming styles
 ORDER BY j.name;
