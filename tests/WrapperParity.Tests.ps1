@@ -11,9 +11,9 @@ Excluded categories:
 Excluded scripts (served by non-wrapper orchestrators):
   sql/migration/Generate-*.sql        — served by powershell/migration/Generate-*.ps1 orchestrators
                                         which use Invoke-Sqlcmd directly (DDL generators, not Invoke-RepoSql)
-  sql/performance/Get-ActiveRequests.sql         — served by powershell/reporting/Get-ActiveRequests.ps1
+  sql/performance/Get-ActiveRequests.sql         — served by powershell/diagnostics/Get-ActiveRequests.ps1
   sql/performance/Get-ActiveRequestsWithPlan.sql — served by Get-ActiveRequests.ps1 -IncludePlan
-  sql/performance/Get-BlockingChains.sql         — served by powershell/reporting/Get-BlockingChains.ps1
+  sql/performance/Get-BlockingChains.sql         — served by powershell/diagnostics/Get-BlockingChains.ps1
   sql/performance/Get-BlockingChainsWithPlan.sql — served by Get-BlockingChains.ps1 -IncludePlan
 
 No SQL Server connection required.

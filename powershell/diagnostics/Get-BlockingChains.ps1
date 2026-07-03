@@ -1,22 +1,29 @@
-﻿<#
+<#
 .SYNOPSIS
-Captures a point-in-time snapshot of all active SQL Server requests with optional execution plan export.
+Traces active SQL Server blocking chains with full chain structure, wait details, and optional execution plans.
 
 .NOTES
 ScriptType   : hybrid
 TargetScope  : single server
 RiskLevel    : SAFE
-Purpose      : Triage runaway queries, blocking chains, and TempDB consumers.
-               Optionally extracts per-session XML execution plans to separate files
-               for analysis in SSMS or Azure Data Studio.
+Purpose      : Deep-dive blocking diagnostic. Shows every session in every active
+               chain ordered by chain then depth, including idle head blockers.
+               Exits cleanly with a message when the server is not blocked.
 
 .DESCRIPTION
-Wrapper around sql\performance\active-sessions\Get-ActiveRequests.sql. When -IncludePlan is set, runs
-sql\performance\active-sessions\Get-ActiveRequestsWithPlan.sql and writes each session's query_plan
-XML to a separate plan-<session_id>-<yyyyMMdd-HHmmss>.xml file.
+Wrapper around sql\performance\blocking-locking\Get-BlockingChains.sql. When -IncludePlan is set,
+runs sql\performance\blocking-locking\Get-BlockingChainsWithPlan.sql and writes each session's
+query_plan XML to a separate plan-<session_id>-<yyyyMMdd-HHmmss>.xml file.
+
+Key output columns:
+  chain_id           — head blocker session_id; groups all sessions in a chain
+  chain_level        — 0 = head blocker, 1+ = depth in chain
+  role               — 'head blocker' or 'blocked'
+  downstream_waiters — sessions directly blocked by this node
+  sql_text           — current statement (active) or last statement (idle blocker)
 
 An ISO 8601 collection_time column is prepended to every CSV row. Results are
-written to output-files\diagnostics\active-requests\ by default.
+written to output-files\diagnostics\blocking-chains\ by default.
 
 .PARAMETER ServerInstance
 SQL Server instance to query. Defaults to '.'.
@@ -30,19 +37,19 @@ alongside the CSV. Plans are stripped from the CSV itself.
 
 .PARAMETER OutputPath
 Full path for the output CSV. Defaults to:
-  output-files\diagnostics\active-requests\<server>-<yyyyMMdd-HHmmss>.csv
+  output-files\diagnostics\blocking-chains\<server>-<yyyyMMdd-HHmmss>.csv
 
 .PARAMETER Append
 Append rows to an existing CSV instead of overwriting.
 
 .EXAMPLE
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\reporting\Get-ActiveRequests.ps1
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\diagnostics\Get-BlockingChains.ps1
 
 .EXAMPLE
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\reporting\Get-ActiveRequests.ps1 -ServerInstance PROD01\SQL2019 -IncludePlan
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\diagnostics\Get-BlockingChains.ps1 -ServerInstance PROD01\SQL2019 -IncludePlan
 
 .EXAMPLE
-pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\reporting\Get-ActiveRequests.ps1 -ServerInstance . -Append -OutputPath .\output-files\diagnostics\active-requests\rolling.csv
+pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\diagnostics\Get-BlockingChains.ps1 -ServerInstance . -Append -OutputPath .\output-files\diagnostics\blocking-chains\rolling.csv
 #>
 
 param(
@@ -58,8 +65,8 @@ $ErrorActionPreference = 'Stop'
 $repoRoot  = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $runner    = Join-Path $repoRoot 'tools\local-sql\Invoke-RepoSql.ps1'
 
-$sqlName   = if ($IncludePlan) { 'Get-ActiveRequestsWithPlan.sql' } else { 'Get-ActiveRequests.sql' }
-$sqlScript = Join-Path $repoRoot "sql\performance\active-sessions\$sqlName"
+$sqlName   = if ($IncludePlan) { 'Get-BlockingChainsWithPlan.sql' } else { 'Get-BlockingChains.sql' }
+$sqlScript = Join-Path $repoRoot "sql\performance\blocking-locking\$sqlName"
 
 if (-not (Test-Path -LiteralPath $sqlScript)) { throw "SQL script not found: $sqlScript" }
 if (-not (Test-Path -LiteralPath $runner))    { throw "Runner not found: $runner" }
@@ -69,16 +76,16 @@ $safeName = ($ServerInstance -replace '[\\/:*?"<>|,]', '-').Trim('-')
 $stamp    = Get-Date -Format 'yyyyMMdd-HHmmss'
 
 if (-not $OutputPath) {
-    $OutputPath = Join-Path $repoRoot "output-files\diagnostics\active-requests\$safeName-$stamp.csv"
+    $OutputPath = Join-Path $repoRoot "output-files\diagnostics\blocking-chains\$safeName-$stamp.csv"
 }
 $outDir = Split-Path -Parent $OutputPath
 New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 
 $tmpDir  = if ($env:TEMP) { $env:TEMP } else { [System.IO.Path]::GetTempPath() }
-$tmpPath = Join-Path $tmpDir "active-requests-$stamp.csv"
+$tmpPath = Join-Path $tmpDir "blocking-chains-$stamp.csv"
 
-# ── Execute via canonical engine — suppress footer so the final path is not misleading
-Write-Host "Running active-requests$(if ($IncludePlan) { ' (with plan)' })..." -ForegroundColor Cyan
+# ── Execute via canonical engine
+Write-Host "Running blocking-chains$(if ($IncludePlan) { ' (with plan)' })..." -ForegroundColor Cyan
 $env:DBASCRIPTS_BATCH = '1'
 try {
     & $runner -ScriptPath $sqlScript -ServerInstance $ServerInstance -Database $Database `
@@ -88,15 +95,16 @@ try {
 }
 
 if (-not (Test-Path -LiteralPath $tmpPath)) {
-    Write-Host '[active-requests] No output file produced by SQL execution.' -ForegroundColor Yellow
+    Write-Host '[blocking-chains] No output file produced by SQL execution.' -ForegroundColor Yellow
     exit 0
 }
 
 $rows = @(Import-Csv -LiteralPath $tmpPath -Encoding UTF8)
 Remove-Item $tmpPath -Force -ErrorAction SilentlyContinue
 
+# No blocking is the normal healthy state — exit cleanly without writing a CSV
 if ($rows.Count -eq 0) {
-    Write-Host '[active-requests] No active requests found.' -ForegroundColor Yellow
+    Write-Host '[blocking-chains] No active blocking chains detected.' -ForegroundColor Green
     exit 0
 }
 
@@ -117,7 +125,7 @@ if ($IncludePlan) {
     }
     $rows = $rows | Select-Object * -ExcludeProperty query_plan
     if ($planCount -gt 0) {
-        Write-Host "[active-requests] $planCount plan XML file(s) written to: $outDir" -ForegroundColor Green
+        Write-Host "[blocking-chains] $planCount plan XML file(s) written to: $outDir" -ForegroundColor Green
     }
 }
 
@@ -128,7 +136,8 @@ if ($Append) {
     $rows | Export-Csv -LiteralPath $OutputPath -NoTypeInformation -Encoding UTF8
 }
 
-Write-Host "[active-requests] $($rows.Count) row(s)" -ForegroundColor DarkGray
+$chainCount = ($rows | Select-Object -ExpandProperty chain_id -Unique).Count
+Write-Host "[blocking-chains] $chainCount chain(s), $($rows.Count) session(s)" -ForegroundColor DarkGray
 
 if (-not $env:DBASCRIPTS_BATCH) {
     $relPath = $OutputPath.Replace($repoRoot.ToString(), '').TrimStart('\')
@@ -143,7 +152,7 @@ if (-not $env:DBASCRIPTS_BATCH) {
         Write-Host "  Review  : $url" -ForegroundColor Cyan
     } else {
         Write-Host "  Review  : $url" -ForegroundColor DarkGray
-        Write-Host "            (web UI not running — start with: .\tools\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
+        Write-Host "            (web UI not running — start with: .\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
     }
     Write-Host ('─' * 64) -ForegroundColor DarkCyan
 }

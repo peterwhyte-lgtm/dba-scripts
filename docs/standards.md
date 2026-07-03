@@ -59,6 +59,8 @@ SET NOCOUNT ON;
 | Maintenance job generation and status | `sql/maintenance/` |
 | Migration assessment and DDL generation | `sql/migration/` |
 | Collector job creation scripts | `sql/collectors/` |
+| Server/instance cataloguing and inventory lists | `sql/inventory/` |
+| Extended Events session creation, review, cleanup | `sql/traces/` |
 
 Every SQL script in `sql/` must have a matching wrapper in `powershell/wrappers/<same-category>/` — this is what makes it runnable from the web UI and `run.ps1`.
 

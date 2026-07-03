@@ -22,10 +22,11 @@ output-files/   Generated output (gitignored — CSVs, healthcheck folders, repo
 
 ## `sql/` — SQL scripts
 
-All SQL scripts are single-result-set, read-only, and SSMS paste-and-run compatible. Every script has a standard header with `Script Name`, `Purpose`, `Author`, `Safe`, `Impact`, and `Requires`.
+All SQL scripts are single-result-set and SSMS paste-and-run compatible. Most are read-only; the exceptions (e.g. `traces/Create-*`, `collectors/`) are marked `SAFE:CreatesObjects` in the header. Every script has a standard header with `Script Name`, `Purpose`, `Author`, `Safe`, `Impact`, and `Requires`.
 
 | Category | Contents |
 |----------|----------|
+| `inventory/` | Version, OS, databases, services, linked servers, patch level, inventory lists |
 | `monitoring/` | Instance health, memory, MAXDOP, jobs, TempDB, DBCC, suspect pages, disk, config |
 | `performance/` | Waits, blocking, long queries, missing indexes, I/O, plan cache, active requests |
 | `backups/` | Coverage, history, DR estimates, restore generation, encryption status |
@@ -33,6 +34,7 @@ All SQL scripts are single-result-set, read-only, and SSMS paste-and-run compati
 | `high-availability/` | AG replica state, AG latency, readable secondary usage |
 | `maintenance/` | Index maintenance jobs, backup jobs, housekeeping jobs, job status |
 | `collectors/` | `Generate-CollectorJob-*.sql` — one script per collector, creates SQL Agent job and DBAMonitor table |
+| `traces/` | Extended Events tooling — Create-* audit/activity sessions, session review, session cleanup |
 | `lab/` | Dev/test-only scripts — blocking scenarios, test database creation |
 
 Migration SQL scripts live separately at `sql/migration/`. See [script-catalog.md](script-catalog.md) for the full list.
@@ -45,7 +47,8 @@ Scripts with genuine logic beyond "run the matching SQL file." Orchestrators, au
 
 | Folder | Contents |
 |--------|----------|
-| `reporting/` | Invoke-HealthCheckCollection, Review-HealthCheckOutput, Invoke-AssessmentReport, Invoke-MultiServerHealthCheck, Get-ActiveRequests, Get-BlockingChains |
+| `reporting/` | Invoke-HealthCheckCollection, Review-HealthCheckOutput, Invoke-AssessmentReport, Invoke-AiAssessment (+ ai-assessment-rubric.md), Invoke-MultiServerHealthCheck, Get-CapacityProjection, Compare-ConfigurationBaseline |
+| `diagnostics/` | Live incident triage — Get-ActiveRequests, Get-BlockingChains (both support `-IncludePlan` execution plan export) |
 | `reporting/multi-server/` | MultiServer-Get*.ps1 scripts for fleet-wide operations (disk, wait stats, patch level, blocking, etc.) |
 | `disk-space/` | Get-DiskSpaceSummary, Get-LargestFolders, Get-OldestBackupFolderFiles, Get-BackupAge |
 | `installation/` | install-sql.ps1, configure-sql.ps1, pre-install-check.ps1, post-install-validation.ps1, uninstall-sql.ps1, generate-install-report.ps1, templates/ |
@@ -53,7 +56,6 @@ Scripts with genuine logic beyond "run the matching SQL file." Orchestrators, au
 | `patching/` | patch-summary.ps1 (SQL + SSMS status overview) |
 | `patching/sql/` | Invoke-SqlPatch.ps1 (multi-server auto-patch), patch-config.psd1 |
 | `patching/ssms/` | install-ssms.ps1 (handles SSMS ≤20 and 21+), uninstall-ssms.ps1 |
-| `collectors/` | Collector SQL queries (`<name>.sql`) kept for ad-hoc use; `Collect-*.ps1` files are being migrated to SQL Agent jobs — see `sql/collectors/` |
 | `lab/` | Lab and test database scripts (dev/test only) |
 
 ---
@@ -67,9 +69,9 @@ Scripts with genuine logic beyond "run the matching SQL file." Orchestrators, au
 
 ---
 
-## `powershell/collectors/` — Collector tooling (in transition)
+## `sql/collectors/` — Scheduled collectors
 
-Collector SQL queries (`<name>.sql`) for ad-hoc use are held here. `Collect-*.ps1` orchestrators are being migrated to SQL Agent jobs — new collector jobs live in `sql/collectors/` as `Generate-CollectorJob-*.sql` scripts that create a SQL Agent job and a DBAMonitor table when executed.
+The `Collect-*.ps1` → SQL Agent migration is complete (`powershell/collectors/` no longer exists). Each `Generate-CollectorJob-*.sql` script creates a SQL Agent job and a DBAMonitor table when executed; `Generate-CollectorAlertJob.sql` adds threshold alerting, and the `Get-*Delta.sql` scripts analyse snapshot history. Trend analysis over collector output is `powershell/reporting/Get-CapacityProjection.ps1`.
 
 | Collector | Data captured |
 |-----------|---------------|
@@ -110,6 +112,8 @@ One wrapper per SQL script. Each wrapper resolves the repo root (three levels up
 | `powershell/wrappers/migration/` | All `sql/migration/` Get-* scripts |
 | `powershell/wrappers/high-availability/` | All `sql/high-availability/` scripts |
 | `powershell/wrappers/maintenance/` | `sql/maintenance/` Get-* scripts |
+| `powershell/wrappers/inventory/` | All `sql/inventory/` scripts |
+| `powershell/wrappers/traces/` | All `sql/traces/` scripts |
 
 ---
 
@@ -117,7 +121,7 @@ One wrapper per SQL script. Each wrapper resolves the repo root (three levels up
 
 | Folder | Contents |
 |--------|----------|
-| `tools/local-sql/` | `Invoke-RepoSql.ps1` (core runner), `Set-SqlConnection.ps1`, `Test-SqlConnectivity.ps1` |
+| `tools/local-sql/` | `Invoke-RepoSql.ps1` (core runner), `Set-SqlConnection.ps1`, `Test-SqlConnectivity.ps1`, `Test-ServerNetwork.ps1` (DNS/port pre-flight) |
 | `tools/triage/` | `Show-RepoOverview.ps1`, `Find-UsefulScript.ps1`, `Get-StandardsAudit.ps1` |
 | `tools/scaffolding/` | `New-Wrapper.ps1`, `New-MultiServerScript.ps1` |
 | `tools/maintenance/` | `Clear-OutputFiles.ps1` |
@@ -146,4 +150,4 @@ SQL templates, change orders, checklists, and runbooks for planned DBA work.
 
 **New unique PS script:** Add to `powershell/<subfolder>/`. Use `$PSScriptRoot '..\..'` to resolve the repo root.
 
-**New collector job:** Add a `sql/collectors/Generate-CollectorJob-<name>.sql` that creates a SQL Agent job and DBAMonitor table when executed. Keep a matching `<name>.sql` query in `powershell/collectors/` for ad-hoc use.
+**New collector job:** Add a `sql/collectors/Generate-CollectorJob-<name>.sql` that creates a SQL Agent job and DBAMonitor table when executed.

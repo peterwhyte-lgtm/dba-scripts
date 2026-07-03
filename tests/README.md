@@ -47,7 +47,7 @@ Excluded from the check (intentionally wrapper-free):
 - `sql/lab/` — dev/test scripts, not exposed in the web UI
 - `sql/collectors/` — SQL Agent job DDL; deployed directly, no wrapper needed
 - `sql/migration/Generate-*.sql` — served by orchestrators in `powershell/migration/`, not thin wrappers
-- `Get-ActiveRequests`, `Get-ActiveRequestsWithPlan`, `Get-BlockingChains`, `Get-BlockingChainsWithPlan` — served by dedicated reporting scripts
+- `Get-ActiveRequests`, `Get-ActiveRequestsWithPlan`, `Get-BlockingChains`, `Get-BlockingChainsWithPlan` — served by dedicated diagnostics scripts (powershell/diagnostics/)
 
 | Test | Purpose |
 |------|---------|

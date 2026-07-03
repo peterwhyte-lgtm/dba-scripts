@@ -12,7 +12,7 @@ $required = @(
   'sql',
   'powershell',
   'powershell\wrappers',
-  'powershell\collectors',
+  'sql\collectors',
   'tools',
   'output-files'
 )

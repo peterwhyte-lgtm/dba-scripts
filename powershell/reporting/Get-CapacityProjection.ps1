@@ -116,7 +116,7 @@ if (Test-Path $dbGrowthDir) {
     }
 }
 else {
-    Write-Warning "Collector directory not found: $dbGrowthDir — run Collect-DatabaseGrowth.ps1 first."
+    Write-Warning "Collector directory not found: $dbGrowthDir — install the DatabaseGrowth collector job first (sql\collectors\Generate-CollectorJob-DatabaseGrowth.sql)."
 }
 
 # ── Disk space projection ──────────────────────────────────────────────────────
@@ -189,7 +189,7 @@ if (Test-Path $diskDir) {
     }
 }
 else {
-    Write-Warning "Collector directory not found: $diskDir — run Collect-StorageIo.ps1 first."
+    Write-Warning "Collector directory not found: $diskDir — install the StorageIO collector job first (sql\collectors\Generate-CollectorJob-StorageIO.sql)."
 }
 
 if ($results.Count -eq 0) {
