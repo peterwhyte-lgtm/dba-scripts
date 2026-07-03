@@ -76,6 +76,25 @@ production DBA usage. Staged; each stage verified against local SQL before pushi
 
 ---
 
+## Collector blindspots backlog (added 2026-07-03 — from Peter's production environment)
+
+The AI assessment is only as good as what gets collected. Known coverage gaps to build out,
+in Peter's environment terms; ask Peter for topology specifics before designing each one.
+
+| Item | Why it's a blindspot | Notes |
+|------|----------------------|-------|
+| Replication at scale | Republishers, multiple distribution DBs, >100 distribution agent + log reader agent jobs — existing replication scripts aren't built for that volume | Needs agent-job-level health rollup, latency/undistributed commands per publication |
+| CDC on AG environments | CDC×AG interaction (capture/cleanup job behaviour across failovers) | Pair with existing Get-CdcAndChangeTracking |
+| AG-aware checks | AG is everywhere: node blips, failover history, is-this-the-primary awareness | Checks must know their replica role before judging |
+| Backups on secondaries | Tlog + full (copy-only) backups run on the SECONDARY — backup-currency checks must read AG-wide history, not local-only, or primaries false-alarm | Affects Get-BackupCoverage / Get-LastDatabaseBackupTimes rules |
+| SQL Server 2025 features | New-version feature usage is an anticipated unknown-unknown | Collector for 2025 feature adoption/config |
+
+**Open design question (to discuss):** split collection runs into 3 categories — security /
+disk space / full health check (incl. AI) — or keep the single full collection feeding all
+lens pages. Leaning: one canonical collection folder (delta + AI depend on complete folders)
+plus a `-Scope` subset param for quick targeted refreshes; interaction with findings delta
+and the data strip needs thought first.
+
 ## Tools enhancements (backlog, no fixed phase)
 
 | Item | Description | Notes |
