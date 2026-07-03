@@ -155,7 +155,8 @@ if ($target -like '*.sql') {
 }
 
 # Parse remaining string args into a hashtable so named params survive splatting.
-$splat = @{}
+$splat    = @{}
+$orphans  = @()
 $i = 0
 while ($i -lt $Arguments.Count) {
     if ($Arguments[$i] -match '^-{1,2}(.+)$') {
@@ -168,7 +169,22 @@ while ($i -lt $Arguments.Count) {
             $i++
         }
     } else {
+        $orphans += $Arguments[$i]
         $i++
+    }
+}
+
+# A bare positional token is almost always a server name typed without -ServerInstance
+# (.\run.ps1 Get-Something MYSERVER). Silently dropping it would run against the wrong
+# server — treat the first one as ServerInstance and say so.
+if ($orphans.Count -gt 0) {
+    if (-not $splat.ContainsKey('ServerInstance')) {
+        $splat['ServerInstance'] = $orphans[0]
+        Write-Host "Treating '$($orphans[0])' as -ServerInstance." -ForegroundColor DarkGray
+        $orphans = @($orphans | Select-Object -Skip 1)
+    }
+    if ($orphans.Count -gt 0) {
+        Write-Host "Ignoring unrecognised argument(s): $($orphans -join ', ') — use named parameters (e.g. -OutputFormat Csv)." -ForegroundColor Yellow
     }
 }
 
