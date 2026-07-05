@@ -471,7 +471,12 @@ New orchestrator PS script (has real logic, not a thin wrapper): add to `powersh
 
 ## Healthcheck collection — what it covers
 
-`Invoke-HealthCheckCollection.ps1` runs 39 scripts and saves named CSVs:
+`Invoke-HealthCheckCollection.ps1` runs 39 scripts and saves named CSVs. It also writes a
+per-script `manifest.csv` (label, status, started, finished, duration) into the collection
+folder, rewritten atomically after every status change — the web UI's `/api/status` polls it
+for live progress, and it records per-script timings and failures for any later reader
+(including the AI assessment). `-OutputFolder` targets an exact folder (used by the web UI);
+otherwise the folder is `<server>-<timestamp>` under `-OutputRoot`.
 
 | CSV label | SQL script |
 |-----------|-----------|

@@ -1562,7 +1562,8 @@ function Build-DataStrip([string]$folder, [string]$page) {
     if ($folder -and (Test-Path -LiteralPath $folder)) {
         $dir      = Get-Item -LiteralPath $folder
         $meta     = Get-HcFolderAge $dir
-        $csvCount = @(Get-ChildItem -LiteralPath $folder -Filter '*.csv').Count
+        $csvCount = @(Get-ChildItem -LiteralPath $folder -Filter '*.csv' |
+                      Where-Object { $_.Name -notin 'manifest.csv', 'findings.csv' }).Count
         $svrLabel = ($dir.Name -replace '-\d{8}-\d{6}$', '')
         $siCsv    = Join-Path $folder 'server-info.csv'
         if (Test-Path -LiteralPath $siCsv) {
@@ -1586,26 +1587,77 @@ function Build-DataStrip([string]$folder, [string]$page) {
   <button id='hc-run-btn' class='run-btn' onclick='runHealthcheck("$page")'>Collect fresh &#9654;</button>
 </div>
 <div id='hc-run-err' class='run-error' style='display:none;margin-bottom:10px'></div>
-<div id='hc-overlay' class='run-overlay'>
-  <div class='run-spinner'></div>
-  <div class='run-spinner-label'>Collecting $(Get-HcScriptCount) healthcheck scripts — feeds Health Check, Security, Disk, and AI pages…</div>
+<div id='hc-progress' style='display:none;margin-bottom:12px;padding:10px 14px;background:#161b22;border:1px solid #30363d;border-radius:8px'>
+  <div id='hc-progress-label' style='font-size:.82rem;color:#8b949e;margin-bottom:7px'>Starting collection…</div>
+  <div style='height:8px;background:#21262d;border-radius:4px;overflow:hidden'>
+    <div id='hc-progress-bar' style='height:100%;width:0%;background:#3fb950;transition:width .6s'></div>
+  </div>
 </div>
 <script>
+var hcTimer=null;
+function hcShowProgress(msg){
+  document.getElementById('hc-progress').style.display='';
+  document.getElementById('hc-progress-label').textContent=msg;
+  document.getElementById('hc-run-btn').disabled=true;
+}
+function hcFail(msg){
+  if(hcTimer){clearInterval(hcTimer);hcTimer=null;}
+  document.getElementById('hc-progress').style.display='none';
+  var err=document.getElementById('hc-run-err');
+  err.textContent=msg;err.style.display='';
+  document.getElementById('hc-run-btn').disabled=false;
+}
+function hcPoll(folder,page){
+  var waits=0;
+  hcTimer=setInterval(async function(){
+    try{
+      const r=await fetch('/api/status?folder='+encodeURIComponent(folder));
+      const d=await r.json();
+      if(!d.ok){hcFail(d.error||'Status check failed');return;}
+      if(d.waiting){
+        if(++waits>60){hcFail('Collection never started — check the terminal running the web UI.');}
+        return;
+      }
+      var pct=d.total?Math.round(100*d.done/d.total):0;
+      document.getElementById('hc-progress-bar').style.width=pct+'%';
+      var msg=d.done+'/'+d.total+' collected';
+      if(d.running){msg+=' — running '+d.running+'…';}
+      if(d.failed>0){msg+=' ('+d.failed+' failed)';}
+      if(!d.complete&&d.ageSeconds>180){msg+=' — no progress for '+d.ageSeconds+'s, collection may have stalled';}
+      document.getElementById('hc-progress-label').textContent=msg;
+      if(d.complete){
+        clearInterval(hcTimer);hcTimer=null;
+        document.getElementById('hc-progress-label').textContent=d.done+'/'+d.total+' collected — loading results…';
+        window.location.href='/'+page+'?folder='+encodeURIComponent(folder);
+      }
+    }catch(e){/* transient poll failure — keep trying */}
+  },1500);
+}
 async function runHealthcheck(page){
   const srv=document.getElementById('hc-srv').value.trim()||'.';
-  const btn=document.getElementById('hc-run-btn');
-  const err=document.getElementById('hc-run-err');
-  document.getElementById('hc-overlay').style.display='flex';
-  btn.disabled=true;err.style.display='none';
+  document.getElementById('hc-run-err').style.display='none';
+  hcShowProgress('Starting collection of $(Get-HcScriptCount) scripts — feeds Health Check, Security, Disk, and AI pages…');
   try{
-    const r=await fetch('/api/run-healthcheck?server='+encodeURIComponent(srv)+'&page='+page);
+    const r=await fetch('/api/run-healthcheck?server='+encodeURIComponent(srv));
     const d=await r.json();
-    if(d.ok){window.location.href=d.url;return;}
-    err.textContent=d.error||'Unknown error';err.style.display='';
-  }catch(e){err.textContent='Request failed: '+e.message;err.style.display='';}
-  document.getElementById('hc-overlay').style.display='none';
-  btn.disabled=false;
+    if(d.ok){hcPoll(d.folder,page);return;}
+    hcFail(d.error||'Unknown error');
+  }catch(e){hcFail('Request failed: '+e.message);}
 }
+// Resume progress display if the selected folder is a collection still in flight
+// (covers terminal-launched collections and navigating between pages mid-collect)
+(async function(){
+  const folder='$(if ($folder) { Html-Escape (Split-Path -Leaf $folder) })';
+  if(!folder)return;
+  try{
+    const r=await fetch('/api/status?folder='+encodeURIComponent(folder));
+    const d=await r.json();
+    if(d.ok&&!d.waiting&&!d.complete){
+      hcShowProgress('Collection in progress…');
+      hcPoll(folder,'$page');
+    }
+  }catch(e){}
+})();
 </script>
 "@
 }
@@ -3197,29 +3249,58 @@ try {
             }
             '/api/run-healthcheck' {
                 $contentType = 'application/json; charset=utf-8'
-                $svr  = ($qs['server'] ?? '').Trim()
-                $page = $qs['page']   ?? 'review'
+                $svr = ($qs['server'] ?? '').Trim()
                 if (-not $svr) { $svr = if ($env:DBASCRIPTS_SERVER) { $env:DBASCRIPTS_SERVER } else { '.' } }
                 $collScript = Join-Path $repoRoot 'powershell\reporting\Invoke-HealthCheckCollection.ps1'
                 if (-not (Test-Path $collScript)) {
                     '{"ok":false,"error":"Invoke-HealthCheckCollection.ps1 not found"}'; break
                 }
                 try {
-                    & $collScript -ServerInstance $svr -ErrorAction Stop
-                    $hcRoot = Join-Path $repoRoot 'output-files\healthcheck'
-                    $latest = Get-ChildItem -LiteralPath $hcRoot -Directory -ErrorAction SilentlyContinue |
-                              Sort-Object LastWriteTime -Descending | Select-Object -First 1
-                    if ($latest) {
-                        # Redirect to the page with no folder param — the page auto-picks the
-                        # most recent folder, which is exactly the one just collected.
-                        # Avoids all URL encoding / query-string parsing edge cases.
-                        "{`"ok`":true,`"url`":`"/$page`"}"
-                    } else {
-                        '{"ok":false,"error":"Collection finished but no output folder found."}'
-                    }
+                    # Non-blocking: pre-compute the folder (same naming as the collector),
+                    # launch the collection detached, return immediately. The client polls
+                    # /api/status?folder= against the manifest the collector writes.
+                    $hcRoot     = Join-Path $repoRoot 'output-files\healthcheck'
+                    $safeName   = ($svr -replace '[\\/:*?"<>|]', '-').Trim('-')
+                    $folderName = "$safeName-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+                    $outFolder  = Join-Path $hcRoot $folderName
+                    $pwshExe    = (Get-Process -Id $PID).Path
+                    Start-Process -FilePath $pwshExe -WindowStyle Hidden -ArgumentList @(
+                        '-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass',
+                        '-File', $collScript,
+                        '-ServerInstance', $svr,
+                        '-OutputFolder', $outFolder,
+                        '-Quiet'
+                    ) | Out-Null
+                    $folderJson = $folderName -replace '\\', '\\\\' -replace '"', '\"'
+                    "{`"ok`":true,`"folder`":`"$folderJson`"}"
                 } catch {
                     ConvertTo-JsonError $_.Exception.Message
                 }
+            }
+            '/api/status' {
+                $contentType = 'application/json; charset=utf-8'
+                $stFolder = ($qs['folder'] ?? '').Trim()
+                if (-not $stFolder) { '{"ok":false,"error":"folder parameter required"}'; break }
+                # Default = waiting: covers collector still starting AND transient read races
+                # with the collector's atomic manifest replace (the client keeps polling).
+                $body = '{"ok":true,"waiting":true}'
+                try {
+                    $resolved = Resolve-HcFolder $stFolder
+                    $mPath    = if ($resolved) { Join-Path $resolved 'manifest.csv' } else { $null }
+                    if ($mPath -and (Test-Path -LiteralPath $mPath)) {
+                        $rows = @(Import-Csv -LiteralPath $mPath -ErrorAction Stop)
+                        if ($rows.Count -gt 0) {
+                            $done     = @($rows | Where-Object { $_.Status -in 'OK', 'FAILED', 'SKIPPED' }).Count
+                            $nFail    = @($rows | Where-Object Status -eq 'FAILED').Count
+                            $running  = ($rows | Where-Object Status -eq 'RUNNING' | Select-Object -First 1).Script
+                            $complete = ($done -eq $rows.Count)
+                            $ageSec   = [math]::Round(((Get-Date) - (Get-Item -LiteralPath $mPath).LastWriteTime).TotalSeconds)
+                            $runJson  = if ($running) { '"' + ($running -replace '"', '\"') + '"' } else { 'null' }
+                            $body = "{`"ok`":true,`"total`":$($rows.Count),`"done`":$done,`"failed`":$nFail,`"running`":$runJson,`"complete`":$($complete.ToString().ToLower()),`"ageSeconds`":$ageSec}"
+                        }
+                    }
+                } catch { $null = $_ }
+                $body
             }
             '/api/run-ai' {
                 $contentType = 'application/json; charset=utf-8'

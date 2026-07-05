@@ -54,6 +54,10 @@ SQL Server instance to query. Defaults to '.'.
 .PARAMETER OutputRoot
 Parent folder for healthcheck output folders. Defaults to output-files\healthcheck under the repo root.
 
+.PARAMETER OutputFolder
+Exact output folder to write into (created if missing). Overrides OutputRoot and the generated
+<server>-<timestamp> name. Used by the web UI so it knows the folder to poll before the run starts.
+
 .EXAMPLE
 pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\reporting\Invoke-HealthCheckCollection.ps1
 
@@ -69,6 +73,7 @@ pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\powershell\reporting\Rev
 param(
     [string]$ServerInstance = '.',
     [string]$OutputRoot,
+    [string]$OutputFolder,
     [switch]$Quiet
 )
 
@@ -88,10 +93,23 @@ if (-not $OutputRoot) {
     $OutputRoot = Join-Path $repoRoot 'output-files\healthcheck'
 }
 
-$safeName  = ($ServerInstance -replace '[\\/:*?"<>|]', '-').Trim('-')
-$timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$outFolder = Join-Path $OutputRoot "$safeName-$timestamp"
+if ($OutputFolder) {
+    $outFolder = $OutputFolder
+} else {
+    $safeName  = ($ServerInstance -replace '[\\/:*?"<>|]', '-').Trim('-')
+    $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+    $outFolder = Join-Path $OutputRoot "$safeName-$timestamp"
+}
 New-Item -ItemType Directory -Path $outFolder -Force | Out-Null
+
+# Per-script progress manifest — rewritten after every status change so pollers
+# (web UI /api/status) always see a complete, current picture. Temp+move keeps
+# each write atomic for concurrent readers.
+function Write-HcManifest([object[]]$Rows, [string]$Folder) {
+    $tmp = Join-Path $Folder '.manifest.tmp'
+    $Rows | Export-Csv -LiteralPath $tmp -NoTypeInformation
+    Move-Item -LiteralPath $tmp -Destination (Join-Path $Folder 'manifest.csv') -Force
+}
 
 try {
 
@@ -267,7 +285,20 @@ $scripts = @(
     }
 )
 
-$summary = [System.Collections.Generic.List[PSObject]]::new()
+# All planned scripts go into the manifest as PENDING up front, so pollers know
+# the total and the full script list from the first write.
+$manifest = [System.Collections.Generic.List[PSObject]]::new()
+foreach ($s in $scripts) {
+    $manifest.Add([PSCustomObject]@{
+        Script      = $s.Label
+        Status      = 'PENDING'
+        Started     = ''
+        Finished    = ''
+        DurationSec = ''
+        Note        = ''
+    })
+}
+Write-HcManifest $manifest $outFolder
 
 foreach ($s in $scripts) {
     $resolvedSql = $null
@@ -283,6 +314,12 @@ foreach ($s in $scripts) {
     $status  = 'OK'
     $note    = ''
     $db      = if ($s.PSObject.Properties['Database'] -and $s.Database) { $s.Database } else { 'master' }
+
+    $mRow = $manifest | Where-Object Script -eq $s.Label | Select-Object -First 1
+    $mRow.Status  = 'RUNNING'
+    $mRow.Started = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    Write-HcManifest $manifest $outFolder
+    $swScript = [System.Diagnostics.Stopwatch]::StartNew()
 
     if (-not $resolvedSql) {
         $status = 'SKIPPED'
@@ -311,6 +348,13 @@ foreach ($s in $scripts) {
         }
     }
 
+    $swScript.Stop()
+    $mRow.Status      = $status
+    $mRow.Finished    = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    $mRow.DurationSec = [math]::Round($swScript.Elapsed.TotalSeconds, 1)
+    $mRow.Note        = $note
+    Write-HcManifest $manifest $outFolder
+
     $color = switch ($status) {
         'OK'      { 'Green' }
         'SKIPPED' { 'Yellow' }
@@ -321,20 +365,13 @@ foreach ($s in $scripts) {
         $shortNote = if ($note.Length -gt 140) { $note.Substring(0, 140) + '…' } else { $note }
         Write-Host "             $shortNote" -ForegroundColor DarkRed
     }
-
-    $summary.Add([PSCustomObject]@{
-        Script  = $s.Label
-        Status  = $status
-        CsvFile = if ($status -eq 'OK') { Split-Path -Leaf $csvPath } else { '' }
-        Note    = $note
-    })
 }
 
 Write-Host ''
 Write-Host '--------------------------------------------'
-$ok      = @($summary | Where-Object Status -eq 'OK').Count
-$failed  = @($summary | Where-Object Status -eq 'FAILED').Count
-$skipped = @($summary | Where-Object Status -eq 'SKIPPED').Count
+$ok      = @($manifest | Where-Object Status -eq 'OK').Count
+$failed  = @($manifest | Where-Object Status -eq 'FAILED').Count
+$skipped = @($manifest | Where-Object Status -eq 'SKIPPED').Count
 Write-Host "  OK: $ok  |  Failed: $failed  |  Skipped: $skipped" -ForegroundColor Cyan
 Write-Host ''
 
