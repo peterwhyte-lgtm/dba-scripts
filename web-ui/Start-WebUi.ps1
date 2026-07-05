@@ -3378,12 +3378,18 @@ try {
             Wrap-Page 'Error' "<h2>Error</h2><pre style='color:#f78166'>$(Html-Escape $_.Exception.Message)`n$(Html-Escape $_.ScriptStackTrace)</pre>"
         }
 
-        $bytes = [System.Text.Encoding]::UTF8.GetBytes($body)
-        $res.ContentType     = $contentType
-        $res.ContentLength64 = $bytes.Length
-        $res.StatusCode      = $statusCode
-        $res.OutputStream.Write($bytes, 0, $bytes.Length)
-        $res.OutputStream.Close()
+        try {
+            $bytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+            $res.ContentType     = $contentType
+            $res.ContentLength64 = $bytes.Length
+            $res.StatusCode      = $statusCode
+            $res.OutputStream.Write($bytes, 0, $bytes.Length)
+            $res.OutputStream.Close()
+        } catch {
+            # Client disconnected before/while the response was being written (tab closed,
+            # navigation aborted an in-flight poll) — drop this response, keep serving
+            try { $res.Abort() } catch { $null = $_ }
+        }
     }
 } finally {
     $listener.Stop()
