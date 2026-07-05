@@ -91,11 +91,13 @@ specifics before designing each one.
 | Backups on secondaries | Tlog + full (copy-only) backups run on the SECONDARY — backup-currency checks must read AG-wide history, not local-only, or primaries false-alarm | Affects Get-BackupCoverage / Get-LastDatabaseBackupTimes rules |
 | SQL Server 2025 features | New-version feature usage is an anticipated unknown-unknown | Collection script for 2025 feature adoption/config |
 
-**Open design question (to discuss):** split collection runs into 3 categories — security /
-disk space / full health check (incl. AI) — or keep the single full collection feeding all
-lens pages. Leaning: one canonical collection folder (delta + AI depend on complete folders)
-plus a `-Scope` subset param for quick targeted refreshes; interaction with findings delta
-and the data strip needs thought first.
+**Collection-scope design — SETTLED 2026-07-05:** one canonical collection, no split and no
+`-Scope` param for now. A collection folder is a complete point-in-time snapshot — the delta,
+AI assessment, and lens pages all depend on that; partial folders would tax every consumer.
+Quick single-question rechecks use the existing per-script path (`run.ps1` / Run ▶). Stage 4
+is built manifest-first: the collector writes a per-script `manifest.csv` (label, status,
+started, finished) that `/api/status` reads for progress — and that same manifest is the
+provenance foundation if multi-server economics ever justify scoped runs with copy-forward.
 
 ## Tools enhancements (backlog, no fixed phase)
 
@@ -133,6 +135,7 @@ These extend the existing collector and reporting infrastructure into scheduled,
 
 | Date | Item |
 |------|------|
+| 2026-07-05 | Findings delta fixed to compare same-server collections only (previous-folder lookup filtered by server prefix — a different server's folder in between no longer produces false new/resolved findings); collection-scope design question SETTLED: one canonical collection, no -Scope; Phase 6.1 Stage 4 to be built manifest-first (per-script manifest.csv doubles as progress source and future scoped-run provenance) |
 | 2026-07-04 | Root docs restructured around the AI-flagship identity — README leads with "collect everything, then have an AI review it with you" (What This Is moved to top, health check promoted to flagship section, web UI promoted from "Optional" to the view/verify dashboard, AI requirement noted); quick-start health check section now shows all 3 steps incl. AI assessment; CLAUDE.md Purpose rewritten to the flagship framing (prerequisite for the flagship blog post) |
 | 2026-07-03 | Web UI Phase 6 complete (all 5 stages + polish: data strip, /ai page, security drill-down, scorecard+delta, triage cockpit, disk donuts + summary + name-bars, favicon); powershell/diagnostics/ created (Get-ActiveRequests, Get-BlockingChains moved from reporting/); powershell/collectors ghost references purged from docs + Initialize-Environment + Quick-RepoCheck; 55 stale SQL paths fixed in web UI top/triage lists; Restart-WebUi self-kill filter fixed (launch-signature match); Start-WebUi friendly port-conflict message; Get-MaintenanceJobStatus name filter widened (DBA - % → DBA %); 5 blog seeds captured from build sessions |
 | 2026-07-02 | AI assessment layer — healthcheck is now collect → rules review → AI assessment; `Invoke-AiAssessment.ps1` (Claude API, `ANTHROPIC_API_KEY`/`ANTHROPIC_BASE_URL` env vars, `-DryRun` prompt preview) + shared `ai-assessment-rubric.md`; Claude Code sessions perform the assessment directly per ai-playbook; collection expanded 32→39 scripts (sysadmin-members, instance-config, top-cpu-queries, agent-jobs-overview, orphaned-users, certificate-expiry, autogrowth-history); `docs/ai-assessment.md` setup guide incl. corporate repointing; Test-ServerNetwork.ps1 shipped (local service check, SQL Browser SSRP port resolution, -AgCluster/-FciCluster); traces added to blog taxonomy (troubleshooting) |

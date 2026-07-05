@@ -1739,10 +1739,14 @@ function Build-ReviewPage([string]$folder) {
         $nWarn = @($fx | Where-Object Severity -eq 'WARNING').Count
         $nInfo = @($fx | Where-Object Severity -eq 'INFO').Count
 
-        # delta vs the collection immediately before this one
+        # delta vs the previous collection of the SAME server — folders from other
+        # servers would make every uncollected finding look new/resolved
         $deltaHtml = ''
-        $hcRootD  = Join-Path $repoRoot 'output-files\healthcheck'
-        $allDirs  = @(Get-ChildItem -LiteralPath $hcRootD -Directory | Sort-Object LastWriteTime -Descending)
+        $hcRootD   = Join-Path $repoRoot 'output-files\healthcheck'
+        $curPrefix = (Split-Path -Leaf $folder) -replace '-\d{8}-\d{6}$', ''
+        $allDirs   = @(Get-ChildItem -LiteralPath $hcRootD -Directory |
+                       Where-Object { ($_.Name -replace '-\d{8}-\d{6}$', '') -eq $curPrefix } |
+                       Sort-Object LastWriteTime -Descending)
         $curIdx   = [Array]::FindIndex($allDirs, [Predicate[object]]{ param($d) $d.FullName -eq $folder })
         if ($curIdx -ge 0 -and $curIdx + 1 -lt $allDirs.Count) {
             $prevDir  = $allDirs[$curIdx + 1]
