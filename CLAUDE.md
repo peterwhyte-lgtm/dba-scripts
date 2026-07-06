@@ -15,6 +15,17 @@ The repo is built around four core ideas:
 
 The web UI is where collection output is viewed, verified, and diagnosed — part of the flagship workflow, though every workflow also works from the terminal alone. Multi-server ("the many part") is the planned build-out of the main gig, not yet current scope.
 
+## Product positioning (Peter's directive, 2026-07-06)
+
+Treat dba-tools like a **product**: the AI integration is the selling point and the thing to promote; everything underneath must hold production value against the field's gold standards. Benchmarks to measure against (and beat where claimed):
+
+- **Activity/session visibility** as good as `sp_WhoIsActive`
+- **Maintenance plan generation** as good as Ola Hallengren's solution
+- **Diagnostic scripts** as good as Glenn Berry's, but more pertinent
+- **Wait statistics** material better than Paul Randal's reference pages
+
+When improving or reviewing scripts in these areas, these benchmarks are the bar — production value is the floor the AI story stands on.
+
 ## Operating rules
 
 These rules apply across the repo:
