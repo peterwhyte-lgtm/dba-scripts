@@ -62,7 +62,7 @@ To target a remote or named instance instead, pass `-ServerInstance`:
 .\Initialize-Environment.ps1 -ServerInstance PROD01\SQL2025
 ```
 
-Once setup passes the server is saved for the session, every script picks it up automatically, no `-ServerInstance` flag needed on each run.
+Once setup passes, the server is saved for the session and every script picks it up automatically — no `-ServerInstance` flag needed on each run.
 
 > Full prerequisites and troubleshooting: [SETUP.md](SETUP.md)
 
@@ -125,7 +125,7 @@ A local browser dashboard where collection output is viewed and signed off. One 
 - **Triage** — a live incident cockpit: run diagnostic scripts and see results inline, mid-incident
 - **Scripts** — the browse/reference library for the whole repo
 
-Runs on `localhost:8787` only. No external dependencies for the server — Chart.js loads from CDN for the chart view. The UI is optional: every workflow above works from the terminal alone. A multi-server fleet dashboard is on the roadmap.
+Runs on `localhost:8787` only. The server itself has no external dependencies; the browser chart view loads Chart.js from a CDN. The UI is optional: every workflow above works from the terminal alone. A multi-server fleet dashboard is on the roadmap.
 
 ---
 
