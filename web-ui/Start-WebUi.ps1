@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Local web UI for browsing scripts and visualising output CSVs.
 .DESCRIPTION
@@ -2007,13 +2007,14 @@ function fxChip(el){
         Add-F 'INFO' 'Missing Indexes' "$($missingIdx.Count) candidate(s) identified" "Top impact score: $([Math]::Round(($missingIdx[0].impact_score -as [double]),0).ToString('N0'))"
     }
     foreach ($row in $failedLogins) {
+        $loginName = if ($null -ne $row.login_name) { $row.login_name } else { '(unknown)' }
         if ($row.is_currently_locked -in @('1','True','true')) {
-            Add-F 'CRITICAL' 'Failed Logins' ($row.login_name ?? '(unknown)') 'Login is currently locked out'
+            Add-F 'CRITICAL' 'Failed Logins' $loginName 'Login is currently locked out'
         }
         if ($row.status -like 'CRITICAL*') {
-            Add-F 'CRITICAL' 'Failed Logins' ($row.login_name ?? '(unknown)') "$($row.failure_count) failures in error log — likely brute-force or app misconfiguration"
+            Add-F 'CRITICAL' 'Failed Logins' $loginName "$($row.failure_count) failures in error log — likely brute-force or app misconfiguration"
         } elseif ($row.status -like 'WARN*') {
-            Add-F 'WARNING' 'Failed Logins' ($row.login_name ?? '(unknown)') "$($row.failure_count) repeated failures in error log"
+            Add-F 'WARNING' 'Failed Logins' $loginName "$($row.failure_count) repeated failures in error log"
         }
     }
     foreach ($row in $qsStatus) {
@@ -2237,7 +2238,7 @@ function fxChip(el){
             foreach ($s in ($sessions | Sort-Object { [int]($_.session_id -as [int]) })) {
                 $html += "<tr>"
                 foreach ($c in $avail) {
-                    $v = $s.$c ?? ''
+                    $v = if ($null -ne $s.$c) { $s.$c } else { '' }
                     if ($c -eq 'blocking_session_id') {
                         $n=0; $html += if ($v -and [int]::TryParse($v,[ref]$n) -and $n -gt 0) { "<td><span class='sv sv-red'>$v</span></td>" } else { "<td><span class='null-val'>—</span></td>" }
                     } elseif ($c -eq 'status') {
@@ -2432,9 +2433,10 @@ function fxChip(el){
                 "<span class='sv sv-green'>no</span>"
             } else { '<span class="null-val">—</span>' }
             $stShort = $fl.status -replace '^(CRITICAL|WARN|INFO) — ',''
+            $clientHost = if ($null -ne $fl.client_host) { $fl.client_host } else { '—' }
             $html += "<tr>"
             $html += "<td>$(Html-Escape $fl.login_name)</td>"
-            $html += "<td style='font-size:.75rem'>$(Html-Escape ($fl.client_host ?? '—'))</td>"
+            $html += "<td style='font-size:.75rem'>$(Html-Escape $clientHost)</td>"
             $html += "<td><strong>$($fl.failure_count)</strong></td>"
             $html += "<td style='font-size:.75rem'>$(Html-Escape $fl.error_description)</td>"
             $html += "<td style='white-space:nowrap;font-size:.75rem'>$(($fl.first_failure_approx -replace '\.\d+$',''))</td>"
@@ -2539,7 +2541,8 @@ function Build-SecurityScripts([object[]]$scripts) {
     $out += "<div class='grid'>"
     foreach ($s in $scripts) {
         $relEnc = [Uri]::EscapeDataString($s.RelPath)
-        $purpose = Html-Escape ($s.Purpose ?? '')
+        $purposeText = if ($null -ne $s.Purpose) { $s.Purpose } else { '' }
+        $purpose = Html-Escape $purposeText
         $safeTag = if ($s.Safety) { " <span class='sv sv-green'>$(Html-Escape $s.Safety)</span>" } else { '' }
         $out += "<div class='card'>"
         $out += "<div style='display:flex;justify-content:space-between;align-items:flex-start;gap:6px'>"
@@ -2701,13 +2704,14 @@ function Build-SecurityPage([string]$folder) {
         Add-F $sev 'Login Settings' $login.login_name $detail
     }
     foreach ($row in $failedLogins) {
+        $loginName = if ($null -ne $row.login_name) { $row.login_name } else { '(unknown)' }
         if ($row.is_currently_locked -in @('1','True','true')) {
-            Add-F 'CRITICAL' 'Failed Logins' ($row.login_name ?? '(unknown)') 'Login is currently locked out'
+            Add-F 'CRITICAL' 'Failed Logins' $loginName 'Login is currently locked out'
         }
         if ($row.status -like 'CRITICAL*') {
-            Add-F 'CRITICAL' 'Failed Logins' ($row.login_name ?? '(unknown)') "$($row.failure_count) failures — likely brute-force or app misconfiguration"
+            Add-F 'CRITICAL' 'Failed Logins' $loginName "$($row.failure_count) failures — likely brute-force or app misconfiguration"
         } elseif ($row.status -like 'WARN*') {
-            Add-F 'WARNING'  'Failed Logins' ($row.login_name ?? '(unknown)') "$($row.failure_count) repeated failures in error log"
+            Add-F 'WARNING'  'Failed Logins' $loginName "$($row.failure_count) repeated failures in error log"
         }
     }
 
@@ -3132,17 +3136,17 @@ try {
         $body = try { switch ($url) {
             '/'         { Build-HomePage }
             '/triage'   { Build-TriagePage }
-            '/search'   { Build-SearchPage ($qs['q'] ?? '') }
-            '/view'     { Build-ViewPage   ($qs['p'] ?? '') }
+            '/search'   { Build-SearchPage (if ($null -ne $qs['q']) { $qs['q'] } else { '' }) }
+            '/view'     { Build-ViewPage   (if ($null -ne $qs['p']) { $qs['p'] } else { '' }) }
             '/csvs'     { Build-CsvListPage }
-            '/csv'      { Build-CsvViewPage ($qs['p'] ?? '') }
-            '/review'    { Build-ReviewPage   ($qs['folder'] ?? '') }
-            '/security'  { Build-SecurityPage ($qs['folder'] ?? '') }
-            '/disk'      { Build-DiskPage     ($qs['folder'] ?? '') }
-            '/ai'        { Build-AiPage       ($qs['folder'] ?? '') ($qs['report'] ?? '') }
+            '/csv'      { Build-CsvViewPage (if ($null -ne $qs['p']) { $qs['p'] } else { '' }) }
+            '/review'    { Build-ReviewPage   (if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) }
+            '/security'  { Build-SecurityPage (if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) }
+            '/disk'      { Build-DiskPage     (if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) }
+            '/ai'        { Build-AiPage       (if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) (if ($null -ne $qs['report']) { $qs['report'] } else { '' }) }
             '/api/csv'  {
                 $contentType = 'application/json; charset=utf-8'
-                $p = $qs['p'] ?? ''
+                $p = if ($null -ne $qs['p']) { $qs['p'] } else { '' }
                 $fp = Join-Path $repoRoot $p
                 $resolvedFp = try { (Resolve-Path -LiteralPath $fp -ErrorAction Stop).Path } catch { $null }
                 if ($resolvedFp -and $resolvedFp.StartsWith($repoRoot.ToString(), [StringComparison]::OrdinalIgnoreCase)) {
@@ -3151,8 +3155,9 @@ try {
             }
             '/api/run' {
                 $contentType = 'application/json; charset=utf-8'
-                $p      = $qs['p']      ?? ''
-                $svr    = ($qs['server'] ?? '').Trim()
+                $p      = if ($null -ne $qs['p']) { $qs['p'] } else { '' }
+                $svrVal = if ($null -ne $qs['server']) { $qs['server'] } else { '' }
+                $svr    = "$svrVal".Trim()
                 $dryRun = $qs['dryrun'] -eq '1'
                 if (-not $svr) { $svr = if ($env:DBASCRIPTS_SERVER) { $env:DBASCRIPTS_SERVER } else { '.' } }
 
@@ -3249,7 +3254,8 @@ try {
             }
             '/api/run-healthcheck' {
                 $contentType = 'application/json; charset=utf-8'
-                $svr = ($qs['server'] ?? '').Trim()
+                $svrVal = if ($null -ne $qs['server']) { $qs['server'] } else { '' }
+                $svr = "$svrVal".Trim()
                 if (-not $svr) { $svr = if ($env:DBASCRIPTS_SERVER) { $env:DBASCRIPTS_SERVER } else { '.' } }
                 $collScript = Join-Path $repoRoot 'powershell\reporting\Invoke-HealthCheckCollection.ps1'
                 if (-not (Test-Path $collScript)) {
@@ -3279,7 +3285,8 @@ try {
             }
             '/api/status' {
                 $contentType = 'application/json; charset=utf-8'
-                $stFolder = ($qs['folder'] ?? '').Trim()
+                $stFolderVal = if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }
+                $stFolder = "$stFolderVal".Trim()
                 if (-not $stFolder) { '{"ok":false,"error":"folder parameter required"}'; break }
                 # Default = waiting: covers collector still starting AND transient read races
                 # with the collector's atomic manifest replace (the client keeps polling).
@@ -3304,7 +3311,8 @@ try {
             }
             '/api/run-ai' {
                 $contentType = 'application/json; charset=utf-8'
-                $aiFolder = ($qs['folder'] ?? '').Trim()
+                $aiFolderVal = if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }
+                $aiFolder = "$aiFolderVal".Trim()
                 $dryRun   = $qs['dryrun'] -eq '1'
                 $aiScript = Join-Path $repoRoot 'powershell\reporting\Invoke-AiAssessment.ps1'
                 if (-not (Test-Path $aiScript)) {

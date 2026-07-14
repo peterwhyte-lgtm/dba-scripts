@@ -122,6 +122,17 @@ The repo should reflect the intended blog taxonomy so that scripts and posts can
 
 ### Blog category framework
 
+**Live WordPress categories (authoritative — sqldba.blog, consolidated 2026-07-13):** Performance,
+Monitoring, Troubleshooting, Maintenance, Backups & Recovery, Security, High Availability & DR,
+Migration & Upgrades, Installation & Configuration, T-SQL Fundamentals, T-SQL & Internals, AI, Labs.
+The old `dba-operations` / `dba-scripts` / `dba-engineering` containers are retired. When choosing
+where a post goes, use this set. Full plan, per-post mapping, and edge-case rules (patching vs
+upgrade, trace flags, restore vs stuck-restore): `blog/CATEGORY-PLAN.md`. Machine map + the
+`recategorize.py` sweep tool: `blog/recategorize-map.json`.
+
+The richer list below is the **internal planning model** for repo organization (it has finer
+buckets like inventory, incident-response, capacity-planning that fold into the live set above —
+e.g. inventory + instance-config → Monitoring; environment-setup → Installation & Configuration).
 Use the following primary categories when deciding where a script or post belongs:
 
 1. **Core DBA operations**
@@ -452,7 +463,7 @@ SET NOCOUNT ON;
 
 Add `HealthCheck : Yes` (after `Requires`) to any script that runs as part of `Invoke-HealthCheckCollection.ps1`. This tag drives the "Health Check Suite" section in the web UI and makes membership machine-readable without needing a separate folder.
 
-**Author URL rule:** The `Author` line uses `https://sqldba.blog` as a placeholder until the script has a published post. Once a post is live, update the URL to the specific post URL (e.g. `Author : Peter Whyte (https://sqldba.blog/dba-operations/get-database-file-names-and-paths-in-sql-server/)`). Do this at the same time as marking the blog post `status: updated` or `status: published`.
+**Author URL rule:** The `Author` line uses `https://sqldba.blog` as a placeholder until the script has a published post. Once a post is live, update the URL to the specific post URL. Permalinks are **postname-only** (`/%postname%/`, since 2026-07-13) — the category is **not** in the URL, so the format is `Author : Peter Whyte (https://sqldba.blog/get-database-file-names-and-paths-in-sql-server/)` (not `/category/postname/`). Do this at the same time as marking the blog post `status: updated` or `status: published`. Same rule for `-- Blog:` links in script headers.
 
 **SQL script rules:**
 - Remove or flag unsafe patterns: `WITH (NOLOCK)` (explain risk if present), deprecated catalog views (`sys.sysprocesses`, `sys.sysobjects` etc.)

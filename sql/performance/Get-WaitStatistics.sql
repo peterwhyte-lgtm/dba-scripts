@@ -2,7 +2,7 @@
 Script Name : Get-WaitStatistics
 Category    : performance-troubleshooting
 Purpose     : Top wait types since last SQL Server restart, filtered to actionable waits only.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/sql-server-wait-statistics/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */

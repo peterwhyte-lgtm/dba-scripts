@@ -30,6 +30,14 @@ Every script came from a real situation: an incident, a migration window, a clie
 
 Everything is read-only by default. Every script has a header with what permissions it needs and what it touches. Nothing phones home, nothing requires a framework — and nothing is sent to any AI until you run the assessment step yourself.
 
+### See It Work
+
+<p align="center">
+  <a href="https://sqldba.blog/wp-content/uploads/2026/07/dba-tools-demo.mp4"><img src="https://sqldba.blog/wp-content/uploads/2026/07/dba-tools-demo-poster.jpg" alt="Watch the dba-tools demo: Get-WaitStatistics from the terminal, the same result in the web UI, then the script pasted into SSMS and run" width="720"></a>
+</p>
+
+<p align="center"><em>A 30-second run: <code>Get-WaitStatistics</code> from the terminal, the same output in the web UI, then the script pasted into SSMS and run. (<a href="https://sqldba.blog/">see it on sqldba.blog</a>)</em></p>
+
 ---
 
 ## Start Here
