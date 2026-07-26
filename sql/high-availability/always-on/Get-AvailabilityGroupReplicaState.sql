@@ -2,9 +2,10 @@
 Script Name : Get-AvailabilityGroupReplicaState
 Category    : high-availability
 Purpose     : Show AG replica health, connection state, and synchronization status for failover readiness.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/script-check-ag-replica-role-and-synchronization-state/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/script-check-ag-replica-role-and-synchronization-state/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -25,7 +26,7 @@ BEGIN
         ars.operational_state_desc,
         ars.connected_state_desc,
         ars.synchronization_health_desc,
-        ars.synchronization_state_desc,
+        ars.recovery_health_desc,
         ars.last_connect_error_number,
         ars.last_connect_error_description,
         ars.last_connect_error_timestamp

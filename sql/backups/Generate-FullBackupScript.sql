@@ -4,9 +4,10 @@ Category    : backups-and-recovery
 Purpose     : Generate a FULL backup script for all online user databases.
               @ts in the generated script resolves at execution time so filenames
               include the backup timestamp, not the script generation timestamp.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-backup-and-restore-scripts/)
 Requires    : VIEW ANY DATABASE
 */
+-- Blog: https://sqldba.blog/dba-scripts-generate-backup-and-restore-scripts/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -2,9 +2,10 @@
 Script Name : Get-OpenTransactions
 Category    : performance
 Purpose     : Active transactions with age, session details, and the SQL currently running or last executed — long-running open transactions cause log growth and block readers in READ_COMMITTED isolation.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-open-transactions/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-open-transactions/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

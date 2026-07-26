@@ -5,7 +5,7 @@ Purpose     : Reports why each database's transaction log cannot truncate and re
               space — the log_reuse_wait_desc reason per database, with recovery model,
               log size, and last log backup for context. This is the first question to
               answer when a log file is full or growing and won't shrink.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-log-reuse-waits/)
 Requires    : VIEW ANY DATABASE, db_datareader on msdb
 Notes       : NOTHING / CHECKPOINT are healthy. LOG_BACKUP means the FULL/BULK_LOGGED
               log is waiting on a log backup (the most common cause of a full log).
@@ -13,6 +13,7 @@ Notes       : NOTHING / CHECKPOINT are healthy. LOG_BACKUP means the FULL/BULK_L
               run Get-OpenTransactions next. AVAILABILITY_REPLICA / DATABASE_MIRRORING /
               REPLICATION mean a partner or agent hasn't consumed the log yet.
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-log-reuse-waits/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

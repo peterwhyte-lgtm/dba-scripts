@@ -4,9 +4,10 @@ Category    : backups-and-recovery
 Purpose     : Generate a RESTORE DATABASE script for all online user databases.
               Set @ts to the timestamp of the backup files you want to restore
               before executing. Review WITH MOVE if restoring to a different server.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-backup-and-restore-scripts/)
 Requires    : VIEW ANY DATABASE
 */
+-- Blog: https://sqldba.blog/dba-scripts-generate-backup-and-restore-scripts/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

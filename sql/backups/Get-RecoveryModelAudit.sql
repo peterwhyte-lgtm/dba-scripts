@@ -6,13 +6,14 @@ Purpose     : Audits each database's recovery model against its actual backup po
               with no log backups (the log grows until the disk fills), databases with no
               full backup to anchor a log chain, and SIMPLE databases where someone may be
               expecting point-in-time recovery they do not have.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-recovery-model-audit/)
 Requires    : VIEW ANY DATABASE, db_datareader on msdb
 Notes       : "Accidental FULL" is the classic finding — a database left in FULL recovery
               with no log backup job. It runs fine for months, then the log fills the drive.
               Run Get-LogReuseWaits and Get-TransactionLogSizeAndUsage alongside this to see
               the live effect. Thresholds below are defaults; adjust to your backup SLA.
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-recovery-model-audit/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
