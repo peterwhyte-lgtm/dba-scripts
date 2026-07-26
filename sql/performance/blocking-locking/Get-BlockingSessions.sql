@@ -2,9 +2,10 @@
 Script Name : Get-BlockingSessions
 Category    : performance-troubleshooting
 Purpose     : Show sessions involved in blocking chains with wait type, timing, and current statement.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-blocking-sessions/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-blocking-sessions/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

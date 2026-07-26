@@ -2,9 +2,10 @@
 Script Name : Get-BlockingSummary
 Category    : performance-troubleshooting
 Purpose     : Head blockers with context — who is blocking, how many sessions, and what they are running.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-blocking-sessions/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-blocking-sessions/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
