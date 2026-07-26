@@ -4,9 +4,10 @@ Category    : performance
 Purpose     : Top queries from Query Store by CPU, duration, execution count, or plan regressions.
               Change @sort_by at the top to switch modes. Must run in the context of the target
               database — change the database in SSMS or pass -Database <dbname> via the PS wrapper.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-store-top-queries/)
 Requires    : VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-query-store-top-queries/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -2,9 +2,10 @@
 Script Name : Get-ActiveXeSessions
 Category    : traces
 Purpose     : Shows all currently running Extended Events sessions with their targets and file output paths.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-active-xe-sessions/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-active-xe-sessions/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

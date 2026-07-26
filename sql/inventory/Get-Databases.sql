@@ -5,9 +5,10 @@ Purpose     : Lists all databases with key properties and allocated file sizes.
               Reads from system metadata only — fast, no per-database scan.
               Data and log sizes reflect allocated file space, not space used.
               Run Get-DatabaseSizesAndFreeSpace for used vs free breakdown.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-sizes-and-free-space/)
 Requires    : VIEW ANY DATABASE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-database-sizes-and-free-space/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

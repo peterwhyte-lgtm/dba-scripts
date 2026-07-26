@@ -4,9 +4,10 @@ Category    : traces
 Purpose     : Creates an Extended Events session that captures all T-SQL batch, RPC, successful login, and failed login activity
               against a specific database (or all databases). Use before decommissioning or retiring a database to prove zero usage.
               Run for at least 5–7 business days to catch batch jobs and end-of-period activity.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-create-decommission-audit-session/)
 Requires    : ALTER ANY EVENT SESSION, VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-create-decommission-audit-session/
 -- SAFE:CreatesObjects
 -- IMPACT:Low
 SET NOCOUNT ON;

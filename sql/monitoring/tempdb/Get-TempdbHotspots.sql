@@ -2,9 +2,10 @@
 Script Name : Get-TempdbHotspots
 Category    : maintenance-and-reliability
 Purpose     : Identify sessions consuming the most TempDB space for contention and spill triage.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-temp-db-hotspots/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-temp-db-hotspots/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

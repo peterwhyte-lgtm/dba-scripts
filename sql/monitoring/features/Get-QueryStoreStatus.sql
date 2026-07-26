@@ -3,10 +3,11 @@ Script Name : Get-QueryStoreStatus
 Category    : monitoring
 Purpose     : Query Store enablement, fill ratio, capture mode, and health across all user databases.
               Surfaces databases where QS is off, full, or auto-switched to READ_ONLY.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-store-status/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-query-store-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

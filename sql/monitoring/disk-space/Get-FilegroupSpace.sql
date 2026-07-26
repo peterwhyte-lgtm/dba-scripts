@@ -2,9 +2,10 @@
 Script Name : Get-FilegroupSpace
 Category    : monitoring
 Purpose     : Allocated, used, and free space per filegroup across all online databases — ordered by lowest free percentage first.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-sql-server-database-file-details/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-sql-server-database-file-details/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

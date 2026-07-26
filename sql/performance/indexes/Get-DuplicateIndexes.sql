@@ -6,9 +6,10 @@ Purpose     : Exact duplicate and overlapping (prefix) indexes across all user d
               operation. Overlapping indexes (A's key columns are a left-prefix of B's)
               usually mean B makes A redundant. Combines with usage stats to flag duplicates
               that are also unused — the highest priority to remove.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-duplicate-indexes/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-duplicate-indexes/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

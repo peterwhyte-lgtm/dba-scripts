@@ -5,10 +5,11 @@ Purpose     : Reports last run outcome, duration, and next scheduled run for all
               DBA maintenance jobs (any job whose name starts with 'DBA').
               Use after deploying the maintenance framework to confirm jobs are
               running on schedule and not failing silently.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-maintenance-job-status/)
 Requires    : SQLAgentReaderRole or sysadmin
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-maintenance-job-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

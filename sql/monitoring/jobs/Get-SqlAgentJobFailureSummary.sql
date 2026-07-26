@@ -2,10 +2,11 @@
 Script Name : Get-SqlAgentJobFailureSummary
 Category    : configuration-and-environment
 Purpose     : Show SQL Agent job failures from the last 7 days with readable timestamps and error messages.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-sql-agent-job-failure-summary/)
 Requires    : db_datareader on msdb
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-sql-agent-job-failure-summary/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

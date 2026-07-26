@@ -5,9 +5,10 @@ Purpose     : LSN continuity analysis for each user database. Verifies the log b
               from the most recent full backup to now is unbroken. A gap in the log chain
               means point-in-time restore is impossible for that window — coverage scripts
               only check recency, not continuity. Also surfaces damaged backup sets.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-backup-chain-integrity/)
 Requires    : SELECT on msdb, VIEW ANY DATABASE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-backup-chain-integrity/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

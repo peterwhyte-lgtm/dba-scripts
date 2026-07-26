@@ -4,10 +4,11 @@ Category    : monitoring
 Purpose     : Reviews TempDB file configuration — file count, sizing parity, autogrowth
               settings, and max server memory context. Surfaces common misconfigurations
               that cause allocation contention on busy OLTP servers.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-temp-db-configuration/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-temp-db-configuration/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

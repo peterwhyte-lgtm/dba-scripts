@@ -5,9 +5,10 @@ Purpose     : Scans the plan cache for implicit conversion warnings. These cause
               scans instead of seeks and generate unnecessary CPU. Most common cause: VARCHAR
               column compared to NVARCHAR parameter, or INT column compared to VARCHAR.
               NOTE: scans plan XML — runs for 10–30 seconds on busy servers with large plan caches.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-implicit-conversions/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-implicit-conversions/
 -- SAFE:ReadOnly
 -- IMPACT:Medium
 SET NOCOUNT ON;

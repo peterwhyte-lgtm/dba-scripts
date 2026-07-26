@@ -4,9 +4,10 @@ Category    : backups
 Purpose     : Shows TDE status and backup encryption coverage per database. Identifies
               databases where TDE is on but backups are not encrypted, or where neither
               TDE nor backup encryption is used.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-backup-encryption-status/)
 Requires    : VIEW DATABASE STATE; VIEW SERVER STATE for sys.dm_database_encryption_keys
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-backup-encryption-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

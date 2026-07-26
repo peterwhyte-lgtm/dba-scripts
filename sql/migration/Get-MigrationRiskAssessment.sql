@@ -2,9 +2,10 @@
 Script Name : Get-MigrationRiskAssessment
 Category    : migration
 Purpose     : Pre-migration risk scan — returns categorised HIGH/MEDIUM/INFO findings for compatibility, database settings, linked server dependencies, and sizing.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-migration-risk-assessment/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-migration-risk-assessment/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

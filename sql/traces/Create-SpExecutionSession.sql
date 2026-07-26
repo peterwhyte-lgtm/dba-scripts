@@ -3,9 +3,10 @@ Script Name : Create-SpExecutionSession
 Category    : traces
 Purpose     : Creates an Extended Events session capturing stored procedure and RPC execution — procedure name, duration, login, and hostname.
               Use to profile what procedures are called most often, by whom, and how long they take — especially useful before a migration or decommission.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-create-sp-execution-session/)
 Requires    : ALTER ANY EVENT SESSION, VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-create-sp-execution-session/
 -- SAFE:CreatesObjects
 -- IMPACT:Low
 SET NOCOUNT ON;

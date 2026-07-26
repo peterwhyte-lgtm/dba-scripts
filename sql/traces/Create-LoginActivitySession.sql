@@ -3,9 +3,10 @@ Script Name : Create-LoginActivitySession
 Category    : traces
 Purpose     : Creates a lightweight Extended Events session that captures every successful and failed login to the server — who, from where, and using which application.
               Use to answer "who connects to this server" before decommissioning, during security reviews, or to baseline connection patterns.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-create-login-activity-session/)
 Requires    : ALTER ANY EVENT SESSION, VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-create-login-activity-session/
 -- SAFE:CreatesObjects
 -- IMPACT:Low
 SET NOCOUNT ON;

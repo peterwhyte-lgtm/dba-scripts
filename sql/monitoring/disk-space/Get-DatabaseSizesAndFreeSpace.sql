@@ -6,10 +6,11 @@ Purpose     : Data and log file sizes with used and free space for all online us
               where it correctly reports allocated vs used pages.
               The original CTE approach querying sys.master_files from master caused
               FILEPROPERTY to return NULL for other databases' files.
-Author      : Peter Whyte (https://sqldba.blog/dba-operations/get-database-sizes-and-free-space-sql-server/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-sizes-and-free-space/)
 Requires    : VIEW ANY DATABASE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-database-sizes-and-free-space/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

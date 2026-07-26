@@ -7,7 +7,7 @@ Purpose     : Traces all active blocking chains using a recursive CTE. Returns
               Idle head blockers (sleeping but holding locks) are included; their
               last executed statement is recovered via sys.dm_exec_connections.
               Returns no rows when the server is not blocked.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-blocking-chains/)
 Requires    : VIEW SERVER STATE
 
 Performance note: dm_exec_requests is materialised into #ar once to avoid
@@ -15,6 +15,7 @@ repeated DMV scans. downstream_waiters is pre-aggregated rather than computed
 via a correlated subquery. dm_exec_connections is joined only for sessions
 that have no active request (idle head blockers).
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-blocking-chains/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

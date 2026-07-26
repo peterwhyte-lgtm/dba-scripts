@@ -5,9 +5,10 @@ Purpose     : Tables with index design problems: excessive index count (write am
               wide key columns (>900 bytes — approaching the 1700-byte row-store limit),
               and tables where Missing Index DMV has > 3 recommendations (optimizer giving up
               on existing index coverage). Complements Get-DuplicateIndexes.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-index-design-issues/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-index-design-issues/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

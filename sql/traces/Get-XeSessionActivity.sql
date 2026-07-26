@@ -4,9 +4,10 @@ Category    : traces
 Purpose     : Reads and summarises Extended Events file target data for a named session.
               Returns unique caller combinations (login, hostname, app, database) with occurrence counts and time range.
               Primary use: reviewing DecommissionAudit or LoginActivity session output to determine if a database or server is still in active use.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-xe-session-activity/)
 Requires    : VIEW SERVER STATE, read access to the XE output folder
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-xe-session-activity/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

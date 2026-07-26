@@ -4,9 +4,10 @@ Category    : high-availability
 Purpose     : Lists all publications and subscriptions from the distribution database, including
               publication type, subscriber server and database, subscription type, and status.
               Run against the distribution database (-Database distribution).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-replication-status/)
 Requires    : db_owner or replmonitor role on the distribution database
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-replication-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

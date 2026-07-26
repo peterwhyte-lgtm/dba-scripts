@@ -2,10 +2,11 @@
 Script Name : Get-DatabaseHealth
 Category    : maintenance-and-reliability
 Purpose     : Review the health and sizing posture of user databases.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-health/)
 Requires    : VIEW ANY DATABASE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-database-health/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

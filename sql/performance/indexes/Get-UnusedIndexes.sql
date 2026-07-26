@@ -5,7 +5,7 @@ Purpose     : Identifies non-clustered indexes with zero read activity but non-z
               write overhead since the last SQL Server restart. These indexes slow
               every INSERT, UPDATE, and DELETE on the table without benefiting any query.
               Run in the context of the database you want to audit.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-unused-indexes/)
 Requires    : VIEW SERVER STATE, VIEW DATABASE STATE
 Notes       : Usage stats reset on SQL Server restart — run only after several days
               of representative workload to avoid false positives.
@@ -15,6 +15,7 @@ Notes       : Usage stats reset on SQL Server restart — run only after several
               Review write_count vs total_reads ratio. Drop candidates: write_count
               high, total_reads = 0, and size_mb large.
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-unused-indexes/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

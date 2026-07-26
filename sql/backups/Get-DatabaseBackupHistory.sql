@@ -2,9 +2,10 @@
 Script Name : Get-DatabaseBackupHistory
 Category    : backups-and-recovery
 Purpose     : Review detailed backup history for all databases over the last 2 months.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-backup-history/)
 Requires    : db_datareader on msdb
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-database-backup-history/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

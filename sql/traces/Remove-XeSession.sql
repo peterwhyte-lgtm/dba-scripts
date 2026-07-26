@@ -4,9 +4,10 @@ Category    : traces
 Purpose     : Lists all DBA-created Extended Events sessions (running and stopped) and generates the DDL to stop and drop each one.
               Copy the remove_cmd value for any session you want to clean up and run it.
               .xel files on disk are NOT deleted — review them first with Get-XeSessionActivity.sql, then delete manually.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-remove-xe-session/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-remove-xe-session/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

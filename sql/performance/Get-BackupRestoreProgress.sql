@@ -2,9 +2,10 @@
 Script Name : Get-BackupRestoreProgress
 Category    : performance-troubleshooting
 Purpose     : Show active backup/restore progress and estimated completion for long-running operations.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-backup-restore-progress/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-backup-restore-progress/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

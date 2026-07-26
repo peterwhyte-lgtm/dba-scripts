@@ -4,9 +4,10 @@ Category    : performance
 Purpose     : Largest tables across all online user databases by total size (data + index).
               Essential for getting to know a new instance — identifies the major data consumers
               and tables most likely to impact I/O, backup times, and index maintenance windows.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-table-sizes/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-table-sizes/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

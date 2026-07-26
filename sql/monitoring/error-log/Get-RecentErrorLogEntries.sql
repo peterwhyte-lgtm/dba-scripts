@@ -2,10 +2,11 @@
 Script Name : Get-RecentErrorLogEntries
 Category    : maintenance-and-reliability
 Purpose     : Show SQL Server error log entries from the last 24 hours, filtering routine noise.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-recent-error-log-entries/)
 Requires    : VIEW SERVER STATE (xp_readerrorlog; sysadmin in practice for most instances)
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-recent-error-log-entries/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
