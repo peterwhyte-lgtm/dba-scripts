@@ -2,9 +2,10 @@
 Script Name : Get-DatabaseIntegrityChecks
 Category    : maintenance-and-reliability
 Purpose     : Pre-check database readiness and configuration for integrity validation runs.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-suspect-pages-and-integrity-checks/)
 Requires    : VIEW ANY DATABASE, db_datareader on msdb
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-suspect-pages-and-integrity-checks/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

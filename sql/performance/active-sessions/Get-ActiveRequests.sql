@@ -6,9 +6,10 @@ Purpose     : Point-in-time snapshot of all active requests — sessions with a
               CPU, reads, writes, elapsed time, TempDB consumption, and the
               current executing statement. Excludes idle sessions and the
               diagnostic session itself.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

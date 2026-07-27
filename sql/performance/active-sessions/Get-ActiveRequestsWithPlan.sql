@@ -5,9 +5,10 @@ Purpose     : Point-in-time snapshot of all active requests with XML execution
               plans. Same columns as Get-ActiveRequests.sql with the addition of
               query_plan from sys.dm_exec_query_plan. Use the PowerShell wrapper
               to extract plans to individual XML files for SSMS analysis.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

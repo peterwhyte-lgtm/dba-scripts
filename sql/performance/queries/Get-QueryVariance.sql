@@ -2,9 +2,10 @@
 Script Name : Get-QueryVariance
 Category    : performance
 Purpose     : Queries from the plan cache where max execution time is at least 5x the minimum — the primary signal for parameter sniffing and plan instability. High execution count with high variance means the same query performs very differently depending on the parameter values in the cached plan.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

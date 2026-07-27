@@ -2,10 +2,11 @@
 Script Name : Get-TempdbUsage
 Category    : maintenance-and-reliability
 Purpose     : Show TempDB file sizes, free space, and allocation breakdown per file.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-temp-db-usage-and-file-balance/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-temp-db-usage-and-file-balance/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

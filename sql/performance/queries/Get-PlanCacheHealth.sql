@@ -4,10 +4,11 @@ Category    : performance
 Purpose     : Summarises plan cache composition by object type — highlights single-use
               plan bloat, ad-hoc SQL pressure, and total memory consumption. High
               single-use percentages indicate parameter sniffing or missing parameterisation.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

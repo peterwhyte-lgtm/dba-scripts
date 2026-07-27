@@ -5,9 +5,10 @@ Purpose     : Top queries by memory grant spills to TempDB. Spills occur when SQ
               less memory than a sort or hash join operator needs, forcing intermediate
               results to disk. Invisible in wait stats — shows as TempDB I/O pressure
               or RESOURCE_SEMAPHORE waits. Requires SQL Server 2016+ (total_spills column).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

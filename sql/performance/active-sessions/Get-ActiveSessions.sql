@@ -2,10 +2,11 @@
 Script Name : Get-ActiveSessions
 Category    : performance-troubleshooting
 Purpose     : Show all active user sessions with current wait type, blocking, elapsed time, and statement.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

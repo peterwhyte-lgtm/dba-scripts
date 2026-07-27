@@ -2,9 +2,10 @@
 Script Name : Get-TempDbFileBalance
 Category    : monitoring
 Purpose     : TempDB data file configuration — checks for size imbalance, growth mismatches, percent-based growth, and file count vs CPU count.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-temp-db-usage-and-file-balance/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-temp-db-usage-and-file-balance/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

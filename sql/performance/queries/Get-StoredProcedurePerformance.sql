@@ -2,9 +2,10 @@
 Script Name : Get-StoredProcedurePerformance
 Category    : performance
 Purpose     : Stored procedures from the plan cache ranked by total elapsed time — shows execution count, average and max duration, CPU, and logical reads. Resets on SQL Server restart or plan eviction.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
