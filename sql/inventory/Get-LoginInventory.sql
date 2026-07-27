@@ -2,9 +2,10 @@
 Script Name : Get-LoginInventory
 Category    : migration
 Purpose     : Inventory server logins by type and status for migration and access review.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-login-and-job-inventory/)
 Requires    : VIEW ANY DATABASE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-login-and-job-inventory/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
