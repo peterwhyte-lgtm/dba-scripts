@@ -2,9 +2,10 @@
 Script Name : Get-DatabaseRoleMembers
 Category    : security-and-permissions
 Purpose     : List database role memberships across all online user databases.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-permissions-and-role-membership/)
 Requires    : VIEW ANY DATABASE, VIEW DEFINITION on each target database
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-permissions-and-role-membership/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

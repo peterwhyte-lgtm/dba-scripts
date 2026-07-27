@@ -2,10 +2,11 @@
 Script Name : Get-CertificateExpiryWarnings
 Category    : security
 Purpose     : All user-managed certificates across server and user databases with days until expiry.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

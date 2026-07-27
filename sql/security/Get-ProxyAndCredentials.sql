@@ -4,9 +4,10 @@ Category    : security
 Purpose     : Lists SQL Agent proxies and server-level credentials with their identity
               and associated subsystems. Proxies that use stored credentials to run Agent
               steps under a different account are a common privilege escalation path.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/)
 Requires    : VIEW SERVER STATE; membership in sysadmin or SQLAgentOperatorRole in msdb
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -27,7 +28,7 @@ SELECT
     c.name                                              AS credential_name,
     c.credential_identity                               AS runs_as,
     (
-        SELECT STRING_AGG(ss.subsystem_name, ', ')
+        SELECT STRING_AGG(ss.subsystem, ', ')
         FROM msdb.dbo.sysproxysubsystem ps
         JOIN msdb.dbo.syssubsystems ss ON ss.subsystem_id = ps.subsystem_id
         WHERE ps.proxy_id = p.proxy_id

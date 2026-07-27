@@ -5,9 +5,10 @@ Purpose     : All SQL and Windows logins with current session status, connection
               Note: SQL Server does not record "last login time" natively without a SQL Server Audit configured.
               This script shows what is available: current active sessions and login metadata.
               For historical last-login tracking, enable a Server Audit with LOGIN action group.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-login-security-audit/)
 Requires    : VIEW SERVER STATE, VIEW ANY DEFINITION
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-login-security-audit/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

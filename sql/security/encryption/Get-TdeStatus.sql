@@ -4,9 +4,10 @@ Category    : security
 Purpose     : Transparent Data Encryption (TDE) status across all databases. Includes
               encryption state, key algorithm, encryptor type, and tempdb encryption
               side-effect awareness.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

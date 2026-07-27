@@ -5,9 +5,10 @@ Purpose     : Server-level certificates and asymmetric keys with expiry, usage d
               and lifecycle risk flags. Certificates created for TDE, AG encrypted endpoints,
               or linked server auth are commonly created and never monitored. An expired cert
               doesn't break TDE in memory but prevents restoring the database on another server.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/)
 Requires    : VIEW ANY DATABASE, VIEW ANY DEFINITION
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

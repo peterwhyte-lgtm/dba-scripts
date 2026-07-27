@@ -4,9 +4,10 @@ Category    : security
 Purpose     : Server-level DDL triggers. These fire on schema changes (CREATE/ALTER/DROP)
               and are often unknown to incoming DBAs. Can block DDL, audit changes, or
               enforce naming conventions — a hidden dependency on inherited servers.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/)
 Requires    : VIEW ANY DEFINITION
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -15,7 +16,6 @@ SELECT
     t.name                                          AS trigger_name,
     t.type_desc,
     t.is_disabled,
-    t.is_not_for_replication,
     t.create_date,
     t.modify_date,
     STUFF((
@@ -35,5 +35,5 @@ SELECT
     END                                             AS status
 FROM sys.server_triggers          AS t
 JOIN sys.server_sql_modules       AS m  ON m.object_id = t.object_id
-LEFT JOIN sys.server_principals   AS sp ON sp.principal_id = t.execute_as_principal_id
+LEFT JOIN sys.server_principals   AS sp ON sp.principal_id = m.execute_as_principal_id
 ORDER BY t.name;

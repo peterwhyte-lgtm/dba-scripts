@@ -6,9 +6,10 @@ Purpose     : SQL Server Audit objects and specifications with compliance gap an
               separate from login monitoring — most inherited servers have none configured.
               Surfaces missing critical action groups (FAILED_LOGIN_GROUP, privilege changes)
               and database-level audit specifications across all user databases.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/)
 Requires    : VIEW ANY DATABASE, VIEW ANY DEFINITION, CONTROL SERVER
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

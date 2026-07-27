@@ -7,10 +7,11 @@ Purpose     : Aggregated failed login analysis from the SQL Server error log and
               checks what is actually happening.
               Note: SQL Server 2025 does not write 18456 events to RING_BUFFER_SECURITY_ERROR;
               xp_readerrorlog is the reliable cross-version source for login failures.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-login-security-audit/)
 Requires    : VIEW SERVER STATE, sysadmin (for LOGINPROPERTY on other logins), EXECUTE on xp_readerrorlog
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-login-security-audit/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

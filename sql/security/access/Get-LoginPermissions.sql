@@ -2,9 +2,10 @@
 Script Name : Get-LoginPermissions
 Category    : security-and-permissions
 Purpose     : Show explicit server-level permissions granted or denied to logins.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-permissions-and-role-membership/)
 Requires    : VIEW ANY DATABASE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-permissions-and-role-membership/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
