@@ -4,9 +4,10 @@ Category    : high-availability
 Purpose     : Monitors Log Reader Agent activity — status, delivery latency, transaction and command
               counts, and any replication errors. Returns the last 24 hours of history.
               Run against the distribution database (-Database distribution).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-replication-agent-status/)
 Requires    : db_owner or replmonitor role on the distribution database
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-replication-agent-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

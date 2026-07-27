@@ -5,9 +5,10 @@ Purpose     : Shows Availability Group replica connection modes and read-only ro
               configuration. Identifies which replicas allow readable secondary access
               and whether routing is configured. Returns a status row on standalone
               instances (no AG).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

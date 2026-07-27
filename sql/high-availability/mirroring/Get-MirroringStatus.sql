@@ -6,9 +6,10 @@ Purpose     : Shows health, state, and point-in-time latency for all mirrored da
               database size, log send queue, and redo queue.
               Note: Database Mirroring has been deprecated since SQL Server 2012. Always On
               Availability Groups are the supported replacement for new deployments.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-mirroring-endpoint-health-and-status/)
 Requires    : VIEW SERVER STATE, VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-mirroring-endpoint-health-and-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

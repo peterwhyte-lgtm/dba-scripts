@@ -5,9 +5,10 @@ Purpose     : Per-AG, per-database failover readiness with quantified RPO and RT
               Answers "would a failover succeed RIGHT NOW and what would it cost?"
               RTO = estimated seconds to drain redo queue at current redo rate.
               RPO = log send queue size (data that would be lost if primary fails now).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/)
 Requires    : VIEW SERVER STATE, VIEW ANY DATABASE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

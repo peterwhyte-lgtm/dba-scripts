@@ -4,9 +4,10 @@ Category    : high-availability
 Purpose     : Returns the state, port, role, and authentication configuration of the database
               mirroring endpoint. If the endpoint is not STARTED, mirroring cannot communicate.
               Run on both the principal and mirror server during troubleshooting.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-mirroring-endpoint-health-and-status/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-mirroring-endpoint-health-and-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

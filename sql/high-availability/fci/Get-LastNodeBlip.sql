@@ -7,9 +7,10 @@ Purpose     : Returns SQL Server error log entries that mention failover, alongs
               If no rows are returned there are no 'failover' entries in the current error log
               archive; use the PowerShell Get-WinEvent approach to query the Windows Failover
               Clustering Operational log directly (see blog post).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-last-node-blip/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-last-node-blip/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
