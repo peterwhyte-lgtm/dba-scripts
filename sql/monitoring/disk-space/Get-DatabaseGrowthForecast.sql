@@ -5,7 +5,7 @@ Purpose     : Project when database files will exhaust their configured size lim
               using historical file size changes recorded by the DatabaseGrowth temporal collector.
               Calculates MB/day growth rate from the first and last observed size within the
               window, then projects forward to the configured file limit.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-growth-risk-and-forecast/)
 Requires    : SELECT on DBAMonitor.collector.DatabaseGrowthCurrent (and its history table)
 Depends On  : sql\collectors\Generate-CollectorJob-DatabaseGrowth.sql
               (temporal collector must be installed and collecting for at least 48 hours)
@@ -15,11 +15,14 @@ Notes       : Projects file-limit exhaustion only — not physical disk exhausti
               Files with no size change in the window appear as STABLE (mb_per_day = 0).
               Requires SQL Server 2016 or later.
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-database-growth-risk-and-forecast/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
 
 DECLARE @WindowDays int = 30;
+DECLARE @WindowStart DATETIME2 = DATEADD(DAY, -@WindowDays, SYSUTCDATETIME());
+DECLARE @WindowEnd   DATETIME2 = SYSUTCDATETIME();
 
 -- ── Existence checks ──────────────────────────────────────────────────────────
 IF NOT EXISTS (SELECT 1 FROM sys.databases WHERE name = N'DBAMonitor')
@@ -44,7 +47,7 @@ BEGIN
 END
 
 -- ── Forecast ──────────────────────────────────────────────────────────────────
-WITH history AS (
+;WITH history AS (
     SELECT
         database_name,
         logical_name,
@@ -53,8 +56,7 @@ WITH history AS (
         growth_limit_mb,
         SysStartTime AS snapshot_time
     FROM DBAMonitor.collector.DatabaseGrowthCurrent
-    FOR SYSTEM_TIME BETWEEN
-        DATEADD(day, -@WindowDays, SYSUTCDATETIME()) AND SYSUTCDATETIME()
+    FOR SYSTEM_TIME BETWEEN @WindowStart AND @WindowEnd
 ),
 ranked AS (
     SELECT *,

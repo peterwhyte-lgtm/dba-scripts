@@ -2,10 +2,11 @@
 Script Name : Get-DatabaseGrowthRisk
 Category    : storage-capacity-management
 Purpose     : Flag databases approaching their configured file size limits.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-growth-risk-and-forecast/)
 Requires    : VIEW ANY DATABASE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-database-growth-risk-and-forecast/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -2,7 +2,7 @@
 Script Name : Get-DatabaseFreeSpaceSummary
 Category    : monitoring
 Purpose     : Allocated, used, and free space for all online databases, ordered by total free space descending.
-Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-sql-server-database-file-details/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-free-space-summary/)
 Requires    : VIEW SERVER STATE, VIEW DATABASE STATE
 */
 -- Blog: https://sqldba.blog/dba-scripts-get-sql-server-database-file-details/
