@@ -2,10 +2,11 @@
 Script Name : Get-OsAndHardwareInfo
 Category    : configuration-and-environment
 Purpose     : Show OS version, hardware specs (CPU, RAM), and SQL Server uptime in one row.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-os-and-hardware-info/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-os-and-hardware-info/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

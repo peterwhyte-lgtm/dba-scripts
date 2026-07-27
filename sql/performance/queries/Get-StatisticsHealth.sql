@@ -4,9 +4,10 @@ Category    : performance
 Purpose     : Identifies stale, low-sample, and never-updated statistics in the current database.
               Returns the UPDATE STATISTICS command per row for direct copy-paste remediation.
               Run in the context of the target user database.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-statistics-health/)
 Requires    : VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-statistics-health/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -32,7 +33,7 @@ WITH stats_health AS (
             ELSE 0
         END                                                                     AS is_index_stat,
         s.auto_created,
-        s.is_filtered,
+        s.has_filter AS is_filtered,
         s.filter_definition,
         s.is_incremental,
         sp.rows,

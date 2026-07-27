@@ -3136,14 +3136,14 @@ try {
         $body = try { switch ($url) {
             '/'         { Build-HomePage }
             '/triage'   { Build-TriagePage }
-            '/search'   { Build-SearchPage (if ($null -ne $qs['q']) { $qs['q'] } else { '' }) }
-            '/view'     { Build-ViewPage   (if ($null -ne $qs['p']) { $qs['p'] } else { '' }) }
+            '/search'   { Build-SearchPage $(if ($null -ne $qs['q']) { $qs['q'] } else { '' }) }
+            '/view'     { Build-ViewPage   $(if ($null -ne $qs['p']) { $qs['p'] } else { '' }) }
             '/csvs'     { Build-CsvListPage }
-            '/csv'      { Build-CsvViewPage (if ($null -ne $qs['p']) { $qs['p'] } else { '' }) }
-            '/review'    { Build-ReviewPage   (if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) }
-            '/security'  { Build-SecurityPage (if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) }
-            '/disk'      { Build-DiskPage     (if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) }
-            '/ai'        { Build-AiPage       (if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) (if ($null -ne $qs['report']) { $qs['report'] } else { '' }) }
+            '/csv'      { Build-CsvViewPage $(if ($null -ne $qs['p']) { $qs['p'] } else { '' }) }
+            '/review'    { Build-ReviewPage   $(if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) }
+            '/security'  { Build-SecurityPage $(if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) }
+            '/disk'      { Build-DiskPage     $(if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) }
+            '/ai'        { Build-AiPage       $(if ($null -ne $qs['folder']) { $qs['folder'] } else { '' }) $(if ($null -ne $qs['report']) { $qs['report'] } else { '' }) }
             '/api/csv'  {
                 $contentType = 'application/json; charset=utf-8'
                 $p = if ($null -ne $qs['p']) { $qs['p'] } else { '' }

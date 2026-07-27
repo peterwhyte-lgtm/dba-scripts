@@ -12,18 +12,35 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
-$repoRoot    = Resolve-Path (Join-Path $PSScriptRoot '..\..')
-$searchRoots = @('sql', 'powershell', 'tools', 'blog')
+$repoRoot     = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+# Match file NAMES across all these roots (cheap).
+$nameRoots    = @('sql', 'powershell', 'tools', 'blog')
+# Search file CONTENT only in the actual script folders. blog/ holds 3000+ post
+# drafts and images, so a recursive Select-String there is pathologically slow and
+# looks like a hang — we still match blog/ file names above, just not their content.
+$contentRoots = @('sql', 'powershell', 'tools')
+$escaped      = [regex]::Escape($Keyword)
 
-$found = $searchRoots | ForEach-Object {
+# Name matches (all roots)
+$nameMatches = $nameRoots | ForEach-Object {
     $path = Join-Path $repoRoot $_
     if (Test-Path $path) {
-        Get-ChildItem -Path $path -Recurse -File -ErrorAction SilentlyContinue
+        Get-ChildItem -Path $path -Recurse -File -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -match $escaped }
     }
-} | Where-Object {
-    $_.Name -match [regex]::Escape($Keyword) -or
-    (Select-String -Path $_.FullName -Pattern $Keyword -Quiet -ErrorAction SilentlyContinue)
-} | Sort-Object FullName
+}
+
+# Content matches (script folders only)
+$contentMatches = $contentRoots | ForEach-Object {
+    $path = Join-Path $repoRoot $_
+    if (Test-Path $path) {
+        Get-ChildItem -Path $path -Recurse -File -ErrorAction SilentlyContinue |
+            Where-Object { Select-String -Path $_.FullName -Pattern $Keyword -Quiet -ErrorAction SilentlyContinue }
+    }
+}
+
+$found = @($nameMatches) + @($contentMatches) |
+    Sort-Object FullName -Unique
 
 if (-not $found) {
     Write-Warning "No scripts matched '$Keyword'."

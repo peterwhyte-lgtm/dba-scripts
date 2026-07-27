@@ -4,9 +4,10 @@ Category    : migration
 Purpose     : Audits Enterprise-only features in active use on this instance.
               Run before any edition downgrade (Enterprise → Standard, Standard → Web).
               Each row describes a feature, whether it is in use, and what breaks on the target edition.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-edition-feature-usage/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE, VIEW ANY DEFINITION
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-edition-feature-usage/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -132,45 +133,21 @@ INSERT #findings VALUES (
 -- ── 6. Row / Page Compression ─────────────────────────────────────────────────
 -- Enterprise only before SQL 2016 SP1. Standard 2016 SP1+ supports it.
 -- Flag as WARN — present but supported in modern Standard versions.
-SELECT @cnt = COUNT(DISTINCT OBJECT_ID),
-       @detail = ISNULL(
-           CAST((SELECT COUNT(DISTINCT database_id)
-                 FROM sys.master_files mf2
-                 INNER JOIN sys.databases d2 ON mf2.database_id = d2.database_id
-                 WHERE d2.database_id > 4) AS NVARCHAR),
-           '0'
-       )
-FROM (
-    SELECT p.object_id
-    FROM sys.partitions p
-    WHERE p.data_compression > 0
-) c;
-
--- Get detail from all user databases
-SET @detail = '';
-BEGIN TRY
-    SET @sql = N'
-    SELECT @detail = STRING_AGG(db_obj, '', '')
-    FROM (
-        SELECT DISTINCT QUOTENAME(DB_NAME(p.partition_id / 72057594037927936)) + ''.'' + QUOTENAME(OBJECT_NAME(p.object_id)) AS db_obj
-        FROM sys.partitions p
-        WHERE p.data_compression > 0
-          AND p.rows > 0
-    ) t;';
-    -- simplified: just use current DB context check
-    SELECT @cnt = COUNT(*) FROM sys.partitions WHERE data_compression > 0 AND rows > 0;
-END TRY
-BEGIN CATCH
-    SET @cnt = -1;
-END CATCH;
+-- NOTE: this only reflects the current database context (the wrapper runs this
+-- script against master), it is not a cross-database sweep. Run per user database
+-- for a full inventory: SELECT name, data_compression_desc FROM sys.partitions
+-- WHERE data_compression > 0.
+SELECT @cnt = COUNT(DISTINCT p.object_id)
+FROM sys.partitions p
+WHERE p.data_compression > 0
+  AND p.rows > 0;
 
 INSERT #findings VALUES (
     'Row / Page Compression',
-    CASE WHEN @cnt > 0 THEN 'YES' WHEN @cnt = 0 THEN 'NO' ELSE 'UNKNOWN' END,
+    CASE WHEN @cnt > 0 THEN 'YES' ELSE 'NO' END,
     CASE WHEN @cnt > 0 THEN 'WARN' ELSE 'NO' END,
-    CASE WHEN @cnt > 0 THEN CAST(@cnt AS NVARCHAR) + ' compressed partition(s) in master/msdb (run in each user database for full inventory)'
-         WHEN @cnt = 0 THEN 'No row/page compression detected in system databases'
-         ELSE 'Could not determine — run manually in each user database' END,
+    CASE WHEN @cnt > 0 THEN CAST(@cnt AS NVARCHAR) + ' compressed object(s) in the current database context (run per user database for a full inventory)'
+         ELSE 'No row/page compression detected in the current database context (run per user database for a full inventory)' END,
     CASE WHEN @cnt > 0 THEN 'Supported in Standard 2016 SP1+. If downgrading to Standard 2014 or earlier, compression must be removed. Run: SELECT name, data_compression_desc FROM sys.partitions WHERE data_compression > 0 in each user database.'
          ELSE '' END
 );

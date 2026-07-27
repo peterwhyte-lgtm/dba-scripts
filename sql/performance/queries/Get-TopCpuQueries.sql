@@ -2,10 +2,11 @@
 Script Name : Get-TopCpuQueries
 Category    : performance-troubleshooting
 Purpose     : List top 20 CPU-consuming queries with execution counts and timing metrics.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-top-cpu-queries/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-top-cpu-queries/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

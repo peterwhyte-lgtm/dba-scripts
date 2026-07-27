@@ -2,11 +2,12 @@
 Script Name : Get-SlowQueriesFromCache
 Category    : performance-troubleshooting
 Purpose     : Top 20 queries by average elapsed time from the plan cache — identifies habitually slow queries.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-top-cpu-queries/)
 Requires    : VIEW SERVER STATE
 Notes       : Covers cached plans since last restart or plan eviction. Complements
               Get-LongRunningQueries (live requests) and Get-TopCpuQueries (total CPU).
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-top-cpu-queries/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

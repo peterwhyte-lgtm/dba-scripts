@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Root launcher for DBA helper scripts. Fuzzy name match across sql/ and powershell/.
 
@@ -20,6 +20,21 @@ param(
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$Arguments
 )
+
+# Repo scripts use PowerShell 7 syntax (?., ternary). If launched from Windows PowerShell 5.1,
+# hand off to pwsh so the same command works from any prompt.
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    $pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
+    if (-not $pwsh) {
+        Write-Host 'This toolkit requires PowerShell 7 (pwsh). Install it: winget install Microsoft.PowerShell' -ForegroundColor Yellow
+        return
+    }
+    $forward = @($ScriptName | Where-Object { $_ })
+    if ($List) { $forward += '-List' }
+    $forward += @($Arguments | Where-Object { $null -ne $_ })
+    & $pwsh.Source -NoLogo -NoProfile -ExecutionPolicy Bypass -File $PSCommandPath @forward
+    return
+}
 
 $repoRoot = Resolve-Path $PSScriptRoot
 

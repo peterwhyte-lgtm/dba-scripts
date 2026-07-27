@@ -4,7 +4,7 @@ Category    : monitoring
 Purpose     : Reports SQL Server version, Cumulative Update level, edition, and build
               number for patch-level tracking across an estate.
               Run on each server to build a patch compliance inventory.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-patch-level/)
 Requires    : Public (no elevated permissions required)
 Notes       : product_update_level returns the CU number (e.g. CU12) on SQL 2012+.
               For SQL 2012 RTM this column may be NULL.
@@ -13,6 +13,7 @@ Notes       : product_update_level returns the CU number (e.g. CU12) on SQL 2012
               build_clr_version is included because CLR version changes affect assembly
               compatibility during upgrades.
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-patch-level/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -25,6 +26,7 @@ SELECT
     @productVersion                                                             AS product_version,
 
     CASE @majorVer
+        WHEN 17 THEN 'SQL Server 2025'
         WHEN 16 THEN 'SQL Server 2022'
         WHEN 15 THEN 'SQL Server 2019'
         WHEN 14 THEN 'SQL Server 2017'
@@ -56,6 +58,7 @@ SELECT
 
     -- Friendly patch summary: e.g. "SQL Server 2019 CU12 (15.0.4153.1)"
     CASE @majorVer
+        WHEN 17 THEN 'SQL Server 2025'
         WHEN 16 THEN 'SQL Server 2022'
         WHEN 15 THEN 'SQL Server 2019'
         WHEN 14 THEN 'SQL Server 2017'

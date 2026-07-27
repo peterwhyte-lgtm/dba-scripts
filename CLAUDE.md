@@ -1,4 +1,4 @@
-﻿# CLAUDE.md
+# CLAUDE.md
 
 This file is the working operating guide for this repository.
 
@@ -116,7 +116,17 @@ Migration DDL generators:
 
 ## Blog / content guidance
 
-`blog/` is a back-end drafting workspace. It assists Peter in writing posts for sqldba.blog — it has no public-facing output and is not a documentation layer for the repo. The live sqldba.blog post is the public documentation artifact for each script. Links to live posts are added by Peter after publishing, not generated automatically.
+> **MOVED 2026-07-16 — the blog drafting workspace no longer lives in this repo.** It migrated to
+> the **Publisher** app at **`personal/tools/site-publisher/`** (private repo, backed up). The
+> `dba-scripts-*` gold is in `site-publisher/workspace/sqldba/{published,drafts}/`, all legacy drafts +
+> the 74 published archives are in `site-publisher/archive/sqldba/`, the master template is
+> `site-publisher/templates/dba-script/index.md`, the how-to is `site-publisher/reference/DRAFTING.md`, and
+> the publishing checklist (103 posts + the 6-post traces cluster #104–#109, 6 live) is `site-publisher/PUBLISHING.md`. Scaffold a post
+> with `python publisher.py draft Get-ScriptName` (the Python port of the old `New-ScriptPost.ps1`).
+> **dba-tools stays the operational home of the SQL scripts** the posts link to; only the blog
+> drafting/content moved out. The taxonomy below remains the shared reference model.
+
+The blog workspace assists Peter in writing posts for sqldba.blog — it has no public-facing output and is not a documentation layer for the repo. The live sqldba.blog post is the public documentation artifact for each script. Links to live posts are added by Peter after publishing, not generated automatically.
 
 The repo should reflect the intended blog taxonomy so that scripts and posts can be organized consistently over time, while keeping the main repo focused on usable DBA tooling.
 
@@ -124,11 +134,13 @@ The repo should reflect the intended blog taxonomy so that scripts and posts can
 
 **Live WordPress categories (authoritative — sqldba.blog, consolidated 2026-07-13):** Performance,
 Monitoring, Troubleshooting, Maintenance, Backups & Recovery, Security, High Availability & DR,
-Migration & Upgrades, Installation & Configuration, T-SQL Fundamentals, T-SQL & Internals, AI, Labs.
+Migration & Upgrades, Installation & Configuration, T-SQL Fundamentals, T-SQL & Internals, AI, Labs
+— plus **DBA Scripts** (added 2026-07-16, <https://sqldba.blog/category/dba-scripts/>): the home
+for all master-template script posts (see Script post standard below).
 The old `dba-operations` / `dba-scripts` / `dba-engineering` containers are retired. When choosing
 where a post goes, use this set. Full plan, per-post mapping, and edge-case rules (patching vs
-upgrade, trace flags, restore vs stuck-restore): `blog/CATEGORY-PLAN.md`. Machine map + the
-`recategorize.py` sweep tool: `blog/recategorize-map.json`.
+upgrade, trace flags, restore vs stuck-restore): `personal/tools/site-publisher/reference/CATEGORY-PLAN.md`.
+Machine map for the `recategorize.py` sweep tool: `site-publisher/reference/recategorize-map.json`.
 
 The richer list below is the **internal planning model** for repo organization (it has finer
 buckets like inventory, incident-response, capacity-planning that fold into the live set above —
@@ -200,14 +212,25 @@ The `sql/<category>/` directory maps to a blog primary category. The `sql/<categ
 
 A post series (e.g., wait statistics, index series) can introduce more granular tags than the subfolder suggests — the subfolder is a starting point, not a ceiling.
 
-### Script post standard (for blog-worthy scripts)
+### Script post standard (master template, 2026-07-16)
 
-Use the following structure when a script is worth publishing as a post:
+Every DBA script in the repo gets a blog post following the master template at
+`personal/tools/site-publisher/templates/dba-script/index.md`, established by the live post
+<https://sqldba.blog/dba-scripts-get-vlf-counts/>. Full conventions + section decision matrix:
+`site-publisher/reference/README.md` ("Master post template"). The non-negotiables:
 
-- **Overview** — what the script does, what problem it solves, when to use it
-- **Why This Matters** — real production impact, what breaks without visibility, why DBAs care
-- **What The Script Returns** — what the output tells you, without dumping SQL
-- **SQL Script** — the full production-ready script, clearly labeled and runnable
+- Title starts `DBA Scripts: ` and slug starts `dba-scripts-` (hard rule, no exceptions;
+  usually `DBA Scripts: Get [Thing]` / `dba-scripts-get-thing`), category **DBA Scripts**, first line links the
+  project page: `Part of the [DBA-Tools](https://sqldba.blog/scripts/) Project.`
+- Core sections always: intro (problem-first), Why It Matters, When to Run, The Script
+  (full SQL including repo header), How To Run From The Repo (+ GitHub links to the
+  script's `sql/` path and wrapper), Example Output, Understanding the Results,
+  Related Scripts, Summary.
+- Optional sections (Common Symptoms, Common Causes, How to Fix, Best Practices, FAQ)
+  per the decision matrix — full for flagship diagnostics, compact for inventory scripts.
+- **Related Scripts is forever-updating**: populate from the script's `sql/` directory,
+  hyperlink items as their posts go live, and when a new post publishes, sweep the live
+  posts of same-directory scripts to add a link back.
 
 ### How to choose a primary category
 
@@ -222,7 +245,15 @@ A script should not be spread across multiple categories just because it touches
 
 ### Title rules
 
-Use one of these patterns only:
+**Script posts (the master template): HARD RULE (Peter, 2026-07-18) — every script post
+title starts `DBA Scripts: ` and every slug starts `dba-scripts-`, no exceptions.** The
+usual form is `DBA Scripts: Get [Thing]` — slug
+`dba-scripts-get-thing`. This supersedes the older patterns for script-backed posts
+(2026-07-16; the retired `Script:` prefix cleanup in
+`site-publisher/archive/sqldba/_planning-docs/SCRIPT-PREFIX-RETITLE.md` predates this — the 24
+legacy posts are being refit via `site-publisher/PUBLISHING.md` Phase 1).
+
+Non-script posts use one of:
 - Get [Thing] for SQL Server
 - Check [Thing] in SQL Server
 - Analyze [Thing] in SQL Server

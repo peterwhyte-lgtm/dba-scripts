@@ -2,20 +2,21 @@
 Script Name : Get-Heaps
 Category    : performance
 Purpose     : Lists tables with no clustered index (heaps) across all online user databases.
-              Heaps cause full table scans on every non-covering lookup, accumulate
-              forwarded records after row updates (degrading IO), and do not reclaim
-              deleted row space without a REBUILD. Common source of hidden IO pressure
-              that grows silently as data volumes increase.
-Author      : Peter Whyte (https://sqldba.blog)
+            Heaps cause full table scans on every non-covering lookup, accumulate
+            forwarded records after row updates (degrading IO), and do not reclaim
+            deleted row space without a REBUILD. Common source of hidden IO pressure
+            that grows silently as data volumes increase.
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-heaps/)
 Requires    : VIEW DATABASE STATE (iterates each user database)
 Notes       : Small read-only lookup tables as heaps are usually acceptable.
-              Prioritise by reserved_mb and forwarded_fetch_count.
-              forwarded_fetch_count = how often SQL Server chased a forwarded-record pointer
-              since the last restart (IO cost; forwarded_fetch_count was removed in SS 2025).
-              has_primary_key = 0 means no PK exists at all — highest priority to fix.
-              Fix: add a clustered index on the natural key, or add an identity
-              column and cluster on that if no natural candidate exists.
+            Prioritise by reserved_mb and forwarded_fetch_count.
+            forwarded_fetch_count = how often SQL Server chased a forwarded-record pointer
+            since the last restart (IO cost; forwarded_fetch_count was removed in SS 2025).
+            has_primary_key = 0 means no PK exists at all — highest priority to fix.
+            Fix: add a clustered index on the natural key, or add an identity
+            column and cluster on that if no natural candidate exists.
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-heaps/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -59,7 +60,7 @@ HAVING SUM(p.rows) > 0;
 '
 FROM sys.databases
 WHERE state_desc  = 'ONLINE'
-  AND database_id > 4;
+AND database_id > 4;
 
 IF LEN(@sql) > 0
     EXEC sys.sp_executesql @sql;

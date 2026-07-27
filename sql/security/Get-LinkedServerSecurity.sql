@@ -4,10 +4,11 @@ Category    : security
 Purpose     : Lists linked servers with their security context — how local logins are
               mapped to remote logins. Catch-all mappings with stored credentials are
               the highest-risk configuration.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-linked-servers/)
 Requires    : VIEW ANY DEFINITION or sysadmin
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-linked-servers/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

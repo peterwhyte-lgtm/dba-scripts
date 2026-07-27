@@ -2,9 +2,10 @@
 Script Name : Get-LinkedServerConnectivity
 Category    : monitoring
 Purpose     : Inventories all linked servers and tests each one for connectivity using sp_testlinkedserver.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-linked-servers/)
 Requires    : sysadmin or ALTER ANY LINKED SERVER
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-linked-servers/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
