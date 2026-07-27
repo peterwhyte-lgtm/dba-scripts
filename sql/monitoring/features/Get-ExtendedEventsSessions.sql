@@ -3,10 +3,11 @@ Script Name : Get-ExtendedEventsSessions
 Category    : monitoring
 Purpose     : Active Extended Events sessions — name, state, targets, and estimated disk impact.
               Surfaces unexpected or high-overhead XE sessions on inherited servers.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-extended-events-sessions/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-extended-events-sessions/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -42,13 +43,13 @@ SELECT
         WHEN 'AlwaysOn_health'        THEN 'Built-in — AG health events (present on AG instances)'
         WHEN 'telemetry_xevents'      THEN 'Built-in — SQL Server telemetry collection'
         WHEN 'hkenginexesession'      THEN 'Built-in — In-Memory OLTP (Hekaton) session'
-        WHEN 'sp_server_diagnostics_session'
+        WHEN 'sp_server_diagnostics session'
                                       THEN 'Built-in — WSFC diagnostics for AG/FCI'
         ELSE 'Custom or third-party session — verify purpose and owner'
     END                                             AS session_note
 FROM sys.dm_xe_sessions AS s
 ORDER BY
     CASE WHEN s.name IN ('system_health','AlwaysOn_health','telemetry_xevents',
-                          'hkenginexesession','sp_server_diagnostics_session')
+                          'hkenginexesession','sp_server_diagnostics session')
          THEN 1 ELSE 0 END,
     s.name;

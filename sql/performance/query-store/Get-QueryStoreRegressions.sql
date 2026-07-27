@@ -5,9 +5,10 @@ Purpose     : Queries that regressed in the last 24 hours vs their 7-day average
               Uses Query Store time-bucketed runtime stats to detect "what changed today"
               — queries running >2x slower or using >2x more CPU than their recent baseline.
               Run in the context of the target database (-Database <dbname>).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-store-regressions-and-forced-plans/)
 Requires    : VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-query-store-regressions-and-forced-plans/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

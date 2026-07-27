@@ -6,9 +6,10 @@ Purpose     : Forced plans in Query Store with failure counts, plan age, forcing
               A force_failure_count > 0 means QS is silently reverting to natural plans —
               queries you think are protected are not.
               Run in the context of the target database (-Database <dbname>).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-store-regressions-and-forced-plans/)
 Requires    : VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-query-store-regressions-and-forced-plans/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
