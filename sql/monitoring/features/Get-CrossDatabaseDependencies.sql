@@ -3,9 +3,10 @@ Script Name : Get-CrossDatabaseDependencies
 Category    : monitoring
 Purpose     : Objects in the current database that reference other databases via 3-part names or linked servers — critical to find before a migration, rename, or decommission.
               Note: only captures statically-resolvable references. Dynamic SQL built at runtime will not appear here.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-collation-conflicts-and-cross-database-dependencies/)
 Requires    : VIEW DEFINITION
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-collation-conflicts-and-cross-database-dependencies/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 -- SCOPE:CurrentDatabase

@@ -2,9 +2,10 @@
 Script Name : Get-CompressionCandidates
 Category    : monitoring
 Purpose     : Largest uncompressed tables and heaps in the current database, ordered by reserved space — identifies the best candidates for row or page compression.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-compression-candidates/)
 Requires    : VIEW DATABASE STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-compression-candidates/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 -- SCOPE:CurrentDatabase

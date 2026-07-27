@@ -4,10 +4,11 @@ Category    : monitoring
 Purpose     : CDC (Change Data Capture) and Change Tracking enabled databases with retention,
               cleanup settings, and latency indicators. Both features impact transaction log
               growth and can stall if cleanup jobs are absent or delayed.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-cdc-and-change-tracking/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE, SELECT on msdb
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-cdc-and-change-tracking/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

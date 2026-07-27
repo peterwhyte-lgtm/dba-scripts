@@ -6,10 +6,11 @@ Purpose     : Service Broker health across all user databases. Orphaned/disconne
               SB infrastructure. SB is implicitly active on many instances (Database Mail,
               AG health checks use it). Surfaces conversation endpoint counts by state,
               transmission queue depth, and queue activation status.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-service-broker-health-and-database-mail-queue/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 HealthCheck : Yes
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-service-broker-health-and-database-mail-queue/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

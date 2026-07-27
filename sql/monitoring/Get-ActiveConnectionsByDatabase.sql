@@ -2,9 +2,10 @@
 Script Name : Get-ActiveConnectionsByDatabase
 Category    : monitoring
 Purpose     : Session count, active requests, open transactions, and blocked sessions grouped by database — essential check before taking any database offline or starting a decommission.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-active-connections-by-database/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-active-connections-by-database/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

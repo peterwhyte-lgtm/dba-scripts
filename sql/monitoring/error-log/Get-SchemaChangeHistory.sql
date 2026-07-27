@@ -3,9 +3,10 @@ Script Name : Get-SchemaChangeHistory
 Category    : monitoring
 Purpose     : Recent DDL changes (CREATE, ALTER, DROP) captured by the SQL Server default trace — answers "what changed on this server recently?" after an incident or unexpected behaviour.
               Requires the default trace to be enabled (on by default). Covers the rolling window kept by the trace files.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-schema-change-history/)
 Requires    : VIEW SERVER STATE, ALTER TRACE (to read default trace path)
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-schema-change-history/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
