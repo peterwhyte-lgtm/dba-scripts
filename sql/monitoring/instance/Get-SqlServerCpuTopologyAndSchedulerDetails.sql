@@ -2,9 +2,10 @@
 Script Name : Get-SqlServerCpuTopologyAndSchedulerDetails
 Category    : configuration-and-environment
 Purpose     : CPU topology, NUMA layout, scheduler summary, and parallelism configuration in one row.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-cpu-topology-and-os-config/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-cpu-topology-and-os-config/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

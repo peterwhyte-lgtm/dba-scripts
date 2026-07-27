@@ -5,9 +5,10 @@ Purpose     : Unified contention summary across lock waits, latch waits, TempDB 
               pressure, and spinlock contention. All figures are cumulative since the last
               SQL Server restart — high counts on a recently restarted instance are not
               necessarily concerning.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-lock-contention-and-blocking-plans/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-lock-contention-and-blocking-plans/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

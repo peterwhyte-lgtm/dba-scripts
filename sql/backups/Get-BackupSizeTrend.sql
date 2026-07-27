@@ -2,9 +2,10 @@
 Script Name : Get-BackupSizeTrend
 Category    : backups
 Purpose     : Monthly backup size trend per database over the last 12 months — an indirect proxy for data growth rate. Shrinking backups can indicate unexpected data loss; growing backups inform storage planning.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-backup-size-trend/)
 Requires    : msdb access (db_datareader on msdb or sysadmin)
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-backup-size-trend/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -4,9 +4,10 @@ Category    : monitoring
 Purpose     : Resource Governor configuration — enabled state, resource pools, workload groups,
               and classifier function. An active but misconfigured RG can silently throttle
               queries or starve the DBA's own sessions on an inherited server.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-trace-flags-and-resource-governor/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-trace-flags-and-resource-governor/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -25,8 +26,6 @@ SELECT
     p.max_cpu_percent                                                       AS pool_max_cpu_pct,
     p.min_memory_percent                                                    AS pool_min_mem_pct,
     p.max_memory_percent                                                    AS pool_max_mem_pct,
-    rs_p.total_request_count                                                AS pool_total_requests,
-    rs_p.active_request_count                                               AS pool_active_requests,
     g.name                                                                  AS workload_group,
     g.importance                                                            AS group_importance,
     g.request_max_cpu_time_sec                                              AS group_max_cpu_sec,
@@ -47,7 +46,6 @@ SELECT
 FROM sys.resource_governor_configuration                AS c
 CROSS JOIN sys.resource_governor_resource_pools        AS p
 JOIN       sys.resource_governor_workload_groups       AS g  ON g.pool_id = p.pool_id
-LEFT JOIN  sys.dm_resource_governor_resource_pools     AS rs_p ON rs_p.pool_id = p.pool_id
 LEFT JOIN  sys.dm_resource_governor_workload_groups    AS rs_g ON rs_g.group_id = g.group_id
 ORDER BY
     p.name,

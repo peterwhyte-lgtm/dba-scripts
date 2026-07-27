@@ -3,9 +3,10 @@ Script Name : Get-LockEscalationStats
 Category    : performance
 Purpose     : Shows tables with the most lock escalations since last restart.
               Lock escalation converts row/page locks to a table lock, increasing blocking.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-lock-contention-and-blocking-plans/)
 Requires    : VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-lock-contention-and-blocking-plans/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -28,7 +29,7 @@ SET NOCOUNT ON;
 SELECT TOP 30
     DB_NAME(ios.database_id)                             AS database_name,
     OBJECT_NAME(ios.object_id, ios.database_id)         AS table_name,
-    SUM(ios.lock_escalation_count)                      AS lock_escalations,
+    SUM(ios.index_lock_promotion_count)                      AS lock_escalations,
     SUM(ios.row_lock_count)                             AS row_lock_count,
     SUM(ios.page_lock_count)                            AS page_lock_count,
     SUM(ios.row_lock_wait_count)                        AS row_lock_wait_count,
@@ -39,7 +40,7 @@ SELECT TOP 30
                                                         AS page_lock_wait_sec
 FROM sys.dm_db_index_operational_stats(NULL, NULL, NULL, NULL) ios
 WHERE ios.database_id > 4
-  AND ios.lock_escalation_count > 0
+  AND ios.index_lock_promotion_count > 0
 GROUP BY
     ios.database_id,
     ios.object_id
