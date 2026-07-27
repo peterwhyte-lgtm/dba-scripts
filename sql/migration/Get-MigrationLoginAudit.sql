@@ -2,9 +2,10 @@
 Script Name : Get-MigrationLoginAudit
 Category    : migration
 Purpose     : Audits all server-level principals that need to be migrated — SQL logins, Windows logins, and server roles — with migration risk and action per login type.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-migration-login-audit-and-post-migration-validation/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-migration-login-audit-and-post-migration-validation/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
@@ -14,14 +15,8 @@ SELECT
     sp.type_desc                    AS login_type,
     sp.default_database_name,
     sp.is_disabled,
-    CASE sp.type
-        WHEN 'S' THEN sp.is_policy_checked
-        ELSE NULL
-    END                             AS policy_checked,
-    CASE sp.type
-        WHEN 'S' THEN sp.is_expiration_checked
-        ELSE NULL
-    END                             AS expiration_checked,
+    sl.is_policy_checked,
+    sl.is_expiration_checked,
     CASE
         WHEN sp.name = 'sa'              THEN 'HIGH   — document or reset sa password; confirm enabled state is intentional'
         WHEN sp.type = 'S'
@@ -41,6 +36,7 @@ SELECT
         ELSE          'Review manually'
     END                             AS migration_action
 FROM sys.server_principals sp
+LEFT JOIN sys.sql_logins sl ON sl.principal_id = sp.principal_id
 WHERE sp.type IN ('S', 'U', 'G', 'C', 'R')
   AND sp.name NOT LIKE '##%'
   AND sp.name NOT LIKE 'NT AUTHORITY\%'
