@@ -8,7 +8,7 @@ Purpose     : Generates SQL Agent DDL for routine housekeeping jobs:
               DBA - Cycle Error Log   sp_cycle_errorlog to rotate the SQL Server error log
                                       and prevent it growing unbounded (weekly)
               Edit the parameters section, review the output, then run on the target instance.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-maintenance-jobs/)
 Requires    : VIEW ANY DATABASE
 Notes       : DBCC CHECKDB is resource-intensive. Schedule on a quiet period.
               On a large estate, consider reducing to monthly or running per-filegroup.
@@ -56,24 +56,29 @@ DEALLOCATE c;'
 , N'|', NCHAR(39));
 
 -- ── Step command: history cleanup ─────────────────────────────────────────────
+-- EXEC statement parameters must be constants or variables, not function-call
+-- expressions — DATEADD(...) inline as a named parameter value fails with
+-- "Incorrect syntax near 'DAY'". Assign to a local variable first.
 DECLARE @cleanCmd nvarchar(max) = REPLACE(
 N'SET NOCOUNT ON;
+DECLARE @BackupCutoff datetime = DATEADD(DAY, -<<BACKUP_DAYS>>, GETDATE());
+DECLARE @JobCutoff     datetime = DATEADD(DAY, -<<JOB_DAYS>>, GETDATE());
 
 -- Purge backup and restore history
 EXEC msdb.dbo.sp_delete_backuphistory
-    @oldest_date = DATEADD(DAY, -<<BACKUP_DAYS>>, GETDATE());
+    @oldest_date = @BackupCutoff;
 
 -- Purge SQL Agent job history
 EXEC msdb.dbo.sp_purge_jobhistory
-    @oldest_date = DATEADD(DAY, -<<JOB_DAYS>>, GETDATE());
+    @oldest_date = @JobCutoff;
 
 -- Purge Database Mail items and log (only if Database Mail is configured)
 IF EXISTS (SELECT 1 FROM msdb.dbo.sysmail_profile)
 BEGIN
     EXEC msdb.dbo.sysmail_delete_mailitems_sp
-        @sent_before = DATEADD(DAY, -<<JOB_DAYS>>, GETDATE());
+        @sent_before = @JobCutoff;
     EXEC msdb.dbo.sysmail_delete_log_sp
-        @logged_before = DATEADD(DAY, -<<JOB_DAYS>>, GETDATE());
+        @logged_before = @JobCutoff;
 END'
 , N'|', NCHAR(39));
 

@@ -6,12 +6,12 @@ Purpose     : Generates SQL Agent DDL to create three scheduled maintenance jobs
               DBA - Backup - LOG      transaction log backups on a short interval (default 15 min)
               DBA - Backup - Cleanup  removes old backup files based on retention policy
               Edit the parameters section, review the output, then run on the target instance.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-maintenance-jobs/)
 Requires    : VIEW ANY DATABASE
 Notes       : Output requires sysadmin or SQLAgentOperatorRole on the target instance.
               The backup root path must exist on the SQL Server host before jobs first run.
               Log backup job skips SIMPLE recovery model databases automatically.
-              Cleanup step uses CmdExec (forfiles.exe) — SQL Agent service account needs
+              Cleanup step uses the PowerShell subsystem — SQL Agent service account needs
               delete rights on the backup folder.
               On AGs: use @FullBackupPreference to avoid full backups on the wrong replica;
               this script backs up whatever instance it runs on.
@@ -96,17 +96,21 @@ DEALLOCATE c;'
 , N'|', NCHAR(39));
 SET @logCmd = REPLACE(@logCmd, N'<<ROOT>>', @BackupRootPath);
 
--- ── Step command: Cleanup (CmdExec — forfiles.exe) ───────────────────────────
--- forfiles /d -N deletes files modified more than N days ago.
--- exit 0 prevents job failure when no matching files are found.
+-- ── Step command: Cleanup (PowerShell subsystem) ──────────────────────────────
+-- Runs as a real PowerShell script (not CmdExec), so multi-line commands and
+-- pipes execute exactly as written — no shell-quoting/chaining pitfalls to
+-- work around. (CmdExec + forfiles.exe was tried first: SQL Agent's CmdExec
+-- subsystem does not wrap the command in a shell, so forfiles' own multi-line
+-- form only ran its first line, and neither redirection (2>nul) nor chaining
+-- (&) were interpreted — both were passed through as literal, invalid
+-- forfiles arguments. PowerShell avoids the whole class of problem.)
 DECLARE @cleanCmd nvarchar(max) =
-    N'forfiles /p "' + @BackupRootPath
-    + N'" /m *_FULL_*.bak /d -' + CAST(@FullRetentionDays AS nvarchar(5))
-    + N' /c "cmd /c del @path" 2>nul' + @crlf
-    + N'forfiles /p "' + @BackupRootPath
-    + N'" /m *_LOG_*.trn /d -'  + CAST(@logRetentionDays AS nvarchar(5))
-    + N' /c "cmd /c del @path" 2>nul' + @crlf
-    + N'exit 0';
+    N'Get-ChildItem -Path ' + @q + @BackupRootPath + @q + N' -Filter ' + @q + N'*_FULL_*.bak' + @q
+    + N' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-'
+    + CAST(@FullRetentionDays AS nvarchar(5)) + N') } | Remove-Item -Force' + @crlf
+    + N'Get-ChildItem -Path ' + @q + @BackupRootPath + @q + N' -Filter ' + @q + N'*_LOG_*.trn' + @q
+    + N' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-'
+    + CAST(@logRetentionDays AS nvarchar(5)) + N') } | Remove-Item -Force';
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- DDL output
@@ -251,7 +255,7 @@ SET @ddl +=
     N'    @job_name          = N' + @q + N'DBA - Backup - Cleanup' + @q + N',' + @crlf +
     N'    @step_id           = 1,' + @crlf +
     N'    @step_name         = N' + @q + N'Delete old backup files' + @q + N',' + @crlf +
-    N'    @subsystem         = N' + @q + N'CmdExec' + @q + N',' + @crlf +
+    N'    @subsystem         = N' + @q + N'PowerShell' + @q + N',' + @crlf +
     N'    @command           = N' + @q + REPLACE(@cleanCmd, @q, @q + @q) + @q + N',' + @crlf +
     N'    @on_success_action = 1,' + @crlf +
     N'    @on_fail_action    = 2;' + @crlf +
