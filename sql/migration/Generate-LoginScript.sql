@@ -2,7 +2,7 @@
 Script Name : Generate-LoginScript
 Category    : migration
 Purpose     : Generate CREATE LOGIN DDL for all non-system logins with SIDs and hashed passwords preserved.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-migration-scripts/)
 Requires    : VIEW SERVER STATE, CONTROL SERVER (for password_hash column)
 */
 -- SAFE:ReadOnly

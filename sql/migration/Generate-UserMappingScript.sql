@@ -2,7 +2,7 @@
 Script Name : Generate-UserMappingScript
 Category    : migration
 Purpose     : Generate CREATE USER and role membership DDL for all user databases.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-migration-scripts/)
 Requires    : VIEW ANY DATABASE, VIEW DEFINITION on each database
 */
 -- SAFE:ReadOnly
@@ -87,18 +87,20 @@ BEGIN
     INSERT INTO #users EXEC sp_executesql @q;
 
     SELECT @chunk = @chunk
-        + N'IF NOT EXISTS (SELECT 1 FROM [' + @dbname + N'].sys.database_principals WHERE name = N''' + REPLACE(uname, N'''', N'''''') + N''')' + @crlf
         + CASE
             WHEN utype IN ('U', 'G')
-                THEN N'    CREATE USER [' + uname + N'] FOR LOGIN [' + uname + N']'
+                THEN N'IF NOT EXISTS (SELECT 1 FROM [' + @dbname + N'].sys.database_principals WHERE name = N''' + REPLACE(uname, N'''', N'''''') + N''')' + @crlf
+                   + N'    CREATE USER [' + uname + N'] FOR LOGIN [' + uname + N']' + @crlf
             WHEN utype = 'S'
                  AND usid IS NOT NULL
                  AND EXISTS (SELECT 1 FROM sys.server_principals sp WHERE sp.sid = usid)
-                THEN N'    CREATE USER [' + uname + N'] FOR LOGIN [' + ISNULL(SUSER_SNAME(usid), uname) + N']'
+                THEN N'IF NOT EXISTS (SELECT 1 FROM [' + @dbname + N'].sys.database_principals WHERE name = N''' + REPLACE(uname, N'''', N'''''') + N''')' + @crlf
+                   + N'    CREATE USER [' + uname + N'] FOR LOGIN [' + ISNULL(SUSER_SNAME(usid), uname) + N']' + @crlf
             WHEN utype = 'S' AND auth_type = 'DATABASE'
-                THEN N'    CREATE USER [' + uname + N'] WITHOUT LOGIN'
-            ELSE N'    -- SKIP (no matching server login): ' + uname
-          END + @crlf
+                THEN N'IF NOT EXISTS (SELECT 1 FROM [' + @dbname + N'].sys.database_principals WHERE name = N''' + REPLACE(uname, N'''', N'''''') + N''')' + @crlf
+                   + N'    CREATE USER [' + uname + N'] WITHOUT LOGIN' + @crlf
+            ELSE N'-- SKIP (no matching server login): ' + uname + @crlf
+          END
         + N'GO' + @crlf + @crlf
     FROM #users
     ORDER BY uname;

@@ -3,7 +3,7 @@ Script Name : Generate-LinkedServerScript
 Category    : migration
 Purpose     : Generate sp_addlinkedserver + sp_addlinkedsrvlogin DDL for all linked servers.
               Run on SOURCE server. Execute the output on TARGET after migration.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-migration-scripts/)
 Requires    : VIEW ANY DEFINITION or sysadmin
 */
 -- SAFE:ReadOnly
@@ -103,13 +103,14 @@ BEGIN
 
     DECLARE ll_cur CURSOR LOCAL FAST_FORWARD FOR
         SELECT
-            ISNULL(ll.local_login_name, N''),
+            ISNULL(sp.name, N''),
             ISNULL(ll.remote_name, N''),
-            ll.uses_self_credentials
+            ll.uses_self_credential
         FROM sys.linked_logins ll
         INNER JOIN sys.servers s2 ON ll.server_id = s2.server_id
+        LEFT JOIN sys.server_principals sp ON ll.local_principal_id = sp.principal_id
         WHERE s2.name = @ls_name
-        ORDER BY ll.local_login_name;
+        ORDER BY sp.name;
 
     OPEN ll_cur;
     FETCH NEXT FROM ll_cur INTO @ll_local, @ll_remote, @ll_useself;

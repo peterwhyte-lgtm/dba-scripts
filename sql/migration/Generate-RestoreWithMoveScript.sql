@@ -4,7 +4,7 @@ Category    : migration
 Purpose     : Generate RESTORE DATABASE scripts with WITH MOVE for all online user databases.
               Run on SOURCE server. Supply the backup path and path prefix mappings for
               data and log files before executing the output on TARGET.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-migration-scripts/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
 -- SAFE:ReadOnly
@@ -102,6 +102,13 @@ BEGIN
         END;
 
         SET @block = @block
+            + CASE
+                WHEN @file_type = 'LOG' AND LEFT(@old_path, LEN(@OldLogRoot)) <> @OldLogRoot
+                    THEN N'       -- WARNING: source path does not start with @OldLogRoot (''' + @OldLogRoot + N'''), computed path below is unreliable, verify manually. Actual source: ' + @old_path + @crlf
+                WHEN @file_type <> 'LOG' AND LEFT(@old_path, LEN(@OldDataRoot)) <> @OldDataRoot
+                    THEN N'       -- WARNING: source path does not start with @OldDataRoot (''' + @OldDataRoot + N'''), computed path below is unreliable, verify manually. Actual source: ' + @old_path + @crlf
+                ELSE N''
+              END
             + N'       ,MOVE N''' + REPLACE(@logical_name, N'''', N'''''') + N''' TO N''' + REPLACE(@new_path, N'''', N'''''') + N'''' + @crlf;
 
         FETCH NEXT FROM file_cur INTO @logical_name, @old_path, @file_type;
@@ -117,7 +124,7 @@ BEGIN
         + N'    WITH' + @crlf
         + CASE WHEN @WithReplace   = 1 THEN N'         REPLACE,' + @crlf  ELSE N'' END
         + CASE WHEN @WithRecovery  = 0 THEN N'         NORECOVERY,' + @crlf ELSE N'' END
-        + N'         STATS = ' + CAST(@StatsInterval AS nvarchar(3)) + N',' + @crlf
+        + N'         STATS = ' + CAST(@StatsInterval AS nvarchar(3)) + @crlf
         + @block
         + N';' + @crlf;
 

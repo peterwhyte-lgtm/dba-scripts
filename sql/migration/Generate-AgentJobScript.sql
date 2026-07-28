@@ -2,7 +2,7 @@
 Script Name : Generate-AgentJobScript
 Category    : migration
 Purpose     : Generate sp_add_job DDL to recreate all SQL Agent jobs on the target server.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-migration-scripts/)
 Requires    : SQLAgentUserRole in msdb (or sysadmin)
 */
 -- SAFE:ReadOnly
