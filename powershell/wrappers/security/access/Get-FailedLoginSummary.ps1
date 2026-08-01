@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Aggregated failed login summary from security ring buffer — brute-force detection and locked accounts.
 

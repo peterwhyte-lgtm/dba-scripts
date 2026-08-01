@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Identifies SQL logins with weak security settings — policy off, expiration off, or sa enabled.
 

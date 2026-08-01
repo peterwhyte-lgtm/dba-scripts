@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Projects days-to-full for databases and drives from collector historical data.
 
@@ -74,7 +74,7 @@ if (Test-Path $dbGrowthDir) {
             $pts = $grp.Group |
                    Sort-Object { [datetime]$_.collected_at } |
                    Select-Object collected_at,
-                       @{n='size_mb'; e={ [double]($_.data_size_mb ?? $_.total_size_mb ?? 0) }}
+                       @{n='size_mb'; e={ [double]((@($_.data_size_mb, $_.total_size_mb, 0) | Where-Object { $null -ne $_ })[0]) }}
 
             if ($pts.Count -lt 3) { continue }
 
@@ -143,8 +143,8 @@ if (Test-Path $diskDir) {
             $pts = $grp.Group |
                    Sort-Object { [datetime]$_.collected_at } |
                    Select-Object collected_at,
-                       @{n='free_mb'; e={ [double]($_.free_space_mb ?? $_.free_mb ?? 0) }},
-                       @{n='total_mb'; e={ [double]($_.total_size_mb ?? $_.total_mb ?? 0) }}
+                       @{n='free_mb'; e={ [double]((@($_.free_space_mb, $_.free_mb, 0) | Where-Object { $null -ne $_ })[0]) }},
+                       @{n='total_mb'; e={ [double]((@($_.total_size_mb, $_.total_mb, 0) | Where-Object { $null -ne $_ })[0]) }}
 
             if ($pts.Count -lt 3) { continue }
 
@@ -205,7 +205,7 @@ $sorted = $results | Sort-Object {
         'WARN*'     { 2 }
         default     { 3 }
     }
-}, { $_.days_to_full ?? 9999 }
+}, { (@($_.days_to_full, 9999) | Where-Object { $null -ne $_ })[0] }
 
 if ($OutputFormat -eq 'Csv') {
     $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'

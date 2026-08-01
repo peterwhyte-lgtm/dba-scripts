@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Unified contention summary — lock waits, latch waits, TempDB allocation pressure, and spinlocks.
 

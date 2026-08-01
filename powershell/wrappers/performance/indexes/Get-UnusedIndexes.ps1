@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Identifies non-clustered indexes with zero reads but non-zero write overhead since the last SQL Server restart.
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Top 20 queries by average elapsed time from the plan cache — habitually slow queries.
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 Script Name : Initialize-Environment
 Purpose     : First-time setup check for this repo on a new machine. Validates
               prerequisites, installs missing modules, creates the output directory

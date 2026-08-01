@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Sends a healthcheck collection to the Claude API and writes an AI-generated assessment report.
 

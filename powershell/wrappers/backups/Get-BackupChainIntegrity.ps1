@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 LSN continuity analysis for all user databases — detects log chain gaps that break point-in-time restore.
 

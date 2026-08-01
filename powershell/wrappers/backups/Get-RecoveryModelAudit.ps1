@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Audits each database's recovery model against its actual backup posture and flags the
 mismatches that cause incidents (FULL recovery with no log backups, missing full backups,

@@ -11,6 +11,7 @@ Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
+SET QUOTED_IDENTIFIER ON;
 
 /*
   DESIGN: Returns a single summary result set with one row per check category.

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Returns OS version, hardware specs, and SQL Server uptime for the target instance.
 

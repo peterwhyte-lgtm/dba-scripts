@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows tables with the highest lock escalation counts since the last SQL Server restart.
 

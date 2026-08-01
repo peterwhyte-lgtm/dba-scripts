@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Returns Resource Governor configuration — pools, workload groups, and classifier function.
 

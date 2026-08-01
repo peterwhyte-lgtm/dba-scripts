@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Inventories user databases for migration readiness — compatibility, recovery model, state.
 

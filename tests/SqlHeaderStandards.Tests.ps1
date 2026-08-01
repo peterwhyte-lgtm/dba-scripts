@@ -1,4 +1,4 @@
-#Requires -Modules Pester
+﻿#Requires -Modules Pester
 
 <#
 Pester smoke tests — every SQL script in sql/ must meet the header standard

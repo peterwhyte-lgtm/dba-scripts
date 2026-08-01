@@ -106,7 +106,7 @@ if ($Parallel) {
 }
 
 if ($Parallel -and $allResults.Count -gt 0) {
-    $allResults | Sort-Object Server, { [double]($_.wait_sec ?? 0) } -Descending |
+    $allResults | Sort-Object Server, { [double]((@($_.wait_sec, 0) | Where-Object { $null -ne $_ })[0]) } -Descending |
         Format-Table Server, session_id, blocking_session_id, wait_type, wait_sec, login_name, current_statement -AutoSize
 }
 

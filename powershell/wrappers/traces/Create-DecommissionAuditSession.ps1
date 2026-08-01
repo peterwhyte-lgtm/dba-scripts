@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Creates an XE session capturing all activity on a database — use before decommissioning.
 

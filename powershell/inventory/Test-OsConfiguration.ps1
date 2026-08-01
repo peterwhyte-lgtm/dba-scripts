@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 OS-level configuration checks not visible via SQL DMVs: power plan, page file, pending reboot.
 

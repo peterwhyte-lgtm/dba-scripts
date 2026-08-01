@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Captures a point-in-time snapshot of all active SQL Server requests with optional execution plan export.
 

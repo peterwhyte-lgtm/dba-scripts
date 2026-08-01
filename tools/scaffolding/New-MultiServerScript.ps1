@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Generates a ready-to-run PowerShell script that executes a SQL or PowerShell
     script against multiple servers. Output is printed to the console (or written

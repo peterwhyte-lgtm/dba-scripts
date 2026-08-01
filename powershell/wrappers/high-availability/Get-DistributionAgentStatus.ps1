@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Monitors Distribution Agent activity — status, delivery latency, command counts, and errors (last 24 hours).
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Service Broker health across all user databases — conversation endpoints, queue state, transmission errors.
 

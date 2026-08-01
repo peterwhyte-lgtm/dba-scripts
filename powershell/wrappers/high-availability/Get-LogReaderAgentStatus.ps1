@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Monitors Log Reader Agent activity — status, delivery latency, and errors (last 24 hours).
 

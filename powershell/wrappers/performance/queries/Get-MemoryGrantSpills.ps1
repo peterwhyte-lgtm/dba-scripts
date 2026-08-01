@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Top queries by memory grant spills to TempDB — identifies under-granted sorts and hash joins.
 

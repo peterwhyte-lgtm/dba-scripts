@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Cross-server sp_configure drift detection — finds settings where any server differs from the majority.
 

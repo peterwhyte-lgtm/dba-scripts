@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Traces active SQL Server blocking chains with full chain structure, wait details, and optional execution plans.
 

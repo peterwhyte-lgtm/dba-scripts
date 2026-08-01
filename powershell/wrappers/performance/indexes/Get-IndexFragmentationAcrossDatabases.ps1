@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Checks index fragmentation across all user databases — run off-peak on busy instances.
 

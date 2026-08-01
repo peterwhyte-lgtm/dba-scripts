@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Prints a descriptive overview of the DBA scripts repo — intended as the first
 thing a new user runs to understand what's here and how to get started.

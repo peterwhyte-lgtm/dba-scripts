@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Reports last run outcome, duration, last message, and next scheduled run for all
 DBA maintenance jobs (names starting with 'DBA - ').

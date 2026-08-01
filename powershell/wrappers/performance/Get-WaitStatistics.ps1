@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Runs the top wait-statistics review script for the current SQL Server instance.
 

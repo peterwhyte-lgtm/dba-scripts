@@ -11,6 +11,7 @@ Requires    : VIEW ANY DEFINITION
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
+SET QUOTED_IDENTIFIER ON;
 
 SELECT
     t.name                                          AS trigger_name,

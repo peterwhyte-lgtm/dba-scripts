@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows index usage statistics across all user databases — seeks, scans, lookups, and updates.
 

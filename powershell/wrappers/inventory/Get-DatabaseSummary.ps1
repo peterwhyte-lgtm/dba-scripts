@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Runs the database summary query for the current SQL Server instance.
 

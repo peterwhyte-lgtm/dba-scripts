@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Audits Enterprise-only features in use on this SQL Server instance. Run before any edition downgrade.
 

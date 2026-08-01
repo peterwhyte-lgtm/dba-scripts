@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists SQL Agent proxies and server-level credentials with security context.
 

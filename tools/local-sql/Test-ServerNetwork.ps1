@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Tests DNS resolution and TCP port connectivity for a SQL Server instance.
 
@@ -68,7 +68,8 @@ $instanceName = if ($ServerInstance -match '\\([^,]+)') { $Matches[1] } else { $
 $isLocal = $hostName -in @('.', '(local)', 'localhost', '') -or $hostName -ieq $env:COMPUTERNAME
 if ($isLocal) { $hostName = 'localhost' }
 
-$portsToTest = [System.Collections.Generic.List[int]]@(1433)
+$portsToTest = New-Object 'System.Collections.Generic.List[int]'
+$portsToTest.Add(1433)
 if ($explicitPort -and $explicitPort -ne 1433) { $portsToTest.Add($explicitPort) }
 foreach ($p in $AdditionalPorts)               { if ($p -notin $portsToTest) { $portsToTest.Add($p) } }
 if ($AgCluster) {

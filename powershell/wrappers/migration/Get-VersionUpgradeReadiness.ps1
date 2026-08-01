@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Pre-upgrade readiness summary for SQL Server version upgrades — version info, compat level matrix,
 configuration review, and database sizing for window planning.

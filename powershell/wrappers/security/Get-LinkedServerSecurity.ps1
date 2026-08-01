@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists linked servers with their login mappings and risk level.
 

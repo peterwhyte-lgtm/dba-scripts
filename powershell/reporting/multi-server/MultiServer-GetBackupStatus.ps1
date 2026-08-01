@@ -115,7 +115,7 @@ if ($Parallel) {
 }
 
 Write-Host "`n── Full results ─────────────────────────────────────────" -ForegroundColor DarkGray
-$allResults | Sort-Object Server, { [double]($_.full_backup_age_hours ?? 9999) } -Descending |
+$allResults | Sort-Object Server, { [double]((@($_.full_backup_age_hours, 9999) | Where-Object { $null -ne $_ })[0]) } -Descending |
     Format-Table Server, database_name, recovery_model_desc, coverage_status, full_backup_age_hours, last_full_backup, last_log_backup -AutoSize
 
 Write-Host "`nDone." -ForegroundColor Green

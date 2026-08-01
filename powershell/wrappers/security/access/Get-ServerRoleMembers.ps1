@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists all members of every fixed and user-defined server role.
 

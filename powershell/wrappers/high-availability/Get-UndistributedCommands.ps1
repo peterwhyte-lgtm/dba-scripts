@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows count of commands pending delivery to each subscriber — a high number signals Distribution Agent lag or failure.
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Generates ALTER INDEX REBUILD / REORGANIZE statements for fragmented indexes
 across all online user databases.

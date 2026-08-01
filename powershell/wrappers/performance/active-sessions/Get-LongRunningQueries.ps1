@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Runs the long-running query review script for the current SQL Server instance.
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists missing index candidates from DMVs, ranked by impact score.
 

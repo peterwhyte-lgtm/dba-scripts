@@ -11,6 +11,7 @@ HealthCheck : Yes
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
+SET QUOTED_IDENTIFIER ON;
 
 SELECT
     s.name                                          AS session_name,

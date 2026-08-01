@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Finds database users with no matching server login across all user databases.
 

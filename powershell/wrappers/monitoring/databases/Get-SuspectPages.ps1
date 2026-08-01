@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows any pages in msdb.dbo.suspect_pages -- evidence of corruption or I/O errors.
 

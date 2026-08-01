@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows SQL Server service state, startup type, and service accounts.
 

@@ -1,4 +1,4 @@
-#Requires -Modules Pester
+﻿#Requires -Modules Pester
 
 <#
 Pester tests — every SQL script in sql/ (with documented exclusions) must have a

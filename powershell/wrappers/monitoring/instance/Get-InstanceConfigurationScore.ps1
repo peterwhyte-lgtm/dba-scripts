@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Scores the SQL Server instance across key configuration checks — returns PASS/WARN/FAIL per item.
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists all SQL Server logins by type and disabled state for a permissions review.
 

@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Identifies stale, low-sample, and never-updated statistics in a user database.
 

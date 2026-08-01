@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Top queries from Query Store by CPU, duration, execution count, or plan regressions.
 

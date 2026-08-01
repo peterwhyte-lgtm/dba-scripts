@@ -97,10 +97,10 @@ if ($Parallel) {
 }
 
 if ($Parallel -and $allResults.Count -gt 0) {
-    $allResults | Sort-Object { [double]($_.total_size_mb ?? 0) } -Descending |
+    $allResults | Sort-Object { [double]((@($_.total_size_mb, 0) | Where-Object { $null -ne $_ })[0]) } -Descending |
         Format-Table Server, database_name, state_desc, data_size_mb, log_size_mb, total_size_mb -AutoSize
 }
 
-$grandTotal = [Math]::Round(($allResults | Measure-Object { [double]($_.total_size_mb ?? 0) } -Sum).Sum / 1024, 2)
+$grandTotal = [Math]::Round(($allResults | Measure-Object { [double]((@($_.total_size_mb, 0) | Where-Object { $null -ne $_ })[0]) } -Sum).Sum / 1024, 2)
 Write-Host "`nGrand total across all servers: $grandTotal GB" -ForegroundColor Cyan
 Write-Host "Done." -ForegroundColor Green

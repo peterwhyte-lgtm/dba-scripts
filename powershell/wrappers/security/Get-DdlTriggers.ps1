@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists server-level DDL triggers — hidden dependencies that can block or audit schema changes.
 

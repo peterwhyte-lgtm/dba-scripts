@@ -153,9 +153,12 @@ if ($sqlcmd) {
     if ($LASTEXITCODE -ne 0) {
         $errContent = ''
         if (Test-Path -LiteralPath $tempOutput) {
-            $errContent = (Get-Content -LiteralPath $tempOutput -Raw -Encoding UTF8 -EA SilentlyContinue)?.Trim() -replace '\r?\n', ' ' -replace '\s+', ' '
+            $rawErr = Get-Content -LiteralPath $tempOutput -Raw -Encoding UTF8 -EA SilentlyContinue
+            if ($rawErr) {
+                $errContent = $rawErr.Trim() -replace '\r?\n', ' ' -replace '\s+', ' '
+            }
         }
-        $msg = $errContent ? $errContent : "sqlcmd.exe failed with exit code $LASTEXITCODE"
+        $msg = if ($errContent) { $errContent } else { "sqlcmd.exe failed with exit code $LASTEXITCODE" }
         Write-Host "[repo-sql] Connection failed: $msg" -ForegroundColor Red
         Write-Host "[repo-sql] Running network check for $ServerInstance ..." -ForegroundColor Yellow
         $netCheck = Join-Path $PSScriptRoot 'Test-ServerNetwork.ps1'

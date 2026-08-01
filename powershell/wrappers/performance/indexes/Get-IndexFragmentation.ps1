@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Reports top fragmented indexes across all user databases on the instance.
 

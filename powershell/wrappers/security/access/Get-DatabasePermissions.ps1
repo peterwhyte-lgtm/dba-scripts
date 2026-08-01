@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists all explicit object- and schema-level permissions in the target database.
 

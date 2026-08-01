@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists the top 20 queries by total logical reads since the last SQL Server restart.
 

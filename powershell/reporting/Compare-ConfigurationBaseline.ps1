@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Compare current sp_configure and key database settings against a saved baseline.
 

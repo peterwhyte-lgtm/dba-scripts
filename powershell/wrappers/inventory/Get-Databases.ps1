@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Lists all databases with key properties and allocated file sizes.
 Reads from system metadata only — fast, no per-database scan.

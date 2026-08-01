@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Shows a summary of current blocking chains — head blockers and all waiting sessions.
 
