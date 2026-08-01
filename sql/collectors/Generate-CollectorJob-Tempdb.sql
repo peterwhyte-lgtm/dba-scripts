@@ -61,22 +61,31 @@ JOIN tempdb.sys.database_files f ON f.file_id = fu.file_id
 
 UNION ALL
 
-SELECT TOP 10
-    @@SERVERNAME,
-    GETDATE(),
-    |session|,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-    su.session_id,
-    s.login_name,
-    s.host_name,
-    s.program_name,
-    CAST((su.user_objects_alloc_page_count - su.user_objects_dealloc_page_count) * 8.0 / 1024 AS decimal(10,2)),
-    CAST((su.internal_objects_alloc_page_count - su.internal_objects_dealloc_page_count) * 8.0 / 1024 AS decimal(10,2))
-FROM sys.dm_db_session_space_usage su
-JOIN sys.dm_exec_sessions s ON s.session_id = su.session_id
-WHERE su.session_id > 50
-  AND (su.user_objects_alloc_page_count + su.internal_objects_alloc_page_count) > 0
-ORDER BY (su.user_objects_alloc_page_count + su.internal_objects_alloc_page_count) DESC;'
+SELECT
+    server_name, collection_time, row_type, file_name, physical_name, file_type,
+    file_size_mb, total_allocated_mb, free_mb, user_objects_mb, internal_objects_mb,
+    version_store_mb, mixed_extents_mb, session_id, login_name, host_name,
+    program_name, session_user_objects_mb, session_internal_objects_mb
+FROM (
+    SELECT TOP 10
+        @@SERVERNAME                                                                                        AS server_name,
+        GETDATE()                                                                                            AS collection_time,
+        |session|                                                                                            AS row_type,
+        NULL AS file_name, NULL AS physical_name, NULL AS file_type, NULL AS file_size_mb,
+        NULL AS total_allocated_mb, NULL AS free_mb, NULL AS user_objects_mb,
+        NULL AS internal_objects_mb, NULL AS version_store_mb, NULL AS mixed_extents_mb,
+        su.session_id,
+        s.login_name,
+        s.host_name,
+        s.program_name,
+        CAST((su.user_objects_alloc_page_count - su.user_objects_dealloc_page_count) * 8.0 / 1024 AS decimal(10,2))     AS session_user_objects_mb,
+        CAST((su.internal_objects_alloc_page_count - su.internal_objects_dealloc_page_count) * 8.0 / 1024 AS decimal(10,2)) AS session_internal_objects_mb
+    FROM sys.dm_db_session_space_usage su
+    JOIN sys.dm_exec_sessions s ON s.session_id = su.session_id
+    WHERE su.session_id > 50
+      AND (su.user_objects_alloc_page_count + su.internal_objects_alloc_page_count) > 0
+    ORDER BY (su.user_objects_alloc_page_count + su.internal_objects_alloc_page_count) DESC
+) AS top_sessions;'
 , N'|', NCHAR(39));
 
 SET @stepCmd = REPLACE(@stepCmd, N'<<DB>>', @TargetDatabase);

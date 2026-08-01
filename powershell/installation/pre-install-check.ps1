@@ -1,4 +1,4 @@
-﻿﻿<#
+﻿<#
 .SYNOPSIS
 Run pre-installation checks before deploying SQL Server.
 

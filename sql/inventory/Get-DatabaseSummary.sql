@@ -7,9 +7,10 @@ Purpose     : One-row-per-database view of every database on the instance: state
               Reads from system metadata and msdb only — no per-database scan.
               For used vs free space detail run Get-DatabaseSizesAndFreeSpace.
               For file-level detail run Get-DatabaseFilesDetail.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-summary/)
 Requires    : VIEW ANY DATABASE, SELECT on msdb.dbo.backupset
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-database-summary/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

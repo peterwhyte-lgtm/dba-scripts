@@ -1,4 +1,4 @@
-﻿﻿<#
+﻿<#
 .SYNOPSIS
 Install SQL Server from setup.exe with validated parameters and post-install configuration.
 

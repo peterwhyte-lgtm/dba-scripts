@@ -1,4 +1,4 @@
-﻿﻿<#
+﻿<#
 .SYNOPSIS
 Apply sp_configure settings to an existing SQL Server instance.
 

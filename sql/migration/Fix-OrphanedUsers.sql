@@ -4,9 +4,10 @@ Category    : migration
 Purpose     : Generate ALTER USER statements to re-map orphaned database users to their
               matching server-level logins across all user databases. Run on TARGET after
               databases are restored and logins are created.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-fix-orphaned-users/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
+-- Blog: https://sqldba.blog/dba-scripts-fix-orphaned-users/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

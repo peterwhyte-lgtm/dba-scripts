@@ -133,28 +133,27 @@ BEGIN
 END;
 
 -- ── Database growth ───────────────────────────────────────────────────────────
-DECLARE @latest_dbg datetime2;
-SELECT @latest_dbg = MAX(collection_time) FROM [<<DB>>].[collector].[DatabaseGrowth] WHERE server_name = @@SERVERNAME;
-IF @latest_dbg IS NOT NULL
+-- DatabaseGrowthCurrent is a system-versioned temporal table: it holds exactly one
+-- current row per key already, there is no collection_time column to filter on.
+IF EXISTS (SELECT 1 FROM [<<DB>>].[collector].[DatabaseGrowthCurrent] WHERE server_name = @@SERVERNAME)
     INSERT INTO #findings
     SELECT CASE growth_status WHEN |AT_LIMIT| THEN |CRITICAL| ELSE |WARNING| END,
         |database-growth|, growth_status,
         |[| + database_name + |] | + logical_name + |: | + CAST(file_size_mb AS nvarchar(20)) + | MB|
         + CASE WHEN growth_limit_mb IS NOT NULL THEN | / | + CAST(growth_limit_mb AS nvarchar(20)) + | MB limit| ELSE || END
-    FROM [<<DB>>].[collector].[DatabaseGrowth]
-    WHERE server_name = @@SERVERNAME AND collection_time = @latest_dbg
+    FROM [<<DB>>].[collector].[DatabaseGrowthCurrent]
+    WHERE server_name = @@SERVERNAME
       AND growth_status IN (|AT_LIMIT|, |NEAR_LIMIT|);
 
 -- ── VLF count ─────────────────────────────────────────────────────────────────
-DECLARE @latest_vlf datetime2;
-SELECT @latest_vlf = MAX(collection_time) FROM [<<DB>>].[collector].[VlfCount] WHERE server_name = @@SERVERNAME;
-IF @latest_vlf IS NOT NULL
+-- Same story: VlfCountCurrent is system-versioned, already current, no collection_time.
+IF EXISTS (SELECT 1 FROM [<<DB>>].[collector].[VlfCountCurrent] WHERE server_name = @@SERVERNAME)
     INSERT INTO #findings
     SELECT CASE WHEN vlf_count > 10000 THEN |CRITICAL| ELSE |WARNING| END,
         |vlf-count|, |vlf_count|,
         |[| + database_name + |] | + CAST(vlf_count AS nvarchar(10)) + | VLFs; reuse_wait: | + log_reuse_wait_desc
-    FROM [<<DB>>].[collector].[VlfCount]
-    WHERE server_name = @@SERVERNAME AND collection_time = @latest_vlf AND vlf_count > 1000;
+    FROM [<<DB>>].[collector].[VlfCountCurrent]
+    WHERE server_name = @@SERVERNAME AND vlf_count > 1000;
 
 -- ── Output ────────────────────────────────────────────────────────────────────
 IF NOT EXISTS (SELECT 1 FROM #findings)

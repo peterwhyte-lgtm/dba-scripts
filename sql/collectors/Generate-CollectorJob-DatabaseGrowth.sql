@@ -39,10 +39,10 @@ MERGE [<<DB>>].[collector].[DatabaseGrowthCurrent] AS target
 USING (
     SELECT
         @@SERVERNAME                                                     AS server_name,
-        d.name                                                           AS database_name,
-        d.state_desc                                                     AS database_state,
-        d.recovery_model_desc,
-        mf.name                                                          AS logical_name,
+        d.name COLLATE DATABASE_DEFAULT                                  AS database_name,
+        d.state_desc COLLATE DATABASE_DEFAULT                            AS database_state,
+        d.recovery_model_desc COLLATE DATABASE_DEFAULT                   AS recovery_model_desc,
+        mf.name COLLATE DATABASE_DEFAULT                                 AS logical_name,
         mf.physical_name,
         mf.type_desc                                                     AS file_type,
         CAST(mf.size * 8.0 / 1024 AS decimal(10,2))                     AS file_size_mb,

@@ -39,9 +39,9 @@ MERGE [<<DB>>].[collector].[VlfCountCurrent] AS target
 USING (
     SELECT
         @@SERVERNAME                                        AS server_name,
-        d.name                                              AS database_name,
-        d.recovery_model_desc,
-        d.log_reuse_wait_desc,
+        d.name COLLATE DATABASE_DEFAULT                     AS database_name,
+        d.recovery_model_desc COLLATE DATABASE_DEFAULT      AS recovery_model_desc,
+        d.log_reuse_wait_desc COLLATE DATABASE_DEFAULT      AS log_reuse_wait_desc,
         COUNT(li.file_id)                                   AS vlf_count,
         CAST(mf.size * 8.0 / 1024 AS decimal(10,2))        AS log_file_size_mb,
         CASE

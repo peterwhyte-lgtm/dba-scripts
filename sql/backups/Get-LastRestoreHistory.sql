@@ -2,9 +2,10 @@
 Script Name : Get-LastRestoreHistory
 Category    : backups
 Purpose     : Full restore history from msdb — when each database was last restored, from which backup, and by whom. Use to verify DR restore tests have actually been run.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-last-restore-history/)
 Requires    : msdb access (db_datareader on msdb or sysadmin)
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-last-restore-history/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

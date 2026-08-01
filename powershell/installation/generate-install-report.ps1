@@ -1,4 +1,4 @@
-﻿﻿<#
+﻿<#
 .SYNOPSIS
 Generate a summary report from SQL Server installation and configuration logs.
 

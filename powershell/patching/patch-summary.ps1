@@ -15,6 +15,8 @@ $ErrorActionPreference = 'SilentlyContinue'
 # ?? Known build ? CU mapping (update as new CUs release) ?????????????????????
 # Source: https://support.microsoft.com/en-us/help/321185
 $cuMap = @{
+    # SQL Server 2025 (17.x)
+    '17.0.4045.5'  = 'SQL 2025 CU5'
     # SQL Server 2022 (16.x)
     '16.0.1000.6'  = 'SQL 2022 RTM'
     '16.0.4003.1'  = 'SQL 2022 CU1'

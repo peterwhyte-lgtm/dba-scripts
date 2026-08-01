@@ -1,4 +1,4 @@
-﻿﻿<#
+﻿<#
 .SYNOPSIS
 Uninstall a SQL Server instance with optional data directory cleanup.
 

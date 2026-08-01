@@ -2,9 +2,10 @@
 Script Name : Get-DatabaseInventory
 Category    : migration
 Purpose     : Inventory user databases for migration readiness — compatibility level, recovery model, state.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-inventory/)
 Requires    : VIEW ANY DATABASE
 */
+-- Blog: https://sqldba.blog/dba-scripts-get-database-inventory/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
