@@ -12,16 +12,16 @@ Requires    : ALTER ANY EVENT SESSION, VIEW SERVER STATE
 SET NOCOUNT ON;
 
 /* ── Configuration — edit these before running ───────────────────────────── */
-DECLARE @SessionName   NVARCHAR(128) = N'SpExecution';
-DECLARE @DatabaseName  NVARCHAR(128) = N'';   /* target database; blank = all databases */
-DECLARE @TraceFolder   NVARCHAR(260) = N'D:\SQLTrace';
-    /* Folder must exist; SQL Server service account needs write access.      */
-DECLARE @MaxFileMB     INT           = 100;   /* max size per .xel file in MB                         */
-DECLARE @MaxFiles      INT           = 7;     /* number of rollover files; oldest is overwritten first */
-DECLARE @RetentionDays INT           = 7;
+DECLARE @SessionName NVARCHAR(128) = N'SpExecution';
+DECLARE @DatabaseName NVARCHAR(128) = N''; /* target database; blank = all databases */
+DECLARE @TraceFolder NVARCHAR(260) = N'D:\SQLTrace';
+    /* Folder must exist; SQL Server service account needs write access. */
+DECLARE @MaxFileMB INT = 100; /* max size per .xel file in MB */
+DECLARE @MaxFiles INT = 7; /* number of rollover files; oldest is overwritten first */
+DECLARE @RetentionDays INT = 7;
     /* SQL Server 2025+ (v17+) only: session auto-stops after this many days.
        On older versions this has no effect — the session runs until you stop
-       it manually.                                                           */
+       it manually. */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 DECLARE @ProductMajorVersion INT = CAST(SERVERPROPERTY('ProductMajorVersion') AS INT);
@@ -48,11 +48,11 @@ END;
 DECLARE @WithClause NVARCHAR(500) =
     N'WITH (
     MAX_DISPATCH_LATENCY = 15 SECONDS,
-    STARTUP_STATE        = ON';
+    STARTUP_STATE = ON';
 IF @ProductMajorVersion >= 17
     SET @WithClause = @WithClause
         + N',
-    MAX_DURATION         = ' + CAST(@RetentionDays AS NVARCHAR(5)) + N' DAYS';
+    MAX_DURATION = ' + CAST(@RetentionDays AS NVARCHAR(5)) + N' DAYS';
 SET @WithClause = @WithClause + N'
 )';
 
@@ -70,8 +70,8 @@ ADD EVENT sqlserver.rpc_completed (
     ' + @dbFilter + N'
 )
 ADD TARGET package0.event_file (
-    SET filename           = N''' + @FilePathEsc + N''',
-        max_file_size      = ' + CAST(@MaxFileMB AS NVARCHAR(10)) + N',
+    SET filename = N''' + @FilePathEsc + N''',
+        max_file_size = ' + CAST(@MaxFileMB AS NVARCHAR(10)) + N',
         max_rollover_files = ' + CAST(@MaxFiles  AS NVARCHAR(10)) + N'
 )
 ' + @WithClause + N';
@@ -81,19 +81,18 @@ BEGIN TRY
     EXEC sp_executesql @sql;
 
     SELECT
-        @SessionName                                               AS session_name,
-        @FilePathRaw                                               AS output_file,
-        NULLIF(@DatabaseName, N'')                                 AS database_filter,
-        @MaxFileMB                                                 AS max_file_mb,
-        @MaxFiles                                                  AS max_files,
-        @MaxFileMB * @MaxFiles                                     AS total_capacity_mb,
+        @SessionName AS session_name,
+        @FilePathRaw AS output_file,
+        NULLIF(@DatabaseName, N'') AS database_filter,
+        @MaxFileMB AS max_file_mb,
+        @MaxFiles AS max_files,
+        @MaxFileMB * @MaxFiles AS total_capacity_mb,
         CASE WHEN @ProductMajorVersion >= 17
              THEN CAST(@RetentionDays AS VARCHAR(5)) + ' days (MAX_DURATION)'
              ELSE 'manual stop (pre-2025)'
-        END                                                        AS session_lifetime,
-        'RUNNING'                                                  AS status,
-        'ALTER EVENT SESSION ' + QUOTENAME(@SessionName) + ' ON SERVER STATE = STOP; DROP EVENT SESSION ' + QUOTENAME(@SessionName) + ' ON SERVER;'
-                                                                   AS remove_cmd;
+        END AS session_lifetime,
+        'RUNNING' AS status,
+        'ALTER EVENT SESSION ' + QUOTENAME(@SessionName) + ' ON SERVER STATE = STOP; DROP EVENT SESSION ' + QUOTENAME(@SessionName) + ' ON SERVER;' AS remove_cmd;
 
     PRINT 'Session ' + @SessionName + ' created and started.';
     PRINT 'Output file : ' + @FilePathRaw;

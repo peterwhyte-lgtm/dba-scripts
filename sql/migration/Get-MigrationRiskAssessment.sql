@@ -33,16 +33,16 @@ FROM (
 
     -- Compatibility level below instance native
     SELECT
-        'Compatibility Level'                                                   AS risk_category,
+        'Compatibility Level' AS risk_category,
         CASE
-            WHEN d.compatibility_level < 100             THEN 'HIGH'
+            WHEN d.compatibility_level < 100 THEN 'HIGH'
             WHEN d.compatibility_level < (@instance_compat - 10) THEN 'MEDIUM'
             ELSE 'INFO'
-        END                                                                     AS risk_level,
-        d.name                                                                  AS object_name,
+        END AS risk_level,
+        d.name AS object_name,
         'Compat level ' + CAST(d.compatibility_level AS VARCHAR(5)) +
             ' (instance native: ' + CAST(@instance_compat AS VARCHAR(5)) + ')' AS finding,
-        'Test on non-prod with target compat level before cutover'              AS recommendation
+        'Test on non-prod with target compat level before cutover' AS recommendation
     FROM sys.databases d
     WHERE d.name NOT IN ('master', 'model', 'msdb', 'tempdb')
       AND d.state = 0

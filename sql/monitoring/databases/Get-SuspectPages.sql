@@ -15,7 +15,7 @@ HealthCheck : Yes
 SET NOCOUNT ON;
 
 SELECT
-    DB_NAME(sp.database_id)                                         AS database_name,
+    DB_NAME(sp.database_id) AS database_name,
     sp.file_id,
     sp.page_id,
     CASE sp.event_type
@@ -25,8 +25,8 @@ SELECT
         WHEN 4 THEN 'Restored (no longer suspect)'
         WHEN 5 THEN 'Repaired by DBCC'
         WHEN 7 THEN 'Deallocated by DBCC CHECKDB'
-        ELSE        CAST(sp.event_type AS VARCHAR(10))
-    END                                                             AS event_type,
+        ELSE CAST(sp.event_type AS VARCHAR(10))
+    END AS event_type,
     sp.error_count,
     sp.last_update_date
 FROM msdb.dbo.suspect_pages AS sp

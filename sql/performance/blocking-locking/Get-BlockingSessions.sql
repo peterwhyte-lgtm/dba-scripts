@@ -12,25 +12,25 @@ SET NOCOUNT ON;
 
 SELECT
     s.session_id,
-    DB_NAME(s.database_id)                                          AS database_name,
+    DB_NAME(s.database_id) AS database_name,
     s.status,
     s.login_name,
     s.host_name,
     s.program_name,
     r.blocking_session_id,
     r.wait_type,
-    CAST(ISNULL(r.wait_time, 0) / 1000.0 AS DECIMAL(10,1))        AS wait_sec,
+    CAST(ISNULL(r.wait_time, 0) / 1000.0 AS DECIMAL(10,1)) AS wait_sec,
     CAST(ISNULL(r.total_elapsed_time, 0) / 1000.0 AS DECIMAL(10,1)) AS elapsed_sec,
     r.cpu_time,
     r.logical_reads,
-    t.text                                                          AS current_statement
-FROM sys.dm_exec_sessions    AS s
-LEFT  JOIN sys.dm_exec_requests AS r  ON s.session_id = r.session_id
+    t.text AS current_statement
+FROM sys.dm_exec_sessions AS s
+LEFT JOIN sys.dm_exec_requests AS r ON s.session_id = r.session_id
 OUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS t
 WHERE s.is_user_process = 1
   AND (
-      r.blocking_session_id > 0                    -- this session is being blocked
-      OR EXISTS (                                  -- this session is blocking someone else
+      r.blocking_session_id > 0 -- this session is being blocked
+      OR EXISTS ( -- this session is blocking someone else
           SELECT 1 FROM sys.dm_exec_requests r2
           WHERE r2.blocking_session_id = s.session_id
       )

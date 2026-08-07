@@ -13,12 +13,12 @@ Requires    : VIEW SERVER STATE
 SET NOCOUNT ON;
 
 SELECT
-    e.name                       AS endpoint_name,
-    e.state_desc                 AS endpoint_state,
-    d.role_desc                  AS endpoint_role,
-    tcp.port                     AS port_number,
-    d.connection_auth_desc       AS connection_auth,
-    d.encryption_algorithm_desc  AS encryption_algorithm
-FROM sys.endpoints                     e
-JOIN sys.database_mirroring_endpoints  d   ON d.endpoint_id  = e.endpoint_id
-JOIN sys.tcp_endpoints                 tcp ON tcp.endpoint_id = e.endpoint_id;
+    e.name AS endpoint_name,
+    e.state_desc AS endpoint_state,
+    d.role_desc AS endpoint_role,
+    tcp.port AS port_number,
+    d.connection_auth_desc AS connection_auth,
+    d.encryption_algorithm_desc AS encryption_algorithm
+FROM sys.endpoints e
+JOIN sys.database_mirroring_endpoints d ON d.endpoint_id = e.endpoint_id
+JOIN sys.tcp_endpoints tcp ON tcp.endpoint_id = e.endpoint_id;

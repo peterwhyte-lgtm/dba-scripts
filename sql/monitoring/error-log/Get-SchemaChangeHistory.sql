@@ -22,16 +22,16 @@ END;
 
 /* ── DDL event classes: 46 = Created, 47 = Deleted, 164 = Altered ────────── */
 SELECT
-    t.StartTime                                                         AS change_time,
-    te.name                                                             AS change_type,
-    t.DatabaseName                                                      AS database_name,
-    t.ObjectName                                                        AS object_name,
-    t.LoginName                                                         AS changed_by,
-    t.HostName                                                          AS host_name,
-    t.ApplicationName                                                   AS application_name,
-    LEFT(CAST(t.TextData AS NVARCHAR(MAX)), 500)                       AS sql_text
-FROM sys.fn_trace_gettable(@tracepath, DEFAULT)  t
-JOIN sys.trace_events                            te ON te.trace_event_id = t.EventClass
-WHERE t.EventClass IN (46, 47, 164)   /* Object:Created, Object:Deleted, Object:Altered */
+    t.StartTime AS change_time,
+    te.name AS change_type,
+    t.DatabaseName AS database_name,
+    t.ObjectName AS object_name,
+    t.LoginName AS changed_by,
+    t.HostName AS host_name,
+    t.ApplicationName AS application_name,
+    LEFT(CAST(t.TextData AS NVARCHAR(MAX)), 500) AS sql_text
+FROM sys.fn_trace_gettable(@tracepath, DEFAULT) t
+JOIN sys.trace_events te ON te.trace_event_id = t.EventClass
+WHERE t.EventClass IN (46, 47, 164) /* Object:Created, Object:Deleted, Object:Altered */
   AND ISNULL(t.DatabaseName, '') NOT IN ('', 'mssqlsystemresource')
 ORDER BY t.StartTime DESC;

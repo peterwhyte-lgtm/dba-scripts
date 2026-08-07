@@ -16,22 +16,22 @@ Requires    : VIEW SERVER STATE
 SET NOCOUNT ON;
 
 CREATE TABLE #ErrorLog (
-    LogDate     DATETIME,
+    LogDate DATETIME,
     ProcessInfo NVARCHAR(100),
-    [Text]      NVARCHAR(MAX)
+    [Text] NVARCHAR(MAX)
 );
 
 INSERT INTO #ErrorLog
 EXEC xp_readerrorlog 0, 1, N'failover';
 
 SELECT
-    e.LogDate                                              AS event_time,
-    CAST(SERVERPROPERTY('ServerName') AS NVARCHAR(256))   AS server_name,
-    CAST(SERVERPROPERTY('IsClustered') AS BIT)            AS is_clustered,
-    osi.sqlserver_start_time                              AS instance_last_started,
-    DATEDIFF(DAY,  osi.sqlserver_start_time, GETDATE())   AS days_up,
-    e.ProcessInfo                                         AS source,
-    e.[Text]                                              AS message
+    e.LogDate AS event_time,
+    CAST(SERVERPROPERTY('ServerName') AS NVARCHAR(256)) AS server_name,
+    CAST(SERVERPROPERTY('IsClustered') AS BIT) AS is_clustered,
+    osi.sqlserver_start_time AS instance_last_started,
+    DATEDIFF(DAY, osi.sqlserver_start_time, GETDATE()) AS days_up,
+    e.ProcessInfo AS source,
+    e.[Text] AS message
 FROM #ErrorLog e
 CROSS JOIN sys.dm_os_sys_info osi
 ORDER BY e.LogDate DESC;

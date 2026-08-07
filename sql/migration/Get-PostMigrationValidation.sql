@@ -19,20 +19,20 @@ SET QUOTED_IDENTIFIER ON;
   The 'value' column should match between source and target for each check_name.
 
   Checks performed:
-    - user_database_count       — total number of user databases
-    - databases_not_online      — any database not in ONLINE state
-    - databases_missing_backup  — databases with no recorded backup (should be 0 on target if just restored)
-    - total_login_count         — server principal count (SQL + Windows)
-    - sql_login_count           — SQL-authenticated logins
-    - windows_login_count       — Windows logins and groups
-    - sysadmin_count            — members of sysadmin role
-    - linked_server_count       — linked server definitions
-    - agent_job_count           — SQL Agent jobs
-    - instance_version          — SQL Server version string (major.minor.build)
-    - instance_edition           — SQL Server edition
-    - max_server_memory_mb      — sp_configure max server memory
-    - maxdop                    — sp_configure max degree of parallelism
-    - tempdb_data_file_count    — TempDB data files (should match after setup)
+    - user_database_count — total number of user databases
+    - databases_not_online — any database not in ONLINE state
+    - databases_missing_backup — databases with no recorded backup (should be 0 on target if just restored)
+    - total_login_count — server principal count (SQL + Windows)
+    - sql_login_count — SQL-authenticated logins
+    - windows_login_count — Windows logins and groups
+    - sysadmin_count — members of sysadmin role
+    - linked_server_count — linked server definitions
+    - agent_job_count — SQL Agent jobs
+    - instance_version — SQL Server version string (major.minor.build)
+    - instance_edition — SQL Server edition
+    - max_server_memory_mb — sp_configure max server memory
+    - maxdop — sp_configure max degree of parallelism
+    - tempdb_data_file_count — TempDB data files (should match after setup)
 */
 
 SELECT
@@ -43,9 +43,9 @@ FROM (
 
     -- Database count
     SELECT
-        'user_database_count'                   AS check_name,
-        CAST(COUNT(*)  AS nvarchar(200))        AS value,
-        'databases with database_id > 4'        AS detail
+        'user_database_count' AS check_name,
+        CAST(COUNT(*) AS nvarchar(200)) AS value,
+        'databases with database_id > 4' AS detail
     FROM sys.databases
     WHERE database_id > 4
 
@@ -115,7 +115,7 @@ FROM (
         CAST(COUNT(*) AS nvarchar(200)),
         'members of sysadmin fixed server role'
     FROM sys.server_role_members srm
-    INNER JOIN sys.server_principals r ON srm.role_principal_id  = r.principal_id
+    INNER JOIN sys.server_principals r ON srm.role_principal_id = r.principal_id
     INNER JOIN sys.server_principals m ON srm.member_principal_id = m.principal_id
     WHERE r.name = N'sysadmin'
       AND m.name NOT LIKE N'##%##'

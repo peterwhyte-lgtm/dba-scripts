@@ -16,22 +16,22 @@ HealthCheck : Yes
 SET NOCOUNT ON;
 
 CREATE TABLE #sb_health (
-    database_name               SYSNAME,
-    sb_enabled                  BIT,
-    total_endpoints             INT,
-    endpoints_active            INT,
-    endpoints_error             INT,
-    endpoints_disconnected      INT,
-    endpoints_closed_stale      INT,
-    transmission_queue_total    INT,
-    transmission_queue_errors   INT,
-    queues_active               INT,
-    queues_disabled             INT,
-    activated_tasks_running     INT,
-    status                      NVARCHAR(500)
+    database_name SYSNAME,
+    sb_enabled BIT,
+    total_endpoints INT,
+    endpoints_active INT,
+    endpoints_error INT,
+    endpoints_disconnected INT,
+    endpoints_closed_stale INT,
+    transmission_queue_total INT,
+    transmission_queue_errors INT,
+    queues_active INT,
+    queues_disabled INT,
+    activated_tasks_running INT,
+    status NVARCHAR(500)
 );
 
-DECLARE @db  SYSNAME;
+DECLARE @db SYSNAME;
 DECLARE @sql NVARCHAR(MAX);
 
 DECLARE db_cursor CURSOR FAST_FORWARD FOR
@@ -139,8 +139,8 @@ SELECT
 FROM #sb_health
 ORDER BY
     CASE WHEN status LIKE 'CRITICAL%' THEN 1
-         WHEN status LIKE 'WARN%'     THEN 2
-         WHEN status LIKE 'INFO%'     THEN 3
+         WHEN status LIKE 'WARN%' THEN 2
+         WHEN status LIKE 'INFO%' THEN 3
          ELSE 4 END,
     database_name;
 

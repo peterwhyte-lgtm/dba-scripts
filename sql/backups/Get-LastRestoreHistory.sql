@@ -16,7 +16,7 @@ SET NOCOUNT ON;
         rh.restore_history_id,
         rh.destination_database_name,
         rh.restore_date,
-        DATEDIFF(DAY, rh.restore_date, GETDATE())           AS days_since_restore,
+        DATEDIFF(DAY, rh.restore_date, GETDATE()) AS days_since_restore,
         CASE rh.restore_type
             WHEN 'D' THEN 'Full'
             WHEN 'I' THEN 'Differential'
@@ -25,22 +25,22 @@ SET NOCOUNT ON;
             WHEN 'P' THEN 'Page'
             WHEN 'R' THEN 'Revert'
             ELSE rh.restore_type
-        END                                                 AS restore_type,
-        bs.database_name                                    AS source_database,
-        bs.backup_finish_date                               AS backup_taken_date,
+        END AS restore_type,
+        bs.database_name AS source_database,
+        bs.backup_finish_date AS backup_taken_date,
         DATEDIFF(DAY, bs.backup_finish_date, rh.restore_date) AS backup_age_at_restore_days,
         rh.user_name,
-        rh.recovery                                         AS with_recovery,
-        rh.replace                                          AS with_replace,
+        rh.recovery AS with_recovery,
+        rh.replace AS with_replace,
         ROW_NUMBER() OVER (
             PARTITION BY rh.destination_database_name
             ORDER BY rh.restore_date DESC
-        )                                                   AS rn
+        ) AS rn
     FROM msdb.dbo.restorehistory rh
     LEFT JOIN msdb.dbo.backupset bs ON bs.backup_set_id = rh.backup_set_id
 )
 SELECT
-    destination_database_name  AS database_name,
+    destination_database_name AS database_name,
     restore_date,
     days_since_restore,
     restore_type,

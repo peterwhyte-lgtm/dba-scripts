@@ -26,17 +26,17 @@ last_full AS (
 full_details AS (
     SELECT
         bs.database_name,
-        bs.backup_set_id                                AS full_backup_set_id,
-        bs.backup_start_date                            AS full_backup_start,
-        bs.backup_finish_date                           AS full_backup_finish,
-        bs.first_lsn                                    AS full_first_lsn,
-        bs.last_lsn                                     AS full_last_lsn,
-        bs.is_damaged                                   AS full_is_damaged,
-        bs.has_incomplete_metadata                      AS full_incomplete_metadata,
-        bs.compressed_backup_size / 1024.0 / 1024.0    AS full_backup_size_mb,
-        bmf.physical_device_name                        AS full_backup_file
+        bs.backup_set_id AS full_backup_set_id,
+        bs.backup_start_date AS full_backup_start,
+        bs.backup_finish_date AS full_backup_finish,
+        bs.first_lsn AS full_first_lsn,
+        bs.last_lsn AS full_last_lsn,
+        bs.is_damaged AS full_is_damaged,
+        bs.has_incomplete_metadata AS full_incomplete_metadata,
+        bs.compressed_backup_size / 1024.0 / 1024.0 AS full_backup_size_mb,
+        bmf.physical_device_name AS full_backup_file
     FROM last_full lf
-    JOIN msdb.dbo.backupset              AS bs  ON bs.backup_set_id = lf.backup_set_id
+    JOIN msdb.dbo.backupset AS bs ON bs.backup_set_id = lf.backup_set_id
     LEFT JOIN msdb.dbo.backupmediafamily AS bmf ON bmf.media_set_id = bs.media_set_id
 ),
 log_chain AS (
@@ -57,14 +57,14 @@ log_chain AS (
 log_gaps AS (
     SELECT
         database_name,
-        COUNT(*)                                        AS log_backup_count,
+        COUNT(*) AS log_backup_count,
         SUM(CASE WHEN is_damaged = 1 THEN 1 ELSE 0 END) AS damaged_log_backups,
         SUM(CASE
             WHEN log_seq > 1 AND prev_last_lsn IS NOT NULL AND first_lsn > prev_last_lsn + 1
-            THEN 1 ELSE 0 END)                          AS chain_gaps,
+            THEN 1 ELSE 0 END) AS chain_gaps,
         MIN(CASE
             WHEN log_seq > 1 AND prev_last_lsn IS NOT NULL AND first_lsn > prev_last_lsn + 1
-            THEN backup_start_date END)                 AS first_gap_at
+            THEN backup_start_date END) AS first_gap_at
     FROM log_chain
     GROUP BY database_name
 ),
@@ -72,7 +72,7 @@ last_log AS (
     SELECT
         bs.database_name,
         MAX(bs.backup_finish_date) AS last_log_backup_finish,
-        MAX(bs.last_lsn)           AS last_log_lsn
+        MAX(bs.last_lsn) AS last_log_lsn
     FROM msdb.dbo.backupset AS bs
     WHERE bs.type = 'L'
       AND bs.database_name NOT IN ('master','model','msdb','tempdb')
@@ -84,16 +84,16 @@ combined AS (
         fd.database_name,
         fd.full_backup_start,
         fd.full_backup_finish,
-        CAST(fd.full_backup_size_mb AS DECIMAL(12,2))               AS full_backup_size_mb,
-        DATEDIFF(HOUR, fd.full_backup_finish, GETDATE())            AS full_backup_age_hours,
+        CAST(fd.full_backup_size_mb AS DECIMAL(12,2)) AS full_backup_size_mb,
+        DATEDIFF(HOUR, fd.full_backup_finish, GETDATE()) AS full_backup_age_hours,
         fd.full_is_damaged,
         fd.full_incomplete_metadata,
-        ISNULL(lg.log_backup_count,    0)                           AS log_backups_since_full,
-        ISNULL(lg.damaged_log_backups, 0)                           AS damaged_log_backups,
-        ISNULL(lg.chain_gaps,          0)                           AS log_chain_gaps,
+        ISNULL(lg.log_backup_count, 0) AS log_backups_since_full,
+        ISNULL(lg.damaged_log_backups, 0) AS damaged_log_backups,
+        ISNULL(lg.chain_gaps, 0) AS log_chain_gaps,
         lg.first_gap_at,
         ll.last_log_backup_finish,
-        DATEDIFF(MINUTE, ll.last_log_backup_finish, GETDATE())      AS log_backup_age_minutes,
+        DATEDIFF(MINUTE, ll.last_log_backup_finish, GETDATE()) AS log_backup_age_minutes,
         d.recovery_model_desc,
         d.log_reuse_wait_desc,
         CASE
@@ -113,11 +113,11 @@ combined AS (
             WHEN ISNULL(lg.damaged_log_backups, 0) > 0
             THEN 'WARN — ' + CAST(lg.damaged_log_backups AS VARCHAR) + ' log backup(s) marked damaged'
             ELSE 'OK — chain is intact'
-        END                                                         AS chain_status,
-        LEFT(fd.full_backup_file, 200)                              AS full_backup_file_path
-    FROM full_details      AS fd
-    LEFT JOIN log_gaps     AS lg ON lg.database_name = fd.database_name
-    LEFT JOIN last_log     AS ll ON ll.database_name = fd.database_name
+        END AS chain_status,
+        LEFT(fd.full_backup_file, 200) AS full_backup_file_path
+    FROM full_details AS fd
+    LEFT JOIN log_gaps AS lg ON lg.database_name = fd.database_name
+    LEFT JOIN last_log AS ll ON ll.database_name = fd.database_name
     LEFT JOIN sys.databases AS d ON d.name = fd.database_name
 
     UNION ALL
@@ -137,6 +137,6 @@ SELECT *
 FROM combined
 ORDER BY
     CASE WHEN chain_status LIKE 'CRITICAL%' THEN 1
-         WHEN chain_status LIKE 'WARN%'     THEN 2
+         WHEN chain_status LIKE 'WARN%' THEN 2
          ELSE 3 END,
     database_name;

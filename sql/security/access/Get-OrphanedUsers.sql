@@ -17,9 +17,9 @@ IF OBJECT_ID('tempdb..#orphaned') IS NOT NULL DROP TABLE #orphaned;
 
 CREATE TABLE #orphaned (
     database_name NVARCHAR(128),
-    user_name     NVARCHAR(128),
-    user_type     NVARCHAR(60),
-    create_date   DATETIME
+    user_name NVARCHAR(128),
+    user_type NVARCHAR(60),
+    create_date DATETIME
 );
 
 DECLARE @sql NVARCHAR(MAX) = N'';
@@ -28,15 +28,15 @@ SELECT @sql += N'
 USE ' + QUOTENAME(name) + N';
 INSERT INTO #orphaned
 SELECT
-    DB_NAME()    AS database_name,
-    dp.name      AS user_name,
+    DB_NAME() AS database_name,
+    dp.name AS user_name,
     dp.type_desc AS user_type,
     dp.create_date
 FROM sys.database_principals AS dp
-WHERE dp.type          IN (''S'', ''U'')
-  AND dp.principal_id   > 4
-  AND dp.sid           IS NOT NULL
-  AND dp.name          NOT IN (''guest'', ''INFORMATION_SCHEMA'', ''sys'', ''dbo'')
+WHERE dp.type IN (''S'', ''U'')
+  AND dp.principal_id > 4
+  AND dp.sid IS NOT NULL
+  AND dp.name NOT IN (''guest'', ''INFORMATION_SCHEMA'', ''sys'', ''dbo'')
   AND NOT EXISTS (
       SELECT 1
       FROM sys.server_principals AS sp
@@ -45,7 +45,7 @@ WHERE dp.type          IN (''S'', ''U'')
 '
 FROM sys.databases
 WHERE database_id > 4
-  AND state_desc  = 'ONLINE';
+  AND state_desc = 'ONLINE';
 
 EXEC sys.sp_executesql @sql;
 

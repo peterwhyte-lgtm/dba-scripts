@@ -16,10 +16,10 @@ SET NOCOUNT ON;
 
 DECLARE @logspace TABLE
 (
-    database_name       sysname NOT NULL PRIMARY KEY,
-    log_size_mb         FLOAT   NOT NULL,
-    log_space_used_pct  FLOAT   NOT NULL,
-    status              INT     NOT NULL
+    database_name sysname NOT NULL PRIMARY KEY,
+    log_size_mb FLOAT NOT NULL,
+    log_space_used_pct FLOAT NOT NULL,
+    status INT NOT NULL
 );
 
 INSERT INTO @logspace (database_name, log_size_mb, log_space_used_pct, status)

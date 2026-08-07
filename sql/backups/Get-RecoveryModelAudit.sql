@@ -37,12 +37,12 @@ LogBackup AS
 )
 
 SELECT
-    d.name                                              AS database_name,
-    d.recovery_model_desc                               AS recovery_model,
+    d.name AS database_name,
+    d.recovery_model_desc AS recovery_model,
     fb.last_full_backup,
     lb.last_log_backup,
     CAST(SUM(CAST(mf.size AS BIGINT)) * 8.0 / 1024
-        AS DECIMAL(18,1))                               AS log_size_mb,
+        AS DECIMAL(18,1)) AS log_size_mb,
     CASE
         -- FULL / BULK_LOGGED: the log only truncates when a log backup runs.
         WHEN d.recovery_model_desc IN ('FULL', 'BULK_LOGGED') AND fb.last_full_backup IS NULL
@@ -59,7 +59,7 @@ SELECT
         WHEN d.recovery_model_desc = 'SIMPLE'
             THEN 'INFO: SIMPLE — no point-in-time recovery between full/diff backups'
         ELSE 'OK'
-    END                                                 AS finding
+    END AS finding
 FROM sys.databases AS d
 JOIN sys.master_files AS mf
     ON mf.database_id = d.database_id

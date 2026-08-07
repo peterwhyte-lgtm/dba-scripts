@@ -13,9 +13,9 @@ Requires    : db_owner or replmonitor role on the distribution database
 SET NOCOUNT ON;
 
 SELECT
-    publication                     AS publication_name,
-    subscriber_db                   AS subscriber_database,
-    COUNT(*)                        AS undistributed_commands
+    publication AS publication_name,
+    subscriber_db AS subscriber_database,
+    COUNT(*) AS undistributed_commands
 FROM dbo.MSdistribution_status
 GROUP BY publication, subscriber_db
 ORDER BY undistributed_commands DESC;

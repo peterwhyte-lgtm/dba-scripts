@@ -26,32 +26,30 @@ WITH backup_dates AS (
 file_sizes AS (
     SELECT
         database_id,
-        CAST(ROUND(SUM(CASE WHEN type = 0 THEN size * 8.0 / 1024 ELSE 0 END), 1)
-             AS DECIMAL(18,1))                                    AS data_mb,
-        CAST(ROUND(SUM(CASE WHEN type = 1 THEN size * 8.0 / 1024 ELSE 0 END), 1)
-             AS DECIMAL(18,1))                                    AS log_mb,
-        SUM(CASE WHEN type = 0 THEN 1 ELSE 0 END)                AS data_file_count
+        CAST(ROUND(SUM(CASE WHEN type = 0 THEN size * 8.0 / 1024 ELSE 0 END), 1) AS DECIMAL(18,1)) AS data_mb,
+        CAST(ROUND(SUM(CASE WHEN type = 1 THEN size * 8.0 / 1024 ELSE 0 END), 1) AS DECIMAL(18,1)) AS log_mb,
+        SUM(CASE WHEN type = 0 THEN 1 ELSE 0 END) AS data_file_count
     FROM sys.master_files
     GROUP BY database_id
 )
 SELECT
-    d.name                                                          AS database_name,
+    d.name AS database_name,
     d.database_id,
     d.state_desc,
-    d.recovery_model_desc                                           AS recovery_model,
-    d.log_reuse_wait_desc                                           AS log_reuse_wait,
-    d.compatibility_level                                           AS compat_level,
-    SUSER_SNAME(d.owner_sid) COLLATE DATABASE_DEFAULT               AS owner,
-    CAST(d.create_date AS DATE)                                     AS create_date,
+    d.recovery_model_desc AS recovery_model,
+    d.log_reuse_wait_desc AS log_reuse_wait,
+    d.compatibility_level AS compat_level,
+    SUSER_SNAME(d.owner_sid) COLLATE DATABASE_DEFAULT AS owner,
+    CAST(d.create_date AS DATE) AS create_date,
     fs.data_mb,
     fs.log_mb,
     fs.data_file_count,
-    CASE d.is_auto_shrink_on WHEN 1 THEN 'YES' ELSE 'no' END       AS auto_shrink,
-    CASE d.is_auto_close_on  WHEN 1 THEN 'YES' ELSE 'no' END       AS auto_close,
-    CASE d.is_read_only      WHEN 1 THEN 'YES' ELSE 'no' END       AS read_only,
-    CAST(bd.last_full AS DATE)                                      AS last_full_backup,
-    CAST(bd.last_log  AS DATE)                                      AS last_log_backup,
-    DATEDIFF(DAY, bd.last_full, GETDATE())                          AS days_since_full,
+    CASE d.is_auto_shrink_on WHEN 1 THEN 'YES' ELSE 'no' END AS auto_shrink,
+    CASE d.is_auto_close_on WHEN 1 THEN 'YES' ELSE 'no' END AS auto_close,
+    CASE d.is_read_only WHEN 1 THEN 'YES' ELSE 'no' END AS read_only,
+    CAST(bd.last_full AS DATE) AS last_full_backup,
+    CAST(bd.last_log AS DATE) AS last_log_backup,
+    DATEDIFF(DAY, bd.last_full, GETDATE()) AS days_since_full,
     -- Severity-prefixed issue flags; NULL = clean
     NULLIF(RTRIM(
           CASE WHEN d.state_desc <> 'ONLINE'
@@ -73,8 +71,8 @@ SELECT
         -- Log reuse waits other than NOTHING and LOG_BACKUP (expected) are worth noting
         + CASE WHEN d.log_reuse_wait_desc NOT IN ('NOTHING', 'LOG_BACKUP')
                THEN 'INFO:log-wait=' + d.log_reuse_wait_desc + ' ' ELSE '' END
-    ), '')                                                          AS notes
-FROM      sys.databases  d
-LEFT JOIN file_sizes     fs ON fs.database_id   = d.database_id
-LEFT JOIN backup_dates   bd ON bd.database_name = d.name
+    ), '') AS notes
+FROM sys.databases d
+LEFT JOIN file_sizes fs ON fs.database_id = d.database_id
+LEFT JOIN backup_dates bd ON bd.database_name = d.name
 ORDER BY d.database_id;

@@ -13,11 +13,11 @@ SET NOCOUNT ON;
 DECLARE @server_collation NVARCHAR(128) = CAST(SERVERPROPERTY('Collation') AS NVARCHAR(128));
 
 SELECT
-    @server_collation                       AS server_collation,
-    d.name                                  AS database_name,
-    d.collation_name                        AS database_collation,
+    @server_collation AS server_collation,
+    d.name AS database_name,
+    d.collation_name AS database_collation,
     CASE WHEN d.collation_name <> @server_collation
-         THEN 'MISMATCH' ELSE 'OK' END      AS collation_status,
+         THEN 'MISMATCH' ELSE 'OK' END AS collation_status,
     d.state_desc,
     d.recovery_model_desc,
     d.database_id

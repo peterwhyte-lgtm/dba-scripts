@@ -20,33 +20,33 @@ SET NOCOUNT ON;
     4. Sizing summary — data/log totals per database for migration window planning
 
   Use alongside:
-    Get-DeprecatedFeaturesInUse.sql     — deprecated features called since last restart
-    Get-MigrationRiskAssessment.sql     — per-database risk findings (compat, settings, AG, sizing)
-    Get-EditionFeatureUsage.sql         — Enterprise-only features (if changing edition at same time)
+    Get-DeprecatedFeaturesInUse.sql — deprecated features called since last restart
+    Get-MigrationRiskAssessment.sql — per-database risk findings (compat, settings, AG, sizing)
+    Get-EditionFeatureUsage.sql — Enterprise-only features (if changing edition at same time)
 */
 
 -- ── 1. Instance summary ───────────────────────────────────────────────────────
 
-DECLARE @major      INT          = CAST(SERVERPROPERTY('ProductMajorVersion') AS INT);
-DECLARE @version    NVARCHAR(20) = CAST(SERVERPROPERTY('ProductVersion')      AS NVARCHAR(20));
-DECLARE @level      NVARCHAR(20) = CAST(SERVERPROPERTY('ProductLevel')        AS NVARCHAR(20));
-DECLARE @edition    NVARCHAR(128)= CAST(SERVERPROPERTY('Edition')             AS NVARCHAR(128));
-DECLARE @collation  NVARCHAR(128)= CAST(SERVERPROPERTY('Collation')           AS NVARCHAR(128));
+DECLARE @major INT = CAST(SERVERPROPERTY('ProductMajorVersion') AS INT);
+DECLARE @version NVARCHAR(20) = CAST(SERVERPROPERTY('ProductVersion') AS NVARCHAR(20));
+DECLARE @level NVARCHAR(20) = CAST(SERVERPROPERTY('ProductLevel') AS NVARCHAR(20));
+DECLARE @edition NVARCHAR(128)= CAST(SERVERPROPERTY('Edition') AS NVARCHAR(128));
+DECLARE @collation NVARCHAR(128)= CAST(SERVERPROPERTY('Collation') AS NVARCHAR(128));
 DECLARE @nativeCompat SMALLINT;
 DECLARE @upgradeNote NVARCHAR(400);
 
 SET @nativeCompat =
     CASE @major
-        WHEN 17 THEN 170  -- SQL 2025
-        WHEN 16 THEN 160  -- SQL 2022
-        WHEN 15 THEN 150  -- SQL 2019
-        WHEN 14 THEN 140  -- SQL 2017
-        WHEN 13 THEN 130  -- SQL 2016
-        WHEN 12 THEN 120  -- SQL 2014
-        WHEN 11 THEN 110  -- SQL 2012
-        WHEN 10 THEN 100  -- SQL 2008/2008R2
-        WHEN 9  THEN 90   -- SQL 2005
-        ELSE NULL         -- newer than this script knows about, or older than SQL 2005
+        WHEN 17 THEN 170 -- SQL 2025
+        WHEN 16 THEN 160 -- SQL 2022
+        WHEN 15 THEN 150 -- SQL 2019
+        WHEN 14 THEN 140 -- SQL 2017
+        WHEN 13 THEN 130 -- SQL 2016
+        WHEN 12 THEN 120 -- SQL 2014
+        WHEN 11 THEN 110 -- SQL 2012
+        WHEN 10 THEN 100 -- SQL 2008/2008R2
+        WHEN 9 THEN 90 -- SQL 2005
+        ELSE NULL -- newer than this script knows about, or older than SQL 2005
     END;
 
 SET @upgradeNote =
@@ -59,42 +59,37 @@ SET @upgradeNote =
         WHEN 12 THEN 'Direct upgrade supported to: SQL 2016, SQL 2017, SQL 2019, SQL 2022.'
         WHEN 11 THEN 'Direct upgrade supported to: SQL 2016, SQL 2017, SQL 2019, SQL 2022.'
         WHEN 10 THEN 'Direct in-place upgrade NOT supported to SQL 2017+. Upgrade to SQL 2014 or SQL 2016 first, or use side-by-side migration.'
-        WHEN 9  THEN 'Very old version — side-by-side migration strongly recommended. No direct in-place upgrade path to current versions.'
+        WHEN 9 THEN 'Very old version — side-by-side migration strongly recommended. No direct in-place upgrade path to current versions.'
         ELSE 'Newer than this script''s known version table — update Get-VersionUpgradeReadiness.sql with this release before trusting the compat-level and upgrade-path columns.'
     END;
 
 SELECT
-    @version                    AS current_version,
-    @level                      AS product_level,
-    @edition                    AS edition,
-    @collation                  AS server_collation,
-    @nativeCompat               AS native_compat_level,
-    (SELECT value_in_use FROM sys.configurations WHERE name = 'max server memory (MB)')
-                                AS max_server_memory_mb,
-    (SELECT value_in_use FROM sys.configurations WHERE name = 'max degree of parallelism')
-                                AS maxdop,
-    (SELECT sqlserver_start_time FROM sys.dm_os_sys_info)
-                                AS last_restart,
-    DATEDIFF(DAY, (SELECT sqlserver_start_time FROM sys.dm_os_sys_info), GETDATE())
-                                AS days_since_restart,
-    @upgradeNote                AS upgrade_paths;
+    @version AS current_version,
+    @level AS product_level,
+    @edition AS edition,
+    @collation AS server_collation,
+    @nativeCompat AS native_compat_level,
+    (SELECT value_in_use FROM sys.configurations WHERE name = 'max server memory (MB)') AS max_server_memory_mb,
+    (SELECT value_in_use FROM sys.configurations WHERE name = 'max degree of parallelism') AS maxdop,
+    (SELECT sqlserver_start_time FROM sys.dm_os_sys_info) AS last_restart,
+    DATEDIFF(DAY, (SELECT sqlserver_start_time FROM sys.dm_os_sys_info), GETDATE()) AS days_since_restart,
+    @upgradeNote AS upgrade_paths;
 
 -- ── 2. Compatibility level matrix ─────────────────────────────────────────────
 
 SELECT
-    d.name                          AS database_name,
-    d.compatibility_level           AS current_compat_level,
-    @nativeCompat                   AS native_compat_level,
-    @nativeCompat - d.compatibility_level
-                                    AS compat_gap,
+    d.name AS database_name,
+    d.compatibility_level AS current_compat_level,
+    @nativeCompat AS native_compat_level,
+    @nativeCompat - d.compatibility_level AS compat_gap,
     CASE
-        WHEN d.compatibility_level >= @nativeCompat      THEN 'OK — at native level'
-        WHEN d.compatibility_level = @nativeCompat - 10  THEN 'INFO — 1 version behind'
-        WHEN d.compatibility_level = @nativeCompat - 20  THEN 'WARN — 2 versions behind'
-        ELSE                                                   'HIGH — severely behind native level'
-    END                             AS compat_status,
-    d.recovery_model_desc           AS recovery_model,
-    d.state_desc                    AS database_state
+        WHEN d.compatibility_level >= @nativeCompat THEN 'OK — at native level'
+        WHEN d.compatibility_level = @nativeCompat - 10 THEN 'INFO — 1 version behind'
+        WHEN d.compatibility_level = @nativeCompat - 20 THEN 'WARN — 2 versions behind'
+        ELSE 'HIGH — severely behind native level'
+    END AS compat_status,
+    d.recovery_model_desc AS recovery_model,
+    d.state_desc AS database_state
 FROM sys.databases d
 WHERE d.database_id > 4
 ORDER BY compat_gap DESC, d.name;
@@ -103,10 +98,10 @@ ORDER BY compat_gap DESC, d.name;
 
 ;WITH config_review AS (
     SELECT
-        name                            AS config_name,
-        CAST(value_in_use AS BIGINT)    AS current_value,
-        CAST(minimum AS BIGINT)         AS minimum,
-        CAST(maximum AS BIGINT)         AS maximum,
+        name AS config_name,
+        CAST(value_in_use AS BIGINT) AS current_value,
+        CAST(minimum AS BIGINT) AS minimum,
+        CAST(maximum AS BIGINT) AS maximum,
         is_advanced,
         CASE
             -- max server memory at SQL Server default (likely unconfigured)
@@ -128,7 +123,7 @@ ORDER BY compat_gap DESC, d.name;
             WHEN name = 'remote query timeout (s)' AND value_in_use = 600
                 THEN 'INFO — Remote query timeout at default 600s. Review if linked servers are in use.'
             ELSE 'OK'
-        END                             AS review_note
+        END AS review_note
     FROM sys.configurations
     WHERE name IN (
         'max server memory (MB)',
@@ -163,15 +158,12 @@ ORDER BY
 -- ── 4. Sizing summary — for migration window planning ─────────────────────────
 
 SELECT
-    d.name                                                  AS database_name,
-    d.recovery_model_desc                                   AS recovery_model,
-    d.compatibility_level                                   AS compat_level,
-    CAST(SUM(CASE WHEN mf.type = 0 THEN mf.size ELSE 0 END) * 8.0 / 1024 / 1024
-         AS DECIMAL(12,2))                                  AS data_size_gb,
-    CAST(SUM(CASE WHEN mf.type = 1 THEN mf.size ELSE 0 END) * 8.0 / 1024 / 1024
-         AS DECIMAL(12,2))                                  AS log_size_gb,
-    CAST(SUM(mf.size) * 8.0 / 1024 / 1024
-         AS DECIMAL(12,2))                                  AS total_size_gb
+    d.name AS database_name,
+    d.recovery_model_desc AS recovery_model,
+    d.compatibility_level AS compat_level,
+    CAST(SUM(CASE WHEN mf.type = 0 THEN mf.size ELSE 0 END) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS data_size_gb,
+    CAST(SUM(CASE WHEN mf.type = 1 THEN mf.size ELSE 0 END) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS log_size_gb,
+    CAST(SUM(mf.size) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS total_size_gb
 FROM sys.databases d
 INNER JOIN sys.master_files mf ON d.database_id = mf.database_id
 WHERE d.database_id > 4

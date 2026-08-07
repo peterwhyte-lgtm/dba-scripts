@@ -12,24 +12,24 @@ SET NOCOUNT ON;
 
 IF OBJECT_ID('tempdb..#FgSpace') IS NOT NULL DROP TABLE #FgSpace;
 CREATE TABLE #FgSpace (
-    database_name  NVARCHAR(128) NOT NULL,
+    database_name NVARCHAR(128) NOT NULL,
     filegroup_name NVARCHAR(128) NOT NULL,
-    filegroup_type VARCHAR(20)   NOT NULL,
-    is_default     BIT           NOT NULL,
-    is_read_only   BIT           NOT NULL,
-    file_count     INT           NOT NULL,
-    size_mb        DECIMAL(20,2) NOT NULL,
-    used_mb        DECIMAL(20,2) NOT NULL
+    filegroup_type VARCHAR(20) NOT NULL,
+    is_default BIT NOT NULL,
+    is_read_only BIT NOT NULL,
+    file_count INT NOT NULL,
+    size_mb DECIMAL(20,2) NOT NULL,
+    used_mb DECIMAL(20,2) NOT NULL
 );
 
-DECLARE @db  NVARCHAR(128);
+DECLARE @db NVARCHAR(128);
 DECLARE @sql NVARCHAR(MAX);
 
 DECLARE fg_cur CURSOR FAST_FORWARD FOR
     SELECT name FROM sys.databases
-    WHERE  state_desc  = 'ONLINE'
-      AND  database_id <> 2          /* exclude tempdb — no meaningful filegroup data */
-      AND  HAS_DBACCESS(name) = 1
+    WHERE state_desc = 'ONLINE'
+      AND database_id <> 2 /* exclude tempdb — no meaningful filegroup data */
+      AND HAS_DBACCESS(name) = 1
     ORDER BY name;
 
 OPEN fg_cur; FETCH NEXT FROM fg_cur INTO @db;
@@ -69,9 +69,8 @@ SELECT
     file_count,
     size_mb,
     used_mb,
-    CAST(size_mb - used_mb AS DECIMAL(20,2))                                                AS free_mb,
-    CAST(CASE WHEN size_mb > 0 THEN (size_mb - used_mb) * 100.0 / size_mb ELSE 0 END
-         AS DECIMAL(5,1))                                                                   AS free_pct
+    CAST(size_mb - used_mb AS DECIMAL(20,2)) AS free_mb,
+    CAST(CASE WHEN size_mb > 0 THEN (size_mb - used_mb) * 100.0 / size_mb ELSE 0 END AS DECIMAL(5,1)) AS free_pct
 FROM #FgSpace
 ORDER BY free_pct ASC, database_name, filegroup_name;
 

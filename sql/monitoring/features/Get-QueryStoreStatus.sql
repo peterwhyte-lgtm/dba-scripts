@@ -13,30 +13,30 @@ HealthCheck : Yes
 SET NOCOUNT ON;
 
 CREATE TABLE #qs_status (
-    database_name            SYSNAME,
-    db_state                 NVARCHAR(60),
-    qs_state                 NVARCHAR(60),
-    qs_desired_state         NVARCHAR(60),
-    capture_mode             NVARCHAR(60),
-    cleanup_mode             NVARCHAR(60),
-    current_storage_mb       DECIMAL(10,2),
-    max_storage_mb           DECIMAL(10,2),
-    fill_pct                 DECIMAL(5,1),
+    database_name SYSNAME,
+    db_state NVARCHAR(60),
+    qs_state NVARCHAR(60),
+    qs_desired_state NVARCHAR(60),
+    capture_mode NVARCHAR(60),
+    cleanup_mode NVARCHAR(60),
+    current_storage_mb DECIMAL(10,2),
+    max_storage_mb DECIMAL(10,2),
+    fill_pct DECIMAL(5,1),
     stale_query_threshold_days INT,
-    flush_interval_seconds   INT,
-    readonly_reason          INT,
-    status                   NVARCHAR(200)
+    flush_interval_seconds INT,
+    readonly_reason INT,
+    status NVARCHAR(200)
 );
 
-DECLARE @db   SYSNAME;
-DECLARE @sql  NVARCHAR(MAX);
+DECLARE @db SYSNAME;
+DECLARE @sql NVARCHAR(MAX);
 
 DECLARE db_cursor CURSOR FAST_FORWARD FOR
     SELECT name
-    FROM   sys.databases
-    WHERE  database_id > 4
-      AND  state = 0
-      AND  compatibility_level >= 130;  -- QS requires 2016+ compat
+    FROM sys.databases
+    WHERE database_id > 4
+      AND state = 0
+      AND compatibility_level >= 130; -- QS requires 2016+ compat
 
 OPEN db_cursor;
 FETCH NEXT FROM db_cursor INTO @db;
@@ -53,7 +53,7 @@ BEGIN
             query_capture_mode_desc,
             size_based_cleanup_mode_desc,
             CAST(current_storage_size_mb AS DECIMAL(10,2)),
-            CAST(max_storage_size_mb     AS DECIMAL(10,2)),
+            CAST(max_storage_size_mb AS DECIMAL(10,2)),
             CAST(100.0 * current_storage_size_mb / NULLIF(max_storage_size_mb, 0) AS DECIMAL(5,1)),
             stale_query_threshold_days,
             flush_interval_seconds,

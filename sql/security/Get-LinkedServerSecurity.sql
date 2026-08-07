@@ -17,18 +17,18 @@ SET NOCOUNT ON;
   DESIGN: sys.linked_logins contains one row per mapping. A NULL local_login_name
   means the mapping applies to any login without a specific mapping (catch-all).
   Risk assessment:
-    HIGH   — catch-all or specific mapping with stored remote credentials
+    HIGH — catch-all or specific mapping with stored remote credentials
     MEDIUM — self-credentials (impersonation) mapping
-    LOW    — no mapping / will fail for unmatched logins
+    LOW — no mapping / will fail for unmatched logins
 */
 
 SELECT
-    s.name                                              AS linked_server,
+    s.name AS linked_server,
     s.product,
     s.provider,
     s.data_source,
-    ISNULL(s.catalog, '')                               AS remote_catalog,
-    ISNULL(SUSER_SNAME(NULLIF(ll.local_principal_id, 0)), '(any login)')  AS local_login,
+    ISNULL(s.catalog, '') AS remote_catalog,
+    ISNULL(SUSER_SNAME(NULLIF(ll.local_principal_id, 0)), '(any login)') AS local_login,
     CASE
         WHEN ll.uses_self_credential = 1
             THEN 'Impersonate — context of the calling login'
@@ -37,9 +37,9 @@ SELECT
         WHEN ll.remote_name IS NOT NULL
             THEN 'Explicit mapping → ' + ll.remote_name
         ELSE '(no mapping — will fail for unmatched logins)'
-    END                                                 AS security_context,
+    END AS security_context,
     ll.uses_self_credential,
-    ll.remote_name                                      AS remote_login,
+    ll.remote_name AS remote_login,
     CASE
         WHEN ll.remote_name IS NOT NULL AND ll.local_principal_id = 0
             THEN 'HIGH — catch-all with stored credentials'
@@ -50,18 +50,18 @@ SELECT
         WHEN ll.remote_name IS NULL AND ll.uses_self_credential = 0
             THEN 'LOW — no mapping (access denied for unmatched logins)'
         ELSE 'UNKNOWN'
-    END                                                 AS risk_level,
+    END AS risk_level,
     s.is_remote_login_enabled,
     s.is_rpc_out_enabled,
-    s.modify_date                                       AS last_modified
+    s.modify_date AS last_modified
 FROM sys.servers s
 LEFT JOIN sys.linked_logins ll ON ll.server_id = s.server_id
 WHERE s.is_linked = 1
 ORDER BY
     CASE
         WHEN ll.remote_name IS NOT NULL AND ll.local_principal_id = 0 THEN 1
-        WHEN ll.remote_name IS NOT NULL                               THEN 2
-        WHEN ll.uses_self_credential = 1                              THEN 3
+        WHEN ll.remote_name IS NOT NULL THEN 2
+        WHEN ll.uses_self_credential = 1 THEN 3
         ELSE 4
     END,
     s.name,

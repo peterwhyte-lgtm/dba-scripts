@@ -14,11 +14,11 @@ IF OBJECT_ID('tempdb..#role_members') IS NOT NULL DROP TABLE #role_members;
 
 CREATE TABLE #role_members (
     database_name NVARCHAR(128),
-    role_name     NVARCHAR(128),
+    role_name NVARCHAR(128),
     is_fixed_role BIT,
-    member_name   NVARCHAR(128),
-    member_type   NVARCHAR(60),
-    create_date   DATETIME
+    member_name NVARCHAR(128),
+    member_type NVARCHAR(60),
+    create_date DATETIME
 );
 
 DECLARE @sql NVARCHAR(MAX) = N'';
@@ -27,20 +27,20 @@ SELECT @sql += N'
 USE ' + QUOTENAME(name) + N';
 INSERT INTO #role_members
 SELECT
-    DB_NAME()          AS database_name,
-    dr.name            AS role_name,
+    DB_NAME() AS database_name,
+    dr.name AS role_name,
     dr.is_fixed_role,
-    dp.name            AS member_name,
-    dp.type_desc       AS member_type,
+    dp.name AS member_name,
+    dp.type_desc AS member_type,
     dp.create_date
 FROM sys.database_role_members AS drm
-JOIN sys.database_principals   AS dr ON drm.role_principal_id   = dr.principal_id
-JOIN sys.database_principals   AS dp ON drm.member_principal_id = dp.principal_id
+JOIN sys.database_principals AS dr ON drm.role_principal_id = dr.principal_id
+JOIN sys.database_principals AS dp ON drm.member_principal_id = dp.principal_id
 WHERE dp.name NOT IN (''dbo'', ''guest'', ''INFORMATION_SCHEMA'', ''sys'');
 '
 FROM sys.databases
 WHERE database_id > 4
-  AND state_desc  = 'ONLINE';
+  AND state_desc = 'ONLINE';
 
 EXEC sys.sp_executesql @sql;
 

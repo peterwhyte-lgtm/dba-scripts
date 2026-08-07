@@ -29,29 +29,29 @@ SET NOCOUNT ON;
 )
 
 SELECT
-    d.name                                              AS database_name,
-    d.recovery_model_desc                               AS recovery_model,
-    d.log_reuse_wait_desc                               AS log_reuse_wait,
+    d.name AS database_name,
+    d.recovery_model_desc AS recovery_model,
+    d.log_reuse_wait_desc AS log_reuse_wait,
     CAST(SUM(CAST(mf.size AS BIGINT)) * 8.0 / 1024
-        AS DECIMAL(18,1))                               AS log_size_mb,
+        AS DECIMAL(18,1)) AS log_size_mb,
     lb.last_log_backup,
     CASE
         WHEN lb.last_log_backup IS NULL THEN NULL
         ELSE DATEDIFF(MINUTE, lb.last_log_backup, GETDATE())
-    END                                                 AS minutes_since_last_log_backup,
+    END AS minutes_since_last_log_backup,
     CASE d.log_reuse_wait_desc
-        WHEN 'NOTHING'                  THEN 'OK'
-        WHEN 'CHECKPOINT'               THEN 'OK'
-        WHEN 'LOG_BACKUP'               THEN 'ACTION: take a log backup'
-        WHEN 'ACTIVE_TRANSACTION'       THEN 'INVESTIGATE: long-running or orphaned transaction'
+        WHEN 'NOTHING' THEN 'OK'
+        WHEN 'CHECKPOINT' THEN 'OK'
+        WHEN 'LOG_BACKUP' THEN 'ACTION: take a log backup'
+        WHEN 'ACTIVE_TRANSACTION' THEN 'INVESTIGATE: long-running or orphaned transaction'
         WHEN 'ACTIVE_BACKUP_OR_RESTORE' THEN 'MONITOR: backup or restore in progress'
-        WHEN 'AVAILABILITY_REPLICA'     THEN 'INVESTIGATE: AG secondary has not hardened the log'
-        WHEN 'DATABASE_MIRRORING'       THEN 'INVESTIGATE: mirroring partner is behind'
-        WHEN 'REPLICATION'              THEN 'INVESTIGATE: replication has not drained the log'
-        WHEN 'OLDEST_PAGE'              THEN 'MONITOR: indirect checkpoint / oldest dirty page'
-        WHEN 'XTP_CHECKPOINT'           THEN 'MONITOR: in-memory OLTP checkpoint'
+        WHEN 'AVAILABILITY_REPLICA' THEN 'INVESTIGATE: AG secondary has not hardened the log'
+        WHEN 'DATABASE_MIRRORING' THEN 'INVESTIGATE: mirroring partner is behind'
+        WHEN 'REPLICATION' THEN 'INVESTIGATE: replication has not drained the log'
+        WHEN 'OLDEST_PAGE' THEN 'MONITOR: indirect checkpoint / oldest dirty page'
+        WHEN 'XTP_CHECKPOINT' THEN 'MONITOR: in-memory OLTP checkpoint'
         ELSE 'REVIEW'
-    END                                                 AS status
+    END AS status
 FROM sys.databases AS d
 JOIN sys.master_files AS mf
     ON mf.database_id = d.database_id

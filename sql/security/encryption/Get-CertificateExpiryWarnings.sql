@@ -13,33 +13,33 @@ SET NOCOUNT ON;
 
 IF OBJECT_ID('tempdb..#CertInfo') IS NOT NULL DROP TABLE #CertInfo;
 CREATE TABLE #CertInfo (
-    cert_scope          NVARCHAR(128) NOT NULL,
-    cert_name           NVARCHAR(128) NOT NULL,
-    subject             NVARCHAR(500),
-    issuer_name         NVARCHAR(500),
-    start_date          DATETIME,
-    expiry_date         DATETIME,
-    days_until_expiry   INT,
-    expiry_status       VARCHAR(10)   NOT NULL,
-    pvt_key_type        NVARCHAR(60),
-    is_service_broker   BIT,
+    cert_scope NVARCHAR(128) NOT NULL,
+    cert_name NVARCHAR(128) NOT NULL,
+    subject NVARCHAR(500),
+    issuer_name NVARCHAR(500),
+    start_date DATETIME,
+    expiry_date DATETIME,
+    days_until_expiry INT,
+    expiry_status VARCHAR(10) NOT NULL,
+    pvt_key_type NVARCHAR(60),
+    is_service_broker BIT,
     pvt_key_last_backup DATETIME
 );
 
 /* ── Server-level certs in master (TDE, backup encryption, SB endpoint) ─── */
 INSERT INTO #CertInfo
 SELECT
-    N'master'                           AS cert_scope,
-    name                                AS cert_name,
+    N'master' AS cert_scope,
+    name AS cert_name,
     subject,
     issuer_name,
     start_date,
     expiry_date,
     DATEDIFF(DAY, GETDATE(), expiry_date),
     CASE
-        WHEN expiry_date < GETDATE()                              THEN 'EXPIRED'
-        WHEN DATEDIFF(DAY, GETDATE(), expiry_date) <= 30         THEN 'CRITICAL'
-        WHEN DATEDIFF(DAY, GETDATE(), expiry_date) <= 90         THEN 'WARNING'
+        WHEN expiry_date < GETDATE() THEN 'EXPIRED'
+        WHEN DATEDIFF(DAY, GETDATE(), expiry_date) <= 30 THEN 'CRITICAL'
+        WHEN DATEDIFF(DAY, GETDATE(), expiry_date) <= 90 THEN 'WARNING'
         ELSE 'OK'
     END,
     pvt_key_encryption_type_desc,
@@ -49,14 +49,14 @@ FROM sys.certificates
 WHERE name NOT LIKE '##%';
 
 /* ── Per-database certs (Service Broker, column encryption) ─────────────── */
-DECLARE @db  NVARCHAR(128);
+DECLARE @db NVARCHAR(128);
 DECLARE @sql NVARCHAR(MAX);
 
 DECLARE cert_cur CURSOR FAST_FORWARD FOR
     SELECT name FROM sys.databases
-    WHERE  state_desc  = 'ONLINE'
-      AND  database_id > 4
-      AND  HAS_DBACCESS(name) = 1
+    WHERE state_desc = 'ONLINE'
+      AND database_id > 4
+      AND HAS_DBACCESS(name) = 1
     ORDER BY name;
 
 OPEN cert_cur; FETCH NEXT FROM cert_cur INTO @db;
@@ -68,9 +68,9 @@ BEGIN
         DB_NAME(), name, subject, issuer_name, start_date, expiry_date,
         DATEDIFF(DAY, GETDATE(), expiry_date),
         CASE
-            WHEN expiry_date < GETDATE()                              THEN ''EXPIRED''
-            WHEN DATEDIFF(DAY, GETDATE(), expiry_date) <= 30         THEN ''CRITICAL''
-            WHEN DATEDIFF(DAY, GETDATE(), expiry_date) <= 90         THEN ''WARNING''
+            WHEN expiry_date < GETDATE() THEN ''EXPIRED''
+            WHEN DATEDIFF(DAY, GETDATE(), expiry_date) <= 30 THEN ''CRITICAL''
+            WHEN DATEDIFF(DAY, GETDATE(), expiry_date) <= 90 THEN ''WARNING''
             ELSE ''OK''
         END,
         pvt_key_encryption_type_desc, is_active_for_begin_dialog, pvt_key_last_backup_date

@@ -11,12 +11,12 @@ Requires    : VIEW SERVER STATE
 SET NOCOUNT ON;
 
 SELECT
-    pc.instance_name                                            AS deprecated_feature,
-    pc.cntr_value                                               AS usage_count_since_restart,
-    CAST(SERVERPROPERTY('ProductVersion')  AS VARCHAR(20))      AS instance_version,
-    CAST(SERVERPROPERTY('ProductLevel')    AS VARCHAR(20))      AS product_level,
-    si.sqlserver_start_time                                     AS last_restart,
-    DATEDIFF(DAY, si.sqlserver_start_time, GETDATE())           AS days_since_restart
+    pc.instance_name AS deprecated_feature,
+    pc.cntr_value AS usage_count_since_restart,
+    CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(20)) AS instance_version,
+    CAST(SERVERPROPERTY('ProductLevel') AS VARCHAR(20)) AS product_level,
+    si.sqlserver_start_time AS last_restart,
+    DATEDIFF(DAY, si.sqlserver_start_time, GETDATE()) AS days_since_restart
 FROM sys.dm_os_performance_counters pc
 CROSS JOIN (
     SELECT sqlserver_start_time FROM sys.dm_os_sys_info

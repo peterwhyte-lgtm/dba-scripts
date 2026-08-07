@@ -12,21 +12,21 @@ Requires    : VIEW DATABASE STATE
 -- IMPACT:Low
 SET NOCOUNT ON;
 
-DECLARE @top            INT         = 25;
-DECLARE @hours          INT         = 24;     -- look-back window in hours (0 = all history)
-DECLARE @sort_by        VARCHAR(20) = 'cpu';  -- cpu | duration | executions | regressions
-DECLARE @min_executions INT         = 5;      -- filter queries with fewer executions (reduces noise)
+DECLARE @top INT = 25;
+DECLARE @hours INT = 24; -- look-back window in hours (0 = all history)
+DECLARE @sort_by VARCHAR(20) = 'cpu'; -- cpu | duration | executions | regressions
+DECLARE @min_executions INT = 5; -- filter queries with fewer executions (reduces noise)
 
 -- Guard: return informational row if Query Store is not enabled on this database
 IF ISNULL((SELECT actual_state_desc FROM sys.database_query_store_options), 'OFF')
    NOT IN ('READ_WRITE', 'READ_ONLY')
 BEGIN
     SELECT
-        DB_NAME()                                                                   AS current_database,
+        DB_NAME() AS current_database,
         ISNULL(
             (SELECT actual_state_desc FROM sys.database_query_store_options),
             'OFF'
-        )                                                                           AS query_store_status,
+        ) AS query_store_status,
         'Enable: ALTER DATABASE [' + DB_NAME() + '] SET QUERY_STORE = ON (OPERATION_MODE = READ_WRITE)' AS action;
 END
 ELSE
@@ -35,24 +35,24 @@ BEGIN
     agg AS (
         SELECT
             q.query_id,
-            OBJECT_NAME(q.object_id)                                            AS object_name,
-            LEFT(qt.query_sql_text, 500)                                        AS query_text,
+            OBJECT_NAME(q.object_id) AS object_name,
+            LEFT(qt.query_sql_text, 500) AS query_text,
             p.plan_id,
             p.is_forced_plan,
             p.last_execution_time,
-            SUM(rs.count_executions)                                            AS execution_count,
-            CAST(AVG(rs.avg_duration)         / 1000.0 AS DECIMAL(14,2))       AS avg_duration_ms,
-            CAST(MAX(rs.max_duration)         / 1000.0 AS DECIMAL(14,2))       AS max_duration_ms,
-            CAST(AVG(rs.avg_cpu_time)         / 1000.0 AS DECIMAL(14,2))       AS avg_cpu_ms,
-            CAST(MAX(rs.max_cpu_time)         / 1000.0 AS DECIMAL(14,2))       AS max_cpu_ms,
-            CAST(AVG(rs.avg_logical_io_reads)           AS DECIMAL(14,2))      AS avg_logical_reads,
-            CAST(AVG(rs.avg_rowcount)                   AS DECIMAL(14,2))      AS avg_rows,
-            COUNT(*) OVER (PARTITION BY q.query_id)                            AS plan_count
-        FROM sys.query_store_runtime_stats          rs
+            SUM(rs.count_executions) AS execution_count,
+            CAST(AVG(rs.avg_duration) / 1000.0 AS DECIMAL(14,2)) AS avg_duration_ms,
+            CAST(MAX(rs.max_duration) / 1000.0 AS DECIMAL(14,2)) AS max_duration_ms,
+            CAST(AVG(rs.avg_cpu_time) / 1000.0 AS DECIMAL(14,2)) AS avg_cpu_ms,
+            CAST(MAX(rs.max_cpu_time) / 1000.0 AS DECIMAL(14,2)) AS max_cpu_ms,
+            CAST(AVG(rs.avg_logical_io_reads) AS DECIMAL(14,2)) AS avg_logical_reads,
+            CAST(AVG(rs.avg_rowcount) AS DECIMAL(14,2)) AS avg_rows,
+            COUNT(*) OVER (PARTITION BY q.query_id) AS plan_count
+        FROM sys.query_store_runtime_stats rs
         JOIN sys.query_store_runtime_stats_interval ri ON rs.runtime_stats_interval_id = ri.runtime_stats_interval_id
-        JOIN sys.query_store_plan                    p  ON rs.plan_id     = p.plan_id
-        JOIN sys.query_store_query                   q  ON p.query_id    = q.query_id
-        JOIN sys.query_store_query_text              qt ON q.query_text_id = qt.query_text_id
+        JOIN sys.query_store_plan p ON rs.plan_id = p.plan_id
+        JOIN sys.query_store_query q ON p.query_id = q.query_id
+        JOIN sys.query_store_query_text qt ON q.query_text_id = qt.query_text_id
         WHERE (@hours = 0 OR ri.start_time >= DATEADD(HOUR, -@hours, GETUTCDATE()))
           AND q.is_internal_query = 0
         GROUP BY
@@ -95,10 +95,10 @@ BEGIN
         lp.cpu_regression_factor,
         CASE
             WHEN lp.cpu_regression_factor > 2.0 AND lp.plan_count > 1 THEN 'REGRESSED'
-            WHEN lp.is_forced_plan = 1                                 THEN 'PLAN_FORCED'
-            WHEN lp.plan_count > 1                                     THEN 'MULTI_PLAN'
+            WHEN lp.is_forced_plan = 1 THEN 'PLAN_FORCED'
+            WHEN lp.plan_count > 1 THEN 'MULTI_PLAN'
             ELSE 'OK'
-        END                         AS plan_status,
+        END AS plan_status,
         lp.last_execution_time,
         lp.query_text
     FROM latest_plan lp
@@ -110,9 +110,9 @@ BEGIN
           )
     ORDER BY
         CASE @sort_by
-            WHEN 'cpu'         THEN lp.avg_cpu_ms
-            WHEN 'duration'    THEN lp.avg_duration_ms
-            WHEN 'executions'  THEN CAST(lp.execution_count AS DECIMAL(14,2))
+            WHEN 'cpu' THEN lp.avg_cpu_ms
+            WHEN 'duration' THEN lp.avg_duration_ms
+            WHEN 'executions' THEN CAST(lp.execution_count AS DECIMAL(14,2))
             WHEN 'regressions' THEN lp.cpu_regression_factor
             ELSE lp.avg_cpu_ms
         END DESC;

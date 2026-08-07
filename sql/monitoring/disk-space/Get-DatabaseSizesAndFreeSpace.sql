@@ -16,11 +16,11 @@ HealthCheck : Yes
 SET NOCOUNT ON;
 
 CREATE TABLE #sizes (
-    database_name  sysname        NOT NULL,
-    data_size_mb   DECIMAL(18,1)  NOT NULL,
-    data_used_mb   DECIMAL(18,1)  NOT NULL,
-    log_size_mb    DECIMAL(18,1)  NOT NULL,
-    log_used_mb    DECIMAL(18,1)  NOT NULL
+    database_name sysname NOT NULL,
+    data_size_mb DECIMAL(18,1) NOT NULL,
+    data_used_mb DECIMAL(18,1) NOT NULL,
+    log_size_mb DECIMAL(18,1) NOT NULL,
+    log_used_mb DECIMAL(18,1) NOT NULL
 );
 
 DECLARE @sql NVARCHAR(MAX) = N'';
@@ -41,7 +41,7 @@ SELECT
 FROM sys.database_files;
 '
 FROM sys.databases
-WHERE state_desc  = 'ONLINE'
+WHERE state_desc = 'ONLINE'
   AND database_id > 4;
 
 IF LEN(@sql) > 0
@@ -50,16 +50,16 @@ IF LEN(@sql) > 0
 SELECT
     database_name,
     data_size_mb,
-    CAST(ROUND(data_size_mb - data_used_mb, 1) AS DECIMAL(18,1))                   AS data_free_mb,
+    CAST(ROUND(data_size_mb - data_used_mb, 1) AS DECIMAL(18,1)) AS data_free_mb,
     CAST(ROUND(CASE WHEN data_size_mb > 0
         THEN 100.0 * (data_size_mb - data_used_mb) / data_size_mb
-        ELSE NULL END, 1) AS DECIMAL(5,1))                                          AS data_free_pct,
+        ELSE NULL END, 1) AS DECIMAL(5,1)) AS data_free_pct,
     log_size_mb,
-    CAST(ROUND(log_size_mb - log_used_mb, 1) AS DECIMAL(18,1))                     AS log_free_mb,
+    CAST(ROUND(log_size_mb - log_used_mb, 1) AS DECIMAL(18,1)) AS log_free_mb,
     CAST(ROUND(CASE WHEN log_size_mb > 0
         THEN 100.0 * (log_size_mb - log_used_mb) / log_size_mb
-        ELSE NULL END, 1) AS DECIMAL(5,1))                                          AS log_free_pct
-FROM   #sizes
+        ELSE NULL END, 1) AS DECIMAL(5,1)) AS log_free_pct
+FROM #sizes
 ORDER BY data_size_mb + log_size_mb DESC;
 
 DROP TABLE #sizes;

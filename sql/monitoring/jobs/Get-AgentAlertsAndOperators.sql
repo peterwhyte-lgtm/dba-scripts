@@ -14,24 +14,23 @@ SET NOCOUNT ON;
 -- Severity coverage: which of 17–25 have at least one enabled alert?
 WITH severity_alerts AS (
     SELECT DISTINCT severity
-    FROM   msdb.dbo.sysalerts
-    WHERE  enabled = 1
-      AND  severity BETWEEN 17 AND 25
+    FROM msdb.dbo.sysalerts
+    WHERE enabled = 1
+      AND severity BETWEEN 17 AND 25
 ),
 severity_spine AS (
     SELECT 17 AS sev UNION ALL SELECT 18 UNION ALL SELECT 19 UNION ALL
-    SELECT 20      UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL
-    SELECT 23      UNION ALL SELECT 24 UNION ALL SELECT 25
+    SELECT 20 UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL
+    SELECT 23 UNION ALL SELECT 24 UNION ALL SELECT 25
 ),
 operators AS (
     SELECT COUNT(*) AS operator_count FROM msdb.dbo.sysoperators WHERE enabled = 1
 )
 SELECT * FROM (
     SELECT
-        'severity_gap_check'                                AS result_type,
-        sp.sev                                             AS severity,
-        CASE WHEN sa.severity IS NOT NULL THEN 'COVERED' ELSE 'NO ALERT' END
-                                                           AS coverage,
+        'severity_gap_check' AS result_type,
+        sp.sev AS severity,
+        CASE WHEN sa.severity IS NOT NULL THEN 'COVERED' ELSE 'NO ALERT' END AS coverage,
         CASE sp.sev
             WHEN 17 THEN 'Insufficient resources'
             WHEN 18 THEN 'Non-fatal internal error'
@@ -43,14 +42,14 @@ SELECT * FROM (
             WHEN 24 THEN 'Fatal error: hardware error'
             WHEN 25 THEN 'Fatal error'
             ELSE ''
-        END                                                AS description,
-        (SELECT operator_count FROM operators)             AS enabled_operators,
+        END AS description,
+        (SELECT operator_count FROM operators) AS enabled_operators,
         CASE WHEN sa.severity IS NULL AND sp.sev >= 19
              THEN 'CRITICAL — severity ' + CAST(sp.sev AS VARCHAR) + ' errors will not trigger an alert'
              WHEN sa.severity IS NULL
              THEN 'WARN — no alert for severity ' + CAST(sp.sev AS VARCHAR)
              ELSE 'OK'
-        END                                                AS status
+        END AS status
     FROM severity_spine sp
     LEFT JOIN severity_alerts sa ON sa.severity = sp.sev
 
@@ -58,14 +57,13 @@ SELECT * FROM (
 
     -- All configured alerts (severity + error-number based)
     SELECT
-        'configured_alert'                                 AS result_type,
-        a.severity                                         AS severity,
-        CASE a.enabled WHEN 1 THEN 'ENABLED' ELSE 'DISABLED' END
-                                                           AS coverage,
-        a.name                                             AS description,
+        'configured_alert' AS result_type,
+        a.severity AS severity,
+        CASE a.enabled WHEN 1 THEN 'ENABLED' ELSE 'DISABLED' END AS coverage,
+        a.name AS description,
         (SELECT COUNT(*) FROM msdb.dbo.sysnotifications n
          JOIN msdb.dbo.sysoperators op ON op.id = n.operator_id AND op.enabled = 1
-         WHERE n.alert_id = a.id)                         AS enabled_operators,
+         WHERE n.alert_id = a.id) AS enabled_operators,
         CASE
             WHEN a.enabled = 0
                 THEN 'INFO — alert is disabled'
@@ -74,7 +72,7 @@ SELECT * FROM (
                              WHERE n.alert_id = a.id)
                 THEN 'WARN — no enabled operator assigned; alert fires but nobody is notified'
             ELSE 'OK'
-        END                                                AS status
+        END AS status
     FROM msdb.dbo.sysalerts AS a
 ) results
 

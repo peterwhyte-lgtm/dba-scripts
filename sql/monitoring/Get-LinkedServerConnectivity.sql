@@ -14,15 +14,15 @@ SET NOCOUNT ON;
 
 IF OBJECT_ID('tempdb..#LSResults') IS NOT NULL DROP TABLE #LSResults;
 CREATE TABLE #LSResults (
-    linked_server_name      NVARCHAR(128) NOT NULL,
-    product                 NVARCHAR(128),
-    provider                NVARCHAR(128),
-    data_source             NVARCHAR(4000),
-    is_rpc_out_enabled      BIT,
+    linked_server_name NVARCHAR(128) NOT NULL,
+    product NVARCHAR(128),
+    provider NVARCHAR(128),
+    data_source NVARCHAR(4000),
+    is_rpc_out_enabled BIT,
     is_remote_login_enabled BIT,
-    modify_date             DATETIME,
-    connectivity            VARCHAR(15)   NOT NULL DEFAULT 'UNTESTED',
-    error_detail            NVARCHAR(2000)
+    modify_date DATETIME,
+    connectivity VARCHAR(15) NOT NULL DEFAULT 'UNTESTED',
+    error_detail NVARCHAR(2000)
 );
 
 INSERT INTO #LSResults (linked_server_name, product, provider, data_source,
@@ -39,7 +39,7 @@ FROM sys.servers
 WHERE is_linked = 1;
 
 /* ── Test connectivity for each linked server ────────────────────────────── */
-DECLARE @ls  NVARCHAR(128);
+DECLARE @ls NVARCHAR(128);
 DECLARE @err NVARCHAR(2000);
 
 DECLARE ls_cur CURSOR FAST_FORWARD FOR

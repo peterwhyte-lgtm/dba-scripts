@@ -14,16 +14,16 @@ Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 SET NOCOUNT ON;
 
 CREATE TABLE #issues (
-    database_name       SYSNAME,
-    schema_name         SYSNAME,
-    table_name          SYSNAME,
-    issue_type          NVARCHAR(60),
-    detail              NVARCHAR(500),
-    metric_value        INT,
-    status              NVARCHAR(400)
+    database_name SYSNAME,
+    schema_name SYSNAME,
+    table_name SYSNAME,
+    issue_type NVARCHAR(60),
+    detail NVARCHAR(500),
+    metric_value INT,
+    status NVARCHAR(400)
 );
 
-DECLARE @db  SYSNAME;
+DECLARE @db SYSNAME;
 DECLARE @sql NVARCHAR(MAX);
 
 DECLARE db_cursor CURSOR FAST_FORWARD FOR
@@ -47,9 +47,9 @@ BEGIN
         CASE WHEN COUNT(i.index_id) > 30 THEN ''CRITICAL''
              WHEN COUNT(i.index_id) > 20 THEN ''WARN''
              ELSE ''INFO'' END
-    FROM ' + QUOTENAME(@db) + N'.sys.indexes  i
-    JOIN ' + QUOTENAME(@db) + N'.sys.tables   t ON t.object_id = i.object_id
-    JOIN ' + QUOTENAME(@db) + N'.sys.schemas  s ON s.schema_id = t.schema_id
+    FROM ' + QUOTENAME(@db) + N'.sys.indexes i
+    JOIN ' + QUOTENAME(@db) + N'.sys.tables t ON t.object_id = i.object_id
+    JOIN ' + QUOTENAME(@db) + N'.sys.schemas s ON s.schema_id = t.schema_id
     WHERE i.type IN (1, 2) AND t.is_ms_shipped = 0 AND i.is_disabled = 0
     GROUP BY s.name, t.name
     HAVING COUNT(i.index_id) > 10;
@@ -72,13 +72,13 @@ BEGIN
             THEN ''WARN''
             ELSE ''INFO''
         END
-    FROM ' + QUOTENAME(@db) + N'.sys.indexes         i
-    JOIN ' + QUOTENAME(@db) + N'.sys.tables          t  ON t.object_id = i.object_id
-    JOIN ' + QUOTENAME(@db) + N'.sys.schemas         s  ON s.schema_id = t.schema_id
-    JOIN ' + QUOTENAME(@db) + N'.sys.index_columns   ic ON ic.object_id = i.object_id
+    FROM ' + QUOTENAME(@db) + N'.sys.indexes i
+    JOIN ' + QUOTENAME(@db) + N'.sys.tables t ON t.object_id = i.object_id
+    JOIN ' + QUOTENAME(@db) + N'.sys.schemas s ON s.schema_id = t.schema_id
+    JOIN ' + QUOTENAME(@db) + N'.sys.index_columns ic ON ic.object_id = i.object_id
                                 AND ic.index_id = i.index_id
                                 AND ic.is_included_column = 0
-    JOIN ' + QUOTENAME(@db) + N'.sys.columns         c  ON c.object_id = ic.object_id
+    JOIN ' + QUOTENAME(@db) + N'.sys.columns c ON c.object_id = ic.object_id
                                 AND c.column_id = ic.column_id
     WHERE i.type IN (1, 2) AND t.is_ms_shipped = 0
     GROUP BY s.name, t.name, i.name
@@ -97,8 +97,8 @@ BEGIN
              ELSE ''INFO'' END
     FROM (
         SELECT
-            OBJECT_SCHEMA_NAME(mid.object_id, DB_ID(N' + QUOTENAME(@db, N'''') + N'))  AS schema_name,
-            OBJECT_NAME(mid.object_id, DB_ID(N' + QUOTENAME(@db, N'''') + N'))         AS table_name,
+            OBJECT_SCHEMA_NAME(mid.object_id, DB_ID(N' + QUOTENAME(@db, N'''') + N')) AS schema_name,
+            OBJECT_NAME(mid.object_id, DB_ID(N' + QUOTENAME(@db, N'''') + N')) AS table_name,
             COUNT(*) AS missing_count
         FROM sys.dm_db_missing_index_details mid
         WHERE mid.database_id = DB_ID(N' + QUOTENAME(@db, N'''') + N')

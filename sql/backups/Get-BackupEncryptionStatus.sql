@@ -21,21 +21,18 @@ SET NOCOUNT ON;
 */
 
 SELECT
-    d.name                                              AS database_name,
+    d.name AS database_name,
     d.recovery_model_desc,
-    CASE d.is_encrypted WHEN 1 THEN 'Yes' ELSE 'No' END
-                                                        AS tde_enabled,
-    dek.encryption_state_desc                          AS tde_state,
-    dek.encryptor_type                                  AS tde_encryptor_type,
+    CASE d.is_encrypted WHEN 1 THEN 'Yes' ELSE 'No' END AS tde_enabled,
+    dek.encryption_state_desc AS tde_state,
+    dek.encryptor_type AS tde_encryptor_type,
     -- Most recent full backup (last 30 days)
-    MAX(CASE bs.type WHEN 'D' THEN bs.backup_finish_date END)
-                                                        AS last_full_backup,
+    MAX(CASE bs.type WHEN 'D' THEN bs.backup_finish_date END) AS last_full_backup,
     -- Was the most recent full backup encrypted?
-    MAX(CASE bs.type WHEN 'D' THEN bs.key_algorithm END)
-                                                        AS backup_encryption_algorithm,
+    MAX(CASE bs.type WHEN 'D' THEN bs.key_algorithm END) AS backup_encryption_algorithm,
     MAX(CASE bs.type WHEN 'D'
          THEN SUBSTRING(CONVERT(varchar(max), bs.encryptor_thumbprint, 2), 1, 16)
-         ELSE NULL END)                                 AS backup_encryptor_thumbprint_prefix,
+         ELSE NULL END) AS backup_encryptor_thumbprint_prefix,
     -- Assessment
     CASE
         WHEN d.is_encrypted = 1
@@ -50,7 +47,7 @@ SELECT
         WHEN MAX(CASE bs.type WHEN 'D' THEN bs.backup_finish_date END) IS NULL
             THEN 'WARN — no full backup in last 30 days'
         ELSE 'INFO — no encryption on TDE or backup'
-    END                                                 AS encryption_status
+    END AS encryption_status
 FROM sys.databases d
 LEFT JOIN sys.dm_database_encryption_keys dek
     ON dek.database_id = d.database_id

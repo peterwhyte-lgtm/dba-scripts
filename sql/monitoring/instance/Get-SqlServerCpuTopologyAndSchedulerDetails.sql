@@ -11,23 +11,23 @@ Requires    : VIEW SERVER STATE
 SET NOCOUNT ON;
 
 SELECT
-    SERVERPROPERTY('MachineName')                                                   AS machine_name,
-    SERVERPROPERTY('Edition')                                                       AS sql_edition,
-    SERVERPROPERTY('ProductVersion')                                                AS sql_version,
-    osi.cpu_count                                                                   AS logical_cpu_count,
+    SERVERPROPERTY('MachineName') AS machine_name,
+    SERVERPROPERTY('Edition') AS sql_edition,
+    SERVERPROPERTY('ProductVersion') AS sql_version,
+    osi.cpu_count AS logical_cpu_count,
     osi.hyperthread_ratio,
-    osi.cpu_count / osi.hyperthread_ratio                                           AS physical_cpu_count,
-    osi.socket_count                                                                AS sockets,
+    osi.cpu_count / osi.hyperthread_ratio AS physical_cpu_count,
+    osi.socket_count AS sockets,
     osi.cores_per_socket,
     osi.numa_node_count,
-    osi.scheduler_count                                                             AS online_schedulers,
-    osi.scheduler_total_count                                                       AS total_schedulers,
+    osi.scheduler_count AS online_schedulers,
+    osi.scheduler_total_count AS total_schedulers,
     osi.max_workers_count,
     osi.virtual_machine_type_desc,
     osi.sqlserver_start_time,
-    (SELECT value_in_use FROM sys.configurations WHERE name = 'max degree of parallelism')     AS maxdop,
+    (SELECT value_in_use FROM sys.configurations WHERE name = 'max degree of parallelism') AS maxdop,
     (SELECT value_in_use FROM sys.configurations WHERE name = 'cost threshold for parallelism') AS cost_threshold,
-    (SELECT value_in_use FROM sys.configurations WHERE name = 'affinity mask')                  AS affinity_mask
+    (SELECT value_in_use FROM sys.configurations WHERE name = 'affinity mask') AS affinity_mask
 FROM sys.dm_os_sys_info AS osi;
 
 /*

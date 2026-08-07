@@ -13,15 +13,15 @@ Notes       : Usage counters reset on SQL Server restart. High user_updates with
 SET NOCOUNT ON;
 
 SELECT
-    DB_NAME(ius.database_id)                                                AS database_name,
-    OBJECT_SCHEMA_NAME(ius.object_id, ius.database_id)                     AS schema_name,
-    OBJECT_NAME(ius.object_id, ius.database_id)                            AS table_name,
+    DB_NAME(ius.database_id) AS database_name,
+    OBJECT_SCHEMA_NAME(ius.object_id, ius.database_id) AS schema_name,
+    OBJECT_NAME(ius.object_id, ius.database_id) AS table_name,
     ius.index_id,
     ius.user_seeks,
     ius.user_scans,
     ius.user_lookups,
     ius.user_updates,
-    ius.user_seeks + ius.user_scans + ius.user_lookups                      AS total_reads,
+    ius.user_seeks + ius.user_scans + ius.user_lookups AS total_reads,
     CASE
         WHEN ius.user_seeks + ius.user_scans + ius.user_lookups = 0
          AND ius.user_updates > 0
@@ -29,7 +29,7 @@ SELECT
         WHEN ius.user_scans > ius.user_seeks * 10
             THEN 'SCAN_HEAVY'
         ELSE 'NORMAL'
-    END                                                                     AS usage_pattern,
+    END AS usage_pattern,
     ius.last_user_seek,
     ius.last_user_scan,
     ius.last_user_update

@@ -16,24 +16,24 @@ SET NOCOUNT ON;
 IF NOT EXISTS (SELECT 1 FROM sys.availability_groups)
 BEGIN
     SELECT
-        GETDATE()   AS collection_time,
+        GETDATE() AS collection_time,
         @@SERVERNAME AS server_name,
-        'NO_AG'     AS ag_name,
-        NULL        AS replica_server_name,
-        NULL        AS role_desc,
-        NULL        AS secondary_role_allow_connections_desc,
-        NULL        AS read_only_routing_url,
-        NULL        AS connected_state_desc,
-        NULL        AS synchronization_health_desc,
-        NULL        AS redo_queue_kb,
-        NULL        AS routing_configured;
+        'NO_AG' AS ag_name,
+        NULL AS replica_server_name,
+        NULL AS role_desc,
+        NULL AS secondary_role_allow_connections_desc,
+        NULL AS read_only_routing_url,
+        NULL AS connected_state_desc,
+        NULL AS synchronization_health_desc,
+        NULL AS redo_queue_kb,
+        NULL AS routing_configured;
     RETURN;
 END
 
 SELECT
-    GETDATE()                                           AS collection_time,
-    @@SERVERNAME                                        AS server_name,
-    ag.name                                             AS ag_name,
+    GETDATE() AS collection_time,
+    @@SERVERNAME AS server_name,
+    ag.name AS ag_name,
     ar.replica_server_name,
     ars.role_desc,
     ar.secondary_role_allow_connections_desc,
@@ -49,10 +49,10 @@ SELECT
              AND ar.read_only_routing_url IS NULL
             THEN 'Partial — readable but no routing URL set'
         ELSE 'No — secondary not configured for reads'
-    END                                                 AS routing_configured
-FROM sys.availability_groups                        ag
-JOIN sys.availability_replicas                      ar  ON ar.group_id   = ag.group_id
-JOIN sys.dm_hadr_availability_replica_states        ars ON ars.replica_id = ar.replica_id
+    END AS routing_configured
+FROM sys.availability_groups ag
+JOIN sys.availability_replicas ar ON ar.group_id = ag.group_id
+JOIN sys.dm_hadr_availability_replica_states ars ON ars.replica_id = ar.replica_id
 OUTER APPLY (
     SELECT SUM(drs.redo_queue_size) AS total_redo_queue_kb
     FROM sys.dm_hadr_database_replica_states drs

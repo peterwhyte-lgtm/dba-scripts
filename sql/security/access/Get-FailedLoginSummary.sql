@@ -18,9 +18,9 @@ SET NOCOUNT ON;
 
 -- INSERT...EXEC cannot be used inside a CTE so materialise to a temp table first
 CREATE TABLE #failed_logins (
-    log_date     DATETIME,
+    log_date DATETIME,
     process_info NVARCHAR(100),
-    log_text     NVARCHAR(MAX)
+    log_text NVARCHAR(MAX)
 );
 
 -- Filter to current error log (log# 0), type 1 (SQL Server log), login failure messages only
@@ -34,7 +34,7 @@ WITH parsed AS (
             log_text,
             CHARINDEX('''', log_text) + 1,
             CHARINDEX('''', log_text, CHARINDEX('''', log_text) + 1) - CHARINDEX('''', log_text) - 1
-        )                                                           AS login_name,
+        ) AS login_name,
         -- Client IP/host is in the trailing [CLIENT: ...] tag
         CASE
             WHEN CHARINDEX('[CLIENT: ', log_text) > 0
@@ -45,17 +45,17 @@ WITH parsed AS (
                     - CHARINDEX('[CLIENT: ', log_text) - 9
             )
             ELSE NULL
-        END                                                         AS client_host,
+        END AS client_host,
         -- Map reason text to the canonical error code
         CASE
-            WHEN log_text LIKE '%untrusted domain%'           THEN 18452
-            WHEN log_text LIKE '%only administrators%'        THEN 18451
-            WHEN log_text LIKE '%account is disabled%'        THEN 18470
-            WHEN log_text LIKE '%password must be changed%'   THEN 18488
-            WHEN log_text LIKE '%password did not match%'     THEN 18456
-            WHEN log_text LIKE '%could not find a login%'     THEN 18456
-            ELSE                                                    18456
-        END                                                         AS error_code,
+            WHEN log_text LIKE '%untrusted domain%' THEN 18452
+            WHEN log_text LIKE '%only administrators%' THEN 18451
+            WHEN log_text LIKE '%account is disabled%' THEN 18470
+            WHEN log_text LIKE '%password must be changed%' THEN 18488
+            WHEN log_text LIKE '%password did not match%' THEN 18456
+            WHEN log_text LIKE '%could not find a login%' THEN 18456
+            ELSE 18456
+        END AS error_code,
         log_date
     FROM #failed_logins
 ),
@@ -64,10 +64,10 @@ aggregated AS (
         login_name,
         client_host,
         error_code,
-        COUNT(*)        AS failure_count,
-        MIN(log_date)   AS first_failure,
-        MAX(log_date)   AS last_failure
-    FROM  parsed
+        COUNT(*) AS failure_count,
+        MIN(log_date) AS first_failure,
+        MAX(log_date) AS last_failure
+    FROM parsed
     GROUP BY login_name, client_host, error_code
 )
 SELECT
@@ -80,22 +80,22 @@ SELECT
         WHEN 18451 THEN 'Login failed — only admin connections are allowed'
         WHEN 18470 THEN 'Account is disabled'
         WHEN 18488 THEN 'Password must be changed'
-        WHEN  4818 THEN 'Password does not meet complexity requirements'
-        ELSE            'Error ' + CAST(agg.error_code AS VARCHAR(10))
-    END                                                             AS error_description,
+        WHEN 4818 THEN 'Password does not meet complexity requirements'
+        ELSE 'Error ' + CAST(agg.error_code AS VARCHAR(10))
+    END AS error_description,
     agg.failure_count,
-    agg.first_failure                                               AS first_failure_approx,
-    agg.last_failure                                                AS last_failure_approx,
+    agg.first_failure AS first_failure_approx,
+    agg.last_failure AS last_failure_approx,
     CASE
         WHEN sl.name IS NOT NULL
-        THEN CAST(LOGINPROPERTY(sl.name, 'IsLocked')       AS BIT)
+        THEN CAST(LOGINPROPERTY(sl.name, 'IsLocked') AS BIT)
         ELSE NULL
-    END                                                             AS is_currently_locked,
+    END AS is_currently_locked,
     CASE
         WHEN sl.name IS NOT NULL
         THEN CAST(LOGINPROPERTY(sl.name, 'BadPasswordCount') AS INT)
         ELSE NULL
-    END                                                             AS bad_password_count,
+    END AS bad_password_count,
     CASE
         WHEN agg.failure_count >= 50
         THEN 'CRITICAL — ' + CAST(agg.failure_count AS VARCHAR) +
@@ -103,9 +103,9 @@ SELECT
         WHEN agg.failure_count >= 10
         THEN 'WARN — repeated failures for login [' + ISNULL(agg.login_name, '(unknown)') + ']'
         ELSE 'INFO'
-    END                                                             AS status
-FROM       aggregated  AS agg
-LEFT JOIN  sys.sql_logins AS sl ON sl.name = agg.login_name
-ORDER BY   agg.failure_count DESC;
+    END AS status
+FROM aggregated AS agg
+LEFT JOIN sys.sql_logins AS sl ON sl.name = agg.login_name
+ORDER BY agg.failure_count DESC;
 
 DROP TABLE #failed_logins;

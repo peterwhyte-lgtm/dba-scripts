@@ -13,9 +13,9 @@ Notes       : Returns three result sets (logins, linked servers, jobs). Run in S
 SET NOCOUNT ON;
 
 SELECT
-    'LOGIN'           AS object_type,
-    sp.name           AS name,
-    sp.type_desc      AS detail,
+    'LOGIN' AS object_type,
+    sp.name AS name,
+    sp.type_desc AS detail,
     CAST(sp.is_disabled AS VARCHAR(5)) AS status
 FROM sys.server_principals AS sp
 WHERE sp.type IN ('S', 'U', 'G')
@@ -25,19 +25,19 @@ WHERE sp.type IN ('S', 'U', 'G')
 ORDER BY sp.name;
 
 SELECT
-    'LINKED SERVER'           AS object_type,
-    s.name                    AS name,
+    'LINKED SERVER' AS object_type,
+    s.name AS name,
     s.product + ' / ' + s.provider AS detail,
-    s.data_source             AS status
+    s.data_source AS status
 FROM sys.servers AS s
 WHERE s.is_linked = 1
 ORDER BY s.name;
 
 SELECT
-    'JOB'                     AS object_type,
-    j.name                    AS name,
+    'JOB' AS object_type,
+    j.name AS name,
     ISNULL(sp.name, '(unknown)') AS detail,
     CASE j.enabled WHEN 1 THEN 'Enabled' ELSE 'Disabled' END AS status
-FROM msdb.dbo.sysjobs          AS j
+FROM msdb.dbo.sysjobs AS j
 LEFT JOIN sys.server_principals AS sp ON j.owner_sid = sp.sid
 ORDER BY j.name;
