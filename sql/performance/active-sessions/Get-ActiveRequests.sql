@@ -19,23 +19,23 @@ SELECT
     s.login_name,
     s.host_name,
     s.program_name,
-    DB_NAME(r.database_id)                                                               AS database_name,
+    DB_NAME(r.database_id) AS database_name,
     r.status,
     r.wait_type,
-    r.wait_time                                                                          AS wait_time_ms,
+    r.wait_time AS wait_time_ms,
     r.blocking_session_id,
-    r.cpu_time                                                                           AS cpu_time_ms,
+    r.cpu_time AS cpu_time_ms,
     r.logical_reads,
     r.writes,
-    r.total_elapsed_time                                                                 AS total_elapsed_time_ms,
+    r.total_elapsed_time AS total_elapsed_time_ms,
     CAST(
-        (ISNULL(su.user_objects_alloc_page_count,     0) +
+        (ISNULL(su.user_objects_alloc_page_count, 0) +
          ISNULL(su.internal_objects_alloc_page_count, 0)) * 8
-    AS BIGINT)                                                                           AS tempdb_allocations_kb,
+    AS BIGINT) AS tempdb_allocations_kb,
     CAST(
-        (ISNULL(su.user_objects_alloc_page_count,      0) - ISNULL(su.user_objects_dealloc_page_count,      0) +
-         ISNULL(su.internal_objects_alloc_page_count,  0) - ISNULL(su.internal_objects_dealloc_page_count,  0)) * 8
-    AS BIGINT)                                                                           AS tempdb_current_kb,
+        (ISNULL(su.user_objects_alloc_page_count, 0) - ISNULL(su.user_objects_dealloc_page_count, 0) +
+         ISNULL(su.internal_objects_alloc_page_count, 0) - ISNULL(su.internal_objects_dealloc_page_count, 0)) * 8
+    AS BIGINT) AS tempdb_current_kb,
     SUBSTRING(
         ISNULL(qt.text, ''),
         (ISNULL(r.statement_start_offset, 0) / 2) + 1,
@@ -44,18 +44,18 @@ SELECT
                 THEN LEN(ISNULL(qt.text, ''))
             ELSE (r.statement_end_offset - r.statement_start_offset) / 2 + 1
         END
-    )                                                                                    AS sql_text
-FROM      sys.dm_exec_requests                  AS r
-JOIN      sys.dm_exec_sessions                  AS s   ON s.session_id  = r.session_id
-LEFT JOIN sys.dm_db_session_space_usage         AS su  ON su.session_id = r.session_id
-OUTER APPLY sys.dm_exec_sql_text(r.sql_handle)  AS qt
+    ) AS sql_text
+FROM sys.dm_exec_requests AS r
+JOIN sys.dm_exec_sessions AS s ON s.session_id = r.session_id
+LEFT JOIN sys.dm_db_session_space_usage AS su ON su.session_id = r.session_id
+OUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS qt
 WHERE s.is_user_process = 1
   AND r.session_id <> @@SPID
 ORDER BY
     CASE
         WHEN EXISTS (SELECT 1 FROM sys.dm_exec_requests r2 WHERE r2.blocking_session_id = r.session_id)
-            THEN 0  -- head blocker: blocking others, not blocked itself
-        WHEN r.blocking_session_id > 0 THEN 1  -- victim: waiting on a blocker
+            THEN 0 -- head blocker: blocking others, not blocked itself
+        WHEN r.blocking_session_id > 0 THEN 1 -- victim: waiting on a blocker
         ELSE 2
     END,
     r.total_elapsed_time DESC;

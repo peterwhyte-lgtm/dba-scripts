@@ -27,17 +27,15 @@ SET NOCOUNT ON;
 */
 
 SELECT TOP 30
-    DB_NAME(ios.database_id)                             AS database_name,
-    OBJECT_NAME(ios.object_id, ios.database_id)         AS table_name,
-    SUM(ios.index_lock_promotion_count)                      AS lock_escalations,
-    SUM(ios.row_lock_count)                             AS row_lock_count,
-    SUM(ios.page_lock_count)                            AS page_lock_count,
-    SUM(ios.row_lock_wait_count)                        AS row_lock_wait_count,
-    SUM(ios.page_lock_wait_count)                       AS page_lock_wait_count,
-    CAST(SUM(ios.row_lock_wait_in_ms)  / 1000.0 AS decimal(12,2))
-                                                        AS row_lock_wait_sec,
-    CAST(SUM(ios.page_lock_wait_in_ms) / 1000.0 AS decimal(12,2))
-                                                        AS page_lock_wait_sec
+    DB_NAME(ios.database_id) AS database_name,
+    OBJECT_NAME(ios.object_id, ios.database_id) AS table_name,
+    SUM(ios.index_lock_promotion_count) AS lock_escalations,
+    SUM(ios.row_lock_count) AS row_lock_count,
+    SUM(ios.page_lock_count) AS page_lock_count,
+    SUM(ios.row_lock_wait_count) AS row_lock_wait_count,
+    SUM(ios.page_lock_wait_count) AS page_lock_wait_count,
+    CAST(SUM(ios.row_lock_wait_in_ms) / 1000.0 AS decimal(12,2)) AS row_lock_wait_sec,
+    CAST(SUM(ios.page_lock_wait_in_ms) / 1000.0 AS decimal(12,2)) AS page_lock_wait_sec
 FROM sys.dm_db_index_operational_stats(NULL, NULL, NULL, NULL) ios
 WHERE ios.database_id > 4
   AND ios.index_lock_promotion_count > 0

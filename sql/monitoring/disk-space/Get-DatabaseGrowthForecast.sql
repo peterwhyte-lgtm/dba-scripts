@@ -22,7 +22,7 @@ SET NOCOUNT ON;
 
 DECLARE @WindowDays int = 30;
 DECLARE @WindowStart DATETIME2 = DATEADD(DAY, -@WindowDays, SYSUTCDATETIME());
-DECLARE @WindowEnd   DATETIME2 = SYSUTCDATETIME();
+DECLARE @WindowEnd DATETIME2 = SYSUTCDATETIME();
 
 -- ── Existence checks ──────────────────────────────────────────────────────────
 IF NOT EXISTS (SELECT 1 FROM sys.databases WHERE name = N'DBAMonitor')
@@ -32,8 +32,8 @@ BEGIN
 END
 
 IF NOT EXISTS (
-    SELECT 1 FROM DBAMonitor.sys.objects  o
-    JOIN        DBAMonitor.sys.schemas s ON s.schema_id = o.schema_id
+    SELECT 1 FROM DBAMonitor.sys.objects o
+    JOIN DBAMonitor.sys.schemas s ON s.schema_id = o.schema_id
     WHERE o.name = N'DatabaseGrowthCurrent' AND s.name = N'collector')
 BEGIN
     RAISERROR('collector.DatabaseGrowthCurrent not found in DBAMonitor. Run the collector generator and allow at least one job run.', 16, 1);
@@ -61,10 +61,10 @@ END
 ranked AS (
     SELECT *,
         ROW_NUMBER() OVER (PARTITION BY database_name, logical_name
-                           ORDER BY snapshot_time ASC)  AS rn_asc,
+                           ORDER BY snapshot_time ASC) AS rn_asc,
         ROW_NUMBER() OVER (PARTITION BY database_name, logical_name
                            ORDER BY snapshot_time DESC) AS rn_desc,
-        COUNT(*)     OVER (PARTITION BY database_name, logical_name) AS snapshot_count
+        COUNT(*) OVER (PARTITION BY database_name, logical_name) AS snapshot_count
     FROM history
 ),
 first_last AS (
@@ -72,12 +72,12 @@ first_last AS (
         database_name,
         logical_name,
         file_type,
-        MAX(growth_limit_mb)                               AS growth_limit_mb,
-        MAX(snapshot_count)                                AS snapshot_count,
-        MIN(snapshot_time)                                 AS first_time,
-        MIN(CASE WHEN rn_asc  = 1 THEN file_size_mb END)  AS first_size_mb,
-        MAX(snapshot_time)                                 AS last_time,
-        MIN(CASE WHEN rn_desc = 1 THEN file_size_mb END)  AS current_size_mb
+        MAX(growth_limit_mb) AS growth_limit_mb,
+        MAX(snapshot_count) AS snapshot_count,
+        MIN(snapshot_time) AS first_time,
+        MIN(CASE WHEN rn_asc = 1 THEN file_size_mb END) AS first_size_mb,
+        MAX(snapshot_time) AS last_time,
+        MIN(CASE WHEN rn_desc = 1 THEN file_size_mb END) AS current_size_mb
     FROM ranked
     GROUP BY database_name, logical_name, file_type
 ),
@@ -104,30 +104,30 @@ SELECT
     file_type,
     snapshot_count,
     days_observed,
-    CAST(current_size_mb AS decimal(10,1))                              AS current_size_mb,
-    CAST(mb_per_day      AS decimal(10,2))                              AS mb_per_day,
+    CAST(current_size_mb AS decimal(10,1)) AS current_size_mb,
+    CAST(mb_per_day AS decimal(10,2)) AS mb_per_day,
     growth_limit_mb,
     CASE
         WHEN mb_per_day > 0 AND growth_limit_mb IS NOT NULL
         THEN CAST((growth_limit_mb - current_size_mb) / mb_per_day AS int)
         ELSE NULL
-    END                                                                 AS days_to_limit,
+    END AS days_to_limit,
     CASE
         WHEN mb_per_day > 0 AND growth_limit_mb IS NOT NULL
         THEN DATEADD(day,
                  CAST((growth_limit_mb - current_size_mb) / mb_per_day AS int),
                  GETDATE())
         ELSE NULL
-    END                                                                 AS projected_limit_date,
+    END AS projected_limit_date,
     CASE
         WHEN mb_per_day > 0 AND growth_limit_mb IS NOT NULL
-             AND (growth_limit_mb - current_size_mb) / mb_per_day < 30  THEN 'CRITICAL'
+             AND (growth_limit_mb - current_size_mb) / mb_per_day < 30 THEN 'CRITICAL'
         WHEN mb_per_day > 0 AND growth_limit_mb IS NOT NULL
-             AND (growth_limit_mb - current_size_mb) / mb_per_day < 90  THEN 'WARNING'
-        WHEN mb_per_day > 0 AND growth_limit_mb IS NULL                  THEN 'UNLIMITED'
-        WHEN mb_per_day <= 0                                             THEN 'STABLE'
+             AND (growth_limit_mb - current_size_mb) / mb_per_day < 90 THEN 'WARNING'
+        WHEN mb_per_day > 0 AND growth_limit_mb IS NULL THEN 'UNLIMITED'
+        WHEN mb_per_day <= 0 THEN 'STABLE'
         ELSE 'OK'
-    END                                                                 AS forecast_status
+    END AS forecast_status
 FROM projections
 ORDER BY
     CASE
@@ -135,8 +135,8 @@ ORDER BY
              AND (growth_limit_mb - current_size_mb) / mb_per_day < 30 THEN 1
         WHEN mb_per_day > 0 AND growth_limit_mb IS NOT NULL
              AND (growth_limit_mb - current_size_mb) / mb_per_day < 90 THEN 2
-        WHEN mb_per_day > 0 AND growth_limit_mb IS NULL                 THEN 3
-        WHEN mb_per_day <= 0                                            THEN 5
+        WHEN mb_per_day > 0 AND growth_limit_mb IS NULL THEN 3
+        WHEN mb_per_day <= 0 THEN 5
         ELSE 4
     END,
     CASE WHEN mb_per_day > 0 AND growth_limit_mb IS NOT NULL
