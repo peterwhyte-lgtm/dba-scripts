@@ -283,6 +283,30 @@ $scripts = @(
         Label = 'autogrowth-history'
         Paths = @('sql\monitoring\disk-space\Get-AutogrowthHistory.sql')
     }
+    [PSCustomObject]@{
+        Label = 'ag-replica-state'
+        Paths = @('sql\high-availability\always-on\Get-AvailabilityGroupReplicaState.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'ag-failover-readiness'
+        Paths = @('sql\high-availability\always-on\Get-AgFailoverReadiness.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'ag-latency'
+        Paths = @('sql\high-availability\always-on\Get-AvailabilityGroupLatency.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'mirroring-endpoint-health'
+        Paths = @('sql\high-availability\mirroring\Get-MirroringEndpointHealth.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'replication-status'
+        Paths = @('sql\high-availability\replication\Get-ReplicationStatus.sql')
+    }
+    [PSCustomObject]@{
+        Label = 'last-node-blip'
+        Paths = @('sql\high-availability\fci\Get-LastNodeBlip.sql')
+    }
 )
 
 # All planned scripts go into the manifest as PENDING up front, so pollers know
