@@ -20,11 +20,18 @@ SET NOCOUNT ON;
     action          — what to do before downgrade
 
   Standard Edition limits by version:
-    ≤ SQL 2014 SP1      Row/page compression, partitioning, CDC: Enterprise only
+    ≤ SQL 2014 SP1      Row/page compression, partitioning, CDC, Database Snapshots: Enterprise only
     SQL 2016 SP1+       Row/page compression, partitioning, CDC, columnstore (non-clustered),
-                        In-Memory OLTP (max 32 GB): available in Standard
-    All versions        TDE, Database Snapshots, Resource Governor, AG readable secondaries,
-                        parallel index rebuild, multiple-DB AG (> 1 per AG in Standard): Enterprise only
+                        In-Memory OLTP (max 32 GB), Database Snapshots: available in Standard
+    ≤ SQL 2017          TDE: Enterprise only
+    SQL 2019+           TDE: available in Standard
+    All versions        Resource Governor, AG readable secondaries, parallel index rebuild,
+                        multiple-DB AG (> 1 per AG in Standard): Enterprise only
+
+  Verified against the Microsoft "Editions and supported features" tables for SQL Server 2017,
+  2019 and 2022 (2026-08-12). Database Snapshots moved to Standard in the SAME service pack as
+  compression and CDC (2016 SP1); TDE moved to Standard in 2019. Both were previously reported
+  here as Enterprise-only on every version, which produced a false downgrade blocker.
 */
 
 -- ── Working storage ───────────────────────────────────────────────────────────
@@ -41,8 +48,27 @@ DECLARE @sql NVARCHAR(MAX);
 DECLARE @cnt INT;
 DECLARE @detail NVARCHAR(MAX);
 
+-- ── Version gates ─────────────────────────────────────────────────────────────
+-- Two features moved into Standard partway through the product's life, so a fixed
+-- "Enterprise only" answer is wrong on modern instances. Gate them on the running version.
+DECLARE @major INT = TRY_CAST(SERVERPROPERTY('ProductMajorVersion') AS INT);
+DECLARE @build NVARCHAR(64) = CAST(SERVERPROPERTY('ProductVersion') AS NVARCHAR(64));
+
+-- Snapshots: Enterprise only up to 2014, and on 2016 before SP1 (13.0.4001).
+DECLARE @snapshotNeedsEnterprise BIT =
+    CASE WHEN @major IS NULL THEN 0                                   -- unknown: do not invent a blocker
+         WHEN @major <= 12 THEN 1                                     -- 2014 and earlier
+         WHEN @major = 13 AND TRY_CAST(PARSENAME(@build, 2) AS INT) < 4001 THEN 1   -- 2016 pre-SP1
+         ELSE 0 END;
+
+-- TDE: Enterprise only up to 2017. Standard from 2019 onward.
+DECLARE @tdeNeedsEnterprise BIT =
+    CASE WHEN @major IS NULL THEN 0
+         WHEN @major <= 14 THEN 1                                     -- 2017 and earlier
+         ELSE 0 END;
+
 -- ── 1. Transparent Data Encryption (TDE) ─────────────────────────────────────
--- Enterprise/Developer only. Standard cannot open a TDE-encrypted database.
+-- Enterprise only through SQL Server 2017. Available in Standard from SQL Server 2019.
 SET @detail = '';
 SELECT @cnt = COUNT(*), @detail = STRING_AGG(DB_NAME(database_id), ', ')
 FROM sys.dm_database_encryption_keys
@@ -51,25 +77,42 @@ WHERE encryption_state > 1;   -- 1 = unencrypted, 2 = encrypting, 3 = encrypted
 INSERT #findings VALUES (
     'Transparent Data Encryption (TDE)',
     CASE WHEN @cnt > 0 THEN 'YES' ELSE 'NO' END,
-    CASE WHEN @cnt > 0 THEN 'YES' ELSE 'NO' END,
-    CASE WHEN @cnt > 0 THEN CAST(@cnt AS NVARCHAR) + ' encrypted database(s): ' + @detail
-         ELSE 'No TDE-encrypted databases' END,
-    CASE WHEN @cnt > 0 THEN 'Remove TDE before migration: ALTER DATABASE [name] SET ENCRYPTION OFF; then DROP DATABASE ENCRYPTION KEY'
+    CASE WHEN @cnt > 0 AND @tdeNeedsEnterprise = 1 THEN 'YES' ELSE 'NO' END,
+    CASE WHEN @cnt = 0 THEN 'No TDE-encrypted databases'
+         WHEN @tdeNeedsEnterprise = 1
+             THEN CAST(@cnt AS NVARCHAR) + ' encrypted database(s): ' + @detail
+                  + ' (TDE is Enterprise only on this version)'
+         ELSE CAST(@cnt AS NVARCHAR) + ' encrypted database(s): ' + @detail
+              + ' (TDE is supported on Standard from SQL Server 2019, so this does not block a downgrade)'
+         END,
+    CASE WHEN @cnt > 0 AND @tdeNeedsEnterprise = 1
+             THEN 'Remove TDE before migration: ALTER DATABASE [name] SET ENCRYPTION OFF; then DROP DATABASE ENCRYPTION KEY'
+         WHEN @cnt > 0
+             THEN 'No action needed for edition. Still confirm the certificate and private key travel with the database, or it cannot be restored on the target'
          ELSE '' END
 );
 
 -- ── 2. Database Snapshots ─────────────────────────────────────────────────────
--- Enterprise only (all SQL versions). Standard cannot create or use snapshots.
+-- Enterprise only up to SQL Server 2014. Available in Standard from SQL Server 2016 SP1,
+-- the same service pack that moved compression, partitioning and CDC.
 SELECT @cnt = COUNT(*), @detail = ISNULL(STRING_AGG(name, ', '), '')
 FROM sys.databases WHERE source_database_id IS NOT NULL;
 
 INSERT #findings VALUES (
     'Database Snapshots',
     CASE WHEN @cnt > 0 THEN 'YES' ELSE 'NO' END,
-    CASE WHEN @cnt > 0 THEN 'WARN' ELSE 'NO' END,
-    CASE WHEN @cnt > 0 THEN CAST(@cnt AS NVARCHAR) + ' snapshot(s): ' + @detail
-         ELSE 'No database snapshots' END,
-    CASE WHEN @cnt > 0 THEN 'Snapshots cannot be created on Standard. Drop existing snapshots before migration or accept that they will not be available post-downgrade'
+    CASE WHEN @cnt > 0 AND @snapshotNeedsEnterprise = 1 THEN 'WARN' ELSE 'NO' END,
+    CASE WHEN @cnt = 0 THEN 'No database snapshots'
+         WHEN @snapshotNeedsEnterprise = 1
+             THEN CAST(@cnt AS NVARCHAR) + ' snapshot(s): ' + @detail
+                  + ' (snapshots are Enterprise only on this version)'
+         ELSE CAST(@cnt AS NVARCHAR) + ' snapshot(s): ' + @detail
+              + ' (snapshots are supported on Standard from SQL Server 2016 SP1, so this does not block a downgrade)'
+         END,
+    CASE WHEN @cnt > 0 AND @snapshotNeedsEnterprise = 1
+             THEN 'Snapshots cannot be created on Standard on this version. Drop existing snapshots before migration or accept that they will not be available post-downgrade'
+         WHEN @cnt > 0
+             THEN 'No action needed for edition. Snapshots still consume space against the source database, so confirm each one is still wanted'
          ELSE '' END
 );
 
