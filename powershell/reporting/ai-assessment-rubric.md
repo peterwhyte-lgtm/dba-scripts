@@ -19,7 +19,7 @@ assessment covering performance, security, availability, and operational hygiene
 3. **Look for what the rules missed.** The thresholds are generic; you are not. Examples:
    a plan cache full of single-use plans, an AG replica pattern, backup durations trending up,
    a sysadmin login nobody recognizes, tempdb file count vs CPU mismatch, databases in FULL
-   recovery with no log backups.
+   recovery with no log backups, a job that failed once and was left disabled rather than fixed.
 4. **Judge severity in context.** SA enabled on an internet-facing production server is
    CRITICAL; on an isolated lab box it is a note. Say which and why.
 
@@ -76,5 +76,7 @@ One-line list of areas verified with no findings, so the reader knows they were 
   the natural next step.
 - No hedging filler ("it might be worth considering..."). Say what to do.
 - If data is missing or a CSV is empty, say so rather than guessing.
+- Do not repeat the same finding in multiple sections — place it once, in the highest-value
+  section for it.
 - Length: as long as the findings justify and no longer. A healthy instance yields a short
   report; that is a good outcome, not a failure.
