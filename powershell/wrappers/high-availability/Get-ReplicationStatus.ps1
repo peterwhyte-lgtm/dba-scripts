@@ -1,6 +1,8 @@
 <#
 .SYNOPSIS
 Lists all publications and subscriptions from the distribution database.
+The SQL script locates the distribution database itself and returns a status
+row when replication is not configured, so the default connection is master.
 
 .NOTES
 ScriptType   : runner
@@ -10,7 +12,7 @@ RiskLevel    : SAFE
 
 param(
     [string]$ServerInstance = '.',
-    [string]$Database = 'distribution',
+    [string]$Database = 'master',
     [ValidateSet('Table', 'Csv')]
     [string]$OutputFormat = 'Table',
     [string]$OutputPath

@@ -5,7 +5,8 @@ Purpose     : Show when each user database last had a successful DBCC CHECKDB ru
 Author      : Peter Whyte (https://sqldba.blog)
 Requires    : VIEW ANY DATABASE
 Notes       : Uses DATABASEPROPERTYEX('LastGoodCheckDbTime') — available SQL Server 2012+.
-              NULL means CHECKDB has never completed successfully on this instance for that database.
+              Returns 1900-01-01 (not NULL) when CHECKDB has never completed successfully;
+              the script maps that sentinel to NULL / NEVER_RUN.
               Microsoft recommends running CHECKDB at least weekly.
 HealthCheck : Yes
 */
@@ -14,22 +15,24 @@ HealthCheck : Yes
 SET NOCOUNT ON;
 
 SELECT
-    d.name                                                                  AS database_name,
+    d.name                                              AS database_name,
     d.state_desc,
     d.recovery_model_desc,
-    CAST(DATABASEPROPERTYEX(d.name, 'LastGoodCheckDbTime') AS DATETIME)    AS last_good_checkdb,
-    DATEDIFF(DAY,
-        CAST(DATABASEPROPERTYEX(d.name, 'LastGoodCheckDbTime') AS DATETIME),
-        GETDATE())                                                           AS days_since_checkdb,
+    x.last_good_checkdb,
+    DATEDIFF(DAY, x.last_good_checkdb, GETDATE())       AS days_since_checkdb,
     CASE
-        WHEN CAST(DATABASEPROPERTYEX(d.name, 'LastGoodCheckDbTime') AS DATETIME) IS NULL
+        WHEN x.last_good_checkdb IS NULL
             THEN 'NEVER_RUN'
-        WHEN DATEDIFF(DAY,
-                CAST(DATABASEPROPERTYEX(d.name, 'LastGoodCheckDbTime') AS DATETIME),
-                GETDATE()) > 7
+        WHEN DATEDIFF(DAY, x.last_good_checkdb, GETDATE()) > 7
             THEN 'STALE'
         ELSE 'OK'
-    END                                                                     AS checkdb_status
+    END                                                 AS checkdb_status
 FROM sys.databases AS d
+CROSS APPLY (
+    -- LastGoodCheckDbTime reports 1900-01-01 when CHECKDB has never run; treat as NULL
+    SELECT NULLIF(
+        CAST(DATABASEPROPERTYEX(d.name, 'LastGoodCheckDbTime') AS DATETIME),
+        '19000101') AS last_good_checkdb
+) AS x
 WHERE d.database_id > 4
 ORDER BY last_good_checkdb ASC;

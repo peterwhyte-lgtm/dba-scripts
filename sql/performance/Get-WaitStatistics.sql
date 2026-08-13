@@ -42,7 +42,16 @@ WITH filtered_waits AS (
           'HADR_CLUSAPI_CALL',              'HADR_NOTIFICATION_DEQUEUE',
           'FT_IFTS_SCHEDULER_IDLE_WAIT',    'FT_IFTSHC_MUTEX',
           'REPL_WORK_QUEUE',                'CLR_AUTO_EVENT',
-          'CLR_MANUAL_EVENT',               'WAIT_XTP_COMPILE_WAIT'
+          'CLR_MANUAL_EVENT',               'WAIT_XTP_COMPILE_WAIT',
+          -- Idle / background waits introduced SQL Server 2016–2022
+          'SOS_WORK_DISPATCHER',            'PREEMPTIVE_XE_DISPATCHER',
+          'PREEMPTIVE_XE_GETTARGETSTATE',   'DIRTY_PAGE_POLL',
+          'QDS_PERSIST_TASK_MAIN_LOOP_SLEEP','QDS_ASYNC_QUEUE',
+          'QDS_CLEANUP_STALE_QUERIES_TASK_MAIN_LOOP_SLEEP',
+          'QDS_SHUTDOWN_QUEUE',             'PWAIT_EXTENSIBILITY_CLEANUP_TASK',
+          'PARALLEL_REDO_WORKER_WAIT_WORK', 'HADR_TIMER_TASK',
+          'PVS_PREALLOCATE',                'XE_LIVE_TARGET_TVF',
+          'WAIT_XTP_HOST_WAIT'
       )
 )
 SELECT TOP 20
