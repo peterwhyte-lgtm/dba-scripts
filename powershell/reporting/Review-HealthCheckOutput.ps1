@@ -45,6 +45,22 @@ Rules applied:
   INFO      - user Extended Events sessions running
   WARNING   - CDC or Change Tracking configuration warnings
   CRITICAL/WARNING - Service Broker queue or transmission issues
+  CRITICAL  - database at its configured growth limit (AT_LIMIT)
+  WARNING   - database near its configured growth limit (NEAR_LIMIT)
+  CRITICAL  - volume with less than 5% free space
+  WARNING   - volume with less than 10% free space
+  CRITICAL  - certificate expired or expiring within 30 days
+  WARNING   - certificate expiring within 90 days
+  WARNING   - orphaned database users (no matching server login)
+  WARNING   - xp_cmdshell enabled
+  CRITICAL  - error log corruption/crash patterns (823/824/825/832, stack dumps)
+  WARNING   - error log memory pressure patterns (paged out, error 802/701)
+  CRITICAL  - AG replica NOT_HEALTHY or DISCONNECTED
+  WARNING   - AG replica PARTIALLY_HEALTHY
+  CRITICAL/WARNING - AG failover readiness (database offline on replica, redo queue > 1 GB)
+  CRITICAL  - mirroring/AG endpoint not STARTED
+  WARNING   - replication subscription Inactive
+  WARNING   - failover-related error log entries in the last 7 days
   INFO      - sessions with active blocking
   INFO      - sessions with open transactions
   INFO      - error log entries present (requires manual review)
@@ -218,6 +234,22 @@ if ($openTx.Count -gt 0) {
 
 # ── recent-errors ─────────────────────────────────────────────────────────────
 $errors = Read-Csv-Safe 'recent-errors'
+
+# Known-severe message patterns get their own findings; everything else stays
+# behind the generic INFO row below.
+$errCritical = @($errors | Where-Object {
+    $_.log_text -match 'Error: 82[345]|Error: 832|Stack Dump|SQL Server is terminating' })
+if ($errCritical.Count -gt 0) {
+    Add-Finding 'CRITICAL' 'Error Log' 'Corruption / crash indicators' (
+        "$($errCritical.Count) entry/entries matching 823/824/825/832 or stack dump patterns — read recent-errors.csv now")
+}
+$errMemory = @($errors | Where-Object {
+    $_.log_text -match 'paged out|insufficient memory|Error 802|Error: 701' })
+if ($errMemory.Count -gt 0) {
+    Add-Finding 'WARNING' 'Error Log' 'Memory pressure' (
+        "$($errMemory.Count) entry/entries reporting working set paged out or insufficient buffer pool memory — check max server memory vs host RAM")
+}
+
 if ($errors.Count -gt 0) {
     Add-Finding 'INFO' 'Error Log' 'SQL Server error log' (
         "$($errors.Count) non-routine entry/entries in last 24h — review recent-errors.csv")
@@ -427,7 +459,8 @@ foreach ($row in $qsStatus) {
 
 # ── extended-events ───────────────────────────────────────────────────────────
 $xeSessions = Read-Csv-Safe 'extended-events'
-$sysXeNames = @('system_health','AlwaysOn_health','telemetry_xevents','hkenginexesession')
+$sysXeNames = @('system_health','AlwaysOn_health','telemetry_xevents','hkenginexesession',
+                'sp_server_diagnostics session')
 $userXE     = @($xeSessions | Where-Object { $_.session_name -notin $sysXeNames })
 if ($userXE.Count -gt 0) {
     Add-Finding 'INFO' 'Extended Events' "$($userXE.Count) user session(s) running" (
@@ -450,6 +483,126 @@ foreach ($row in $svcBroker) {
     } elseif ($row.status -like 'WARN*') {
         Add-Finding 'WARNING' 'Service Broker' $row.database_name $row.status
     }
+}
+
+# ── growth-risk ───────────────────────────────────────────────────────────────
+$growthRisk = Read-Csv-Safe 'growth-risk'
+foreach ($row in $growthRisk) {
+    if ($row.growth_status -eq 'AT_LIMIT') {
+        Add-Finding 'CRITICAL' 'Growth Risk' $row.database_name (
+            "Database is at its configured growth limit ($($row.total_mb) MB of $($row.growth_limit_mb) MB) — writes will fail when full")
+    } elseif ($row.growth_status -eq 'NEAR_LIMIT') {
+        Add-Finding 'WARNING' 'Growth Risk' $row.database_name (
+            "Database is near its configured growth limit ($($row.total_mb) MB of $($row.growth_limit_mb) MB)")
+    }
+}
+
+# ── disk-space (volume free space) ────────────────────────────────────────────
+$volumes = Read-Csv-Safe 'disk-space'
+foreach ($row in $volumes) {
+    $freePct = 0.0
+    if (-not [double]::TryParse($row.free_pct, [ref]$freePct)) { continue }
+    if ($freePct -lt 5) {
+        Add-Finding 'CRITICAL' 'Disk Space' $row.volume_mount_point (
+            "Volume has $freePct% free ($($row.free_gb) GB of $($row.total_gb) GB) — SQL files on this volume can run out of space")
+    } elseif ($freePct -lt 10) {
+        Add-Finding 'WARNING' 'Disk Space' $row.volume_mount_point (
+            "Volume has $freePct% free ($($row.free_gb) GB of $($row.total_gb) GB)")
+    }
+}
+
+# ── certificate-expiry ────────────────────────────────────────────────────────
+$certs = Read-Csv-Safe 'certificate-expiry'
+foreach ($row in $certs) {
+    if ($row.expiry_status -eq 'EXPIRED') {
+        Add-Finding 'CRITICAL' 'Certificates' "$($row.cert_scope) / $($row.cert_name)" (
+            "Certificate EXPIRED on $($row.expiry_date)")
+    } elseif ($row.expiry_status -eq 'CRITICAL') {
+        Add-Finding 'CRITICAL' 'Certificates' "$($row.cert_scope) / $($row.cert_name)" (
+            "Certificate expires in $($row.days_until_expiry) days")
+    } elseif ($row.expiry_status -eq 'WARNING') {
+        Add-Finding 'WARNING' 'Certificates' "$($row.cert_scope) / $($row.cert_name)" (
+            "Certificate expires in $($row.days_until_expiry) days")
+    }
+}
+
+# ── orphaned-users ────────────────────────────────────────────────────────────
+$orphans = Read-Csv-Safe 'orphaned-users'
+foreach ($row in $orphans) {
+    if (-not $row.user_name) { continue }
+    Add-Finding 'WARNING' 'Orphaned Users' "$($row.database_name) / $($row.user_name)" (
+        "Database user has no matching server login — remap or drop (see Fix-OrphanedUsers)")
+}
+
+# ── security-surface-area ─────────────────────────────────────────────────────
+$surface = Read-Csv-Safe 'security-surface-area'
+foreach ($row in $surface) {
+    if ($row.name -eq 'xp_cmdshell' -and $row.running_value -in @('1','True')) {
+        Add-Finding 'WARNING' 'Security' 'xp_cmdshell' (
+            'xp_cmdshell is enabled — OS command execution from T-SQL; disable unless a documented process depends on it')
+    }
+}
+
+# ── ag-replica-state ──────────────────────────────────────────────────────────
+# HA CSVs contain a single status row when the feature is not configured —
+# only apply rules when the real columns are present.
+$agReplicas = Read-Csv-Safe 'ag-replica-state'
+foreach ($row in $agReplicas) {
+    if (-not $row.PSObject.Properties['synchronization_health_desc']) { break }
+    if ($row.synchronization_health_desc -eq 'NOT_HEALTHY') {
+        Add-Finding 'CRITICAL' 'Availability Group' "$($row.ag_name) / $($row.replica_server_name)" (
+            "Replica synchronization health is NOT_HEALTHY (state: $($row.operational_state_desc))")
+    } elseif ($row.synchronization_health_desc -eq 'PARTIALLY_HEALTHY') {
+        Add-Finding 'WARNING' 'Availability Group' "$($row.ag_name) / $($row.replica_server_name)" (
+            'Replica synchronization health is PARTIALLY_HEALTHY')
+    }
+    if ($row.connected_state_desc -eq 'DISCONNECTED') {
+        Add-Finding 'CRITICAL' 'Availability Group' "$($row.ag_name) / $($row.replica_server_name)" (
+            "Replica is DISCONNECTED (last error: $($row.last_connect_error_description))")
+    }
+}
+
+# ── ag-failover-readiness ─────────────────────────────────────────────────────
+$agReadiness = Read-Csv-Safe 'ag-failover-readiness'
+foreach ($row in $agReadiness) {
+    if (-not $row.PSObject.Properties['readiness_status']) { break }
+    if ($row.readiness_status -like 'CRITICAL*') {
+        Add-Finding 'CRITICAL' 'AG Failover Readiness' "$($row.ag_name) / $($row.database_name)" $row.readiness_status
+    } elseif ($row.readiness_status -like 'WARN*') {
+        Add-Finding 'WARNING' 'AG Failover Readiness' "$($row.ag_name) / $($row.database_name)" $row.readiness_status
+    }
+}
+
+# ── mirroring-endpoint-health ─────────────────────────────────────────────────
+$mirrorEndpoints = Read-Csv-Safe 'mirroring-endpoint-health'
+foreach ($row in $mirrorEndpoints) {
+    if (-not $row.PSObject.Properties['endpoint_state']) { break }
+    if ($row.endpoint_state -and $row.endpoint_state -ne 'STARTED') {
+        Add-Finding 'CRITICAL' 'Mirroring Endpoint' $row.endpoint_name (
+            "Endpoint state is $($row.endpoint_state) — mirroring/AG traffic cannot flow until it is STARTED")
+    }
+}
+
+# ── replication-status ────────────────────────────────────────────────────────
+$replication = Read-Csv-Safe 'replication-status'
+foreach ($row in $replication) {
+    if (-not $row.PSObject.Properties['subscription_status']) { break }
+    if ($row.subscription_status -eq 'Inactive') {
+        Add-Finding 'WARNING' 'Replication' "$($row.publication_name) → $($row.subscriber_server)" (
+            "Subscription to $($row.subscriber_database) is Inactive")
+    }
+}
+
+# ── last-node-blip ────────────────────────────────────────────────────────────
+$nodeBlips = Read-Csv-Safe 'last-node-blip'
+$recentBlips = @($nodeBlips | Where-Object {
+    $t = [datetime]::MinValue
+    $_.PSObject.Properties['event_time'] -and $_.event_time -and
+    [datetime]::TryParse($_.event_time, [ref]$t) -and $t -gt (Get-Date).AddDays(-7)
+})
+if ($recentBlips.Count -gt 0) {
+    Add-Finding 'WARNING' 'Failover Cluster' 'Error log failover entries' (
+        "$($recentBlips.Count) failover-related error log entry/entries in the last 7 days — review last-node-blip.csv")
 }
 
 # ── Output ───────────────────────────────────────────────────────────────────
