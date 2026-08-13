@@ -23,6 +23,14 @@ assessment covering performance, security, availability, and operational hygiene
 4. **Judge severity in context.** SA enabled on an internet-facing production server is
    CRITICAL; on an isolated lab box it is a note. Say which and why.
 
+The collection includes six High Availability CSVs (ag-replica-state, ag-failover-readiness,
+ag-latency, mirroring-endpoint-health, replication-status, last-node-blip). On instances
+where a feature is not configured they contain a single status row saying so — report that
+under Checked and Clean rather than treating it as missing data. Where AG/mirroring/
+replication IS configured, availability findings usually outrank everything except
+corruption: judge failover readiness (sync state, redo queues, RPO exposure on async
+replicas) as a first-class topic.
+
 ## Report structure
 
 Produce a markdown report with exactly these sections:
@@ -50,6 +58,11 @@ Group correlated findings into a single issue with one fix path.
 ## Security Posture
 Surface area, logins, sysadmin membership, weak settings, linked servers. Even when clean,
 state what was checked and found clean.
+
+## Availability & DR
+Only when AG, mirroring, FCI, or replication is configured: replica/endpoint health,
+failover readiness, sync state, queue sizes, and the real RPO/RTO the numbers imply.
+Omit the section entirely on standalone instances (the status rows go in Checked and Clean).
 
 ## Performance Notes
 Waits, memory, I/O latency, indexes, plan cache, tempdb. Distinguish "act now" from

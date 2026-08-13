@@ -4,6 +4,7 @@ Category    : high-availability
 Purpose     : Show AG replica health, connection state, and synchronization status for failover readiness.
 Author      : Peter Whyte (https://sqldba.blog/script-check-ag-replica-role-and-synchronization-state/)
 Requires    : VIEW SERVER STATE
+HealthCheck : Yes
 */
 -- Blog: https://sqldba.blog/script-check-ag-replica-role-and-synchronization-state/
 -- SAFE:ReadOnly

@@ -122,7 +122,7 @@ Or let the setup script do it: `.\Initialize-Environment.ps1 -ServerInstance PRO
 ## Health check (full instance review)
 
 ```powershell
-# Run 39 scripts against an instance — saves named CSVs
+# Run 45 scripts against an instance — saves named CSVs
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01\SQL2019
 
 # Review the output — surfaces CRITICAL / WARNING / INFO findings

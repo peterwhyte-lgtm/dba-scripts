@@ -7,6 +7,7 @@ Purpose     : Per-AG, per-database failover readiness with quantified RPO and RT
               RPO = log send queue size (data that would be lost if primary fails now).
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/)
 Requires    : VIEW SERVER STATE, VIEW ANY DATABASE
+HealthCheck : Yes
 */
 -- Blog: https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/
 -- SAFE:ReadOnly

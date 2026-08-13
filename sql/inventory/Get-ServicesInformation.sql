@@ -6,7 +6,6 @@ Purpose     : SQL Server services — startup type, running status, and service 
               high-privilege service accounts (LocalSystem, SYSTEM, NetworkService).
 Author      : Peter Whyte (https://sqldba.blog)
 Requires    : VIEW SERVER STATE
-HealthCheck : Yes
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low

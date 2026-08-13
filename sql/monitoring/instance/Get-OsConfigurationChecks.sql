@@ -7,7 +7,6 @@ Purpose     : DMV-accessible OS and hardware configuration checks: Lock Pages in
               Pair with Test-OsConfiguration.ps1 for power plan and page file checks.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-cpu-topology-and-os-config/)
 Requires    : VIEW SERVER STATE
-HealthCheck : Yes
 */
 -- Blog: https://sqldba.blog/dba-scripts-get-cpu-topology-and-os-config/
 -- SAFE:ReadOnly

@@ -3,7 +3,7 @@
 ## Quick triage commands
 
 ```powershell
-# Full healthcheck — collect 39 scripts, review findings
+# Full healthcheck — collect 45 scripts, review findings
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance . -Quiet
 .\powershell\reporting\Review-HealthCheckOutput.ps1
 

@@ -47,6 +47,19 @@ Scripts collected:
   extended-events       - active XE sessions — targets and estimated overhead
   cdc-and-ct            - CDC and Change Tracking enabled databases with retention settings
   service-broker        - Service Broker enabled databases with queue/transmission health
+  sysadmin-members      - members of the sysadmin fixed server role
+  instance-config       - full sp_configure snapshot with non-default flags
+  top-cpu-queries       - top 20 CPU-consuming queries from the plan cache
+  agent-jobs-overview   - all SQL Agent jobs with schedule and last-run status
+  orphaned-users        - database users with no matching server login
+  certificate-expiry    - certificates with expiry status and key-backup state
+  autogrowth-history    - recent autogrowth events from the default trace
+  ag-replica-state      - AG replica health, connection and synchronization state
+  ag-failover-readiness - per-database failover readiness, redo queues, estimated RTO
+  ag-latency            - AG synchronization timing, queue sizes and rates
+  mirroring-endpoint-health - mirroring/AG endpoint state, port and authentication
+  replication-status    - publications and subscriptions from the distribution database
+  last-node-blip        - failover-related error log entries + instance start time (FCI)
 
 .PARAMETER ServerInstance
 SQL Server instance to query. Defaults to '.'.

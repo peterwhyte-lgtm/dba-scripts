@@ -79,7 +79,7 @@ pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File .\tools\local-sql\Invoke-R
 Full healthcheck workflow (collect → rules review → AI assessment — the AI step is the
 point of the collection; see `docs/ai-assessment.md`):
 ```powershell
-# 1. Collect 39 scripts, save CSVs to output-files\healthcheck\<server>-<timestamp>\
+# 1. Collect 45 scripts, save CSVs to output-files\healthcheck\<server>-<timestamp>\
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance .
 
 # 2. Review the latest collection folder and surface CRITICAL / WARNING / INFO findings
@@ -524,7 +524,7 @@ New orchestrator PS script (has real logic, not a thin wrapper): add to `powersh
 
 ## Healthcheck collection — what it covers
 
-`Invoke-HealthCheckCollection.ps1` runs 39 scripts and saves named CSVs. It also writes a
+`Invoke-HealthCheckCollection.ps1` runs 45 scripts and saves named CSVs. It also writes a
 per-script `manifest.csv` (label, status, started, finished, duration) into the collection
 folder, rewritten atomically after every status change — the web UI's `/api/status` polls it
 for live progress, and it records per-script timings and failures for any later reader
@@ -572,8 +572,14 @@ otherwise the folder is `<server>-<timestamp>` under `-OutputRoot`.
 | orphaned-users | Get-OrphanedUsers.sql |
 | certificate-expiry | Get-CertificateExpiryWarnings.sql |
 | autogrowth-history | Get-AutogrowthHistory.sql |
+| ag-replica-state | Get-AvailabilityGroupReplicaState.sql |
+| ag-failover-readiness | Get-AgFailoverReadiness.sql |
+| ag-latency | Get-AvailabilityGroupLatency.sql |
+| mirroring-endpoint-health | Get-MirroringEndpointHealth.sql |
+| replication-status | Get-ReplicationStatus.sql |
+| last-node-blip | Get-LastNodeBlip.sql |
 
-`Review-HealthCheckOutput.ps1` reads those CSVs and fires on: databases not ONLINE, missing backups, full backup older than 24h (CRITICAL), stale log backups, tlog >80% used, auto-shrink, auto-close, percent-based autogrowth, DBCC CHECKDB stale >7 days (WARNING) or overdue >14 days / never (CRITICAL), any suspect pages (CRITICAL), SA enabled (CRITICAL), weak SQL login settings, I/O latency >50ms, specific wait type patterns (PAGEIOLATCH, WRITELOG, RESOURCE_SEMAPHORE, CXPACKET), max server memory unconfigured, data files <10% free, VLF count >200 (WARNING) or >1000 (CRITICAL), DBA maintenance job missing/failed/disabled, failed logins (locked accounts and repeated failures), Query Store switched to READ_ONLY, active user Extended Events sessions (INFO), CDC/Change Tracking warnings, and Service Broker CRITICAL/WARNING status.
+`Review-HealthCheckOutput.ps1` reads those CSVs and fires on: databases not ONLINE, missing backups, full backup older than 24h (CRITICAL), stale log backups, tlog >80% used, auto-shrink, auto-close, percent-based autogrowth, DBCC CHECKDB stale >7 days (WARNING) or overdue >14 days / never (CRITICAL), any suspect pages (CRITICAL), SA enabled (CRITICAL), weak SQL login settings, I/O latency >50ms, specific wait type patterns (PAGEIOLATCH, WRITELOG, RESOURCE_SEMAPHORE, CXPACKET), max server memory unconfigured, data files <10% free, VLF count >200 (WARNING) or >1000 (CRITICAL), DBA maintenance job missing/failed/disabled, failed logins (locked accounts and repeated failures), Query Store switched to READ_ONLY, active user Extended Events sessions (INFO), CDC/Change Tracking warnings, Service Broker CRITICAL/WARNING status, databases at/near their configured growth limit, volumes <10% (WARNING) or <5% (CRITICAL) free, certificates expired/expiring, orphaned database users, xp_cmdshell enabled, error-log corruption/crash patterns (823/824/825/832, stack dumps) and memory-pressure patterns (paged out, error 802/701), AG replicas NOT_HEALTHY/DISCONNECTED or failing readiness, mirroring/AG endpoints not STARTED, inactive replication subscriptions, and recent failover-related error log entries.
 
 ## Important caveats
 
