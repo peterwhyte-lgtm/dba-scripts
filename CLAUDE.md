@@ -522,6 +522,16 @@ New orchestrator PS script (has real logic, not a thin wrapper): add to `powersh
 
 **For each major script, document:** purpose in operational terms, example output interpretation, when **not** to use it, required permissions.
 
+## SQL session mode (memory-constrained workstations)
+
+On a workstation where SQL Server shares RAM with Docker containers and other services
+(e.g. the local site-lab staging rig), the OS will page SQL Server out under pressure —
+collections crawl, collector steps fail with error 802, and the plan cache gets flushed,
+which poisons every performance CSV. Before heavy SQL verification work (full healthcheck
+runs, integration testing batches): **stop the site-lab containers, run the SQL work,
+restart the containers after.** Keep max server memory modest on such a box (2048 MB
+ceiling here) rather than chasing the paging with a bigger cap.
+
 ## Healthcheck collection — what it covers
 
 `Invoke-HealthCheckCollection.ps1` runs 45 scripts and saves named CSVs. It also writes a
