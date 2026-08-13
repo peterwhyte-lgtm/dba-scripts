@@ -33,5 +33,8 @@ SELECT
 FROM sys.fn_trace_gettable(@tracepath, DEFAULT) t
 JOIN sys.trace_events te ON te.trace_event_id = t.EventClass
 WHERE t.EventClass IN (46, 47, 164) /* Object:Created, Object:Deleted, Object:Altered */
+  AND t.EventSubClass = 1 /* Commit only — each DDL event is logged twice (Begin + Commit);
+                             without this filter every change shows as a duplicate row */
   AND ISNULL(t.DatabaseName, '') NOT IN ('', 'mssqlsystemresource')
+  AND t.ObjectName NOT LIKE N'[_]WA[_]Sys[_]%' /* auto-created statistics are not schema changes */
 ORDER BY t.StartTime DESC;

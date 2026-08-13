@@ -46,18 +46,26 @@ BEGIN
             N' + QUOTENAME(@db, N'''') + N',
             s.name,
             t.name,
-            SUM(ps.row_count),
-            CAST(SUM(ps.reserved_page_count - ps.used_page_count) * 8.0 / 1024 AS DECIMAL(12,2)),
-            CAST(SUM(ps.used_page_count - ps.in_row_data_page_count
-                     - ps.lob_used_page_count - ps.row_overflow_used_page_count) * 8.0 / 1024 AS DECIMAL(12,2)),
+            -- row_count only from the heap/clustered partitions, or every index recounts the rows
+            SUM(CASE WHEN ps.index_id <= 1 THEN ps.row_count ELSE 0 END),
+            -- data = in-row + LOB + row-overflow pages of the heap/clustered index (sp_spaceused style)
+            CAST(SUM(CASE WHEN ps.index_id <= 1
+                          THEN ps.in_row_data_page_count + ps.lob_used_page_count
+                               + ps.row_overflow_used_page_count
+                          ELSE 0 END) * 8.0 / 1024 AS DECIMAL(12,2)),
+            -- index = everything else that is in use, including nonclustered indexes
+            CAST((SUM(ps.used_page_count)
+                  - SUM(CASE WHEN ps.index_id <= 1
+                             THEN ps.in_row_data_page_count + ps.lob_used_page_count
+                                  + ps.row_overflow_used_page_count
+                             ELSE 0 END)) * 8.0 / 1024 AS DECIMAL(12,2)),
             CAST(SUM(ps.reserved_page_count) * 8.0 / 1024 AS DECIMAL(12,2)),
             MAX(CASE WHEN i.type = 0 THEN 1 ELSE 0 END)
         FROM ' + QUOTENAME(@db) + N'.sys.dm_db_partition_stats ps
         JOIN ' + QUOTENAME(@db) + N'.sys.tables  t ON t.object_id = ps.object_id
         JOIN ' + QUOTENAME(@db) + N'.sys.schemas s ON s.schema_id = t.schema_id
         JOIN ' + QUOTENAME(@db) + N'.sys.indexes i ON i.object_id = ps.object_id AND i.index_id = ps.index_id
-        WHERE ps.index_id <= 1
-          AND t.is_ms_shipped = 0
+        WHERE t.is_ms_shipped = 0
         GROUP BY s.name, t.name
         ORDER BY SUM(ps.reserved_page_count) DESC;';
 

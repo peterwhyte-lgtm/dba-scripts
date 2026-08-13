@@ -2,8 +2,11 @@
 Script Name : Get-VersionUpgradeReadiness
 Category    : migration
 Purpose     : Pre-upgrade readiness summary for SQL Server version upgrades.
+              One result set with a section column: instance summary, per-database
+              compatibility levels, configuration items to review, and sizing for
+              migration window planning. Run on SOURCE.
               Complements Get-DeprecatedFeaturesInUse.sql (feature detail) and
-              Get-MigrationRiskAssessment.sql (per-database risk). Run on SOURCE.
+              Get-MigrationRiskAssessment.sql (per-database risk).
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-version-upgrade-readiness/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
@@ -13,19 +16,18 @@ Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 SET NOCOUNT ON;
 
 /*
-  DESIGN: Returns four result sets:
-    1. Instance summary — current version, edition, and supported direct upgrade paths
-    2. Compatibility level matrix — which databases are behind native compat level
-    3. Configuration delta — sp_configure items that have changed defaults or behaviour in newer versions
-    4. Sizing summary — data/log totals per database for migration window planning
+  DESIGN: A single result set (the repo contract: one script, one CSV) shaped as
+  section / item / detail / status:
+    1-instance  — current version, edition, and supported direct upgrade paths
+    2-compat    — which databases are behind the native compatibility level
+    3-config    — sp_configure items worth reviewing before a version move
+    4-sizing    — data/log totals per database for migration window planning
 
   Use alongside:
     Get-DeprecatedFeaturesInUse.sql — deprecated features called since last restart
     Get-MigrationRiskAssessment.sql — per-database risk findings (compat, settings, AG, sizing)
     Get-EditionFeatureUsage.sql — Enterprise-only features (if changing edition at same time)
 */
-
--- ── 1. Instance summary ───────────────────────────────────────────────────────
 
 DECLARE @major INT = CAST(SERVERPROPERTY('ProductMajorVersion') AS INT);
 DECLARE @version NVARCHAR(20) = CAST(SERVERPROPERTY('ProductVersion') AS NVARCHAR(20));
@@ -60,112 +62,87 @@ SET @upgradeNote =
         WHEN 11 THEN 'Direct upgrade supported to: SQL 2016, SQL 2017, SQL 2019, SQL 2022.'
         WHEN 10 THEN 'Direct in-place upgrade NOT supported to SQL 2017+. Upgrade to SQL 2014 or SQL 2016 first, or use side-by-side migration.'
         WHEN 9 THEN 'Very old version — side-by-side migration strongly recommended. No direct in-place upgrade path to current versions.'
-        ELSE 'Newer than this script''s known version table — update Get-VersionUpgradeReadiness.sql with this release before trusting the compat-level and upgrade-path columns.'
+        ELSE 'Newer than this script''s known version table — update Get-VersionUpgradeReadiness.sql with this release before trusting the compat-level and upgrade-path rows.'
     END;
 
-SELECT
-    @version AS current_version,
-    @level AS product_level,
-    @edition AS edition,
-    @collation AS server_collation,
-    @nativeCompat AS native_compat_level,
-    (SELECT value_in_use FROM sys.configurations WHERE name = 'max server memory (MB)') AS max_server_memory_mb,
-    (SELECT value_in_use FROM sys.configurations WHERE name = 'max degree of parallelism') AS maxdop,
-    (SELECT sqlserver_start_time FROM sys.dm_os_sys_info) AS last_restart,
-    DATEDIFF(DAY, (SELECT sqlserver_start_time FROM sys.dm_os_sys_info), GETDATE()) AS days_since_restart,
-    @upgradeNote AS upgrade_paths;
+-- ── 1. Instance summary ───────────────────────────────────────────────────────
+SELECT section, item, detail, status
+FROM (
+    SELECT '1-instance' AS section, 'version' AS item,
+           @version + ' (' + @level + ')' AS detail, '' AS status, 1 AS ord
+    UNION ALL SELECT '1-instance', 'edition', @edition, '', 2
+    UNION ALL SELECT '1-instance', 'server_collation', @collation, '', 3
+    UNION ALL SELECT '1-instance', 'native_compat_level',
+           ISNULL(CAST(@nativeCompat AS NVARCHAR(10)), 'unknown'), '', 4
+    UNION ALL SELECT '1-instance', 'max_server_memory_mb',
+           CAST((SELECT value_in_use FROM sys.configurations
+                 WHERE name = 'max server memory (MB)') AS NVARCHAR(20)), '', 5
+    UNION ALL SELECT '1-instance', 'maxdop',
+           CAST((SELECT value_in_use FROM sys.configurations
+                 WHERE name = 'max degree of parallelism') AS NVARCHAR(20)), '', 6
+    UNION ALL SELECT '1-instance', 'last_restart',
+           CONVERT(NVARCHAR(20), (SELECT sqlserver_start_time FROM sys.dm_os_sys_info), 120)
+           + ' (' + CAST(DATEDIFF(DAY, (SELECT sqlserver_start_time FROM sys.dm_os_sys_info),
+                                  GETDATE()) AS NVARCHAR(10)) + ' days ago)', '', 7
+    UNION ALL SELECT '1-instance', 'upgrade_paths', @upgradeNote, '', 8
 
--- ── 2. Compatibility level matrix ─────────────────────────────────────────────
+-- ── 2. Compatibility level per database ───────────────────────────────────────
+    UNION ALL
+    SELECT '2-compat', d.name,
+           'compat ' + CAST(d.compatibility_level AS NVARCHAR(10))
+           + ' vs native ' + CAST(@nativeCompat AS NVARCHAR(10))
+           + ' (gap ' + CAST(@nativeCompat - d.compatibility_level AS NVARCHAR(10)) + ')'
+           + ', ' + d.recovery_model_desc + ', ' + d.state_desc,
+           CASE
+               WHEN d.compatibility_level >= @nativeCompat THEN 'OK — at native level'
+               WHEN d.compatibility_level = @nativeCompat - 10 THEN 'INFO — 1 version behind'
+               WHEN d.compatibility_level = @nativeCompat - 20 THEN 'WARN — 2 versions behind'
+               ELSE 'HIGH — severely behind native level'
+           END,
+           100 + (@nativeCompat - d.compatibility_level)
+    FROM sys.databases d
+    WHERE d.database_id > 4
 
-SELECT
-    d.name AS database_name,
-    d.compatibility_level AS current_compat_level,
-    @nativeCompat AS native_compat_level,
-    @nativeCompat - d.compatibility_level AS compat_gap,
-    CASE
-        WHEN d.compatibility_level >= @nativeCompat THEN 'OK — at native level'
-        WHEN d.compatibility_level = @nativeCompat - 10 THEN 'INFO — 1 version behind'
-        WHEN d.compatibility_level = @nativeCompat - 20 THEN 'WARN — 2 versions behind'
-        ELSE 'HIGH — severely behind native level'
-    END AS compat_status,
-    d.recovery_model_desc AS recovery_model,
-    d.state_desc AS database_state
-FROM sys.databases d
-WHERE d.database_id > 4
-ORDER BY compat_gap DESC, d.name;
-
--- ── 3. Configuration items to review for target version ───────────────────────
-
-;WITH config_review AS (
-    SELECT
-        name AS config_name,
-        CAST(value_in_use AS BIGINT) AS current_value,
-        CAST(minimum AS BIGINT) AS minimum,
-        CAST(maximum AS BIGINT) AS maximum,
-        is_advanced,
-        CASE
-            -- max server memory at SQL Server default (likely unconfigured)
-            WHEN name = 'max server memory (MB)' AND value_in_use >= 2147483647
-                THEN 'HIGH — Unconfigured. Set this before cutover to target to prevent memory pressure.'
-            -- MAXDOP 0 (uses all CPUs) — newer guidance prefers explicit value
-            WHEN name = 'max degree of parallelism' AND value_in_use = 0
-                THEN 'INFO — MAXDOP = 0 (uses all CPUs). Set to min(8, CPU count / 2) unless validated.'
-            -- Cost threshold default (5) — very low for modern hardware
-            WHEN name = 'cost threshold for parallelism' AND value_in_use <= 5
-                THEN 'INFO — Cost threshold = 5 (default). Consider 50+ on modern hardware to reduce parallelism noise.'
-            -- Optimize for ad hoc workloads — should be ON
-            WHEN name = 'optimize for ad hoc workloads' AND value_in_use = 0
-                THEN 'WARN — Disabled. Enable to reduce single-use plan cache bloat (sp_configure ''optimize for ad hoc workloads'', 1).'
-            -- Backup checksum — should be ON for new installs
-            WHEN name = 'backup checksum default' AND value_in_use = 0
-                THEN 'INFO — Backup checksums off. Enable for stronger backup integrity checks.'
-            -- Remote query timeout default is 600s — may want to review
-            WHEN name = 'remote query timeout (s)' AND value_in_use = 600
-                THEN 'INFO — Remote query timeout at default 600s. Review if linked servers are in use.'
-            ELSE 'OK'
-        END AS review_note
+-- ── 3. Configuration items to review for target version ──────────────────────
+    UNION ALL
+    SELECT '3-config', name, CAST(CAST(value_in_use AS BIGINT) AS NVARCHAR(20)),
+           CASE
+               WHEN name = 'max server memory (MB)' AND value_in_use >= 2147483647
+                   THEN 'HIGH — Unconfigured. Set this before cutover to target to prevent memory pressure.'
+               WHEN name = 'max degree of parallelism' AND value_in_use = 0
+                   THEN 'INFO — MAXDOP = 0 (uses all CPUs). Set to min(8, CPU count / 2) unless validated.'
+               WHEN name = 'cost threshold for parallelism' AND value_in_use <= 5
+                   THEN 'INFO — Cost threshold = 5 (default). Consider 50+ on modern hardware to reduce parallelism noise.'
+               WHEN name = 'optimize for ad hoc workloads' AND value_in_use = 0
+                   THEN 'WARN — Disabled. Enable to reduce single-use plan cache bloat (sp_configure ''optimize for ad hoc workloads'', 1).'
+               WHEN name = 'backup checksum default' AND value_in_use = 0
+                   THEN 'INFO — Backup checksums off. Enable for stronger backup integrity checks.'
+               WHEN name = 'remote query timeout (s)' AND value_in_use = 600
+                   THEN 'INFO — Remote query timeout at default 600s. Review if linked servers are in use.'
+               ELSE 'OK'
+           END,
+           200
     FROM sys.configurations
     WHERE name IN (
-        'max server memory (MB)',
-        'min server memory (MB)',
-        'max degree of parallelism',
-        'cost threshold for parallelism',
-        'optimize for ad hoc workloads',
-        'backup compression default',
-        'backup checksum default',
-        'remote query timeout (s)',
-        'remote login timeout (s)',
-        'lightweight pooling',
-        'priority boost',
-        'clr enabled',
-        'clr strict security',
-        'cross db ownership chaining',
-        'Database Mail XPs',
-        'xp_cmdshell'
-    )
-)
-SELECT *
-FROM config_review
-ORDER BY
-    CASE
-        WHEN review_note LIKE 'HIGH%' THEN 1
-        WHEN review_note LIKE 'WARN%' THEN 2
-        WHEN review_note LIKE 'INFO%' THEN 3
-        ELSE 4
-    END,
-    config_name;
+        'max server memory (MB)', 'min server memory (MB)',
+        'max degree of parallelism', 'cost threshold for parallelism',
+        'optimize for ad hoc workloads', 'backup compression default',
+        'backup checksum default', 'remote query timeout (s)',
+        'remote login timeout (s)', 'lightweight pooling', 'priority boost',
+        'clr enabled', 'clr strict security', 'cross db ownership chaining',
+        'Database Mail XPs', 'xp_cmdshell')
 
--- ── 4. Sizing summary — for migration window planning ─────────────────────────
-
-SELECT
-    d.name AS database_name,
-    d.recovery_model_desc AS recovery_model,
-    d.compatibility_level AS compat_level,
-    CAST(SUM(CASE WHEN mf.type = 0 THEN mf.size ELSE 0 END) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS data_size_gb,
-    CAST(SUM(CASE WHEN mf.type = 1 THEN mf.size ELSE 0 END) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS log_size_gb,
-    CAST(SUM(mf.size) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS total_size_gb
-FROM sys.databases d
-INNER JOIN sys.master_files mf ON d.database_id = mf.database_id
-WHERE d.database_id > 4
-GROUP BY d.name, d.recovery_model_desc, d.compatibility_level
-ORDER BY total_size_gb DESC;
+-- ── 4. Sizing per database, for migration window planning ─────────────────────
+    UNION ALL
+    SELECT '4-sizing', d.name,
+           'data ' + CAST(CAST(SUM(CASE WHEN mf.type = 0 THEN mf.size ELSE 0 END) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS NVARCHAR(20))
+           + ' GB, log ' + CAST(CAST(SUM(CASE WHEN mf.type = 1 THEN mf.size ELSE 0 END) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS NVARCHAR(20))
+           + ' GB, total ' + CAST(CAST(SUM(mf.size) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS NVARCHAR(20)) + ' GB',
+           '',
+           300 - CAST(SUM(mf.size) / 128 AS INT)
+    FROM sys.databases d
+    INNER JOIN sys.master_files mf ON d.database_id = mf.database_id
+    WHERE d.database_id > 4
+    GROUP BY d.name
+) readiness
+ORDER BY section, ord, item;
