@@ -119,7 +119,7 @@ follow `powershell\reporting\ai-assessment-rubric.md` exactly, and write the rep
 `output-files\assessments\<server>-<timestamp>-claude-code.md`. Treat findings.csv as leads
 to verify and correlate, not as the answer. Setup and corporate guidance: `docs/ai-assessment.md`.
 
-The 39 scripts in the healthcheck suite are tagged `HealthCheck : Yes` in their headers — the web UI groups them as "Health Check Suite."
+The 45 scripts in the healthcheck suite are tagged `HealthCheck : Yes` in their headers — the web UI groups them as "Health Check Suite."
 
 **Flags raised by Review-HealthCheckOutput:**
 - CRITICAL: suspect pages, SA enabled, database not ONLINE, no full backup ever

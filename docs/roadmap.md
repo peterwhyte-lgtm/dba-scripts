@@ -5,9 +5,9 @@
 Fully functional production DBA toolkit. The repo has a category-first layout: `sql/` for SQL scripts, `powershell/` for wrappers, orchestrators, and automation (categories mirror `sql/`), and `docs/ops/` for operational runbooks and change templates.
 
 **What is complete:**
-- SQL diagnostic layer — 80+ scripts across monitoring, performance, high-availability, backups, security, maintenance, migration
-- Wrapper layer — 81 thin PS wrappers, one per SQL script, colocated with the web UI
-- PowerShell orchestration — healthcheck collection (39 scripts), review, assessment report, multi-server health check
+- SQL diagnostic layer — 181 scripts across monitoring, performance, high-availability, backups, security, maintenance, migration
+- Wrapper layer — 153 thin PS wrappers, one per SQL script, colocated with the web UI
+- PowerShell orchestration — healthcheck collection (45 scripts), review, assessment report, multi-server health check
 - Migration toolkit — full pre/post assessment, DDL generators (logins, jobs, linked servers, user mappings), baseline export
 - Collectors — 12 scheduled collectors as SQL Agent job generators in `sql/collectors/` (PS-based Collect-* retired); `Generate-CollectorAlertJob.sql` + `Get-*Delta.sql` for alerting and snapshot analysis
 - Collector analysis — `Get-CapacityProjection.ps1` (days-to-full from collector history), `Compare-ConfigurationBaseline.ps1` (config drift)
@@ -79,7 +79,7 @@ production DBA usage. Staged; each stage verified against local SQL before pushi
 ## Health check collection blindspots (added 2026-07-03 — from Peter's production environment)
 
 The AI assessment is only as good as what the health check collection suite gathers
-(`Invoke-HealthCheckCollection.ps1`, currently 39 scripts — not sql/collectors/ Agent jobs).
+(`Invoke-HealthCheckCollection.ps1`, currently 45 scripts — not sql/collectors/ Agent jobs).
 Coverage gaps to add to the suite, in Peter's environment terms; ask Peter for topology
 specifics before designing each one.
 

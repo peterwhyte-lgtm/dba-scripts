@@ -12,7 +12,7 @@ Purpose      : Estate-wide health check — one command to flag which servers ne
                rather than duplicating their logic.
 
 .DESCRIPTION
-For each server: runs Invoke-HealthCheckCollection.ps1 (22 scripts) then
+For each server: runs Invoke-HealthCheckCollection.ps1 (45 scripts) then
 Review-HealthCheckOutput.ps1 (17 rule categories). Aggregates findings across all
 servers sorted by severity. Saves a combined findings CSV.
 

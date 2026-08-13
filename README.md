@@ -17,7 +17,7 @@
 
 I'm Peter Whyte — production SQL Server DBA, running [sqldba.blog](https://sqldba.blog). This is the toolkit I actually use, and it's built around one idea: **collect everything a DBA looks at on a server, then have an AI review it with you.**
 
-The core workflow is three steps. A health check collection runs 39 diagnostic scripts against an instance and saves each result as a CSV. A rules review turns those CSVs into deterministic CRITICAL / WARNING / INFO findings. Then an AI assessment reads the whole collection and does what fixed thresholds can't — correlates findings across the CSVs into root causes and writes a prioritized report with evidence and a fix for each issue. It's a second reviewer that has read every output, doesn't get tired, and surfaces the blindspots you'd miss at 2am.
+The core workflow is three steps. A health check collection runs 45 diagnostic scripts against an instance and saves each result as a CSV. A rules review turns those CSVs into deterministic CRITICAL / WARNING / INFO findings. Then an AI assessment reads the whole collection and does what fixed thresholds can't — correlates findings across the CSVs into root causes and writes a prioritized report with evidence and a fix for each issue. It's a second reviewer that has read every output, doesn't get tired, and surfaces the blindspots you'd miss at 2am.
 
 Underneath that sits everything else a production DBA needs, usable on its own:
 
@@ -83,7 +83,7 @@ The flagship workflow. Three commands take a server from "no idea" to a prioriti
   <br><em>Review-HealthCheckOutput — CRITICAL / WARNING / INFO findings across the instance</em>
 </p>
 
-**Step 1** collects 39 scripts in a single pass — backups, waits, blocking, memory, disk, security surface area, agent jobs, integrity checks, and more — into one timestamped folder of CSVs.
+**Step 1** collects 45 scripts in a single pass — backups, waits, blocking, memory, disk, security surface area, agent jobs, integrity checks, and more — into one timestamped folder of CSVs.
 
 **Step 2** applies fixed rules: missing or stale backups, databases not online, stale DBCC CHECKDB, suspect pages, sa enabled, percent-based autogrowth, unconfigured max server memory, I/O latency above threshold, transaction log pressure, high VLF count, maintenance job failures.
 

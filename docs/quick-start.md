@@ -96,7 +96,7 @@ Browse all available scripts:
 The flagship workflow: collect everything in one pass, review with rules, then have an AI assess the whole collection:
 
 ```powershell
-# 1. Collect 39 scripts, save named CSVs to output-files\healthcheck\<server>-<timestamp>\
+# 1. Collect 45 scripts, save named CSVs to output-files\healthcheck\<server>-<timestamp>\
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01\SQL2019
 
 # 2. Rules review — surfaces CRITICAL / WARNING / INFO

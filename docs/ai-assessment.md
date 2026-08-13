@@ -7,7 +7,7 @@ This guide explains how to plug the AI in — at home or inside a company — in
 ## The workflow
 
 ```powershell
-# 1. Collect — 39 scripts, one CSV each
+# 1. Collect — 45 scripts, one CSV each
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01
 
 # 2. Rules review — deterministic CRITICAL / WARNING / INFO findings
