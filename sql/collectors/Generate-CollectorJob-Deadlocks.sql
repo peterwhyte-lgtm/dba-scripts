@@ -33,8 +33,11 @@ DECLARE @stepCmd nvarchar(max);
 -- ── Step command (| = single-quote placeholder) ────────────────────────────────
 -- @since: latest deadlock_time already stored, or 24h ago as bootstrap.
 -- Ring buffer holds ~250 events; on very busy servers events may be lost between runs.
+-- SET QUOTED_IDENTIFIER ON is required: Agent T-SQL steps default it OFF, and the
+-- XML .value()/.query() methods below fail with error 1934 without it.
 SET @stepCmd = REPLACE(
-N'SET NOCOUNT ON;
+N'SET QUOTED_IDENTIFIER ON;
+SET NOCOUNT ON;
 DECLARE @since datetime2;
 SELECT @since = MAX(deadlock_time)
 FROM [<<DB>>].[collector].[Deadlocks]
@@ -45,7 +48,8 @@ IF @since IS NULL
 
 ;WITH ring_buffer AS (
     SELECT
-        CAST(xdr.value(|@timestamp|, |datetime2|) AT TIME ZONE |UTC| AT TIME ZONE |AUS Eastern Standard Time| AS datetime2) AS event_time,
+        -- XE timestamps are UTC; convert to server-local time using the current offset
+        DATEADD(MINUTE, DATEDIFF(MINUTE, GETUTCDATE(), GETDATE()), xdr.value(|@timestamp|, |datetime2|)) AS event_time,
         xdr.query(|.|) AS deadlock_xml
     FROM (
         SELECT CAST(target_data AS XML) AS target_xml
