@@ -2,7 +2,7 @@
 Script Name : Get-IndexDesignIssues
 Category    : performance
 Purpose     : Tables with index design problems: excessive index count (write amplification),
-              wide key columns (>900 bytes — approaching the 1700-byte row-store limit),
+              wide key columns (>900 bytes — approaching the 1700-byte nonclustered key limit),
               and tables where Missing Index DMV has > 3 recommendations (optimizer giving up
               on existing index coverage). Complements Get-DuplicateIndexes.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-index-design-issues/)
@@ -54,7 +54,7 @@ BEGIN
     GROUP BY s.name, t.name
     HAVING COUNT(i.index_id) > 10;
 
-    -- Issue 2: Wide key columns (row-store limit is 1700 bytes in SQL 2016+, 900 in older)
+    -- Issue 2: Wide key columns (nonclustered key limit is 1700 bytes in SQL 2016+, 900 before; clustered is always 900)
     INSERT INTO #issues
     SELECT
         N' + QUOTENAME(@db, N'''') + N',
@@ -63,7 +63,7 @@ BEGIN
         ''WIDE_KEY_COLUMNS'',
         i.name + '' — key width ~'' +
             CAST(SUM(CASE WHEN c.max_length = -1 THEN 900 ELSE c.max_length END) AS VARCHAR) +
-            '' bytes (avoid keys > 900 bytes; > 1700 bytes will fail)'',
+            '' bytes (avoid keys > 900 bytes; limits: 1700 nonclustered, 900 clustered)'',
         SUM(CASE WHEN c.max_length = -1 THEN 900 ELSE c.max_length END),
         CASE
             WHEN SUM(CASE WHEN c.max_length = -1 THEN 900 ELSE c.max_length END) > 1700
