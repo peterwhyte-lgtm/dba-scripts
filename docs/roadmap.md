@@ -30,7 +30,7 @@ For each script that merits a post:
 1. Draft in `blog/<slug>/index.md` using `blog/_template/index.md`
 2. Take screenshots; add to `images/`, replace `<!-- SCREENSHOT: ... -->` markers
 3. Publish to sqldba.blog
-4. Add `-- Blog: https://sqldba.blog/<slug>/` to the SQL script header in the repo
+4. Set the header `Author` line URL to `https://sqldba.blog/<slug>/` (the only blog link in a header since 2026-08-14)
 
 The repo's internal documentation layer is the script header only (Purpose, Requires, SAFE/IMPACT annotations). Internal docs otherwise stay light and general — no per-script READMEs or sidecars.
 

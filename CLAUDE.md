@@ -494,7 +494,7 @@ SET NOCOUNT ON;
 
 Add `HealthCheck : Yes` (after `Requires`) to any script that runs as part of `Invoke-HealthCheckCollection.ps1`. This tag drives the "Health Check Suite" section in the web UI and makes membership machine-readable without needing a separate folder.
 
-**Author URL rule:** The `Author` line uses `https://sqldba.blog` as a placeholder until the script has a published post. Once a post is live, update the URL to the specific post URL. Permalinks are **postname-only** (`/%postname%/`, since 2026-07-13) — the category is **not** in the URL, so the format is `Author : Peter Whyte (https://sqldba.blog/get-database-file-names-and-paths-in-sql-server/)` (not `/category/postname/`). Do this at the same time as marking the blog post `status: updated` or `status: published`. Same rule for `-- Blog:` links in script headers.
+**Author URL rule:** The `Author` line uses `https://sqldba.blog` as a placeholder until the script has a published post. Once a post is live, update the URL to the specific post URL. Permalinks are **postname-only** (`/%postname%/`, since 2026-07-13) — the category is **not** in the URL, so the format is `Author : Peter Whyte (https://sqldba.blog/get-database-file-names-and-paths-in-sql-server/)` (not `/category/postname/`). Do this at the same time as marking the blog post `status: updated` or `status: published`. **The Author line is the ONLY blog link in a script header** — the old `-- Blog:` duplicate line was removed repo-wide 2026-08-14; do not reintroduce it.
 
 **SQL script rules:**
 - Remove or flag unsafe patterns: `WITH (NOLOCK)` (explain risk if present), deprecated catalog views (`sys.sysprocesses`, `sys.sysobjects` etc.)
