@@ -11,7 +11,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-login-security-au
 Requires    : VIEW SERVER STATE, sysadmin (for LOGINPROPERTY on other logins), EXECUTE on xp_readerrorlog
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-login-security-audit/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

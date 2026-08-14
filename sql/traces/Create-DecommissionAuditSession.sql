@@ -7,7 +7,6 @@ Purpose     : Creates an Extended Events session that captures all T-SQL batch, 
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-create-decommission-audit-session/)
 Requires    : ALTER ANY EVENT SESSION, VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-create-decommission-audit-session/
 -- SAFE:CreatesObjects
 -- IMPACT:Low
 SET NOCOUNT ON;

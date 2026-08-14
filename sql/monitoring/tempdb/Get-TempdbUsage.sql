@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-temp-db-usage-and
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-temp-db-usage-and-file-balance/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

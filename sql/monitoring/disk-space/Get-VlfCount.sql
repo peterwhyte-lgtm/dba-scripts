@@ -15,7 +15,6 @@ Notes       : Target: < 50 VLFs per database. > 200 is elevated. > 1000 is sever
               sys.dm_db_log_info path: SQL Server 2016 SP2+ / 2017 CU4+.
               Fallback cursor path (DBCC LOGINFO): SQL Server 2012+.
 */
--- Blog: https://sqldba.blog/dba-scripts-get-vlf-counts/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -9,7 +9,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-ag-failover-readi
 Requires    : VIEW SERVER STATE, VIEW ANY DATABASE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

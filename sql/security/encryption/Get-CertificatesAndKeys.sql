@@ -8,7 +8,6 @@ Purpose     : Server-level certificates and asymmetric keys with expiry, usage d
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/)
 Requires    : VIEW ANY DATABASE, VIEW ANY DEFINITION
 */
--- Blog: https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

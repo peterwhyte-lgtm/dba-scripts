@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-sql-agent-job-fai
 Requires    : db_datareader on msdb
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-sql-agent-job-failure-summary/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -5,7 +5,6 @@ Purpose     : Monthly backup size trend per database over the last 12 months —
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-backup-size-trend/)
 Requires    : msdb access (db_datareader on msdb or sysadmin)
 */
--- Blog: https://sqldba.blog/dba-scripts-get-backup-size-trend/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

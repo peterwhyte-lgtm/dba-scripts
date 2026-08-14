@@ -13,7 +13,6 @@ Notes       : "Accidental FULL" is the classic finding — a database left in FU
               Run Get-LogReuseWaits and Get-TransactionLogSizeAndUsage alongside this to see
               the live effect. Thresholds below are defaults; adjust to your backup SLA.
 */
--- Blog: https://sqldba.blog/dba-scripts-get-recovery-model-audit/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

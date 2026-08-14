@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-active-sessions-a
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

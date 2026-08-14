@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/script-check-ag-replica-role-and-
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/script-check-ag-replica-role-and-synchronization-state/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

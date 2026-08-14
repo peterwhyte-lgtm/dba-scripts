@@ -5,7 +5,6 @@ Purpose     : Allocated, used, and free space per filegroup across all online da
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-filegroup-space/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-sql-server-database-file-details/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

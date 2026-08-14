@@ -3,11 +3,18 @@ Script Name : Get-IndexFragmentation
 Category    : maintenance-and-reliability
 Purpose     : Top fragmented indexes across all user databases, ranked by fragmentation pct.
 Author      : Peter Whyte (https://sqldba.blog)
-Requires    : VIEW SERVER STATE
+Requires    : VIEW SERVER STATE to cover all databases (what this script does). Narrower
+              scopes need less: VIEW DATABASE STATE for a single database, CONTROL on the
+              object for a single index. SQL Server 2022+ accepts the granular
+              VIEW SERVER PERFORMANCE STATE / VIEW DATABASE PERFORMANCE STATE instead.
 Notes       : Iterates every online user database and collects into a single result set.
               Uses LIMITED scan mode — faster than SAMPLED/DETAILED but still proportional
               to database size. Expect 30 s to several minutes on busy or large instances.
-              Indexes under 1000 pages are excluded; fragmentation threshold is 10%.
+              Indexes under 1000 pages are excluded; reporting threshold is 10%.
+              The 10%/30% REORGANIZE/REBUILD split is an operational heuristic (the old
+              Microsoft guideline), not a law: on modern storage the better question is
+              whether the workload actually suffers (scan-heavy reads, page splits), and
+              small indexes rarely justify maintenance at all.
               Run off-peak where possible.
 */
 -- SAFE:ReadOnly

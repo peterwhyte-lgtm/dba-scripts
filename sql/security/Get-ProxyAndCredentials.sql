@@ -7,7 +7,6 @@ Purpose     : Lists SQL Agent proxies and server-level credentials with their id
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/)
 Requires    : VIEW SERVER STATE; membership in sysadmin or SQLAgentOperatorRole in msdb
 */
--- Blog: https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

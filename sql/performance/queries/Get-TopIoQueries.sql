@@ -5,7 +5,6 @@ Purpose     : Top 20 queries by total logical reads since last restart — prima
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-top-cpu-queries/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-top-cpu-queries/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

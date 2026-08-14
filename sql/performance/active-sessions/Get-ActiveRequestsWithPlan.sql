@@ -8,7 +8,6 @@ Purpose     : Point-in-time snapshot of all active requests with XML execution
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

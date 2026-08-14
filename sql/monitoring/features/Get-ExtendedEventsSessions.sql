@@ -7,7 +7,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-extended-events-s
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-extended-events-sessions/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

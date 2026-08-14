@@ -5,7 +5,6 @@ Purpose     : Show enabled SQL Agent jobs with their schedules and next schedule
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-job-schedules-and-duration-trends/)
 Requires    : db_datareader on msdb
 */
--- Blog: https://sqldba.blog/dba-scripts-get-job-schedules-and-duration-trends/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

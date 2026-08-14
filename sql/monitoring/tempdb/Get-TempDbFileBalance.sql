@@ -5,7 +5,6 @@ Purpose     : TempDB data file configuration — checks for size imbalance, grow
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-temp-db-usage-and-file-balance/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-temp-db-usage-and-file-balance/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

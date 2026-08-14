@@ -7,7 +7,6 @@ Purpose     : Resource Governor configuration — enabled state, resource pools,
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-trace-flags-and-resource-governor/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-trace-flags-and-resource-governor/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

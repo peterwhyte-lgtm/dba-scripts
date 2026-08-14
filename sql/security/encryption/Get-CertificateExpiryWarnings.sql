@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-certificates-keys
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

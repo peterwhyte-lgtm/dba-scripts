@@ -9,7 +9,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-maintenance-job-s
 Requires    : SQLAgentReaderRole or sysadmin
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-maintenance-job-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

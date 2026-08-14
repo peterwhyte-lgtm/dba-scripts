@@ -5,7 +5,6 @@ Purpose     : Scores the SQL Server instance across ~20 key configuration checks
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-instance-configuration-score/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-instance-configuration-score/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -8,7 +8,6 @@ Purpose     : Unified contention summary across lock waits, latch waits, TempDB 
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-lock-contention-and-blocking-plans/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-lock-contention-and-blocking-plans/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -5,7 +5,6 @@ Purpose     : Largest uncompressed tables and heaps in the current database, ord
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-compression-candidates/)
 Requires    : VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-compression-candidates/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 -- SCOPE:CurrentDatabase

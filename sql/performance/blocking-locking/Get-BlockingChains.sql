@@ -15,7 +15,6 @@ repeated DMV scans. downstream_waiters is pre-aggregated rather than computed
 via a correlated subquery. dm_exec_connections is joined only for sessions
 that have no active request (idle head blockers).
 */
--- Blog: https://sqldba.blog/dba-scripts-get-blocking-chains/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

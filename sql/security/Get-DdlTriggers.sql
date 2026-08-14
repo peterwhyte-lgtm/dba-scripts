@@ -7,7 +7,6 @@ Purpose     : Server-level DDL triggers. These fire on schema changes (CREATE/AL
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/)
 Requires    : VIEW ANY DEFINITION
 */
--- Blog: https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

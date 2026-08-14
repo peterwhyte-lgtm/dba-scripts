@@ -10,7 +10,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-service-broker-he
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-service-broker-health-and-database-mail-queue/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

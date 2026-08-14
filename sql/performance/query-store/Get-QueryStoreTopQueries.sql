@@ -7,7 +7,6 @@ Purpose     : Top queries from Query Store by CPU, duration, execution count, or
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-store-top-queries/)
 Requires    : VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-query-store-top-queries/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

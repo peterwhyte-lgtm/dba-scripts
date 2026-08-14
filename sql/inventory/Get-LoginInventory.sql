@@ -5,7 +5,6 @@ Purpose     : Inventory server logins by type and status for migration and acces
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-login-and-job-inventory/)
 Requires    : VIEW ANY DATABASE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-login-and-job-inventory/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

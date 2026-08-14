@@ -8,7 +8,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-performance
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

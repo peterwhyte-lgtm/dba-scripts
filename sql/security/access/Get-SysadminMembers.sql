@@ -7,7 +7,6 @@ Requires    : VIEW ANY DATABASE
 HealthCheck : Yes
 Related     : Get-ServerRoleMembers — same data across every fixed and user-defined server role (comprehensive audit)
 */
--- Blog: https://sqldba.blog/dba-scripts-get-sysadmin-members/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

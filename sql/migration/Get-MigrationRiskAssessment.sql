@@ -5,7 +5,6 @@ Purpose     : Pre-migration risk scan — returns categorised HIGH/MEDIUM/INFO f
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-migration-risk-assessment/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-migration-risk-assessment/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -6,7 +6,6 @@ Purpose     : SQL Agent alerts and operators with severity gap analysis. Surface
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-agent-alerts-and-operators/)
 Requires    : VIEW SERVER STATE, SELECT on msdb
 */
--- Blog: https://sqldba.blog/dba-scripts-get-agent-alerts-and-operators/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

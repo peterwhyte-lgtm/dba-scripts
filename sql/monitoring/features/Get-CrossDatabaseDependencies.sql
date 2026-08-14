@@ -6,7 +6,6 @@ Purpose     : Objects in the current database that reference other databases via
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-collation-conflicts-and-cross-database-dependencies/)
 Requires    : VIEW DEFINITION
 */
--- Blog: https://sqldba.blog/dba-scripts-get-collation-conflicts-and-cross-database-dependencies/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 -- SCOPE:CurrentDatabase

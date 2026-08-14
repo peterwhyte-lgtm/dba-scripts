@@ -5,7 +5,6 @@ Purpose     : Database Mail items that are failed, retrying, or unsent — plus 
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-service-broker-health-and-database-mail-queue/)
 Requires    : msdb access (DatabaseMailUserRole or sysadmin)
 */
--- Blog: https://sqldba.blog/dba-scripts-get-service-broker-health-and-database-mail-queue/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

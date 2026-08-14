@@ -5,7 +5,6 @@ Purpose     : Lists all database snapshots with source database, age, and alloca
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-snapshot-inventory/)
 Requires    : VIEW ANY DATABASE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-database-snapshot-inventory/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

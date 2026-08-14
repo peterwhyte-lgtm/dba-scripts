@@ -15,7 +15,6 @@ Notes       : Projects file-limit exhaustion only — not physical disk exhausti
               Files with no size change in the window appear as STABLE (mb_per_day = 0).
               Requires SQL Server 2016 or later.
 */
--- Blog: https://sqldba.blog/dba-scripts-get-database-growth-risk-and-forecast/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

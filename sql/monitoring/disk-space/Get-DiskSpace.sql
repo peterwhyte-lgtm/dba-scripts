@@ -8,7 +8,6 @@ Notes       : Uses sys.dm_os_volume_stats — shows only volumes with at least o
               file. For OS-level disk summary across all drives use Get-DiskSpaceSummary.ps1.
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/script-check-disk-space-on-sql-server/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

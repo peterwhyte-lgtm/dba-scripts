@@ -8,7 +8,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-mirroring-endpoin
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-mirroring-endpoint-health-and-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

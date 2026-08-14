@@ -8,7 +8,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-permissions-and-r
 Requires    : VIEW DATABASE STATE or membership in db_securityadmin
               Run against each target database: -Database YourDatabase
 */
--- Blog: https://sqldba.blog/dba-scripts-get-permissions-and-role-membership/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

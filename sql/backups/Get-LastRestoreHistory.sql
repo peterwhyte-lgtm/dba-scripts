@@ -5,7 +5,6 @@ Purpose     : Full restore history from msdb — when each database was last res
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-last-restore-history/)
 Requires    : msdb access (db_datareader on msdb or sysadmin)
 */
--- Blog: https://sqldba.blog/dba-scripts-get-last-restore-history/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

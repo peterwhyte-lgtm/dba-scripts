@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-recent-error-log-
 Requires    : VIEW SERVER STATE (xp_readerrorlog; sysadmin in practice for most instances)
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-recent-error-log-entries/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

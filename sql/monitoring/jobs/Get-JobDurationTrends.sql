@@ -5,7 +5,6 @@ Purpose     : SQL Agent job duration over the last 30 days — flags jobs that a
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-job-schedules-and-duration-trends/)
 Requires    : msdb access (SQLAgentReaderRole or sysadmin)
 */
--- Blog: https://sqldba.blog/dba-scripts-get-job-schedules-and-duration-trends/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

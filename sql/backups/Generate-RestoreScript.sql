@@ -7,7 +7,6 @@ Purpose     : Generate a RESTORE DATABASE script for all online user databases.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-backup-and-restore-scripts/)
 Requires    : VIEW ANY DATABASE
 */
--- Blog: https://sqldba.blog/dba-scripts-generate-backup-and-restore-scripts/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

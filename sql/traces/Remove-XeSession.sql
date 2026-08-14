@@ -7,7 +7,6 @@ Purpose     : Lists all DBA-created Extended Events sessions (running and stoppe
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-remove-xe-session/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-remove-xe-session/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

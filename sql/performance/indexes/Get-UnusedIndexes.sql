@@ -15,7 +15,6 @@ Notes       : Usage stats reset on SQL Server restart — run only after several
               Review write_count vs total_reads ratio. Drop candidates: write_count
               high, total_reads = 0, and size_mb large.
 */
--- Blog: https://sqldba.blog/dba-scripts-get-unused-indexes/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

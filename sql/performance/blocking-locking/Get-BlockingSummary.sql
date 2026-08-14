@@ -5,7 +5,6 @@ Purpose     : Head blockers with context — who is blocking, how many sessions,
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-blocking-sessions/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-blocking-sessions/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

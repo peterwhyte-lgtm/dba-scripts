@@ -5,7 +5,6 @@ Purpose     : Queries from the plan cache where max execution time is at least 5
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -5,7 +5,6 @@ Purpose     : Inventory linked servers for migration and connectivity dependency
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-linked-servers/)
 Requires    : VIEW ANY DATABASE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-linked-servers/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

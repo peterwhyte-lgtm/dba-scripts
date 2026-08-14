@@ -8,7 +8,6 @@ Purpose     : Lists all databases with key properties and allocated file sizes.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-sizes-and-free-space/)
 Requires    : VIEW ANY DATABASE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-database-sizes-and-free-space/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

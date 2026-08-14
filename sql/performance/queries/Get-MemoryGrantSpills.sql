@@ -8,7 +8,6 @@ Purpose     : Top queries by memory grant spills to TempDB. Spills occur when SQ
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

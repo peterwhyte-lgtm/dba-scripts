@@ -6,7 +6,6 @@ Purpose     : Creates an Extended Events session capturing stored procedure and 
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-create-sp-execution-session/)
 Requires    : ALTER ANY EVENT SESSION, VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-create-sp-execution-session/
 -- SAFE:CreatesObjects
 -- IMPACT:Low
 SET NOCOUNT ON;

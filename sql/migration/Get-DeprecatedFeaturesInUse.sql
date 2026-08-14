@@ -5,7 +5,6 @@ Purpose     : Lists deprecated SQL Server features used since the last service r
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-version-upgrade-readiness/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-version-upgrade-readiness/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

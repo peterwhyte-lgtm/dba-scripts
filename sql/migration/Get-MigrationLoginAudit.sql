@@ -5,7 +5,6 @@ Purpose     : Audits all server-level principals that need to be migrated — SQ
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-migration-login-audit-and-post-migration-validation/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-migration-login-audit-and-post-migration-validation/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

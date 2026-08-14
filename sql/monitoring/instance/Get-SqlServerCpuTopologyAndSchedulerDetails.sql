@@ -5,7 +5,6 @@ Purpose     : CPU topology, NUMA layout, scheduler summary, and parallelism conf
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-cpu-topology-and-os-config/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-cpu-topology-and-os-config/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

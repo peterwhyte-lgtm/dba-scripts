@@ -10,7 +10,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-sizes-an
 Requires    : VIEW ANY DATABASE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-database-sizes-and-free-space/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -5,7 +5,6 @@ Purpose     : Active transactions with age, session details, and the SQL current
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-open-transactions/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-open-transactions/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

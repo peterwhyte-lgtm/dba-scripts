@@ -7,7 +7,6 @@ Requires    : VIEW ANY DATABASE, db_datareader on msdb
 Notes       : Returns three result sets (logins, linked servers, jobs). Run in SSMS or
               use the individual focused scripts for CSV export.
 */
--- Blog: https://sqldba.blog/dba-scripts-get-linked-servers/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

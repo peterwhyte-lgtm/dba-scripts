@@ -8,7 +8,6 @@ Purpose     : LSN continuity analysis for each user database. Verifies the log b
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-backup-chain-integrity/)
 Requires    : SELECT on msdb, VIEW ANY DATABASE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-backup-chain-integrity/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

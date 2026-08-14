@@ -10,7 +10,6 @@ Purpose     : Pre-upgrade readiness summary for SQL Server version upgrades.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-version-upgrade-readiness/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-version-upgrade-readiness/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

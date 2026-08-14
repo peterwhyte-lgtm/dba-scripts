@@ -6,7 +6,6 @@ Purpose     : Shows tables with the most lock escalations since last restart.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-lock-contention-and-blocking-plans/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-lock-contention-and-blocking-plans/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

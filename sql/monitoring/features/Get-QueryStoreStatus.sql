@@ -7,7 +7,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-store-statu
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-query-store-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

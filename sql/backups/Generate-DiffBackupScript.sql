@@ -7,7 +7,6 @@ Purpose     : Generate a DIFFERENTIAL backup script for all online user database
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-backup-and-restore-scripts/)
 Requires    : VIEW ANY DATABASE
 */
--- Blog: https://sqldba.blog/dba-scripts-generate-backup-and-restore-scripts/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

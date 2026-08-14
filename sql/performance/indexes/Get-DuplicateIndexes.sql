@@ -9,7 +9,6 @@ Purpose     : Exact duplicate and overlapping (prefix) indexes across all user d
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-duplicate-indexes/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-duplicate-indexes/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

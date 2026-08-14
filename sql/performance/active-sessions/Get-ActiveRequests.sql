@@ -9,7 +9,6 @@ Purpose     : Point-in-time snapshot of all active requests — sessions with a
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

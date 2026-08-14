@@ -9,7 +9,6 @@ Notes       : Usage figures come from DBCC SQLPERF(LOGSPACE), which reports ever
               databases (fixed 2026-07-19). Offline databases show NULL usage.
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-transaction-log-size-and-usage/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

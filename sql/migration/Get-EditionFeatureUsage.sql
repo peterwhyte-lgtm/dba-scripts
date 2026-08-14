@@ -7,7 +7,6 @@ Purpose     : Audits Enterprise-only features in active use on this instance.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-edition-feature-usage/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE, VIEW ANY DEFINITION
 */
--- Blog: https://sqldba.blog/dba-scripts-get-edition-feature-usage/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

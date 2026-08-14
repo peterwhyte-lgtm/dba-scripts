@@ -10,7 +10,6 @@ Purpose     : One-row-per-database view of every database on the instance: state
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-summary/)
 Requires    : VIEW ANY DATABASE, SELECT on msdb.dbo.backupset
 */
--- Blog: https://sqldba.blog/dba-scripts-get-database-summary/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

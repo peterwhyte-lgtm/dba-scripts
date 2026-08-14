@@ -5,7 +5,6 @@ Purpose     : Databases whose collation differs from the server collation — a 
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-collation-conflicts-and-cross-database-dependencies/)
 Requires    : VIEW ANY DATABASE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-collation-conflicts-and-cross-database-dependencies/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

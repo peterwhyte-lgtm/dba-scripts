@@ -5,7 +5,6 @@ Purpose     : Reads the current SQL Server error log and groups entries by categ
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-error-log-patterns/)
 Requires    : VIEW SERVER STATE (for xp_readerrorlog via sysadmin or securityadmin)
 */
--- Blog: https://sqldba.blog/dba-scripts-get-error-log-patterns/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -7,7 +7,6 @@ Purpose     : Identifies stale, low-sample, and never-updated statistics in the 
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-statistics-health/)
 Requires    : VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-statistics-health/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

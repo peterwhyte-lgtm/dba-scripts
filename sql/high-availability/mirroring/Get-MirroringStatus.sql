@@ -9,7 +9,6 @@ Purpose     : Shows health, state, and point-in-time latency for all mirrored da
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-mirroring-endpoint-health-and-status/)
 Requires    : VIEW SERVER STATE, VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-mirroring-endpoint-health-and-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

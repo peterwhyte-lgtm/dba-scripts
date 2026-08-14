@@ -5,7 +5,6 @@ Purpose     : Identify sessions consuming the most TempDB space for contention a
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-temp-db-hotspots/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-temp-db-hotspots/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

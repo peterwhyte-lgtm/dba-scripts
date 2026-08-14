@@ -13,7 +13,6 @@ Notes       : NOTHING / CHECKPOINT are healthy. LOG_BACKUP means the FULL/BULK_L
               run Get-OpenTransactions next. AVAILABILITY_REPLICA / DATABASE_MIRRORING /
               REPLICATION mean a partner or agent hasn't consumed the log yet.
 */
--- Blog: https://sqldba.blog/dba-scripts-get-log-reuse-waits/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

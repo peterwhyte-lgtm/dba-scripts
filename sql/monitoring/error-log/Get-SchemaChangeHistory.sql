@@ -6,7 +6,6 @@ Purpose     : Recent DDL changes (CREATE, ALTER, DROP) captured by the SQL Serve
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-schema-change-history/)
 Requires    : VIEW SERVER STATE, ALTER TRACE (to read default trace path)
 */
--- Blog: https://sqldba.blog/dba-scripts-get-schema-change-history/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -11,7 +11,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-last-node-blip/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-last-node-blip/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

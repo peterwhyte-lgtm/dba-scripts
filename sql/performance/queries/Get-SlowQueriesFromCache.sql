@@ -7,7 +7,6 @@ Requires    : VIEW SERVER STATE
 Notes       : Covers cached plans since last restart or plan eviction. Complements
               Get-LongRunningQueries (live requests) and Get-TopCpuQueries (total CPU).
 */
--- Blog: https://sqldba.blog/dba-scripts-get-top-cpu-queries/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

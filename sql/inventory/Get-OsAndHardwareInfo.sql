@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-os-and-hardware-i
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-os-and-hardware-info/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

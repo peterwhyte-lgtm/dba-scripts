@@ -9,7 +9,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-replication-statu
 Requires    : db_owner or replmonitor role on the distribution database
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-replication-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

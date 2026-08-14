@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/script-check-always-on-availabili
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/script-check-always-on-availability-group-latency/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

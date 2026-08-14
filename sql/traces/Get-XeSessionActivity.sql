@@ -7,7 +7,6 @@ Purpose     : Reads and summarises Extended Events file target data for a named 
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-xe-session-activity/)
 Requires    : VIEW SERVER STATE, read access to the XE output folder
 */
--- Blog: https://sqldba.blog/dba-scripts-get-xe-session-activity/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -8,7 +8,6 @@ Purpose     : Tables with index design problems: excessive index count (write am
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-index-design-issues/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-index-design-issues/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

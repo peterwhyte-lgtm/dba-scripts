@@ -9,7 +9,6 @@ Notes       : Any rows here indicate a serious integrity concern. Cross-referenc
               Entries persist until manually cleared or the database is restored clean.
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-suspect-pages-and-integrity-checks/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

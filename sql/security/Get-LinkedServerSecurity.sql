@@ -8,7 +8,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-linked-servers/)
 Requires    : VIEW ANY DEFINITION or sysadmin
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-linked-servers/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

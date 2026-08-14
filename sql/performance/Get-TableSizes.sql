@@ -7,7 +7,6 @@ Purpose     : Largest tables across all online user databases by total size (dat
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-table-sizes/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-table-sizes/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -5,7 +5,6 @@ Purpose     : Lists all user databases with current compatibility level, equival
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-version-upgrade-readiness/)
 Requires    : VIEW ANY DATABASE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-version-upgrade-readiness/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

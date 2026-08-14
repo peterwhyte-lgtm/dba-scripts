@@ -8,7 +8,6 @@ Purpose     : Scans the plan cache for implicit conversion warnings. These cause
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-implicit-conversions/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-implicit-conversions/
 -- SAFE:ReadOnly
 -- IMPACT:Medium
 SET NOCOUNT ON;

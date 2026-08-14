@@ -9,7 +9,6 @@ Purpose     : Forced plans in Query Store with failure counts, plan age, forcing
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-query-store-regressions-and-forced-plans/)
 Requires    : VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-query-store-regressions-and-forced-plans/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

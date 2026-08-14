@@ -9,7 +9,6 @@ Purpose     : SQL Server Audit objects and specifications with compliance gap an
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/)
 Requires    : VIEW ANY DATABASE, VIEW ANY DEFINITION, CONTROL SERVER
 */
--- Blog: https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

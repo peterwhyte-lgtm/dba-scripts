@@ -7,7 +7,6 @@ Purpose     : Run on both SOURCE and TARGET and compare the CSV outputs to confi
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-migration-login-audit-and-post-migration-validation/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-migration-login-audit-and-post-migration-validation/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

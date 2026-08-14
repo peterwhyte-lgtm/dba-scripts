@@ -16,7 +16,6 @@ Notes       : Small read-only lookup tables as heaps are usually acceptable.
             Fix: add a clustered index on the natural key, or add an identity
             column and cluster on that if no natural candidate exists.
 */
--- Blog: https://sqldba.blog/dba-scripts-get-heaps/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

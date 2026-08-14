@@ -6,7 +6,6 @@ Purpose     : Active global and session trace flags with descriptions. Reveals u
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-trace-flags-and-resource-governor/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-trace-flags-and-resource-governor/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

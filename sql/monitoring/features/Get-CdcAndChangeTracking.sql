@@ -8,7 +8,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-cdc-and-change-tr
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE, SELECT on msdb
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-cdc-and-change-tracking/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

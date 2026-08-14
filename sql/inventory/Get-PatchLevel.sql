@@ -13,7 +13,6 @@ Notes       : product_update_level returns the CU number (e.g. CU12) on SQL 2012
               build_clr_version is included because CLR version changes affect assembly
               compatibility during upgrades.
 */
--- Blog: https://sqldba.blog/dba-scripts-get-patch-level/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

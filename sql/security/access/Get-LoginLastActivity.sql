@@ -8,7 +8,6 @@ Purpose     : All SQL and Windows logins with current session status, connection
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-login-security-audit/)
 Requires    : VIEW SERVER STATE, VIEW ANY DEFINITION
 */
--- Blog: https://sqldba.blog/dba-scripts-get-login-security-audit/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

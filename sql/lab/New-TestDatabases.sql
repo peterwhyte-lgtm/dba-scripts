@@ -8,7 +8,6 @@ Notes       : Edit the DECLARE parameter block before running in SSMS.
               For PowerShell-driven creation use powershell\lab\New-MultipleDatabases.ps1.
               For parameterised execution from a script use powershell\lab\Run-CreateTestDatabases.ps1.
 */
--- Blog: https://sqldba.blog/script-generate-test-databases/
 -- WARNING: Creates databases — review @Count and @Prefix before running
 -- SAFE:Creates objects
 -- IMPACT:High

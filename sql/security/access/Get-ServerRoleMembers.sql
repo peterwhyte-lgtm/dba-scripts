@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-permissions-and-r
 Requires    : VIEW ANY DATABASE
 Related     : Get-SysadminMembers — the sysadmin-only focused check (health-check member)
 */
--- Blog: https://sqldba.blog/dba-scripts-get-permissions-and-role-membership/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

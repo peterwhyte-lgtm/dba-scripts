@@ -5,7 +5,6 @@ Purpose     : Session count, active requests, open transactions, and blocked ses
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-active-connections-by-database/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-active-connections-by-database/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

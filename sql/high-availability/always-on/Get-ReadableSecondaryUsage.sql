@@ -8,7 +8,6 @@ Purpose     : Shows Availability Group replica connection modes and read-only ro
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

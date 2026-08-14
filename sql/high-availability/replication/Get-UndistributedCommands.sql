@@ -7,7 +7,6 @@ Purpose     : Shows the count of commands that have been read from the publisher
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-replication-agent-status/)
 Requires    : db_owner or replmonitor role on the distribution database
 */
--- Blog: https://sqldba.blog/dba-scripts-get-replication-agent-status/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

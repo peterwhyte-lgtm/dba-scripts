@@ -5,7 +5,6 @@ Purpose     : Allocated, used, and free space for all online databases, ordered 
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-free-space-summary/)
 Requires    : VIEW SERVER STATE, VIEW DATABASE STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-sql-server-database-file-details/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

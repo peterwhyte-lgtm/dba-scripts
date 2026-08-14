@@ -8,7 +8,6 @@ Purpose     : DMV-accessible OS and hardware configuration checks: Lock Pages in
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-cpu-topology-and-os-config/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-cpu-topology-and-os-config/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

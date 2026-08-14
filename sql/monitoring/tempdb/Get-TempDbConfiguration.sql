@@ -8,7 +8,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-temp-db-configura
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-temp-db-configuration/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

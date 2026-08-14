@@ -5,7 +5,6 @@ Purpose     : Show active backup/restore progress and estimated completion for l
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-backup-restore-progress/)
 Requires    : VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-get-backup-restore-progress/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

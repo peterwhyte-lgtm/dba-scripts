@@ -6,7 +6,6 @@ Purpose     : Creates a lightweight Extended Events session that captures every 
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-create-login-activity-session/)
 Requires    : ALTER ANY EVENT SESSION, VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-create-login-activity-session/
 -- SAFE:CreatesObjects
 -- IMPACT:Low
 SET NOCOUNT ON;

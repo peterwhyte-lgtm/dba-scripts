@@ -7,7 +7,6 @@ Purpose     : Generate ALTER USER statements to re-map orphaned database users t
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-fix-orphaned-users/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
--- Blog: https://sqldba.blog/dba-scripts-fix-orphaned-users/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;

@@ -6,7 +6,6 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-health/)
 Requires    : VIEW ANY DATABASE
 HealthCheck : Yes
 */
--- Blog: https://sqldba.blog/dba-scripts-get-database-health/
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
