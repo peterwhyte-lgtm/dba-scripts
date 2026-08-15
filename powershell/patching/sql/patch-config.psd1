@@ -60,20 +60,26 @@
 
         SQL2022 = @{
             MajorVersion  = 16
-            CU            = 'CU25'
-            KB            = 'KB5081477'
-            TargetVersion = '16.0.4255.1'
-            Url           = 'https://download.microsoft.com/download/a89001cb-9c99-48d3-9f14-ded054b35fe4/SQLServer2022-KB5081477-x64.exe'
-            FileName      = 'SQLServer2022-KB5081477-x64.exe'
+            CU            = 'CU26'
+            KB            = 'KB5093420'
+            TargetVersion = '16.0.4265.3'
+            # Direct exe URL not published on the KB page; download via
+            # https://support.microsoft.com/help/5093420 (or the Update Catalog) into
+            # the patch folder and the script picks the file up by name.
+            Url           = ''
+            FileName      = 'SQLServer2022-KB5093420-x64.exe'
         }
 
         SQL2025 = @{
             MajorVersion  = 17
-            CU            = 'CU5'
-            KB            = 'KB5084896'
-            TargetVersion = '17.0.4045.5'
-            Url           = 'https://download.microsoft.com/download/69e0b8fc-1c50-41bd-a576-b9c66b2f302a/SQLServer2025-KB5084896-x64.exe'
-            FileName      = 'SQLServer2025-KB5084896-x64.exe'
+            CU            = 'CU8'
+            KB            = 'KB5104822'
+            TargetVersion = '17.0.4075.5'
+            # Direct exe URL not published on the KB page; download via
+            # https://support.microsoft.com/help/5104822 (or the Update Catalog) into
+            # the patch folder and the script picks the file up by name.
+            Url           = ''
+            FileName      = 'SQLServer2025-KB5104822-x64.exe'
         }
     }
 }
