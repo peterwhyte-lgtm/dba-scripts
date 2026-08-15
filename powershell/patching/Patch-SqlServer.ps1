@@ -39,10 +39,35 @@ param(
     [string]$InstallerPath,
     [string]$DownloadFolder = 'C:\SQLPatches',
     [switch]$Preview,
+    [switch]$DownloadOnly,
     [switch]$Force
 )
 
 $ErrorActionPreference = 'Stop'
+
+# Resolve a CU download link from the Microsoft Update Catalog when no direct
+# link is published. Search by KB -> package GUID -> DownloadDialog -> exe URL.
+function Get-CatalogUrl([string]$kb) {
+    try {
+        $sr = Invoke-WebRequest -Uri "https://www.catalog.update.microsoft.com/Search.aspx?q=$kb" `
+                -UseBasicParsing -TimeoutSec 60
+        $m = [regex]::Match($sr.Content, 'goToDetails\("([0-9a-f-]{36})"')
+        if (-not $m.Success) { return $null }
+        $guid = $m.Groups[1].Value
+        $body = @{ updateIDs = "[{`"size`":0,`"languages`":`"`",`"uidInfo`":`"$guid`",`"updateID`":`"$guid`"}]" }
+        $dr = Invoke-WebRequest -Uri 'https://www.catalog.update.microsoft.com/DownloadDialog.aspx' `
+                -Method Post -Body $body -UseBasicParsing -TimeoutSec 60
+        $u = [regex]::Match($dr.Content, "https?://[^'`"]+\.exe")
+        if ($u.Success) { return $u.Value }
+    } catch { }
+    return $null
+}
+
+function Get-FreeGB([string]$path) {
+    $root = [System.IO.Path]::GetPathRoot([System.IO.Path]::GetFullPath($path))
+    $d = Get-PSDrive -Name $root.TrimEnd(':\') -ErrorAction SilentlyContinue
+    if ($d) { [math]::Round($d.Free / 1GB, 1) } else { $null }
+}
 
 # -- BEGIN GENERATED LATEST-CU TABLE (source: sqldba.blog builds reference) -------
 # Regenerated each patch cycle by gen-patch-map.py from sql-builds.json.
@@ -108,7 +133,28 @@ Write-Step "Target: $($target.Label)  $($target.Build)  ($($target.KB))"
 
 if ($Preview) { Write-Step '[Preview] Stopping here; nothing downloaded or installed.' 'Yellow'; exit 0 }
 
-# 3. Locate or fetch the installer -------------------------------------------------
+# 3. Safety guards: disk space and admin -------------------------------------------
+# CU installers are ~1 GB and extract onto the system drive during install; running
+# out of space mid-install is the worst outcome, so refuse early instead.
+$sysFree = Get-FreeGB $env:SystemDrive
+if ($null -ne $sysFree -and $sysFree -lt 5 -and -not $DownloadOnly) {
+    Write-Step "System drive has only ${sysFree} GB free; the installer needs room to extract." 'Red'
+    Write-Step 'Free up space first (or -Force if you accept the risk).' 'Red'
+    if (-not $Force) { exit 1 }
+}
+if (-not $InstallerPath) {
+    $dlFree = Get-FreeGB $DownloadFolder
+    if ($null -ne $dlFree -and $dlFree -lt 2) {
+        Write-Step "Download folder drive has only ${dlFree} GB free." 'Red'
+        Write-Step '  Point it somewhere with room: .\Patch-SqlServer.ps1 -DownloadFolder D:\SQLPatches' 'Red'
+        exit 1
+    }
+}
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
+           ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isAdmin -and -not $DownloadOnly) { Write-Step 'Run from an ADMIN PowerShell to install (or use -DownloadOnly).' 'Red'; exit 1 }
+
+# 4. Locate or fetch the installer -------------------------------------------------
 $installer = $null
 if ($InstallerPath) {
     if (-not (Test-Path $InstallerPath)) { Write-Step "InstallerPath not found: $InstallerPath" 'Red'; exit 1 }
@@ -118,24 +164,31 @@ if ($InstallerPath) {
     if (Test-Path $cached) {
         Write-Step "Using previously downloaded installer: $cached"
         $installer = $cached
-    } elseif ($target.Url) {
-        New-Item -ItemType Directory -Path $DownloadFolder -Force | Out-Null
-        Write-Step "Downloading $($target.KB)..."
-        Start-BitsTransfer -Source $target.Url -Destination $cached
-        $installer = $cached
     } else {
-        Write-Step 'Microsoft does not publish a direct link for this CU.' 'Yellow'
-        Write-Step "Opening the KB page - use its download button, then rerun with:" 'Yellow'
-        Write-Step "  .\Patch-SqlServer.ps1 -InstallerPath <path-to-$($target.FileName)>" 'Yellow'
-        Start-Process $target.KbUrl
-        exit 1
+        $url = $target.Url
+        if ($url) {
+            Write-Step "Downloading $($target.KB) (direct link)..."
+        } else {
+            Write-Step "No direct link published; asking the Microsoft Update Catalog..."
+            $url = Get-CatalogUrl $target.KB
+            if ($url) { Write-Step "Catalog found it. Downloading $($target.KB)..." }
+        }
+        if ($url) {
+            New-Item -ItemType Directory -Path $DownloadFolder -Force | Out-Null
+            Start-BitsTransfer -Source $url -Destination $cached
+            $installer = $cached
+        } else {
+            Write-Step 'Could not resolve a download link automatically.' 'Yellow'
+            Write-Step 'Opening the KB page - use its download button, then rerun with:' 'Yellow'
+            Write-Step "  .\Patch-SqlServer.ps1 -InstallerPath <path-to-$($target.FileName)>" 'Yellow'
+            Start-Process $target.KbUrl
+            exit 1
+        }
     }
 }
+if ($DownloadOnly) { Write-Step "[DownloadOnly] Installer ready: $installer" 'Green'; exit 0 }
 
-# 4. Confirm and install -----------------------------------------------------------
-$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
-           ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-if (-not $isAdmin) { Write-Step 'Run from an ADMIN PowerShell to install.' 'Red'; exit 1 }
+# 5. Confirm and install -----------------------------------------------------------
 
 if (-not $Force) {
     Write-Host ''
@@ -158,7 +211,7 @@ switch ($proc.ExitCode) {
     }
 }
 
-# 5. Verify ------------------------------------------------------------------------
+# 6. Verify ------------------------------------------------------------------------
 Write-Host ''
 Write-Step 'After:'
 foreach ($f in $behind) {
