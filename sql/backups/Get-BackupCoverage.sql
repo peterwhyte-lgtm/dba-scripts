@@ -2,7 +2,7 @@
 Script Name : Get-BackupCoverage
 Category    : backups-and-recovery
 Purpose     : Review backup coverage per database with a status flag for quick health assessment.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-backup-coverage/)
 Requires    : VIEW ANY DATABASE, db_datareader on msdb
 HealthCheck : Yes
 */

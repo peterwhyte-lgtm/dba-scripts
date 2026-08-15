@@ -27,7 +27,7 @@ DECLARE @autoclose_count          INT     = (SELECT COUNT(*) FROM sys.databases 
 DECLARE @pct_growth_db_count      INT     = (SELECT COUNT(DISTINCT database_id) FROM sys.master_files WHERE is_percent_growth = 1 AND type = 0 AND database_id > 4);
 DECLARE @non_checksum_db_count    INT     = (SELECT COUNT(*) FROM sys.databases WHERE page_verify_option_desc <> 'CHECKSUM' AND name NOT IN ('master','model','msdb','tempdb') AND state = 0);
 DECLARE @offline_db_count         INT     = (SELECT COUNT(*) FROM sys.databases WHERE state <> 0 AND name NOT IN ('master','model','msdb','tempdb'));
-DECLARE @compat_behind_count      INT     = (SELECT COUNT(*) FROM sys.databases d WHERE d.state = 0 AND d.name NOT IN ('master','model','msdb','tempdb') AND d.compatibility_level < (SELECT CASE CAST(SERVERPROPERTY('ProductMajorVersion') AS INT) WHEN 16 THEN 160 WHEN 15 THEN 150 WHEN 14 THEN 140 WHEN 13 THEN 130 WHEN 12 THEN 120 WHEN 11 THEN 110 ELSE 100 END));
+DECLARE @compat_behind_count      INT     = (SELECT COUNT(*) FROM sys.databases d WHERE d.state = 0 AND d.name NOT IN ('master','model','msdb','tempdb') AND d.compatibility_level < (SELECT CASE CAST(SERVERPROPERTY('ProductMajorVersion') AS INT) WHEN 17 THEN 170 WHEN 16 THEN 160 WHEN 15 THEN 150 WHEN 14 THEN 140 WHEN 13 THEN 130 WHEN 12 THEN 120 WHEN 11 THEN 110 ELSE NULL END)); -- ELSE NULL: unknown newer version counts 0 behind rather than flagging every database
 DECLARE @linked_server_count      INT     = (SELECT COUNT(*) FROM sys.servers WHERE is_linked = 1);
 DECLARE @user_db_count            INT     = (SELECT COUNT(*) FROM sys.databases WHERE name NOT IN ('master','model','msdb','tempdb') AND state = 0);
 

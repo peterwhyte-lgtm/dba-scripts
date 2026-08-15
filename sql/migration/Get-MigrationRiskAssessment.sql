@@ -12,6 +12,7 @@ SET NOCOUNT ON;
 DECLARE @instance_compat SMALLINT;
 SELECT @instance_compat =
     CASE CAST(SERVERPROPERTY('ProductMajorVersion') AS INT)
+        WHEN 17 THEN 170 -- SQL Server 2025
         WHEN 16 THEN 160
         WHEN 15 THEN 150
         WHEN 14 THEN 140
@@ -19,7 +20,7 @@ SELECT @instance_compat =
         WHEN 12 THEN 120
         WHEN 11 THEN 110
         WHEN 10 THEN 100
-        ELSE 90
+        ELSE NULL -- newer than this script knows about; compat findings are skipped rather than guessed
     END;
 
 SELECT

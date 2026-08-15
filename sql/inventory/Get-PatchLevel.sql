@@ -41,15 +41,16 @@ SELECT
     CAST(SERVERPROPERTY('Edition')              AS varchar(128))                AS edition,
 
     CASE CAST(SERVERPROPERTY('EngineEdition') AS int)
-        WHEN 1 THEN 'Personal/Desktop'
-        WHEN 2 THEN 'Standard'
-        WHEN 3 THEN 'Enterprise'
-        WHEN 4 THEN 'Express'
-        WHEN 5 THEN 'SQL Database (Azure)'
-        WHEN 6 THEN 'Azure Synapse'
-        WHEN 7 THEN 'Managed Instance'
-        WHEN 8 THEN 'Developer'
-        ELSE       'Unknown'
+        WHEN 1  THEN 'Personal/Desktop'
+        WHEN 2  THEN 'Standard'
+        WHEN 3  THEN 'Enterprise' -- includes Developer and Evaluation
+        WHEN 4  THEN 'Express'
+        WHEN 5  THEN 'SQL Database (Azure)'
+        WHEN 6  THEN 'Azure Synapse Analytics'
+        WHEN 8  THEN 'Azure SQL Managed Instance'
+        WHEN 9  THEN 'Azure SQL Edge'
+        WHEN 11 THEN 'Azure Synapse serverless SQL pool'
+        ELSE        'Unknown'
     END                                                                         AS engine_edition,
 
     CAST(SERVERPROPERTY('ResourceLastUpdateDateTime') AS datetime)              AS resource_db_updated,

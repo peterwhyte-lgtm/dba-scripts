@@ -230,7 +230,7 @@ INSERT #findings VALUES (
 );
 
 -- ── 9. Stretch Database ───────────────────────────────────────────────────────
--- Deprecated in SQL 2022. Enterprise only in SQL 2016–2019.
+-- Deprecated in SQL 2022. Enterprise-only at 2016 RTM; all editions from 2016 SP1.
 BEGIN TRY
     SELECT @cnt = COUNT(*) FROM sys.remote_data_archive_tables;
     SET @detail = CASE WHEN @cnt > 0 THEN CAST(@cnt AS NVARCHAR) + ' Stretch-enabled table(s) — query sys.remote_data_archive_tables for details' ELSE 'No Stretch Database tables' END;
@@ -244,7 +244,7 @@ INSERT #findings VALUES (
     CASE WHEN @cnt > 0 THEN 'YES' ELSE 'NO' END,
     CASE WHEN @cnt > 0 THEN 'WARN' ELSE 'NO' END,
     @detail,
-    CASE WHEN @cnt > 0 THEN 'Stretch Database is deprecated (SQL 2022) and Enterprise only. Migrate data from Azure back to local tables before downgrade. Alter each table: ALTER TABLE [t] SET (REMOTE_DATA_ARCHIVE = OFF (MIGRATION_STATE = INBOUND));'
+    CASE WHEN @cnt > 0 THEN 'Stretch Database is deprecated (SQL 2022). Available in all editions since 2016 SP1, so edition is not the blocker; still migrate data from Azure back to local tables before any move. Alter each table: ALTER TABLE [t] SET (REMOTE_DATA_ARCHIVE = OFF (MIGRATION_STATE = INBOUND));'
          ELSE '' END
 );
 
