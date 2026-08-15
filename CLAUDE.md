@@ -17,14 +17,14 @@ The web UI is where collection output is viewed, verified, and diagnosed — par
 
 ## Product positioning (Peter's directive, 2026-07-06)
 
-Treat dba-tools like a **product**: the AI integration is the selling point and the thing to promote; everything underneath must hold production value against the field's gold standards. Benchmarks to measure against (and beat where claimed):
+Treat dba-tools like a **product**: the AI integration is the selling point; everything underneath must hold production value against the community's long-established gold standards. The bar, per area:
 
-- **Activity/session visibility** as good as `sp_WhoIsActive`
-- **Maintenance plan generation** as good as Ola Hallengren's solution
-- **Diagnostic scripts** as good as Glenn Berry's, but more pertinent
-- **Wait statistics** material better than Paul Randal's reference pages
+- **Activity/session visibility** as good as the field's best-known live-activity tooling
+- **Maintenance plan generation** as good as the de facto standard maintenance solution
+- **Diagnostic scripts** as complete as the well-known community diagnostic query sets, but more pertinent
+- **Wait statistics** material better than the established reference libraries
 
-When improving or reviewing scripts in these areas, these benchmarks are the bar — production value is the floor the AI story stands on.
+When improving or reviewing scripts in these areas, that community bar is the floor the AI story stands on.
 
 ## Operating rules
 

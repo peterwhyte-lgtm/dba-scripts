@@ -212,7 +212,7 @@ and WP #1034) still duplicate #93's territory now that #19 moved off it — need
 
 ## Branch: Maintenance
 
-*"Keeping the lights on — the Ola Hallengren benchmark."*
+*"Keeping the lights on — the maintenance-standard benchmark."*
 
 | Script | Status |
 |--------|--------|
