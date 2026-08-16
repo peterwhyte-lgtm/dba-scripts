@@ -121,7 +121,9 @@ foreach ($f in $found) {
     if ([version]$f.Build -ge [version]$t.Build) {
         Write-Step ("{0,-22} {1,-15} already current ({2})" -f $f.Instance, $f.Build, $t.Label) 'Green'
     } else {
-        Write-Step ("{0,-22} {1,-15} BEHIND -> {2} ({3})" -f $f.Instance, $f.Build, $t.Build, $t.Label) 'Yellow'
+        Write-Host ("  {0,-22} {1,-15} " -f $f.Instance, $f.Build) -ForegroundColor White -NoNewline
+        Write-Host "BEHIND" -ForegroundColor Red -NoNewline
+        Write-Host (" -> {0} ({1})" -f $t.Build, $t.Label) -ForegroundColor Yellow
         $behind += $f
     }
 }
@@ -129,7 +131,7 @@ if ($behind.Count -eq 0) { Write-Host ''; Write-Step 'Nothing to do.' 'Green'; e
 
 $target = $latest[($behind | Select-Object -First 1).Major]
 Write-Host ''
-Write-Step "Target: $($target.Label)  $($target.Build)  ($($target.KB))"
+Write-Step "Target: $($target.Label)  $($target.Build)  ($($target.KB))" 'Yellow'
 Write-Step 'Latest builds reference: https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/' 'DarkCyan'
 
 if ($Preview) { Write-Step '[Preview] Stopping here; nothing downloaded or installed.' 'Yellow'; exit 0 }
