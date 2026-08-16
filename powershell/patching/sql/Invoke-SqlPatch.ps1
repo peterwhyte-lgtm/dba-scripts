@@ -35,6 +35,11 @@ Report version status and planned actions without downloading or installing anyt
 .PARAMETER DownloadOnly
 Download CU installers to PatchRoot but do not install.
 
+.PARAMETER Version
+With -DownloadOnly: stage installers for the named config versions (e.g. SQL2025, or
+just 2025 or 17) without touching or needing any local SQL Server instance. Useful for
+downloading fleet installers from a workstation or jump box.
+
 .PARAMETER Force
 Skip the per-server install confirmation prompt.
 
@@ -57,6 +62,7 @@ Skip the per-server install confirmation prompt.
 param(
     [string]$ConfigPath  = (Join-Path $PSScriptRoot 'patch-config.psd1'),
     [string[]]$Server,
+    [string[]]$Version,
     [string]$PatchRoot,
     [PSCredential]$Credential,
     [switch]$WhatIf,
@@ -175,6 +181,23 @@ function Get-SqlVersions {
     Invoke-Command @params
 }
 
+# -- Resolve a download link from the Microsoft Update Catalog ----------------
+function Get-CatalogUrl([string]$kb) {
+    try {
+        $sr = Invoke-WebRequest -Uri "https://www.catalog.update.microsoft.com/Search.aspx?q=$kb" `
+                -UseBasicParsing -TimeoutSec 60
+        $m = [regex]::Match($sr.Content, 'goToDetails\("([0-9a-f-]{36})"')
+        if (-not $m.Success) { return $null }
+        $guid = $m.Groups[1].Value
+        $body = @{ updateIDs = "[{`"size`":0,`"languages`":`"`",`"uidInfo`":`"$guid`",`"updateID`":`"$guid`"}]" }
+        $dr = Invoke-WebRequest -Uri 'https://www.catalog.update.microsoft.com/DownloadDialog.aspx' `
+                -Method Post -Body $body -UseBasicParsing -TimeoutSec 60
+        $u = [regex]::Match($dr.Content, "https?://[^'`"]+\.exe")
+        if ($u.Success) { return $u.Value }
+    } catch { }
+    return $null
+}
+
 # -- Download CU installer if not already present -----------------------------
 function Get-PatchFile {
     param([hashtable]$Entry, [string]$Root)
@@ -188,8 +211,13 @@ function Get-PatchFile {
         return $file
     }
 
-    if ([string]::IsNullOrWhiteSpace($cfg.Url)) {
-        Write-PatchLog "    ERROR: No download URL configured for $($Entry.SqlVersion) ($($cfg.KB))." 'Red'
+    $url = $cfg.Url
+    if ([string]::IsNullOrWhiteSpace($url)) {
+        Write-PatchLog "    No direct link configured; asking the Microsoft Update Catalog for $($cfg.KB)..." 'Cyan'
+        $url = Get-CatalogUrl $cfg.KB
+    }
+    if ([string]::IsNullOrWhiteSpace($url)) {
+        Write-PatchLog "    ERROR: No download URL for $($Entry.SqlVersion) ($($cfg.KB)) and the Catalog lookup failed." 'Red'
         Write-PatchLog "    Update patch-config.psd1 - see: https://learn.microsoft.com/en-us/troubleshooting/sql/releases/download-and-install-latest-updates" 'Red'
         return $null
     }
@@ -198,7 +226,7 @@ function Get-PatchFile {
     Write-PatchLog "    Downloading $($cfg.KB) ($($Entry.SqlVersion) $($cfg.CU))..." 'Cyan'
 
     try {
-        Start-BitsTransfer -Source $cfg.Url -Destination $file -DisplayName "SQL Patch: $($cfg.FileName)"
+        Start-BitsTransfer -Source $url -Destination $file -DisplayName "SQL Patch: $($cfg.FileName)"
         $sizeMB = [math]::Round((Get-Item $file).Length / 1MB, 1)
         Write-PatchLog "    Downloaded: $($cfg.FileName) ($sizeMB MB)" 'Green'
         return $file
@@ -295,6 +323,33 @@ function Write-PatchResult {
             return "Failed(exit$ExitCode)"
         }
     }
+}
+
+# -- Version-only download: stage installers with no local SQL Server needed ---
+if ($Version) {
+    if (-not $DownloadOnly) {
+        Write-PatchLog '-Version is a download-staging option; add -DownloadOnly to use it.' 'Red'
+        exit 1
+    }
+    $ok = $true
+    foreach ($v in $Version) {
+        $entry = $null
+        foreach ($key in $config.Patches.Keys) {
+            $e = $config.Patches[$key]
+            if ($key -ieq $v -or $key -ieq "SQL$v" -or "$($e.MajorVersion)" -eq $v) {
+                $entry = @{ SqlVersion = $key; Config = $e }; break
+            }
+        }
+        if (-not $entry) {
+            Write-PatchLog "No config block matches -Version '$v' (known: $($config.Patches.Keys -join ', '))." 'Red'
+            $ok = $false; continue
+        }
+        Write-PatchLog "--- staging installer: $($entry.SqlVersion) $($entry.Config.CU) ---" 'Cyan'
+        if (-not (Get-PatchFile -Entry $entry -Root $localPatchRoot)) { $ok = $false }
+    }
+    Write-PatchLog ''
+    Write-PatchLog "Installers staged under: $localPatchRoot" $(if ($ok) { 'Green' } else { 'Yellow' })
+    exit $(if ($ok) { 0 } else { 1 })
 }
 
 # -- Main loop ----------------------------------------------------------------
