@@ -151,6 +151,9 @@ Write-Host ""
 Write-Host "  SSMS" -ForegroundColor Cyan
 
 $ssmsFound = $false
+# Latest released SSMS - update alongside the CU map each patch cycle.
+# Source: https://learn.microsoft.com/en-us/ssms/release-notes-ssms (checked 2026-08-16)
+$ssmsLatest = '22.9.0'
 $paths = @(
     'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
     'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*'
@@ -160,7 +163,21 @@ foreach ($p in $paths) {
         Where-Object { $_.DisplayName -like '*SQL Server Management Studio*' } |
         Select-Object -First 1
     if ($ssms) {
-        Write-Host ("  {0,-35} v{1}" -f $ssms.DisplayName, $ssms.DisplayVersion) -ForegroundColor White
+        $verdict = ''
+        $col     = 'White'
+        $behind  = $false
+        try {
+            if ([version]$ssms.DisplayVersion -ge [version]$ssmsLatest) {
+                $verdict = 'current'; $col = 'Green'
+            } else {
+                $verdict = "update available -> $ssmsLatest"; $col = 'Yellow'; $behind = $true
+            }
+        } catch { }
+        Write-Host ("  {0,-35} v{1,-10} {2}" -f $ssms.DisplayName, $ssms.DisplayVersion, $verdict) -ForegroundColor $col
+        if ($behind) {
+            Write-Host "    Scripted update: .\powershell\patching\ssms\install-ssms.ps1" -ForegroundColor Yellow
+            Write-Host "    Guide: https://sqldba.blog/dba-scripts-install-and-update-ssms-via-powershell/" -ForegroundColor Yellow
+        }
         $ssmsFound = $true; break
     }
 }
@@ -180,13 +197,18 @@ if ($patchLogs) {
     Write-Host "  Recent patch activity (last 5 logs):" -ForegroundColor Cyan
     foreach ($log in $patchLogs) {
         $outcome = 'Unknown'
+        $whatIf  = $false
         foreach ($line in (Get-Content $log.FullName -ErrorAction SilentlyContinue)) {
             # Check failed/cancelled first so a trailing 'Done.' line cannot override them
-            if ($line -match 'FAILED|ERROR:')           { $outcome = 'Failed';    break }
-            if ($line -match 'cancelled')               { $outcome = 'Cancelled'; break }
-            if ($line -match 'succeeded|complete|Done') { $outcome = 'Success' }
+            if ($line -match 'FAILED|ERROR:')            { $outcome = 'Failed';    break }
+            if ($line -match 'cancelled')                { $outcome = 'Cancelled'; break }
+            if ($line -match '\[WhatIf')                 { $whatIf  = $true }
+            if ($line -match '\bWouldPatch\b')           { $outcome = 'Preview - patch needed' }
+            if ($line -match '\bUpToDate\b')             { $outcome = 'Preview - up to date' }
+            if ($line -match 'succeeded|complete|Done')  { $outcome = 'Success' }
         }
-        $color = switch ($outcome) { 'Success'{'Green'} 'Failed'{'Red'} default{'Yellow'} }
+        if ($outcome -eq 'Unknown' -and $whatIf) { $outcome = 'Preview (WhatIf)' }
+        $color = switch -Wildcard ($outcome) { 'Success'{'Green'} 'Failed'{'Red'} 'Preview*'{'Cyan'} default{'Yellow'} }
         Write-Host ("  {0}  {1,-40} {2}" -f $log.LastWriteTime.ToString('yyyy-MM-dd HH:mm'), $log.Name, $outcome) -ForegroundColor $color
     }
 }
