@@ -134,7 +134,7 @@ Write-Host ''
 Write-Step "Target: $($target.Label)  $($target.Build)  ($($target.KB))" 'Yellow'
 Write-Step 'Latest builds reference: https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/' 'DarkCyan'
 
-if ($Preview) { Write-Step '[Preview] Stopping here; nothing downloaded or installed.' 'Yellow'; exit 0 }
+if ($Preview) { Write-Step '[Preview] Stopping here; nothing downloaded or installed.' 'Cyan'; exit 0 }
 
 # 3. Safety guards: disk space and admin -------------------------------------------
 # CU installers are ~1 GB and extract onto the system drive during install; running

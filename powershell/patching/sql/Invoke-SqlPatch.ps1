@@ -356,10 +356,15 @@ foreach ($srv in $targetServers) {
         }
 
         # Patch needed
-        Write-PatchLog "  Status    : PATCH NEEDED  $current  ->  $target" 'Red'
+        # Two-tone console (verdict word red, target yellow); plain line to the log file
+        $stamp = "[$(Get-Date -Format 'HH:mm:ss')]"
+        Write-Host "$stamp   Status    : " -ForegroundColor White -NoNewline
+        Write-Host 'PATCH NEEDED' -ForegroundColor Red -NoNewline
+        Write-Host "  $current  ->  $target" -ForegroundColor Yellow
+        Add-Content -Path $logFile -Value "$stamp   Status    : PATCH NEEDED  $current  ->  $target"
 
         if ($WhatIf) {
-            Write-PatchLog "  [WhatIf] Would download and install $($entry.Config.KB) on $srv." 'DarkGray'
+            Write-PatchLog "  [WhatIf] Would download and install $($entry.Config.KB) on $srv." 'Cyan'
             $results.Add([pscustomobject]@{ Server=$srv; Instance=$name; Installed=$inst.ProductVersion; Target=$target; Status='WouldPatch' })
             Write-PatchLog ''
             continue

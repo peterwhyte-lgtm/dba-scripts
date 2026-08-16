@@ -181,20 +181,20 @@ foreach ($p in $paths) {
         Where-Object { $_.DisplayName -like '*SQL Server Management Studio*' } |
         Select-Object -First 1
     if ($ssms) {
-        $verdict = ''
-        $col     = 'White'
-        $behind  = $false
+        $behind = $false
+        Write-Host ("  {0,-35} v{1,-10} " -f $ssms.DisplayName, $ssms.DisplayVersion) -ForegroundColor White -NoNewline
         try {
             if ([version]$ssms.DisplayVersion -ge [version]$ssmsLatest) {
-                $verdict = 'current'; $col = 'Green'
+                Write-Host 'current' -ForegroundColor Green
             } else {
-                $verdict = "BEHIND -> $ssmsLatest"; $col = 'Red'; $behind = $true
+                Write-Host 'BEHIND' -ForegroundColor Red -NoNewline
+                Write-Host " -> $ssmsLatest" -ForegroundColor Yellow
+                $behind = $true
             }
-        } catch { }
-        Write-Host ("  {0,-35} v{1,-10} {2}" -f $ssms.DisplayName, $ssms.DisplayVersion, $verdict) -ForegroundColor $col
+        } catch { Write-Host '' }
         if ($behind) {
-            Write-Host "    Scripted update: .\powershell\patching\ssms\install-ssms.ps1" -ForegroundColor Yellow
-            Write-Host "    Guide: https://sqldba.blog/dba-scripts-install-and-update-ssms-via-powershell/" -ForegroundColor Yellow
+            Write-Host "    Scripted update: .\powershell\patching\ssms\install-ssms.ps1" -ForegroundColor DarkCyan
+            Write-Host "    Guide: https://sqldba.blog/dba-scripts-install-and-update-ssms-via-powershell/" -ForegroundColor DarkCyan
         }
         $ssmsFound = $true; break
     }
