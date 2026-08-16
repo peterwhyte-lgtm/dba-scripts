@@ -356,7 +356,7 @@ foreach ($srv in $targetServers) {
         }
 
         # Patch needed
-        Write-PatchLog "  Status    : PATCH NEEDED  $current  ->  $target" 'Yellow'
+        Write-PatchLog "  Status    : PATCH NEEDED  $current  ->  $target" 'Red'
 
         if ($WhatIf) {
             Write-PatchLog "  [WhatIf] Would download and install $($entry.Config.KB) on $srv." 'DarkGray'
