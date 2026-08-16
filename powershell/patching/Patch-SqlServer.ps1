@@ -115,7 +115,7 @@ Write-Host ''
 foreach ($f in $found) {
     $t = $latest[$f.Major]
     if (-not $t) {
-        Write-Step ("{0,-22} {1,-15} no CU-train target for this version; see the builds reference" -f $f.Instance, $f.Build) 'Yellow'
+        Write-Step ("{0,-22} {1,-15} no CU-train target for this version; see https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/" -f $f.Instance, $f.Build) 'Yellow'
         continue
     }
     if ([version]$f.Build -ge [version]$t.Build) {
@@ -130,6 +130,7 @@ if ($behind.Count -eq 0) { Write-Host ''; Write-Step 'Nothing to do.' 'Green'; e
 $target = $latest[($behind | Select-Object -First 1).Major]
 Write-Host ''
 Write-Step "Target: $($target.Label)  $($target.Build)  ($($target.KB))"
+Write-Step 'Latest builds reference: https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/' 'DarkCyan'
 
 if ($Preview) { Write-Step '[Preview] Stopping here; nothing downloaded or installed.' 'Yellow'; exit 0 }
 

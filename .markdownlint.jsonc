@@ -10,7 +10,11 @@
   // MD029 — ol-prefix          : numbered lists split by fenced code blocks are treated as new lists;
   //                             restructuring to indent all embedded code blocks would damage readability
   // MD041 — first line H1     : YAML frontmatter sits above the first heading
+  // MD036 — emphasis as heading: planning docs use italic taglines under headings by design
+  // MD040 — fence language     : some doc fences are plain trees/output where a language tag adds nothing
   "default": true,
+  "MD036": false,
+  "MD040": false,
   "MD029": false,
   "MD013": false,
   "MD024": { "siblings_only": true },
