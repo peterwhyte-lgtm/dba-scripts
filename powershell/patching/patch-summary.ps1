@@ -97,6 +97,15 @@ $cuMap = @{
     '13.0.6419.1'  = 'SQL 2016 SP3 CU17'
 }
 
+# Latest CU-train build per major version - update alongside the CU map each patch
+# cycle (same data as https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/).
+$latestBuild = @{
+    17 = '17.0.4075.5'   # SQL 2025 CU8
+    16 = '16.0.4265.3'   # SQL 2022 CU26
+    15 = '15.0.4430.1'   # SQL 2019 CU32
+    14 = '14.0.3495.9'   # SQL 2017 CU31 + GDR
+}
+
 function Get-CuLabel([string]$version) {
     if ($cuMap.ContainsKey($version)) { return $cuMap[$version] }
     # Partial match on major.minor
@@ -139,7 +148,16 @@ if ($instances.Count -eq 0) {
             $ver   = $row.pv
             $ed    = $row.ed
             $label = Get-CuLabel $ver
-            Write-Host ("  {0,-25} {1,-16} {2,-22} {3}" -f $inst, $ver, $label, $ed) -ForegroundColor White
+            Write-Host ("  {0,-25} {1,-16} {2,-22} {3}  " -f $inst, $ver, $label, $ed) -ForegroundColor White -NoNewline
+            $major = [int]($ver -split '\.')[0]
+            if ($latestBuild.ContainsKey($major)) {
+                if ([version]$ver -ge [version]$latestBuild[$major]) {
+                    Write-Host 'current' -ForegroundColor Green
+                } else {
+                    Write-Host 'BEHIND' -ForegroundColor Red -NoNewline
+                    Write-Host (" -> $($latestBuild[$major])") -ForegroundColor Yellow
+                }
+            } else { Write-Host '' }
         } catch {
             Write-Host ("  {0,-25} {1}" -f $inst, "(could not connect)") -ForegroundColor Yellow
         }
@@ -170,7 +188,7 @@ foreach ($p in $paths) {
             if ([version]$ssms.DisplayVersion -ge [version]$ssmsLatest) {
                 $verdict = 'current'; $col = 'Green'
             } else {
-                $verdict = "update available -> $ssmsLatest"; $col = 'Yellow'; $behind = $true
+                $verdict = "BEHIND -> $ssmsLatest"; $col = 'Red'; $behind = $true
             }
         } catch { }
         Write-Host ("  {0,-35} v{1,-10} {2}" -f $ssms.DisplayName, $ssms.DisplayVersion, $verdict) -ForegroundColor $col
