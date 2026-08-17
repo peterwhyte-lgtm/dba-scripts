@@ -1,0 +1,2474 @@
+[
+ {
+  "wait_types": [
+   "ABORT_BLOCKERS"
+  ],
+  "title": "LCK_M LOW_PRIORITY and ABORT_BLOCKERS Wait Types in SQL Server",
+  "verdict": "Time in LCK_M_SCH_M_LOW_PRIORITY is the feature working: your rebuild waits without hurting anyone.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Use WAIT_AT_LOW_PRIORITY on production online rebuilds and partition switches; it is the polite default for busy systems.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-low-priority-abort-blockers/"
+ },
+ {
+  "wait_types": [
+   "AM_INDBUILD_ALLOCATION",
+   "AM_SCHEMAMGR_UNSHARED_CACHE"
+  ],
+  "title": "AM_INDBUILD_ALLOCATION and AM_SCHEMAMGR_UNSHARED_CACHE Wait Types in SQL Server",
+  "verdict": "No; neither has been a noticeable contention point.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter both in routine analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-am-waits/"
+ },
+ {
+  "wait_types": [
+   "ASSEMBLY_LOAD"
+  ],
+  "title": "ASSEMBLY_LOAD and CLR Assembly Wait Types in SQL Server",
+  "verdict": "Rarely; none has been a contention point in normal use.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "For load bursts, check appdomain stability first (error log unload/reload pairs, memory pressure).",
+  "url": "https://sqldba.blog/sql-server-wait-clr-assembly-waits/"
+ },
+ {
+  "wait_types": [
+   "ASYNC_DISKPOOL_LOCK"
+  ],
+  "title": "ASYNC_DISKPOOL_LOCK Wait Type in SQL Server",
+  "verdict": "Not as contention; it has not been a noticeable bottleneck.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Map its spikes to the file operations in flight at the time.",
+  "url": "https://sqldba.blog/sql-server-wait-async-diskpool-lock/"
+ },
+ {
+  "wait_types": [
+   "ASYNC_IO_COMPLETION"
+  ],
+  "title": "ASYNC_IO_COMPLETION Wait Type in SQL Server",
+  "verdict": "It is expected in volume during backup and maintenance windows; a full backup of a large database legitimately accumulates hours of this wait across its threads.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Correlate the wait with your job schedule first.",
+  "url": "https://sqldba.blog/sql-server-wait-async-io-completion/"
+ },
+ {
+  "wait_types": [
+   "ASYNC_NETWORK_IO"
+  ],
+  "title": "ASYNC_NETWORK_IO Wait Type in SQL Server",
+  "verdict": "Very common and almost always harmless.",
+  "matters": true,
+  "when_to_ignore": "SSMS result grid , SSMS displays results incrementally as they arrive.",
+  "what_to_do": "If queries return too many rows: Add WHERE clauses to filter earlier Add TOP or pagination (OFFSET/FETCH) to return only what's needed Move aggregation into SQL (GROUP BY, SUM, COUNT) rather than returning raw rows to the application If...",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-async-network-io/"
+ },
+ {
+  "wait_types": [
+   "BACKUP"
+  ],
+  "title": "BACKUP Wait Type in SQL Server",
+  "verdict": "Not in itself; it has not been a contention point, and time here is proportional to backup activity and duration.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Track durations from msdb.dbo.backupset ; trends are the real signal.",
+  "url": "https://sqldba.blog/sql-server-wait-backup/"
+ },
+ {
+  "wait_types": [
+   "BACKUPIO",
+   "BACKUPBUFFER"
+  ],
+  "title": "BACKUPIO and BACKUPBUFFER Wait Types in SQL Server",
+  "verdict": "Yes, during backup windows.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Enable backup compression , the single highest-impact change you can make to improve backup performance: -- For a single backup: BACKUP DATABASE [YourDatabase] TO DISK = 'D:\\Backups\\YourDatabase.bak' WITH COMPRESSION, STATS = 10; -- Set as...",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-backupio/"
+ },
+ {
+  "wait_types": [
+   "BACKUPTHREAD"
+  ],
+  "title": "BACKUPTHREAD Wait Type in SQL Server",
+  "verdict": "Not by itself. It has not been a genuine contention point; it mostly mirrors how long your backups and restores take.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Track backup duration trends from msdb.dbo.backupset .",
+  "url": "https://sqldba.blog/sql-server-wait-backupthread/"
+ },
+ {
+  "wait_types": [
+   "BAD_PAGE_PROCESS"
+  ],
+  "title": "BAD_PAGE_PROCESS Wait Type in SQL Server",
+  "verdict": "Any meaningful presence is a five-alarm signal, not a performance discussion.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check msdb.dbo.suspect_pages immediately (our Get-SuspectPages script and the health check both surface this) and the error log for the 823/824 details.",
+  "url": "https://sqldba.blog/sql-server-wait-bad-page-process/"
+ },
+ {
+  "wait_types": [
+   "BMPALLOCATION"
+  ],
+  "title": "BMPALLOCATION Wait Type in SQL Server",
+  "verdict": "Almost never at any visible scale.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Find the big parallel queries running when the wait appears: sys.dm_exec_query_stats for high-elapsed-time parallel plans, or catch them live with sys.dm_exec_requests .",
+  "url": "https://sqldba.blog/sql-server-wait-bmpallocation/"
+ },
+ {
+  "wait_types": [
+   "BPSORT"
+  ],
+  "title": "BPSORT Wait Type in SQL Server",
+  "verdict": "Mostly no, with one documented exception worth knowing cold: on SQL Server 2016-era builds, a batch-mode sort could hit an inefficiency so severe it resembled a non-yielding scheduler, a query that simply never completes.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "For a stuck query showing batch sort behaviour: capture the plan, check build currency, and test trace flag 9358 (or a query-level workaround that avoids the batch sort) to confirm the diagnosis.",
+  "url": "https://sqldba.blog/sql-server-wait-bpsort/"
+ },
+ {
+  "wait_types": [
+   "BROKER_EVENTHANDLER"
+  ],
+  "title": "BROKER_EVENTHANDLER Wait Type in SQL Server",
+  "verdict": "No. A single permanently parked background thread is not a bottleneck, and this wait carries no information about Service Broker throughput, backlog, or health.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-eventhandler/"
+ },
+ {
+  "wait_types": [
+   "BROKER_INIT"
+  ],
+  "title": "BROKER_INIT and Service Broker Startup Wait Types in SQL Server",
+  "verdict": "No. Every one of these is lifecycle or configuration machinery, active at startup, shutdown, endpoint state changes, and routing updates, and none has been a contention point in practice.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter them out of wait analysis; they are event markers, not performance signals.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-internal-waits/"
+ },
+ {
+  "wait_types": [
+   "BROKER_RECEIVE_WAITFOR"
+  ],
+  "title": "BROKER_RECEIVE_WAITFOR Wait Type in SQL Server",
+  "verdict": "No; an empty queue with a patient reader is the intended resting state, and this wait is filtered as benign.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script does by default.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-receive-waitfor/"
+ },
+ {
+  "wait_types": [
+   "BROKER_TASK_STOP"
+  ],
+  "title": "BROKER_TASK_STOP Wait Type in SQL Server",
+  "verdict": "No; it is a benign lifecycle wait for Broker's task handler pool and belongs on the filter list.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-task-stop/"
+ },
+ {
+  "wait_types": [
+   "BROKER_TO_FLUSH"
+  ],
+  "title": "BROKER_TO_FLUSH Wait Type in SQL Server",
+  "verdict": "No. It is a one-second-per-second background timer, firmly on the benign filter list.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-to-flush/"
+ },
+ {
+  "wait_types": [
+   "BROKER_TRANSMISSION_TABLE"
+  ],
+  "title": "BROKER_TRANSMISSION_TABLE Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point and is safely filtered.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it from wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-transmission-table/"
+ },
+ {
+  "wait_types": [
+   "BROKER_TRANSMISSION_WORK"
+  ],
+  "title": "BROKER_TRANSMISSION_WORK Wait Type in SQL Server",
+  "verdict": "No observed case says so; it has not been a contention point, and it accumulates in Broker environments the way its transmitter siblings do, tracking idleness rather than load.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-transmission-work/"
+ },
+ {
+  "wait_types": [
+   "BROKER_TRANSMITTER"
+  ],
+  "title": "BROKER_TRANSMITTER Wait Type in SQL Server",
+  "verdict": "No; it is a standard benign wait, and its inflated growth rate makes it look scarier than it is in raw rankings.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-transmitter/"
+ },
+ {
+  "wait_types": [
+   "CHECKPOINT_QUEUE"
+  ],
+  "title": "CHECKPOINT_QUEUE Wait Type in SQL Server",
+  "verdict": "No. It is a textbook benign wait: an always-on background thread measuring its own idle time.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis; there is nothing to tune through it.",
+  "url": "https://sqldba.blog/sql-server-wait-checkpoint-queue/"
+ },
+ {
+  "wait_types": [
+   "CHECK_TABLES_INITIALIZATION"
+  ],
+  "title": "CHECK_TABLES_INITIALIZATION Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its footprint is a brief blip at the start of each parallel DBCC run.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it from wait analysis; it is DBCC housekeeping.",
+  "url": "https://sqldba.blog/sql-server-wait-check-tables-initialization/"
+ },
+ {
+  "wait_types": [
+   "CHECK_TABLES_THREAD_BARRIER"
+  ],
+  "title": "CHECK_TABLES_THREAD_BARRIER Wait Type in SQL Server",
+  "verdict": "Usually not; it is normal parallel-DBCC coordination and safe to ignore in routine analysis.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Ignore routine amounts; they track your DBCC schedule.",
+  "url": "https://sqldba.blog/sql-server-wait-check-tables-thread-barrier/"
+ },
+ {
+  "wait_types": [
+   "CHKPT"
+  ],
+  "title": "CHKPT Wait Type in SQL Server",
+  "verdict": "No. Expect exactly one occurrence per startup with whatever duration the boot sequence produced.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-chkpt/"
+ },
+ {
+  "wait_types": [
+   "CLR_AUTO_EVENT"
+  ],
+  "title": "CLR_AUTO_EVENT Wait Type in SQL Server",
+  "verdict": "Almost never. It belongs on the benign filter list, and its totals track uptime and CLR thread pool size, not workload health.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-clr-auto-event/"
+ },
+ {
+  "wait_types": [
+   "CLR_MANUAL_EVENT"
+  ],
+  "title": "CLR_MANUAL_EVENT Wait Type in SQL Server",
+  "verdict": "Almost never, and long waits are expected.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-clr-manual-event/"
+ },
+ {
+  "wait_types": [
+   "CLR_SEMAPHORE"
+  ],
+  "title": "CLR_SEMAPHORE Wait Type in SQL Server",
+  "verdict": "Usually not; it sits on the benign filter list and has not been a contention point in ordinary operation.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-clr-semaphore/"
+ },
+ {
+  "wait_types": [
+   "CMEMPARTITIONED"
+  ],
+  "title": "CMEMPARTITIONED Wait Type in SQL Server",
+  "verdict": "Rarely, and its normal profile is tiny waits in large counts.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Confirm it is really this wait and not CMEMTHREAD ; the unpartitioned sibling is the common one and has known trace-flag mitigations (like TF 8048 historically, now default behaviour).",
+  "url": "https://sqldba.blog/sql-server-wait-cmempartitioned/"
+ },
+ {
+  "wait_types": [
+   "CMEMTHREAD"
+  ],
+  "title": "CMEMTHREAD Wait Type in SQL Server",
+  "verdict": "A small amount can be normal on busy systems.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Confirm whether compile pressure is present, then reduce ad hoc churn where possible.",
+  "url": "https://sqldba.blog/sql-server-wait-cmemthread/"
+ },
+ {
+  "wait_types": [
+   "COLUMNSTORE_BUILD_THROTTLE"
+  ],
+  "title": "COLUMNSTORE_BUILD_THROTTLE Wait Type in SQL Server",
+  "verdict": "It is a fixed toll at the start of every parallel columnstore build, so some of it is unavoidable and expected during index creation and rebuilds.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Accept the baseline; the calibration exists to prevent worse problems (mis-sized grants spilling later).",
+  "url": "https://sqldba.blog/sql-server-wait-columnstore-build-throttle/"
+ },
+ {
+  "wait_types": [
+   "COMMIT_TABLE"
+  ],
+  "title": "COMMIT_TABLE Wait Type in SQL Server",
+  "verdict": "It can be. The known bottleneck pattern is Change Tracking enabled on many tables combined with a workload of many small transactions updating them: every one of those commits queues at the same shared structure.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Inventory the scope: sys.change_tracking_tables shows what is tracked; ask which tables genuinely need it.",
+  "url": "https://sqldba.blog/sql-server-wait-commit-table/"
+ },
+ {
+  "wait_types": [
+   "CXPACKET",
+   "CXCONSUMER"
+  ],
+  "title": "CXPACKET and CXCONSUMER Wait Types in SQL Server",
+  "verdict": "Yes, they will appear on any server that runs parallel queries.",
+  "matters": true,
+  "when_to_ignore": "Analytics and reporting workloads , parallel queries are beneficial for large aggregations, sorts, and scans.",
+  "what_to_do": "Raise cost threshold for parallelism , this is almost always the first fix: EXEC sp_configure 'cost threshold for parallelism', 50; RECONFIGURE; A value of 25\u201350 eliminates most unnecessary parallelism on OLTP workloads without affecting...",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-cxpacket-cxconsumer/"
+ },
+ {
+  "wait_types": [
+   "CXROWSET_SYNC"
+  ],
+  "title": "CXROWSET_SYNC Wait Type in SQL Server",
+  "verdict": "No, not as a contention point in its own right.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Nothing for the wait itself.",
+  "url": "https://sqldba.blog/sql-server-wait-cxrowset-sync/"
+ },
+ {
+  "wait_types": [
+   "CXSYNC_CONSUMER"
+  ],
+  "title": "CXSYNC_CONSUMER Wait Type in SQL Server",
+  "verdict": "Read it the way you read CXPACKET : it proves parallel plans are running, which is often exactly what you want.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the parallel queries involved ( sys.dm_exec_query_stats filtered to parallel plans, ordered by elapsed time).",
+  "url": "https://sqldba.blog/sql-server-wait-cxsync-consumer/"
+ },
+ {
+  "wait_types": [
+   "CXSYNC_PORT"
+  ],
+  "title": "CXSYNC_PORT Wait Type in SQL Server",
+  "verdict": "Treat it as part of the CX family: evidence of parallelism, not proof of trouble, and not a reason to slash MAXDOP.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Capture the plans behind the wait and look for the blocking operator feeding an exchange; that operator's input is the real tuning target.",
+  "url": "https://sqldba.blog/sql-server-wait-cxsync-port/"
+ },
+ {
+  "wait_types": [
+   "DAC_INIT"
+  ],
+  "title": "DAC_INIT Wait Type in SQL Server",
+  "verdict": "No; it is a startup marker on the benign list.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter the wait; act on the feature instead.",
+  "url": "https://sqldba.blog/sql-server-wait-dac-init/"
+ },
+ {
+  "wait_types": [
+   "DBMIRRORING_CMD"
+  ],
+  "title": "DBMIRRORING_CMD Wait Type in SQL Server",
+  "verdict": "Usually not; it is typical background residue on any mirrored instance and normally filtered out.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it in routine analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirroring-cmd/"
+ },
+ {
+  "wait_types": [
+   "DBMIRROR_DBM_MUTEX"
+  ],
+  "title": "DBMIRROR_DBM_MUTEX Wait Type in SQL Server",
+  "verdict": "Rarely. It has not been a noticeable contention point in practice; it is bookkeeping between redo threads doing their normal job.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Check the redo queue on the mirror via the mirroring performance counters (SQL Server:Database Mirroring, Redo Queue KB and Redo Bytes/sec).",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirror-dbm-mutex/"
+ },
+ {
+  "wait_types": [
+   "DBMIRROR_EVENTS_QUEUE"
+  ],
+  "title": "DBMIRROR_EVENTS_QUEUE Wait Type in SQL Server",
+  "verdict": "No; it is a benign idle wait that belongs on the filter list.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; it carries no signal.",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirror-events-queue/"
+ },
+ {
+  "wait_types": [
+   "DBMIRROR_SEND"
+  ],
+  "title": "DBMIRROR_SEND Wait Type in SQL Server",
+  "verdict": "On asynchronous (high-performance) mirroring, a backlog mostly means the send queue on the principal grows, widening the potential data loss window but not slowing users.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check the mirroring performance counters (SQL Server:Database Mirroring), particularly send queue and transaction delay, to confirm the backlog and its trend.",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirror-send/"
+ },
+ {
+  "wait_types": [
+   "DBMIRROR_WORKER_QUEUE"
+  ],
+  "title": "DBMIRROR_WORKER_QUEUE Wait Type in SQL Server",
+  "verdict": "No; idle workers are the healthy state, and this wait is filtered as benign.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirror-worker-queue/"
+ },
+ {
+  "wait_types": [
+   "DEADLOCK_ENUM_MUTEX"
+  ],
+  "title": "DEADLOCK_ENUM_MUTEX Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-deadlock-enum-mutex/"
+ },
+ {
+  "wait_types": [
+   "DIRTY_PAGE_POLL"
+  ],
+  "title": "DIRTY_PAGE_POLL Wait Type in SQL Server",
+  "verdict": "No, never. It accumulates at a steady drumbeat on any instance with databases using indirect checkpoints, which is the default for databases created on SQL Server 2016 and later ( TARGET_RECOVERY_TIME = 60 ).",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis with the other benign background waits; our Get-WaitStatistics script does this by default.",
+  "url": "https://sqldba.blog/sql-server-wait-dirty-page-poll/"
+ },
+ {
+  "wait_types": [
+   "DIRTY_PAGE_TABLE_LOCK"
+  ],
+  "title": "DIRTY_PAGE_TABLE_LOCK Wait Type in SQL Server",
+  "verdict": "It can be, and its pattern is distinctive: heavy read activity on the secondary plus a heavy update workload on the primary.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Confirm the pairing: this wait on the secondary, sustained write rate on the primary, and reporting concurrency at the same time.",
+  "url": "https://sqldba.blog/sql-server-wait-dirty-page-table-lock/"
+ },
+ {
+  "wait_types": [
+   "DISKIO_SUSPEND"
+  ],
+  "title": "DISKIO_SUSPEND Wait Type in SQL Server",
+  "verdict": "The freeze itself is by design, and short freezes (a second or two for a VSS snapshot) are barely felt.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Pull the freeze/resume pairs from the error log and measure real freeze durations per database (our recent-errors script surfaces these).",
+  "url": "https://sqldba.blog/sql-server-wait-diskio-suspend/"
+ },
+ {
+  "wait_types": [
+   "DISPATCHER_QUEUE_SEMAPHORE"
+  ],
+  "title": "DISPATCHER_QUEUE_SEMAPHORE Wait Type in SQL Server",
+  "verdict": "No; Books Online notes explicitly that the wait time is expected to increase when the dispatcher is idle, which is most of the time on most systems.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-dispatcher-queue-semaphore/"
+ },
+ {
+  "wait_types": [
+   "DPT_ENTRY_LOCK"
+  ],
+  "title": "DPT_ENTRY_LOCK Wait Type in SQL Server",
+  "verdict": "Same conditions as its sibling, heavy secondary reads plus heavy primary writes, but with one sharpening detail: DPT_ENTRY_LOCK becomes prevalent when the reads and the updates involve the same tables , because redo and readers are then...",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the overlapping tables: what the secondary's queries read versus what the primary's write workload churns.",
+  "url": "https://sqldba.blog/sql-server-wait-dpt-entry-lock/"
+ },
+ {
+  "wait_types": [
+   "DROPTEMP"
+  ],
+  "title": "DROPTEMP Wait Type in SQL Server",
+  "verdict": "It should be absent or negligible on healthy modern systems.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Pull the \"Drop Temp Obj:\" entries and any deadlock graphs from the error log and system_health; they identify the other party.",
+  "url": "https://sqldba.blog/sql-server-wait-droptemp/"
+ },
+ {
+  "wait_types": [
+   "DUMP_LOG_COORDINATOR"
+  ],
+  "title": "DUMP_LOG_COORDINATOR Wait Type in SQL Server",
+  "verdict": "No; the waits track your own log-dumping activity and nothing else.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter the waits; they meter your own forensics.",
+  "url": "https://sqldba.blog/sql-server-wait-dump-log-coordinator/"
+ },
+ {
+  "wait_types": [
+   "EC"
+  ],
+  "title": "EC Wait Type in SQL Server",
+  "verdict": "It is a usage gauge with a performance edge.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Confirm BPE state and size: sys.dm_os_buffer_pool_extension_configuration , and how much of the buffer pool lives in the extension ( sys.dm_os_buffer_descriptors with is_in_bpool_extension ).",
+  "url": "https://sqldba.blog/sql-server-wait-ec/"
+ },
+ {
+  "wait_types": [
+   "EE_PMOLOCK"
+  ],
+  "title": "EE_PMOLOCK Wait Type in SQL Server",
+  "verdict": "It has not been a noticeable point of contention in practice, and its normal profile is many tiny waits that never add up to anything.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check the average wait (total time over count); microseconds means ignore it.",
+  "url": "https://sqldba.blog/sql-server-wait-ee-pmolock/"
+ },
+ {
+  "wait_types": [
+   "EXCHANGE"
+  ],
+  "title": "EXCHANGE Wait Type in SQL Server",
+  "verdict": "Treat it exactly like you treat CXPACKET : it is evidence of parallel queries running, not proof of a problem.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the queries running in parallel: sys.dm_exec_query_stats filtered to plans with max_degree_of_parallelism > 1 , ordered by elapsed time.",
+  "url": "https://sqldba.blog/sql-server-wait-exchange/"
+ },
+ {
+  "wait_types": [
+   "EXECSYNC"
+  ],
+  "title": "EXECSYNC Wait Type in SQL Server",
+  "verdict": "Rarely; it has not been a noticeable contention point and is commonly filtered as benign.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script treats it as benign.",
+  "url": "https://sqldba.blog/sql-server-wait-execsync/"
+ },
+ {
+  "wait_types": [
+   "FCB_REPLICA_READ",
+   "FCB_REPLICA_WRITE"
+  ],
+  "title": "FCB_REPLICA_READ and FCB_REPLICA_WRITE Wait Types in SQL Server",
+  "verdict": "Not as contention; neither has been a noticeable bottleneck in its own right.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Attribute the activity: user snapshots in play ( sys.databases with source_database_id ) versus DBCC windows.",
+  "url": "https://sqldba.blog/sql-server-wait-fcb-replica-waits/"
+ },
+ {
+  "wait_types": [
+   "FFT_NSO_DB_LIST",
+   "FFT_RECOVERY"
+  ],
+  "title": "FFT_NSO_DB_LIST and FFT_RECOVERY Wait Types in SQL Server",
+  "verdict": "No; neither has been a contention point.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter both in routine analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-filetable-waits/"
+ },
+ {
+  "wait_types": [
+   "FGCB_ADD_REMOVE"
+  ],
+  "title": "FGCB_ADD_REMOVE Wait Type in SQL Server",
+  "verdict": "Yes, when it shows up with real wait time, because file growth is a stop-the-world event for allocations in that filegroup.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Find the growth events: the default trace records them (our Get-AutogrowthHistory script reads this), including duration and which file grew.",
+  "url": "https://sqldba.blog/sql-server-wait-fgcb-add-remove/"
+ },
+ {
+  "wait_types": [
+   "FT_IFTSHC_MUTEX",
+   "FT_IFTS_RWLOCK"
+  ],
+  "title": "FT_IFTSHC_MUTEX and FT_IFTS_RWLOCK Wait Types in SQL Server",
+  "verdict": "No; both are filtered as benign, and neither has been a contention point.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter both in routine analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-ft-internal-waits/"
+ },
+ {
+  "wait_types": [
+   "FT_IFTS_SCHEDULER_IDLE_WAIT"
+  ],
+  "title": "FT_IFTS_SCHEDULER_IDLE_WAIT Wait Type in SQL Server",
+  "verdict": "No, and it can be safely ignored outright.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script does by default.",
+  "url": "https://sqldba.blog/sql-server-wait-ft-ifts-scheduler-idle-wait/"
+ },
+ {
+  "wait_types": [
+   "FT_MASTER_MERGE"
+  ],
+  "title": "FT_MASTER_MERGE Wait Type in SQL Server",
+  "verdict": "Not as contention; it tracks merge activity and merge duration, both of which you schedule.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Stagger full-text maintenance: population jobs and reorganize jobs in sequence, not in parallel, across catalogs.",
+  "url": "https://sqldba.blog/sql-server-wait-ft-master-merge/"
+ },
+ {
+  "wait_types": [
+   "HADR_AG_MUTEX"
+  ],
+  "title": "HADR_AG_MUTEX Wait Type in SQL Server",
+  "verdict": "Rarely; it has not been a contention point, because AG configuration changes are inherently infrequent.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "When an AG command hangs, look for the other one: sys.dm_exec_requests shows what else is touching the AG, and the cluster log covers WSFC-initiated operations.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-ag-mutex/"
+ },
+ {
+  "wait_types": [
+   "HADR_ARCONTROLLER",
+   "HADR_FILESTREAM_IOMGR"
+  ],
+  "title": "HADR_ARCONTROLLER and HADR_FILESTREAM_IOMGR Wait Types in SQL Server",
+  "verdict": "No; neither has been a contention point.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter both with the AG background set.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-internal-waits/"
+ },
+ {
+  "wait_types": [
+   "HADR_CLUSAPI_CALL"
+  ],
+  "title": "HADR_CLUSAPI_CALL Wait Type in SQL Server",
+  "verdict": "Normally no; it is filtered as benign, and steady low-level accumulation just means the AG plumbing is talking to the cluster as designed.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script already does.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-clusapi-call/"
+ },
+ {
+  "wait_types": [
+   "HADR_DATABASE_FLOW_CONTROL"
+  ],
+  "title": "HADR_DATABASE_FLOW_CONTROL Wait Type in SQL Server",
+  "verdict": "By design it is a safety valve, and small amounts are normal on busy AGs.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Quantify the backlog per database and replica: log_send_queue_size and log_send_rate in sys.dm_hadr_database_replica_states .",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-database-flow-control/"
+ },
+ {
+  "wait_types": [
+   "HADR_FILESTREAM_IOMGR_IOCOMPLETION"
+  ],
+  "title": "HADR_FILESTREAM_IOMGR_IOCOMPLETION Wait Type in SQL Server",
+  "verdict": "No, never. It is a timer loop measuring its own sleep, one of the most reliably benign waits in the DMV.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-filestream-iomgr-iocompletion/"
+ },
+ {
+  "wait_types": [
+   "HADR_GROUP_COMMIT"
+  ],
+  "title": "HADR_GROUP_COMMIT Wait Type in SQL Server",
+  "verdict": "By design, no; it is an expected condition that optimises log I/O and AG send efficiency, and moderate accumulation on a busy AG primary is the feature working.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Baseline first: is transaction throughput actually suffering, or is the wait just present?",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-group-commit/"
+ },
+ {
+  "wait_types": [
+   "HADR_LOGCAPTURE_WAIT"
+  ],
+  "title": "HADR_LOGCAPTURE_WAIT Wait Type in SQL Server",
+  "verdict": "No. This is an expected wait on any healthy AG primary, and it accumulates constantly, which is exactly why it often floats near the top of raw wait rankings on AG servers.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis, the same way you filter other benign background waits.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-logcapture-wait/"
+ },
+ {
+  "wait_types": [
+   "HADR_LOGPROGRESS_SYNC"
+  ],
+  "title": "HADR_LOGPROGRESS_SYNC Wait Type in SQL Server",
+  "verdict": "Small amounts ride along with any synchronous AG.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Distinguish the source of sync-commit pain: check log_send_queue_size and replica health first; if those are clean but HADR_SYNC_COMMIT and this wait rise together, the primary-side gate is the story.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-logprogress-sync/"
+ },
+ {
+  "wait_types": [
+   "HADR_NOTIFICATION_DEQUEUE"
+  ],
+  "title": "HADR_NOTIFICATION_DEQUEUE Wait Type in SQL Server",
+  "verdict": "No. It is expected, continuous, and benign on any AG-enabled instance, accumulating roughly with uptime.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait statistics analysis with the other AG background waits.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-notification-dequeue/"
+ },
+ {
+  "wait_types": [
+   "HADR_SEEDING_LIMIT_BACKUPS"
+  ],
+  "title": "HADR_SEEDING_LIMIT_BACKUPS Wait Type in SQL Server",
+  "verdict": "It appears to be benign: a seeding-scoped wait that measures the operation's own pacing rather than a fault.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Judge seeding by sys.dm_hadr_automatic_seeding (state, failure reasons) and sys.dm_hadr_physical_seeding_stats (transfer and ETA), not by this wait.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-seeding-limit-backups/"
+ },
+ {
+  "wait_types": [
+   "HADR_SYNC_COMMIT"
+  ],
+  "title": "HADR_SYNC_COMMIT Wait Type in SQL Server",
+  "verdict": "Some HADR_SYNC_COMMIT is the inherent cost of synchronous replication.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "If it's a network latency problem: Co-locate synchronous secondaries, same data centre, same network segment, same rack if possible For secondaries that must be remote (DR in a different city): evaluate whether asynchronous commit is...",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-hadr-sync-commit/"
+ },
+ {
+  "wait_types": [
+   "HADR_TIMER_TASK"
+  ],
+  "title": "HADR_TIMER_TASK Wait Type in SQL Server",
+  "verdict": "No. Like the other AG background waits ( HADR_WORK_QUEUE , HADR_FILESTREAM_IOMGR_IOCOMPLETION , HADR_NOTIFICATION_DEQUEUE ), it is timer bookkeeping, not a performance signal.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis with the rest of the AG background set.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-timer-task/"
+ },
+ {
+  "wait_types": [
+   "HADR_WORK_POOL"
+  ],
+  "title": "HADR_WORK_POOL Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its amounts stay small next to HADR_WORK_QUEUE 's always-large idle totals.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out with the other AG background waits.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-work-pool/"
+ },
+ {
+  "wait_types": [
+   "HADR_WORK_QUEUE"
+  ],
+  "title": "HADR_WORK_QUEUE Wait Type in SQL Server",
+  "verdict": "No. This is one of the textbook benign waits.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait statistics analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-work-queue/"
+ },
+ {
+  "wait_types": [
+   "HP_SPOOL_BARRIER"
+  ],
+  "title": "HP_SPOOL_BARRIER Wait Type in SQL Server",
+  "verdict": "If you can see it accumulating at all, the most useful conclusion is about your patch level: you are running one of the narrow band of builds that carried the flawed fix.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check your build and patch forward; the successor CUs removed the problematic change.",
+  "url": "https://sqldba.blog/sql-server-wait-hp-spool-barrier/"
+ },
+ {
+  "wait_types": [
+   "HTBUILD"
+  ],
+  "title": "HTBUILD Wait Type in SQL Server",
+  "verdict": "Here is the counter-intuitive part: these waits do not measure how expensive the operation is, they measure how much skew there was between the parallel threads.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Confirm the skew: the actual execution plan shows per-thread row counts on the hash operators; a 90/10 split across threads is your answer.",
+  "url": "https://sqldba.blog/sql-server-wait-htbuild/"
+ },
+ {
+  "wait_types": [
+   "HTDELETE"
+  ],
+  "title": "HTDELETE Wait Type in SQL Server",
+  "verdict": "Like the whole HT family, this wait measures thread skew, not operation cost.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check per-thread row counts in the actual plan of the biggest batch-mode queries; confirm skew before changing anything.",
+  "url": "https://sqldba.blog/sql-server-wait-htdelete/"
+ },
+ {
+  "wait_types": [
+   "HTMEMO"
+  ],
+  "title": "HTMEMO Wait Type in SQL Server",
+  "verdict": "The HT family measures skew between parallel threads, not the cost of the hash operation itself.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Look at per-thread actual row counts on the hash operators in the plan; skew is visible at a glance.",
+  "url": "https://sqldba.blog/sql-server-wait-htmemo/"
+ },
+ {
+  "wait_types": [
+   "HTREINIT"
+  ],
+  "title": "HTREINIT Wait Type in SQL Server",
+  "verdict": "Judge it exactly like the rest of the HT family: it measures how uneven the work was between parallel threads, not how expensive the join was.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check the biggest batch-mode queries for hash spills (warnings in the actual plan, or sys.dm_exec_query_stats spill columns); multi-pass hashing often traces to undersized grants.",
+  "url": "https://sqldba.blog/sql-server-wait-htreinit/"
+ },
+ {
+  "wait_types": [
+   "HTREPARTITION"
+  ],
+  "title": "HTREPARTITION Wait Type in SQL Server",
+  "verdict": "Two things speak through this wait.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Find the plans doing it: big batch-mode queries with hash spill warnings or large estimate-vs-actual gaps on the hash operators.",
+  "url": "https://sqldba.blog/sql-server-wait-htrepartition/"
+ },
+ {
+  "wait_types": [
+   "IMPPROV_IOWAIT"
+  ],
+  "title": "IMPPROV_IOWAIT Wait Type in SQL Server",
+  "verdict": "Only in proportion to how much bulk loading you do and how fast it needs to be.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Compare the wait's average duration with the expected latency of the source storage; a share across a WAN will never feed a fast load.",
+  "url": "https://sqldba.blog/sql-server-wait-impprov-iowait/"
+ },
+ {
+  "wait_types": [
+   "IO_COMPLETION"
+  ],
+  "title": "IO_COMPLETION Wait Type in SQL Server",
+  "verdict": "During backup windows , yes.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "For sort spills (the most common cause): The root cause is almost always a missing index or stale statistics.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-io-completion/"
+ },
+ {
+  "wait_types": [
+   "IO_QUEUE_LIMIT"
+  ],
+  "title": "IO_QUEUE_LIMIT Wait Type in SQL Server",
+  "verdict": "It is a throughput ceiling, so it depends where the ceiling comes from.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "In Azure, check resource governance telemetry ( sys.dm_db_resource_stats , avg_data_io_percent) to confirm you are riding the tier's I/O ceiling.",
+  "url": "https://sqldba.blog/sql-server-wait-io-queue-limit/"
+ },
+ {
+  "wait_types": [
+   "KSOURCE_WAKEUP"
+  ],
+  "title": "KSOURCE_WAKEUP Wait Type in SQL Server",
+  "verdict": "No; long waits are expected and documented as such.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out, and recognise its session in sys.dm_exec_requests as a permanent system resident, not a stuck query.",
+  "url": "https://sqldba.blog/sql-server-wait-ksource-wakeup/"
+ },
+ {
+  "wait_types": [
+   "LATCH_DT"
+  ],
+  "title": "LATCH_DT Wait Type in SQL Server",
+  "verdict": "Almost never. LATCH_DT should be one of the smallest numbers in your wait profile, if it appears at all.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Query sys.dm_os_latch_stats ordered by wait_time_ms and note the top latch classes; that, not the DT mode, is your lead.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-dt/"
+ },
+ {
+  "wait_types": [
+   "LATCH_EX"
+  ],
+  "title": "LATCH_EX Wait Type in SQL Server",
+  "verdict": "A small amount is normal.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Look at sys.dm_os_latch_stats and find the latch class with the most wait time.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-ex/"
+ },
+ {
+  "wait_types": [
+   "LATCH_KP"
+  ],
+  "title": "LATCH_KP Wait Type in SQL Server",
+  "verdict": "Practically never. A LATCH_KP wait means a thread wanted to pin a structure at the exact moment another thread was destroying it, a vanishingly narrow window.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Ignore it in isolation.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-kp/"
+ },
+ {
+  "wait_types": [
+   "LATCH_NL"
+  ],
+  "title": "LATCH_NL Wait Type in SQL Server",
+  "verdict": "No, and you should essentially never see it with a non-zero value.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Nothing. If latch contention is your actual topic, work from the latch classes and the real modes ( SH , UP , EX ).",
+  "url": "https://sqldba.blog/sql-server-wait-latch-nl/"
+ },
+ {
+  "wait_types": [
+   "LATCH_SH"
+  ],
+  "title": "LATCH_SH Wait Type in SQL Server",
+  "verdict": "Low values are normal background activity.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Check sys.dm_os_latch_stats for the top latch class by wait time.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-sh/"
+ },
+ {
+  "wait_types": [
+   "LATCH_UP"
+  ],
+  "title": "LATCH_UP Wait Type in SQL Server",
+  "verdict": "Rarely on its own, and never diagnosable from the mode alone.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Query sys.dm_os_latch_stats ordered by wait time and take the top class as the real lead.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-up/"
+ },
+ {
+  "wait_types": [
+   "LAZYWRITER_SLEEP"
+  ],
+  "title": "LAZYWRITER_SLEEP Wait Type in SQL Server",
+  "verdict": "No. It is the canonical benign wait, cited in every \"waits to filter out\" list for good reason: it measures a background thread's scheduled naps, accumulating at close to one second per second per thread.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-lazywriter-sleep/"
+ },
+ {
+  "wait_types": [
+   "LCK_M_IS"
+  ],
+  "title": "LCK_M_IS Wait Type in SQL Server",
+  "verdict": "Any sustained LCK_M_IS time is worth a look, because it means readers are queuing behind whole-table locks.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Catch it live. sys.dm_os_waiting_tasks joined to sys.dm_exec_requests shows who is waiting and, more importantly, the blocking_session_id .",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-is/"
+ },
+ {
+  "wait_types": [
+   "LCK_M_IX"
+  ],
+  "title": "LCK_M_IX Wait Type in SQL Server",
+  "verdict": "Yes, if it is sustained.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Find the head blocker in sys.dm_os_waiting_tasks while the wait is live.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-ix/"
+ },
+ {
+  "wait_types": [
+   "LCK_M_RS_S"
+  ],
+  "title": "LCK_M_RS_S Wait Type in SQL Server",
+  "verdict": "Range lock waits deserve attention because most workloads never intend to use serializable isolation in the first place.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Confirm who is using serializable: sys.dm_exec_sessions.transaction_isolation_level = 4 .",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-rs-s/"
+ },
+ {
+  "wait_types": [
+   "LCK_M_RS_U"
+  ],
+  "title": "LCK_M_RS_U Wait Type in SQL Server",
+  "verdict": "Treat it as a two-part question.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the serializable sessions and their statements ( sys.dm_exec_sessions isolation level 4, joined to requests).",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-rs-u/"
+ },
+ {
+  "wait_types": [
+   "LCK_M_RX_X"
+  ],
+  "title": "LCK_M_RX_X Wait Type in SQL Server",
+  "verdict": "Yes, more often than its shared cousin.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the statements involved via sys.dm_os_waiting_tasks and the deadlock graph in the system_health Extended Events session.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-rx-x/"
+ },
+ {
+  "wait_types": [
+   "LCK_M_SCH_M"
+  ],
+  "title": "LCK_M_SCH_M Wait Type in SQL Server",
+  "verdict": "The wait itself hurts twice.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "When DDL hangs, check sys.dm_os_waiting_tasks for the SCH-M waiter and follow blocking_session_id to the culprit.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-sch-m/"
+ },
+ {
+  "wait_types": [
+   "LCK_M_SCH_S"
+  ],
+  "title": "LCK_M_SCH_S Wait Type in SQL Server",
+  "verdict": "Yes, and it tends to be dramatic when it happens.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Find the SCH-M holder in sys.dm_tran_locks ( request_mode = 'Sch-M' ) and see what DDL is running.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-sch-s/"
+ },
+ {
+  "wait_types": [
+   "LCK_M_SIX"
+  ],
+  "title": "LCK_M_SIX Wait Type in SQL Server",
+  "verdict": "LCK_M_SIX is one of the rarer lock waits, so any meaningful amount of it stands out.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the statement waiting on SIX via sys.dm_os_waiting_tasks and sys.dm_exec_requests .",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-six/"
+ },
+ {
+  "wait_types": [
+   "LCK_M_X",
+   "LCK_M_S"
+  ],
+  "title": "LCK_M_X, LCK_M_S, and LCK_M_U Wait Types in SQL Server",
+  "verdict": "Small amounts of locking are inherent in transactional systems.",
+  "matters": true,
+  "when_to_ignore": "Short, infrequent lock waits , a small amount of LCK_M_X from occasional row-level conflicts is normal.",
+  "what_to_do": "Find and fix the head blocker first , killing it buys time, but does not fix the root cause.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-lock-waits/"
+ },
+ {
+  "wait_types": [
+   "LOGBUFFER"
+  ],
+  "title": "LOGBUFFER Wait Type in SQL Server",
+  "verdict": "Some activity is normal on write-intensive OLTP systems.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Measure log write latency per log file in sys.dm_io_virtual_file_stats ; write stalls above a few milliseconds make this whole wait family worse.",
+  "url": "https://sqldba.blog/sql-server-wait-logbuffer/"
+ },
+ {
+  "wait_types": [
+   "LOGMGR"
+  ],
+  "title": "LOGMGR Wait Type in SQL Server",
+  "verdict": "Almost never in a steady-state wait profile, because databases are not usually closing during normal operation.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Check for auto-close: SELECT name FROM sys.databases WHERE is_auto_close_on = 1; and turn it off on anything a user or application touches: ALTER DATABASE [db] SET AUTO_CLOSE OFF; .",
+  "url": "https://sqldba.blog/sql-server-wait-logmgr/"
+ },
+ {
+  "wait_types": [
+   "LOGMGR_FLUSH"
+  ],
+  "title": "LOGMGR_FLUSH Wait Type in SQL Server",
+  "verdict": "Rarely on its own. It has not historically been a noticeable contention point, and small amounts are just the log pipeline breathing.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Measure log write latency first: sys.dm_io_virtual_file_stats write stall per write on each log file.",
+  "url": "https://sqldba.blog/sql-server-wait-logmgr-flush/"
+ },
+ {
+  "wait_types": [
+   "LOGMGR_QUEUE"
+  ],
+  "title": "LOGMGR_QUEUE Wait Type in SQL Server",
+  "verdict": "No, and it is worth being precise about why, because its name makes people think of WRITELOG .",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-logmgr-queue/"
+ },
+ {
+  "wait_types": [
+   "LOGMGR_RESERVE_APPEND"
+  ],
+  "title": "LOGMGR_RESERVE_APPEND Wait Type in SQL Server",
+  "verdict": "Always. This is not a tuning subtlety, it is the log running out of space at runtime.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check SELECT name, log_reuse_wait_desc FROM sys.databases; for the affected database.",
+  "url": "https://sqldba.blog/sql-server-wait-logmgr-reserve-append/"
+ },
+ {
+  "wait_types": [
+   "LOGPOOL"
+  ],
+  "title": "LOGPOOL Wait Types in SQL Server",
+  "verdict": "No; none of the family has been a noticeable contention point.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter the family out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-logpool-waits/"
+ },
+ {
+  "wait_types": [
+   "MEMORY_ALLOCATION_EXT"
+  ],
+  "title": "MEMORY_ALLOCATION_EXT Wait Type in SQL Server",
+  "verdict": "Almost never. Its normal profile is millions of occurrences averaging microseconds, which is background hum, not contention.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Check the average: total wait time divided by count.",
+  "url": "https://sqldba.blog/sql-server-wait-memory-allocation-ext/"
+ },
+ {
+  "wait_types": [
+   "METADATA_LAZYCACHE_RWLOCK"
+  ],
+  "title": "METADATA_LAZYCACHE_RWLOCK Wait Type in SQL Server",
+  "verdict": "Rarely; metadata cache locks stay quiet outside metadata churn.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it; and if you are genuinely reading it from a live system, note the version you are on and plan accordingly.",
+  "url": "https://sqldba.blog/sql-server-wait-metadata-lazycache-rwlock/"
+ },
+ {
+  "wait_types": [
+   "MSQL_DQ"
+  ],
+  "title": "MSQL_DQ Wait Type in SQL Server",
+  "verdict": "It is honest accounting of remote latency, so its importance equals how much your workload depends on distributed queries.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the distributed queries via sys.dm_exec_requests during the wait, and get their plans; look for remote query operators pulling large rowsets.",
+  "url": "https://sqldba.blog/sql-server-wait-msql-dq/"
+ },
+ {
+  "wait_types": [
+   "MSQL_XP"
+  ],
+  "title": "MSQL_XP Wait Type in SQL Server",
+  "verdict": "The wait is honest bookkeeping; the concern is what it measures.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify which XPs run and from where: catch sessions in this wait via sys.dm_exec_requests and capture the calling SQL text.",
+  "url": "https://sqldba.blog/sql-server-wait-msql-xp/"
+ },
+ {
+  "wait_types": [
+   "OLEDB"
+  ],
+  "title": "OLEDB Wait Type in SQL Server",
+  "verdict": "Check the timing before anything else.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Rule DBCC activity in or out by correlating the wait's growth with your integrity check schedule.",
+  "url": "https://sqldba.blog/sql-server-wait-oledb/"
+ },
+ {
+  "wait_types": [
+   "ONDEMAND_TASK_QUEUE"
+  ],
+  "title": "ONDEMAND_TASK_QUEUE Wait Type in SQL Server",
+  "verdict": "No; it is the textbook shape of a benign wait, an always-on listener whose accumulated time measures how rarely its services were needed.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-ondemand-task-queue/"
+ },
+ {
+  "wait_types": [
+   "PAGEIOLATCH_DT"
+  ],
+  "title": "PAGEIOLATCH_DT Wait Type in SQL Server",
+  "verdict": "Practically never. There is no workload pattern that drives PAGEIOLATCH_DT specifically, and no tuning lever aimed at it.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Ignore it in isolation.",
+  "url": "https://sqldba.blog/sql-server-wait-pageiolatch-dt/"
+ },
+ {
+  "wait_types": [
+   "PAGEIOLATCH_EX"
+  ],
+  "title": "PAGEIOLATCH_EX Wait Type in SQL Server",
+  "verdict": "Some PAGEIOLATCH_EX is normal whenever SQL Server writes dirty pages to disk, which it does constantly via the checkpoint and lazy writer processes.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Faster storage , if avg_write_ms is high and the storage is spinning disk or an overloaded shared SAN, moving data files to SSD or NVMe is the most direct fix.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-pageiolatch-ex/"
+ },
+ {
+  "wait_types": [
+   "PAGEIOLATCH_KP"
+  ],
+  "title": "PAGEIOLATCH_KP Wait Type in SQL Server",
+  "verdict": "Effectively never; expect zero.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Nothing for this mode.",
+  "url": "https://sqldba.blog/sql-server-wait-pageiolatch-kp/"
+ },
+ {
+  "wait_types": [
+   "PAGEIOLATCH_NL"
+  ],
+  "title": "PAGEIOLATCH_NL Wait Type in SQL Server",
+  "verdict": "No, and a non-zero value would itself be the anomaly.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Nothing here. The PAGEIOLATCH_SH deep dive covers the family's real diagnostics.",
+  "url": "https://sqldba.blog/sql-server-wait-pageiolatch-nl/"
+ },
+ {
+  "wait_types": [
+   "PAGEIOLATCH_SH"
+  ],
+  "title": "PAGEIOLATCH_SH Wait Type in SQL Server",
+  "verdict": "Some PAGEIOLATCH_SH is normal.",
+  "matters": true,
+  "when_to_ignore": "After a restart , the buffer pool is empty.",
+  "what_to_do": "If storage latency is high ( avg_read_ms > 15ms consistently): Move data files to faster storage (SSD or NVMe) Check if the storage array is shared and overloaded Check for disk queue depth in Windows Performance Monitor (...",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-pageiolatch-sh/"
+ },
+ {
+  "wait_types": [
+   "PAGEIOLATCH_UP"
+  ],
+  "title": "PAGEIOLATCH_UP Wait Type in SQL Server",
+  "verdict": "Judge it like the other PAGEIOLATCH_* waits: by average wait time.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check storage latency first: sys.dm_io_virtual_file_stats read stalls per read, per file.",
+  "url": "https://sqldba.blog/sql-server-wait-pageiolatch-up/"
+ },
+ {
+  "wait_types": [
+   "PAGELATCH_DT"
+  ],
+  "title": "PAGELATCH_DT Wait Type in SQL Server",
+  "verdict": "Practically never. Buffer teardown happens constantly (lazy writer, cache trims) without measurable waits, because the engine avoids destroying pages anyone is using.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Ignore it in isolation.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-dt/"
+ },
+ {
+  "wait_types": [
+   "PAGELATCH_EX"
+  ],
+  "title": "PAGELATCH_EX Wait Type in SQL Server",
+  "verdict": "A little is normal on any busy server, latches are how SQL Server protects pages in memory, and short waits are just the system working.",
+  "matters": true,
+  "when_to_ignore": "Low levels alongside other waits , if PAGELATCH_EX is a few percent of total waits and nothing points at tempdb allocation pages, it's just normal latch coordination.",
+  "what_to_do": "Add tempdb data files, equally sized.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-pagelatch-ex-temp-db-contention/"
+ },
+ {
+  "wait_types": [
+   "PAGELATCH_KP"
+  ],
+  "title": "PAGELATCH_KP Wait Type in SQL Server",
+  "verdict": "No; expect it at or near zero everywhere.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Nothing for this mode.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-kp/"
+ },
+ {
+  "wait_types": [
+   "PAGELATCH_NL"
+  ],
+  "title": "PAGELATCH_NL Wait Type in SQL Server",
+  "verdict": "No, and you should never see it accumulate.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Nothing here. For page latch analysis, work the real modes and the db:file:page evidence.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-nl/"
+ },
+ {
+  "wait_types": [
+   "PAGELATCH_SH"
+  ],
+  "title": "PAGELATCH_SH Wait Type in SQL Server",
+  "verdict": "A small amount is normal on any busy system.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Read resource_description to identify the page.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-sh/"
+ },
+ {
+  "wait_types": [
+   "PAGELATCH_UP"
+  ],
+  "title": "PAGELATCH_UP Wait Type in SQL Server",
+  "verdict": "Yes, when it is sustained, because it means many sessions are queuing to update the same allocation bitmap.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Confirm the target pages via sys.dm_os_waiting_tasks while the wait is live.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-up/"
+ },
+ {
+  "wait_types": [
+   "PARALLEL_BACKUP_QUEUE"
+  ],
+  "title": "PARALLEL_BACKUP_QUEUE Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its scale is bounded by how often you interrogate backup files.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Nothing for the wait itself.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-backup-queue/"
+ },
+ {
+  "wait_types": [
+   "PARALLEL_REDO_DRAIN_WORKER"
+  ],
+  "title": "PARALLEL_REDO_DRAIN_WORKER Wait Type in SQL Server",
+  "verdict": "No; it is documented as part of normal operations and not indicative of a performance issue, so it belongs on the benign filter list with the rest of the redo bookkeeping waits.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-drain-worker/"
+ },
+ {
+  "wait_types": [
+   "PARALLEL_REDO_FLOW_CONTROL"
+  ],
+  "title": "PARALLEL_REDO_FLOW_CONTROL Wait Type in SQL Server",
+  "verdict": "Sometimes, and it is version-sensitive.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Measure the backlog: redo_queue_size and redo_rate in sys.dm_hadr_database_replica_states , per database.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-flow-control/"
+ },
+ {
+  "wait_types": [
+   "PARALLEL_REDO_LOG_CACHE"
+  ],
+  "title": "PARALLEL_REDO_LOG_CACHE Wait Type in SQL Server",
+  "verdict": "No; it is documented as part of normal parallel redo and not indicative of a performance issue.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of routine analysis with the other redo bookkeeping waits.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-log-cache/"
+ },
+ {
+  "wait_types": [
+   "PARALLEL_REDO_TRAN_LIST"
+  ],
+  "title": "PARALLEL_REDO_TRAN_LIST Wait Type in SQL Server",
+  "verdict": "No; it is part of normal parallel redo operations and documented as not indicating a performance issue.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-tran-list/"
+ },
+ {
+  "wait_types": [
+   "PARALLEL_REDO_TRAN_TURN"
+  ],
+  "title": "PARALLEL_REDO_TRAN_TURN Wait Type in SQL Server",
+  "verdict": "This one, unlike most of its family, can genuinely bottleneck redo on a readable secondary.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Confirm the pairing: redo lag on the secondary plus this wait, and page split indicators on the primary (fragmentation growth, Page Splits/sec ).",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-tran-turn/"
+ },
+ {
+  "wait_types": [
+   "PARALLEL_REDO_WORKER_SYNC"
+  ],
+  "title": "PARALLEL_REDO_WORKER_SYNC Wait Type in SQL Server",
+  "verdict": "No; it is documented as part of normal parallel redo operations and not indicative of a performance issue, and it belongs on the benign filter list.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-worker-sync/"
+ },
+ {
+  "wait_types": [
+   "PARALLEL_REDO_WORKER_WAIT_WORK"
+  ],
+  "title": "PARALLEL_REDO_WORKER_WAIT_WORK Wait Type in SQL Server",
+  "verdict": "No. This wait accumulating, even in large amounts, mostly measures quiet time on the primary.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis alongside the other benign background waits.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-worker-wait-work/"
+ },
+ {
+  "wait_types": [
+   "PERFORMANCE_COUNTERS_RWLOCK"
+  ],
+  "title": "PERFORMANCE_COUNTERS_RWLOCK Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-performance-counters-rwlock/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_COM"
+  ],
+  "title": "PREEMPTIVE_COM Wait Types in SQL Server",
+  "verdict": "They are the itemised bill for external provider access.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the calling queries ( sys.dm_exec_requests during the waits) and the providers involved ( sys.servers ).",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-com-waits/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_DTC"
+  ],
+  "title": "PREEMPTIVE_DTC Wait Types in SQL Server",
+  "verdict": "They are honest latency accounting for a service outside SQL Server.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Attribute the load: which applications and linked-server calls run distributed transactions, and do they need to?",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-dtc-waits/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_HADR_LEASE_MECHANISM"
+  ],
+  "title": "PREEMPTIVE_HADR_LEASE_MECHANISM Wait Type in SQL Server",
+  "verdict": "Yes, in the sense that it should not be accumulating on a healthy AG.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Correlate its occurrences with cluster log lease timeout entries and AG state changes; the timestamps reconstruct the incident.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-hadr-lease-mechanism/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OLEDBOPS"
+  ],
+  "title": "PREEMPTIVE_OLEDBOPS Wait Type in SQL Server",
+  "verdict": "Not historically; it has not been a noticeable contention point and typically trails well behind OLEDB in linked server workloads.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Read it with the family: OLEDB and MSQL_DQ carry the main signal; this one adds the provider-plumbing dimension.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-oledbops/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_AUTHENTICATIONOPS"
+  ],
+  "title": "PREEMPTIVE_OS_AUTHENTICATIONOPS Wait Type in SQL Server",
+  "verdict": "Small, steady amounts, no.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Correlate with connection behaviour: if login times degrade while this wait's average climbs, the evidence points firmly outside SQL Server.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-authenticationops/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_CREATEFILE"
+  ],
+  "title": "PREEMPTIVE_OS_CREATEFILE Wait Type in SQL Server",
+  "verdict": "Modest background amounts, no.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the file-touching operations running when the wait accumulates (FILESTREAM access, backups, file-growth events).",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-createfile/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_DSGETDCNAME"
+  ],
+  "title": "PREEMPTIVE_OS_DSGETDCNAME Wait Type in SQL Server",
+  "verdict": "At trace levels, no. When its average duration grows, DC discovery itself is struggling, and that has a short list of causes, all infrastructure-side: DNS misconfiguration (the classic), AD site/subnet definitions steering the server to...",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check which DC the server resolves: nltest /dsgetdc:<domain> from the SQL Server host, and whether it is the expected nearby one.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-dsgetdcname/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_FILEOPS"
+  ],
+  "title": "PREEMPTIVE_OS_FILEOPS Wait Type in SQL Server",
+  "verdict": "It has not been a noticeable contention point in practice.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Correlate the wait with backup windows and file operations; most accumulation maps cleanly to scheduled activity.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-fileops/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_FLUSHFILEBUFFERS"
+  ],
+  "title": "PREEMPTIVE_OS_FLUSHFILEBUFFERS Wait Type in SQL Server",
+  "verdict": "On Linux, its dominance is expected behaviour, not a fault, and it is generally filtered as benign.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "On Linux: read Microsoft's guidance on the forced flush behaviour, verify what your storage actually guarantees, and only then consider trace flag 3979.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-flushfilebuffers/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_GETDISKFREESPACE"
+  ],
+  "title": "PREEMPTIVE_OS_GETDISKFREESPACE Wait Type in SQL Server",
+  "verdict": "No at normal levels; the call is fast on healthy volumes.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "If counts are high, moderate the monitoring cadence; per-minute is plenty for disk space.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-getdiskfreespace/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_GETPROCADDRESS"
+  ],
+  "title": "PREEMPTIVE_OS_GETPROCADDRESS Wait Type in SQL Server",
+  "verdict": "The lookup itself, never; it is a fast in-process call.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Inventory the XPs in use: catch callers via sys.dm_exec_requests during the wait, and list registered XPs in the master database.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-getprocaddress/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_LOGONUSER"
+  ],
+  "title": "PREEMPTIVE_OS_LOGONUSER Wait Type in SQL Server",
+  "verdict": "Not at normal volumes; occasional token creation is cheap when AD is healthy.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Inventory the credential users: Agent proxies ( msdb.dbo.sysproxies ) and linked server mappings ( sys.linked_logins ).",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-logonuser/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_LOOKUPACCOUNTSID"
+  ],
+  "title": "PREEMPTIVE_OS_LOOKUPACCOUNTSID Wait Type in SQL Server",
+  "verdict": "Occasional lookups are routine.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Find the calling code: catch sessions in this wait via sys.dm_exec_requests and look for SID translation in the SQL text.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-lookupaccountsid/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_PIPEOPS"
+  ],
+  "title": "PREEMPTIVE_OS_PIPEOPS Wait Type in SQL Server",
+  "verdict": "The wait mechanics are not; the wait is exactly as long as whatever the shelled-out command takes.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Find the callers: sys.dm_exec_requests filtered to this wait type shows the sessions and their SQL text live.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-pipeops/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_QUERYREGISTRY"
+  ],
+  "title": "PREEMPTIVE_OS_QUERYREGISTRY Wait Type in SQL Server",
+  "verdict": "Historically no, but SQL Server 2022 shipped a known bug that made this wait a genuine contention point, fixed in 2022 CU5 .",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "On SQL Server 2022: confirm CU5 or later; patch if not.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-queryregistry/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_REPORTEVENT"
+  ],
+  "title": "PREEMPTIVE_OS_REPORTEVENT Wait Type in SQL Server",
+  "verdict": "The wait mechanics, no; event log writes are quick when the OS is healthy.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Read the messages: the error log and Application event log around the accumulation window name the source.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-reportevent/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_WAITFORSINGLEOBJECT"
+  ],
+  "title": "PREEMPTIVE_OS_WAITFORSINGLEOBJECT Wait Type in SQL Server",
+  "verdict": "Read it exactly like ASYNC_NETWORK_IO : the engine produced results and is waiting on the client side to take them.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the waiting sessions and their client applications ( sys.dm_exec_sessions host and program names).",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-waitforsingleobject/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_WRITEFILEGATHER"
+  ],
+  "title": "PREEMPTIVE_OS_WRITEFILEGATHER Wait Type in SQL Server",
+  "verdict": "Yes, when it shows up with real duration, because zero-filling happens synchronously inside operations users are waiting on.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check whether instant file initialization is on: SELECT instant_file_initialization_enabled FROM sys.dm_server_services WHERE servicename LIKE 'SQL Server (%'; .",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-writefilegather/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_SB_STOPENDPOINT"
+  ],
+  "title": "PREEMPTIVE_SB_STOPENDPOINT Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its occurrences are countable lifecycle events rather than workload behaviour.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-sb-stopendpoint/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_SP_SERVER_DIAGNOSTICS"
+  ],
+  "title": "PREEMPTIVE_SP_SERVER_DIAGNOSTICS Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its cadence follows the diagnostics schedule (every five seconds by default under cluster monitoring).",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it with its sleep sibling.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-sp-server-diagnostics/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_XE"
+  ],
+  "title": "PREEMPTIVE_XE Wait Types in SQL Server",
+  "verdict": "No; none has been a contention point, and their occurrences map to session lifecycle events and target inspections: someone started or stopped a session, a file target rolled over, a monitoring tool polled target state.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter the family in routine analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-xe-waits/"
+ },
+ {
+  "wait_types": [
+   "PRINT_ROLLBACK_PROGRESS"
+  ],
+  "title": "PRINT_ROLLBACK_PROGRESS Wait Type in SQL Server",
+  "verdict": "It is a duration meter for a deliberate action.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Before state changes, look at what is running: DBCC OPENTRAN or sys.dm_tran_active_transactions shows the transactions you are about to kill, and roughly how much undo you are signing up for.",
+  "url": "https://sqldba.blog/sql-server-wait-print-rollback-progress/"
+ },
+ {
+  "wait_types": [
+   "PVS_PREALLOCATE"
+  ],
+  "title": "PVS_PREALLOCATE Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its rhythm is the preallocation task pacing itself as designed.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-pvs-preallocate/"
+ },
+ {
+  "wait_types": [
+   "PWAIT_ALL_COMPONENTS_INITIALIZED"
+  ],
+  "title": "PWAIT_ALL_COMPONENTS_INITIALIZED Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point and is filtered as benign.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-pwait-all-components-initialized/"
+ },
+ {
+  "wait_types": [
+   "PWAIT_DIRECTLOGCONSUMER_GETNEXT"
+  ],
+  "title": "PWAIT_DIRECTLOGCONSUMER_GETNEXT Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and accumulation mostly measures how often log consumers are up to date.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-pwait-directlogconsumer-getnext/"
+ },
+ {
+  "wait_types": [
+   "PWAIT_EXTENSIBILITY_CLEANUP_TASK"
+  ],
+  "title": "PWAIT_EXTENSIBILITY_CLEANUP_TASK Wait Type in SQL Server",
+  "verdict": "No. It is a five-minute background timer, filtered as benign, and it commonly appears among the top waits on SQL Server 2019 and Azure SQL Database purely by accumulation.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-pwait-extensibility-cleanup-task/"
+ },
+ {
+  "wait_types": [
+   "PWAIT_HADR_WORKITEM_COMPLETED"
+  ],
+  "title": "PWAIT_HADR_WORKITEM_COMPLETED Wait Type in SQL Server",
+  "verdict": "Short-lived appearances during AG changes are the mechanism working.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "For a long-running AG command, check what the async side is doing: AG DMVs for the database/replica states involved, the error log, and the cluster log for the same window.",
+  "url": "https://sqldba.blog/sql-server-wait-pwait-hadr-workitem-completed/"
+ },
+ {
+  "wait_types": [
+   "QDS_ASYNC_QUEUE"
+  ],
+  "title": "QDS_ASYNC_QUEUE Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point and is filtered as benign.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out with the other QDS_* background waits; our Get-WaitStatistics script does.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-async-queue/"
+ },
+ {
+  "wait_types": [
+   "QDS_CLEANUP_STALE_QUERIES_TASK_MAIN_LOOP_SLEEP"
+  ],
+  "title": "QDS_CLEANUP_STALE_QUERIES_TASK_MAIN_LOOP_SLEEP Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point and belongs on the benign filter list with the rest of the QDS_* background waits.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-cleanup-stale-queries-task-main-loop-sleep/"
+ },
+ {
+  "wait_types": [
+   "QDS_DYN_VECTOR"
+  ],
+  "title": "QDS_DYN_VECTOR Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its normal profile is trace amounts on any Query Store-enabled database.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-dyn-vector/"
+ },
+ {
+  "wait_types": [
+   "QDS_LOADDB"
+  ],
+  "title": "QDS_LOADDB Wait Type in SQL Server",
+  "verdict": "For high-uptime systems, potentially yes, and it is a sneaky one: everything looks recovered, but sessions stall on QDS_LOADDB while a multi-gigabyte Query Store reads in.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "On SQL Server 2016/2017: enable trace flag 7752 as a startup flag if failover time matters.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-loaddb/"
+ },
+ {
+  "wait_types": [
+   "QDS_PERSIST_TASK_MAIN_LOOP_SLEEP"
+  ],
+  "title": "QDS_PERSIST_TASK_MAIN_LOOP_SLEEP Wait Type in SQL Server",
+  "verdict": "No. On any instance with Query Store enabled, this wait accumulates constantly and can look large in raw wait output simply because the persistence loop exists for every Query Store-enabled database, around the clock.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis with the other timer-based background waits; our Get-WaitStatistics script already does.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-persist-task-main-loop-sleep/"
+ },
+ {
+  "wait_types": [
+   "QDS_SHUTDOWN_QUEUE"
+  ],
+  "title": "QDS_SHUTDOWN_QUEUE Wait Type in SQL Server",
+  "verdict": "No. It is an idle-thread wait on the benign filter list, accumulating with uptime and with the number of Query Store-enabled databases.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out alongside QDS_PERSIST_TASK_MAIN_LOOP_SLEEP ; our Get-WaitStatistics script excludes both.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-shutdown-queue/"
+ },
+ {
+  "wait_types": [
+   "QDS_STMT"
+  ],
+  "title": "QDS_STMT Wait Type in SQL Server",
+  "verdict": "It can be, in one specific shape: a very busy ad hoc workload, where nearly every statement has unique text (unparameterised literals), turns \"register a new query\" into a hot path, and this wait becomes prevalent.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Set QUERY_CAPTURE_MODE = AUTO on the affected databases (the default from SQL Server 2019); confirm with sys.database_query_store_options .",
+  "url": "https://sqldba.blog/sql-server-wait-qds-stmt/"
+ },
+ {
+  "wait_types": [
+   "QRY_PROFILE_LIST_MUTEX"
+  ],
+  "title": "QRY_PROFILE_LIST_MUTEX Wait Type in SQL Server",
+  "verdict": "Normally no, but know the exception: SQL Server 2016 and 2017 had a known issue (KB 4089239) where this wait type featured in a hang when using trace flag 7412 , the flag that enabled lightweight profiling before it became default behaviour.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "On 2016/2017 with TF 7412: confirm your build against KB 4089239 and patch or drop the flag.",
+  "url": "https://sqldba.blog/sql-server-wait-qry-profile-list-mutex/"
+ },
+ {
+  "wait_types": [
+   "QUERY_EXECUTION_INDEX_SORT_EVENT_OPEN"
+  ],
+  "title": "QUERY_EXECUTION_INDEX_SORT_EVENT_OPEN Wait Type in SQL Server",
+  "verdict": "Not intrinsically; it tracks the duration and parallelism of your offline index builds.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "For slow builds, check sort spill evidence during the build window (tempdb activity, memory grants for the build session).",
+  "url": "https://sqldba.blog/sql-server-wait-query-execution-index-sort-event-open/"
+ },
+ {
+  "wait_types": [
+   "QUERY_TASK_ENQUEUE_MUTEX"
+  ],
+  "title": "QUERY_TASK_ENQUEUE_MUTEX Wait Type in SQL Server",
+  "verdict": "No; it has not been a noticeable contention point.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-query-task-enqueue-mutex/"
+ },
+ {
+  "wait_types": [
+   "REDO_THREAD_PENDING_WORK"
+  ],
+  "title": "REDO_THREAD_PENDING_WORK Wait Type in SQL Server",
+  "verdict": "No; if anything it is the good news wait.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis on secondaries.",
+  "url": "https://sqldba.blog/sql-server-wait-redo-thread-pending-work/"
+ },
+ {
+  "wait_types": [
+   "REPLICA_WRITES"
+  ],
+  "title": "REPLICA_WRITES Wait Type in SQL Server",
+  "verdict": "Small amounts during DBCC CHECKDB on a busy database are the internal snapshot doing its job.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Line up the wait's spikes with CHECKDB schedules and sys.databases ( source_database_id populated = snapshots exist).",
+  "url": "https://sqldba.blog/sql-server-wait-replica-writes/"
+ },
+ {
+  "wait_types": [
+   "REQUEST_DISPENSER_PAUSE"
+  ],
+  "title": "REQUEST_DISPENSER_PAUSE Wait Type in SQL Server",
+  "verdict": "Only as much as the freeze it precedes.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Measure the full freeze window from the error log pairs, and schedule snapshots away from write-heavy periods.",
+  "url": "https://sqldba.blog/sql-server-wait-request-dispenser-pause/"
+ },
+ {
+  "wait_types": [
+   "REQUEST_FOR_DEADLOCK_SEARCH"
+  ],
+  "title": "REQUEST_FOR_DEADLOCK_SEARCH Wait Type in SQL Server",
+  "verdict": "No; Books Online says outright that lengthy total waiting time here does not indicate a problem, and it belongs on every benign filter list.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script does by default.",
+  "url": "https://sqldba.blog/sql-server-wait-request-for-deadlock-search/"
+ },
+ {
+  "wait_types": [
+   "RESERVED_MEMORY_ALLOCATION_EXT"
+  ],
+  "title": "RESERVED_MEMORY_ALLOCATION_EXT Wait Type in SQL Server",
+  "verdict": "Usually not; the standard profile is a large count of tiny waits.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Compute the average wait duration; microseconds means it is noise regardless of the total.",
+  "url": "https://sqldba.blog/sql-server-wait-reserved-memory-allocation-ext/"
+ },
+ {
+  "wait_types": [
+   "RESOURCE_GOVERNOR_IDLE"
+  ],
+  "title": "RESOURCE_GOVERNOR_IDLE Wait Type in SQL Server",
+  "verdict": "It is a policy, honestly reported.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Attribute it: sys.dm_exec_requests joined to workload groups shows which pool's queries are being idled.",
+  "url": "https://sqldba.blog/sql-server-wait-resource-governor-idle/"
+ },
+ {
+  "wait_types": [
+   "RESOURCE_SEMAPHORE"
+  ],
+  "title": "RESOURCE_SEMAPHORE Wait Type in SQL Server",
+  "verdict": "No, not meaningfully.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Add missing indexes , this is the fix most of the time.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-resource-semaphore/"
+ },
+ {
+  "wait_types": [
+   "RESOURCE_SEMAPHORE_MUTEX"
+  ],
+  "title": "RESOURCE_SEMAPHORE_MUTEX Wait Type in SQL Server",
+  "verdict": "Not directly; it has not been a contention point in its own right, and its durations are normally trivial.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Look at what accompanies it.",
+  "url": "https://sqldba.blog/sql-server-wait-resource-semaphore-mutex/"
+ },
+ {
+  "wait_types": [
+   "RESOURCE_SEMAPHORE_QUERY_COMPILE"
+  ],
+  "title": "RESOURCE_SEMAPHORE_QUERY_COMPILE Wait Type in SQL Server",
+  "verdict": "Short bursts can happen after restarts, failovers, and deployments, when the plan cache is cold and everything compiles at once.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Find the expensive compiles: sys.dm_exec_query_stats (plan generation stats) and the plan cache will show the biggest, most-recompiled offenders.",
+  "url": "https://sqldba.blog/sql-server-wait-resource-semaphore-query-compile/"
+ },
+ {
+  "wait_types": [
+   "RESOURCE_SEMAPHORE_SMALL_QUERY"
+  ],
+  "title": "RESOURCE_SEMAPHORE_SMALL_QUERY Wait Type in SQL Server",
+  "verdict": "Its significance is what it implies about the bigger picture.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Look at the whole grant picture first: sys.dm_exec_query_memory_grants shows what is waiting, what is granted, and who holds the big reservations.",
+  "url": "https://sqldba.blog/sql-server-wait-resource-semaphore-small-query/"
+ },
+ {
+  "wait_types": [
+   "RESTORE_MSDA_THREAD_BARRIER"
+  ],
+  "title": "RESTORE_MSDA_THREAD_BARRIER Wait Type in SQL Server",
+  "verdict": "Routinely, no; it is the coordination cost of parallel restore streams, and its total tracks restore duration.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "For a suspected hang on pre-2019: check the error log for a read/write error around when progress stopped; kill and retry the restore, and investigate the failing device or file.",
+  "url": "https://sqldba.blog/sql-server-wait-restore-msda-thread-barrier/"
+ },
+ {
+  "wait_types": [
+   "RTDATA_LIST"
+  ],
+  "title": "RTDATA_LIST Wait Type in SQL Server",
+  "verdict": "Usually not, with a version-specific exception: SQL Server 2014 had a known bug (KB 3007050) causing excessive waits on this type when using natively-compiled procedures, fixed in subsequent updates.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "On 2014: verify the build against KB 3007050.",
+  "url": "https://sqldba.blog/sql-server-wait-rtdata-list/"
+ },
+ {
+  "wait_types": [
+   "SESSION_WAIT_STATS_CHILDREN"
+  ],
+  "title": "SESSION_WAIT_STATS_CHILDREN Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-session-wait-stats-children/"
+ },
+ {
+  "wait_types": [
+   "SHUTDOWN"
+  ],
+  "title": "SHUTDOWN Wait Type in SQL Server",
+  "verdict": "It is a live diagnostic more than a statistic.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Identify the runners: sys.dm_exec_requests (from another connection) shows active sessions and their statements.",
+  "url": "https://sqldba.blog/sql-server-wait-shutdown/"
+ },
+ {
+  "wait_types": [
+   "SLEEP_BPOOL_FLUSH"
+  ],
+  "title": "SLEEP_BPOOL_FLUSH Wait Type in SQL Server",
+  "verdict": "Normally no; it is one of the standard benign waits and worth filtering out of analysis.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of routine wait analysis; our Get-WaitStatistics script already treats it as noise.",
+  "url": "https://sqldba.blog/sql-server-wait-sleep-bpool-flush/"
+ },
+ {
+  "wait_types": [
+   "SLEEP_BPOOL_STEAL"
+  ],
+  "title": "SLEEP_BPOOL_STEAL and Buffer Pool Memory Wait Types in SQL Server",
+  "verdict": "Occasional traces, no.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Confirm with the counters: Free list stalls/sec , Lazy writes/sec , and page life expectancy trends.",
+  "url": "https://sqldba.blog/sql-server-wait-sleep-bpool-memory-waits/"
+ },
+ {
+  "wait_types": [
+   "SLEEP_DBSTARTUP"
+  ],
+  "title": "SLEEP_DBSTARTUP and Startup Sleep Wait Types in SQL Server",
+  "verdict": "Not as waits; they are startup phase markers on the benign filter list.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter them from routine analysis, but note SLEEP_DBSTARTUP 's total after restarts as your recovery-time metric.",
+  "url": "https://sqldba.blog/sql-server-wait-sleep-startup-waits/"
+ },
+ {
+  "wait_types": [
+   "SLEEP_TASK"
+  ],
+  "title": "SLEEP_TASK Wait Type in SQL Server",
+  "verdict": "In sys.dm_os_wait_stats totals, no; the accumulated number is dominated by background noise and safely filtered out.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it from cumulative wait analysis; our Get-WaitStatistics script already does.",
+  "url": "https://sqldba.blog/sql-server-wait-sleep-task/"
+ },
+ {
+  "wait_types": [
+   "SNI_CRITICAL_SECTION"
+  ],
+  "title": "SNI_CRITICAL_SECTION Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its normal profile is trace amounts scaling loosely with connection and packet volume.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-sni-critical-section/"
+ },
+ {
+  "wait_types": [
+   "SNI_TASK_COMPLETION"
+  ],
+  "title": "SNI_TASK_COMPLETION Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and most instances accrue almost none of it outside startup.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-sni-task-completion/"
+ },
+ {
+  "wait_types": [
+   "SOS_DISPATCHER_MUTEX"
+  ],
+  "title": "SOS_DISPATCHER_MUTEX Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and pool adjustments are infrequent, low-cost events.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-dispatcher-mutex/"
+ },
+ {
+  "wait_types": [
+   "SOS_MEMORY_TOPLEVELBLOCKALLOCATOR"
+  ],
+  "title": "SOS_MEMORY_TOPLEVELBLOCKALLOCATOR Wait Type in SQL Server",
+  "verdict": "Usually not, but its known escalations are specific.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Verify build currency against KB 3074434 if you are on 2012/2014.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-memory-toplevelblockallocator/"
+ },
+ {
+  "wait_types": [
+   "SOS_PHYS_PAGE_CACHE"
+  ],
+  "title": "SOS_PHYS_PAGE_CACHE Wait Type in SQL Server",
+  "verdict": "Under normal circumstances, no.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check your build if you are on 2012/2014 on NUMA hardware; apply the CU containing the fix.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-phys-page-cache/"
+ },
+ {
+  "wait_types": [
+   "SOS_SCHEDULER_YIELD"
+  ],
+  "title": "SOS_SCHEDULER_YIELD Wait Type in SQL Server",
+  "verdict": "Some SOS_SCHEDULER_YIELD is always present.",
+  "matters": true,
+  "when_to_ignore": "Normal background cooperative yielding , a small amount of SOS_SCHEDULER_YIELD is inherent in how SQL Server schedules work.",
+  "what_to_do": "Find and tune the top CPU queries , this is almost always the right starting point: Pull the top 10 queries by total_worker_time from sys.dm_exec_query_stats Look at their execution plans, are they doing table scans they should not be?",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-sos-scheduler-yield/"
+ },
+ {
+  "wait_types": [
+   "SOS_SYNC_TASK_ENQUEUE_EVENT"
+  ],
+  "title": "SOS_SYNC_TASK_ENQUEUE_EVENT Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and synchronous task starts are rare enough that totals stay negligible.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-sync-task-enqueue-event/"
+ },
+ {
+  "wait_types": [
+   "SOS_WORKER_MIGRATION"
+  ],
+  "title": "SOS_WORKER_MIGRATION Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its presence documents the load-balancing working.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-worker-migration/"
+ },
+ {
+  "wait_types": [
+   "SOS_WORK_DISPATCHER"
+  ],
+  "title": "SOS_WORK_DISPATCHER Wait Type in SQL Server",
+  "verdict": "No. On SQL Server 2019 and later, and especially on Azure SQL Database, it will frequently be the number one wait by total time on an unfiltered ranking, purely because idle workers accumulate it around the clock.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait statistics analysis; our Get-WaitStatistics script treats it as noise.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-work-dispatcher/"
+ },
+ {
+  "wait_types": [
+   "SP_SERVER_DIAGNOSTICS_SLEEP"
+  ],
+  "title": "SP_SERVER_DIAGNOSTICS_SLEEP Wait Type in SQL Server",
+  "verdict": "No; it can be safely ignored and belongs on the benign filter list.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-sp-server-diagnostics-sleep/"
+ },
+ {
+  "wait_types": [
+   "SQLCLR_APPDOMAIN"
+  ],
+  "title": "SQLCLR_APPDOMAIN Wait Type in SQL Server",
+  "verdict": "Occasional blips after restarts or first use are the design.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check the error log for appdomain unload/load message pairs and their stated reasons.",
+  "url": "https://sqldba.blog/sql-server-wait-sqlclr-appdomain/"
+ },
+ {
+  "wait_types": [
+   "SQLCLR_ASSEMBLY"
+  ],
+  "title": "SQLCLR_ASSEMBLY Wait Type in SQL Server",
+  "verdict": "Rarely; it has not been a contention point, and normal CLR workloads generate only traces.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Read it with SQLCLR_APPDOMAIN and the error log's appdomain messages; stability there quiets this wait too.",
+  "url": "https://sqldba.blog/sql-server-wait-sqlclr-assembly/"
+ },
+ {
+  "wait_types": [
+   "SQLTRACE_INCREMENTAL_FLUSH_SLEEP"
+  ],
+  "title": "SQLTRACE_INCREMENTAL_FLUSH_SLEEP Wait Type in SQL Server",
+  "verdict": "No. It is a timer loop on the benign filter list, and its total tracks uptime rather than tracing overhead.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-sqltrace-incremental-flush-sleep/"
+ },
+ {
+  "wait_types": [
+   "TERMINATE_LISTENER"
+  ],
+  "title": "TERMINATE_LISTENER Wait Type in SQL Server",
+  "verdict": "No; listener destruction is an infrequent lifecycle event, and this wait's occurrences map to those events.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-terminate-listener/"
+ },
+ {
+  "wait_types": [
+   "THREADPOOL"
+  ],
+  "title": "THREADPOOL Wait Type in SQL Server",
+  "verdict": "No. There is no safe level of THREADPOOL during production operations.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "If it is happening right now, stop the bleeding first: Find the head blocker causing the blocking chain and kill it: KILL [session_id]; -- the head blocker session This releases all blocked sessions, which release their threads.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-threadpool/"
+ },
+ {
+  "wait_types": [
+   "TRACEWRITE"
+  ],
+  "title": "TRACEWRITE Wait Type in SQL Server",
+  "verdict": "Yes, when it is significant, because the rowset provider can throttle the server to avoid losing events: sessions generating traced events slow down while buffers are full.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "See what traces exist: SELECT * FROM sys.traces; shows every running trace, its target, and whether it is the rowset (live consumer) kind.",
+  "url": "https://sqldba.blog/sql-server-wait-tracewrite/"
+ },
+ {
+  "wait_types": [
+   "TRACE_EVTNOTIF"
+  ],
+  "title": "TRACE_EVTNOTIF Wait Type in SQL Server",
+  "verdict": "Not mechanically; the notification machinery is cheap per event.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Inventory subscriptions: sys.event_notifications and sys.server_event_notifications show what fires messages.",
+  "url": "https://sqldba.blog/sql-server-wait-trace-evtnotif/"
+ },
+ {
+  "wait_types": [
+   "UCS_SESSION_REGISTRATION"
+  ],
+  "title": "UCS_SESSION_REGISTRATION Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and even Broker-heavy environments see only traces, since session registration happens at connection establishment and teardown rather than per message.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-ucs-session-registration/"
+ },
+ {
+  "wait_types": [
+   "VDI_CLIENT_OTHER"
+  ],
+  "title": "VDI_CLIENT_OTHER Wait Type in SQL Server",
+  "verdict": "No. During an active seeding, high wait times just mean copy threads waiting for more data to move, which is normal pipeline behaviour.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-vdi-client-other/"
+ },
+ {
+  "wait_types": [
+   "WAITFOR"
+  ],
+  "title": "WAITFOR Wait Type in SQL Server",
+  "verdict": "Not as a performance signal.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Find the sleepers when curious: sys.dm_exec_requests WHERE wait_type = 'WAITFOR' with the SQL text tells you who and why.",
+  "url": "https://sqldba.blog/sql-server-wait-waitfor/"
+ },
+ {
+  "wait_types": [
+   "WAITFOR_PER_QUEUE"
+  ],
+  "title": "WAITFOR_PER_QUEUE Wait Type in SQL Server",
+  "verdict": "No; blocked receives on empty queues are exactly how activation readers are meant to idle, and the wait accumulates in timeout-sized increments while queues are quiet.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-waitfor-per-queue/"
+ },
+ {
+  "wait_types": [
+   "WAIT_ON_SYNC_STATISTICS_REFRESH"
+  ],
+  "title": "WAIT_ON_SYNC_STATISTICS_REFRESH Wait Type in SQL Server",
+  "verdict": "It is when it registers meaningfully, because real user queries are absorbing statistics maintenance time at random.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Turn on asynchronous statistics updates for the affected databases: ALTER DATABASE [db] SET AUTO_UPDATE_STATISTICS_ASYNC ON; .",
+  "url": "https://sqldba.blog/sql-server-wait-wait-on-sync-statistics-refresh/"
+ },
+ {
+  "wait_types": [
+   "WAIT_XTP_CKPT_CLOSE"
+  ],
+  "title": "WAIT_XTP_CKPT_CLOSE Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point and belongs on the benign filter list with the rest of the WAIT_XTP_* family.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-ckpt-close/"
+ },
+ {
+  "wait_types": [
+   "WAIT_XTP_HOST_WAIT"
+  ],
+  "title": "WAIT_XTP_HOST_WAIT Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point and is filtered as benign.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-host-wait/"
+ },
+ {
+  "wait_types": [
+   "WAIT_XTP_OFFLINE_CKPT_LOG_IO"
+  ],
+  "title": "WAIT_XTP_OFFLINE_CKPT_LOG_IO Wait Type in SQL Server",
+  "verdict": "Not usually; it has not been a contention point, and moderate amounts just mean the checkpoint scanner sometimes reads log from disk rather than cache.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it in routine analysis; act only alongside real XTP checkpoint symptoms.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-offline-ckpt-log-io/"
+ },
+ {
+  "wait_types": [
+   "WAIT_XTP_OFFLINE_CKPT_NEW_LOG"
+  ],
+  "title": "WAIT_XTP_OFFLINE_CKPT_NEW_LOG Wait Type in SQL Server",
+  "verdict": "No; it is expected and filtered as benign wherever In-Memory OLTP is enabled, and it appears as soon as a database has a memory-optimized filegroup, even one created incidentally or barely used.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-offline-ckpt-new-log/"
+ },
+ {
+  "wait_types": [
+   "WAIT_XTP_RECOVERY"
+  ],
+  "title": "WAIT_XTP_RECOVERY Wait Type in SQL Server",
+  "verdict": "The wait itself is honest; the duration is the operational fact.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Measure it: after a controlled failover or restart, the error log's recovery timings plus this wait show the XTP share of the outage.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-recovery/"
+ },
+ {
+  "wait_types": [
+   "WAIT_XTP_TASK_SHUTDOWN"
+  ],
+  "title": "WAIT_XTP_TASK_SHUTDOWN Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and it accumulates only around shutdown-shaped events for XTP components.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-task-shutdown/"
+ },
+ {
+  "wait_types": [
+   "WRITELOG"
+  ],
+  "title": "WRITELOG Wait Type in SQL Server",
+  "verdict": "Yes, some WRITELOG is inherent in any transactional workload.",
+  "matters": true,
+  "when_to_ignore": "High transaction volume workloads , if you are doing tens of thousands of commits per second, some WRITELOG is unavoidable.",
+  "what_to_do": "Slow log disk: Move the log file to a dedicated fast disk (SSD or NVMe ideally) Separate log files from data files if they share a volume Check storage queue depth in Performance Monitor ( PhysicalDisk\\Current Disk Queue Length on the log...",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-writelog/"
+ },
+ {
+  "wait_types": [
+   "WRITE_COMPLETION"
+  ],
+  "title": "WRITE_COMPLETION Wait Type in SQL Server",
+  "verdict": "A small baseline is normal.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Check the timing against DBCC CHECKDB runs and snapshot usage before anything else.",
+  "url": "https://sqldba.blog/sql-server-wait-write-completion/"
+ },
+ {
+  "wait_types": [
+   "XE_BUFFERMGR_ALLPROCESSED_EVENT"
+  ],
+  "title": "XE_BUFFERMGR_ALLPROCESSED_EVENT Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point and belongs with the other XE_* background waits on the filter list.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-buffermgr-allprocessed-event/"
+ },
+ {
+  "wait_types": [
+   "XE_DISPATCHER_WAIT"
+  ],
+  "title": "XE_DISPATCHER_WAIT Wait Type in SQL Server",
+  "verdict": "No; it is the idle half of the XE delivery machinery and belongs on the benign filter list alongside XE_TIMER_EVENT .",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-dispatcher-wait/"
+ },
+ {
+  "wait_types": [
+   "XE_FILE_TARGET_TVF"
+  ],
+  "title": "XE_FILE_TARGET_TVF Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its total is a diary of XE file reads: your troubleshooting sessions, scheduled jobs parsing system_health, monitoring products sweeping event files.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it in routine analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-file-target-tvf/"
+ },
+ {
+  "wait_types": [
+   "XE_LIVE_TARGET_TVF"
+  ],
+  "title": "XE_LIVE_TARGET_TVF Wait Type in SQL Server",
+  "verdict": "Not as a contention point; it has not been observed causing trouble in its own right, and its size mostly tracks how long viewers stay open.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Identify live consumers: sys.dm_xe_sessions shows running sessions, and the live streaming target appears in sys.dm_xe_session_targets while a viewer is attached.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-live-target-tvf/"
+ },
+ {
+  "wait_types": [
+   "XE_TIMER_EVENT"
+  ],
+  "title": "XE_TIMER_EVENT Wait Type in SQL Server",
+  "verdict": "No. It is a timer measuring its own countdown, one of the standard benign waits, and its total scales with uptime and the number of event sessions rather than any performance factor.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-timer-event/"
+ },
+ {
+  "wait_types": [
+   "XE_TIMER_MUTEX"
+  ],
+  "title": "XE_TIMER_MUTEX Wait Type in SQL Server",
+  "verdict": "No; it has not been a contention point, and its amounts stay trivial even with many event sessions.",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it out of wait analysis with the rest of the XE_* background set.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-timer-mutex/"
+ },
+ {
+  "wait_types": [
+   "XTP_PREEMPTIVE_TASK"
+  ],
+  "title": "XTP_PREEMPTIVE_TASK Wait Type in SQL Server",
+  "verdict": "Normally no; it accumulates as XTP background machinery hums, and it is filtered as benign.",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Filter it in routine analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-xtp-preemptive-task/"
+ }
+]

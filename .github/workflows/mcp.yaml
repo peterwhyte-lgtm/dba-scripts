@@ -1,0 +1,58 @@
+name: MCP server
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'mcp/**', '.github/workflows/mcp.yaml' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'mcp/**', '.github/workflows/mcp.yaml' ]
+
+# Default: no permissions. Each job declares only what it needs.
+permissions: {}
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python: [ '3.10', '3.13' ]
+    defaults:
+      run:
+        working-directory: mcp
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install
+        run: python -m pip install --upgrade pip && pip install -e .
+
+      - name: Self-test (datasets load from the installed package)
+        run: sqldba-mcp --selftest || python -m sqldba_mcp --selftest
+
+      - name: Tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Build a wheel and confirm the datasets are inside it
+        run: |
+          pip install build
+          python -m build --wheel --outdir dist
+          python - <<'PY'
+          import glob, zipfile, sys
+          whl = glob.glob('dist/*.whl')[0]
+          names = zipfile.ZipFile(whl).namelist()
+          need = ['errors.json', 'waits.json', 'builds.json', '_meta.json']
+          missing = [n for n in need if not any(x.endswith('datasets/' + n) for x in names)]
+          if missing:
+              sys.exit('Wheel is missing bundled datasets: %s' % missing)
+          print('wheel OK:', whl, '-', len(names), 'files')
+          PY

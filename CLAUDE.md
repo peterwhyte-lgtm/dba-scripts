@@ -224,6 +224,13 @@ powershell/
 
 web-ui/               — browser UI: Start-WebUi.ps1, Generate-ScriptIndex.ps1
 
+mcp/                  — the MCP server: the repo's reference data as tools any AI agent can call
+                        (lookup_error, explain_wait, check_build). Independent installable Python
+                        package (`pip install ./mcp`, entry point `sqldba-mcp`) that depends on
+                        nothing else in the repo, no network and no SQL connection — the datasets
+                        ship inside the package. Its own tests + CI (.github/workflows/mcp.yaml).
+                        The datasets are GENERATED; never hand-edit src/sqldba_mcp/datasets/*.json.
+
 tools/
   local-sql/    — Invoke-RepoSql.ps1 (the core runner), Set-SqlConnection.ps1, Test-SqlConnectivity.ps1,
                   Test-ServerNetwork.ps1 (DNS/port pre-flight; auto-runs on connection failure)

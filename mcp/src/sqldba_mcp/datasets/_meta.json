@@ -1,0 +1,12 @@
+{
+ "generated": "2026-08-17",
+ "generator": "personal/tools/site-manager/export-mcp-data.py (private)",
+ "source_of_truth": "sqldba.blog + dba-tools",
+ "contains": "lookup index only; full write-ups live at the linked URLs",
+ "counts": {
+  "errors": 47,
+  "waits": 224,
+  "wait_types": 232,
+  "versions": 7
+ }
+}

@@ -1,0 +1,303 @@
+{
+ "versions": [
+  {
+   "name": "SQL Server 2025",
+   "major_build": "17.x",
+   "engine_version": 17,
+   "native_compat_level": 170,
+   "supported_compat_levels": "170, 160, 150, 140, 130, 120, 110, 100",
+   "servicing": "Cumulative Updates only (no Service Packs)",
+   "rtm": {
+    "build": "17.0.1000.7",
+    "date": "2025-11-18"
+   },
+   "latest_cu": {
+    "name": "CU8",
+    "build": "17.0.4075.5",
+    "kb": "KB5104822",
+    "kb_url": "https://support.microsoft.com/help/5104822",
+    "date": "2026-08-13"
+   },
+   "latest_cu_gdr": {
+    "name": "CU6 + GDR",
+    "build": "17.0.4060.2",
+    "kb": "KB5101346",
+    "kb_url": "https://support.microsoft.com/help/5101346",
+    "date": "2026-07-14"
+   },
+   "latest_gdr": {
+    "name": "GDR (RTM security train)",
+    "build": "17.0.1125.2",
+    "kb": "KB5102333",
+    "kb_url": "https://support.microsoft.com/help/5102333",
+    "date": "2026-07-14"
+   },
+   "latest_sp": null,
+   "support_status": "mainstream",
+   "mainstream_end": "2031-01-06",
+   "extended_end": "2036-01-06",
+   "esu": null,
+   "notes": "Current release. First version offering Standard Developer edition alongside Enterprise-based Developer.",
+   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle-updated-2026/"
+  },
+  {
+   "name": "SQL Server 2022",
+   "major_build": "16.x",
+   "engine_version": 16,
+   "native_compat_level": 160,
+   "supported_compat_levels": "160, 150, 140, 130, 120, 110, 100",
+   "servicing": "Cumulative Updates only (no Service Packs)",
+   "rtm": {
+    "build": "16.0.1000.6",
+    "date": "2022-11-16"
+   },
+   "latest_cu": {
+    "name": "CU26",
+    "build": "16.0.4265.3",
+    "kb": "KB5093420",
+    "kb_url": "https://support.microsoft.com/help/5093420",
+    "date": "2026-07-16"
+   },
+   "latest_cu_gdr": {
+    "name": "CU25 + GDR",
+    "build": "16.0.4262.2",
+    "kb": "KB5101347",
+    "kb_url": "https://support.microsoft.com/help/5101347",
+    "date": "2026-07-14"
+   },
+   "latest_gdr": {
+    "name": "GDR (RTM security train)",
+    "build": "16.0.1190.2",
+    "kb": "KB5102334",
+    "kb_url": "https://support.microsoft.com/help/5102334",
+    "date": "2026-07-14"
+   },
+   "latest_sp": null,
+   "support_status": "mainstream",
+   "mainstream_end": "2028-01-11",
+   "extended_end": "2033-01-11",
+   "esu": null,
+   "notes": "The most widely deployed current version. Still receiving regular CUs.",
+   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle-updated-2026/"
+  },
+  {
+   "name": "SQL Server 2019",
+   "major_build": "15.x",
+   "engine_version": 15,
+   "native_compat_level": 150,
+   "supported_compat_levels": "150, 140, 130, 120, 110, 100",
+   "servicing": "Cumulative Updates only (no Service Packs); CU train closed at CU32, security-only updates since",
+   "rtm": {
+    "build": "15.0.2000.5",
+    "date": "2019-11-04"
+   },
+   "latest_cu": {
+    "name": "CU32 (final CU)",
+    "build": "15.0.4430.1",
+    "kb": "KB5054833",
+    "kb_url": "https://support.microsoft.com/help/5054833",
+    "date": "2025-02-27"
+   },
+   "latest_cu_gdr": {
+    "name": "CU32 + GDR",
+    "build": "15.0.4480.2",
+    "kb": "KB5102335",
+    "kb_url": "https://support.microsoft.com/help/5102335",
+    "date": "2026-07-14"
+   },
+   "latest_gdr": {
+    "name": "GDR (RTM security train)",
+    "build": "15.0.2180.2",
+    "kb": "KB5102336",
+    "kb_url": "https://support.microsoft.com/help/5102336",
+    "date": "2026-07-14"
+   },
+   "latest_sp": null,
+   "support_status": "extended",
+   "mainstream_end": "2025-02-28",
+   "extended_end": "2030-01-08",
+   "esu": null,
+   "notes": "Mainstream support ended 28 February 2025. CU32 was the final cumulative update; patching now means the CU32 + GDR security builds.",
+   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle-updated-2026/"
+  },
+  {
+   "name": "SQL Server 2017",
+   "major_build": "14.x",
+   "engine_version": 14,
+   "native_compat_level": 140,
+   "supported_compat_levels": "140, 130, 120, 110, 100",
+   "servicing": "First CU-only version (Service Packs ended here); CU train closed at CU31, security-only updates since",
+   "rtm": {
+    "build": "14.0.1000.169",
+    "date": "2017-09-29"
+   },
+   "latest_cu": {
+    "name": "CU31 (final CU)",
+    "build": "14.0.3456.2",
+    "kb": "KB5016884",
+    "kb_url": "https://support.microsoft.com/help/5016884",
+    "date": "2022-09-20"
+   },
+   "latest_cu_gdr": {
+    "name": "CU31 + GDR",
+    "build": "14.0.3540.1",
+    "kb": "KB5102337",
+    "kb_url": "https://support.microsoft.com/help/5102337",
+    "date": "2026-07-14"
+   },
+   "latest_gdr": {
+    "name": "GDR (RTM security train)",
+    "build": "14.0.2120.1",
+    "kb": "KB5102338",
+    "kb_url": "https://support.microsoft.com/help/5102338",
+    "date": "2026-07-14"
+   },
+   "latest_sp": null,
+   "support_status": "extended",
+   "mainstream_end": "2022-10-11",
+   "extended_end": "2027-10-12",
+   "esu": null,
+   "notes": "In extended support until 12 October 2027. Security fixes still ship as CU31 + GDR builds.",
+   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle-updated-2026/"
+  },
+  {
+   "name": "SQL Server 2016",
+   "major_build": "13.x",
+   "engine_version": 13,
+   "native_compat_level": 130,
+   "supported_compat_levels": "130, 120, 110, 100",
+   "servicing": "Service Pack model (last version with SPs in practice); CUs shipped per SP, SP3 itself received no CUs",
+   "rtm": {
+    "build": "13.0.1601.5",
+    "date": "2016-06-01"
+   },
+   "latest_cu": {
+    "name": "SP2 CU17 (final CU)",
+    "build": "13.0.5888.11",
+    "kb": "KB5001092",
+    "kb_url": "https://support.microsoft.com/help/5001092",
+    "date": "2021-03-29"
+   },
+   "latest_cu_gdr": null,
+   "latest_gdr": {
+    "name": "SP3 + Azure Connect GDR",
+    "build": "13.0.7095.1",
+    "kb": "KB5102339",
+    "kb_url": "https://support.microsoft.com/help/5102339",
+    "date": "2026-07-14"
+   },
+   "latest_sp": {
+    "name": "SP3",
+    "build": "13.0.6300.2",
+    "kb": "KB5003279",
+    "kb_url": "https://support.microsoft.com/help/5003279",
+    "date": "2021-09-15"
+   },
+   "support_status": "out_of_support",
+   "mainstream_end": "2021-07-13",
+   "extended_end": "2026-07-14",
+   "esu": {
+    "available": true,
+    "detail": "ESU Year 1 runs 2026-07-15 to 2027-07-13; Year 3 ends 2029",
+    "source": "https://learn.microsoft.com/en-us/lifecycle/products/sql-server-2016"
+   },
+   "notes": "Extended support ended 14 July 2026. No more free security updates; Extended Security Updates (paid, or free in Azure) are the only patch path. July 2026 GDRs were the final regular updates.",
+   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle-updated-2026/"
+  },
+  {
+   "name": "SQL Server 2014",
+   "major_build": "12.x",
+   "engine_version": 12,
+   "native_compat_level": 120,
+   "supported_compat_levels": "120, 110, 100",
+   "servicing": "Service Pack model; CUs shipped per SP",
+   "rtm": {
+    "build": "12.0.2000.8",
+    "date": "2014-04-01"
+   },
+   "latest_cu": {
+    "name": "SP3 CU4 (final CU)",
+    "build": "12.0.6329.1",
+    "kb": "KB4500181",
+    "kb_url": "https://support.microsoft.com/help/4500181",
+    "date": "2019-07-29"
+   },
+   "latest_cu_gdr": {
+    "name": "SP3 CU4 + GDR",
+    "build": "12.0.6449.1",
+    "kb": "KB5029185",
+    "kb_url": "https://support.microsoft.com/help/5029185",
+    "date": "2023-10-10"
+   },
+   "latest_gdr": {
+    "name": "SP3 GDR",
+    "build": "12.0.6179.1",
+    "kb": "KB5029184",
+    "kb_url": "https://support.microsoft.com/help/5029184",
+    "date": "2023-10-10"
+   },
+   "latest_sp": {
+    "name": "SP3",
+    "build": "12.0.6024.0",
+    "kb": "KB4022619",
+    "kb_url": "https://support.microsoft.com/help/4022619",
+    "date": "2018-10-30"
+   },
+   "support_status": "out_of_support",
+   "mainstream_end": "2019-07-09",
+   "extended_end": "2024-07-09",
+   "esu": {
+    "available": true,
+    "detail": "ESU Year 3 runs 2026-07-15 to 2027-07-12",
+    "source": "https://learn.microsoft.com/en-us/lifecycle/products/sql-server-2014"
+   },
+   "notes": "Extended support ended 9 July 2024. Last free security update was the October 2023 GDR. ESU coverage (paid, or free in Azure) runs to mid-2027.",
+   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle-updated-2026/"
+  },
+  {
+   "name": "SQL Server 2012",
+   "major_build": "11.x",
+   "engine_version": 11,
+   "native_compat_level": 110,
+   "supported_compat_levels": "110, 100, 90",
+   "servicing": "Service Pack model; CUs shipped per SP, SP4 itself received no CUs",
+   "rtm": {
+    "build": "11.0.2100.60",
+    "date": "2012-03-06"
+   },
+   "latest_cu": {
+    "name": "SP3 CU10 (final CU)",
+    "build": "11.0.6607.3",
+    "kb": "KB4025925",
+    "kb_url": "https://support.microsoft.com/help/4025925",
+    "date": "2017-08-08"
+   },
+   "latest_cu_gdr": null,
+   "latest_gdr": {
+    "name": "SP4 GDR",
+    "build": "11.0.7512.11",
+    "kb": "KB5021123",
+    "kb_url": "https://support.microsoft.com/help/5021123",
+    "date": "2023-02-14"
+   },
+   "latest_sp": {
+    "name": "SP4",
+    "build": "11.0.7001.0",
+    "kb": "KB4018073",
+    "kb_url": "https://support.microsoft.com/help/4018073",
+    "date": "2017-10-04"
+   },
+   "support_status": "out_of_support",
+   "mainstream_end": "2017-07-11",
+   "extended_end": "2022-07-12",
+   "esu": {
+    "available": false,
+    "detail": "ESU program ended 2025-07-08 (Year 3)",
+    "source": "https://learn.microsoft.com/en-us/lifecycle/products/microsoft-sql-server-2012"
+   },
+   "notes": "Fully out of support, including ESU. The February 2023 SP4 GDR is the last update that will ever ship.",
+   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle-updated-2026/"
+  }
+ ],
+ "data_checked": "2026-08-15"
+}
