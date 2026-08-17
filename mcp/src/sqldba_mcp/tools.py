@@ -197,4 +197,153 @@ def check_build(build: str) -> str:
     if version.get('notes'):
         lines += ['', version['notes']]
     lines += ['', 'Full version and lifecycle table: %s' % version['url']]
+    # Build data ages badly. The server volunteers this rather than waiting to be asked.
+    return '\n'.join(lines) + data.freshness_warning()
+
+
+# --- scripts --------------------------------------------------------------------------
+
+def _safety(s: dict) -> str:
+    bits = [b for b in (s.get('safe'), s.get('impact')) if b]
+    if not bits:
+        return 'safety class not stated'
+    if s.get('language') == 'powershell':
+        return 'RiskLevel: %s' % bits[0]
+    out = 'SAFE: %s' % s['safe'] if s.get('safe') else ''
+    if s.get('impact'):
+        out += '   IMPACT: %s' % s['impact']
+    return out or 'safety class not stated'
+
+
+def find_script(task: str) -> str:
+    """Find a script in the dba-tools library by what you are trying to do."""
+    term = (task or '').strip()
+    if not term:
+        return ("Describe the task, e.g. 'find blocking chains', 'check backup coverage', "
+                "'list missing indexes'.")
+
+    hits = data.script_index().search(term, limit=8, min_coverage=0.34)
+    if not hits:
+        return ("Nothing in the dba-tools library matches that.\n\n"
+                "The library is 181 SQL scripts plus PowerShell orchestrators, covering "
+                "inventory, monitoring, performance, backups, security, HA and migration. "
+                "Browse: https://sqldba.blog/scripts/")
+
+    lines = ['Found %d script(s) for "%s":' % (len(hits), term), '']
+    for s, _score in hits:
+        lines.append('### %s' % s['name'])
+        if s.get('purpose'):
+            lines.append(s['purpose'])
+        meta_bits = [_safety(s), 'path: `%s`' % s['path']]
+        if s.get('requires'):
+            meta_bits.insert(1, 'requires: %s' % s['requires'])
+        if s.get('health_check'):
+            meta_bits.append('part of the health check suite')
+        lines.append('  \n'.join(meta_bits))
+        if s.get('url'):
+            lines.append('Write-up: %s' % s['url'])
+        lines.append('')
+    lines.append('Call `get_script` with an exact name for the full body.')
+    lines.append('')
+    lines.append('**Check the safety class before running anything.** `SAFE: ReadOnly` is '
+                 'safe to run on production; `WritesData` or `CreatesObjects` changes the '
+                 'server, and `IMPACT: High` means it can be expensive on a busy instance.')
+    return '\n'.join(lines)
+
+
+def get_script(name: str) -> str:
+    """Return the full verbatim body of a named script."""
+    want = (name or '').strip()
+    if not want:
+        return "Give me a script name, e.g. Get-BlockingChains."
+
+    wl = want.lower()
+    exact = [s for s in data.scripts() if s['name'].lower() == wl]
+    if not exact:
+        exact = [s for s in data.scripts()
+                 if pathlib_stem(s['path']).lower() == wl or s['path'].lower() == wl]
+
+    if not exact:
+        near = data.script_index().search(want, limit=6)
+        if not near:
+            return ("No script called %r. Use `find_script` to search by task."
+                    % want)
+        lines = ['No script is named exactly %r. Did you mean:' % want, '']
+        for s, _ in near:
+            lines.append('- **%s** (`%s`)' % (s['name'], s['path']))
+        lines.append('')
+        lines.append('Call `get_script` again with one of these exact names.')
+        return '\n'.join(lines)
+
+    if len(exact) > 1:
+        # Never guess which of several same-named scripts was meant.
+        lines = ['%d scripts share the name %r:' % (len(exact), want), '']
+        for s in exact:
+            lines.append('- `%s` - %s' % (s['path'], s.get('purpose') or 'no purpose stated'))
+        lines.append('')
+        lines.append('Call `get_script` again with the full path to pick one.')
+        return '\n'.join(lines)
+
+    s = exact[0]
+    fence = 'sql' if s['language'] == 'sql' else 'powershell'
+    lines = ['## %s' % s['name'], '']
+    if s.get('purpose'):
+        lines += [s['purpose'], '']
+    lines.append('%s   \npath: `%s`' % (_safety(s), s['path']))
+    if s.get('requires'):
+        lines.append('requires: %s' % s['requires'])
+    lines += ['', '```%s' % fence, s['body'].rstrip(), '```']
+    if s.get('url'):
+        lines += ['', 'Write-up with example output: %s' % s['url']]
+    return '\n'.join(lines)
+
+
+def health_triage_prompt() -> str:
+    """The health-check triage rubric, shipped as a reusable prompt."""
+    prompts = data.prompts()
+    hit = next((p for p in prompts if p['name'] == 'sql-server-health-triage'), None)
+    if not hit:
+        return 'The triage rubric is not bundled in this build.'
+    return (
+        "Triage a SQL Server using the rubric below. It is a working DBA's own "
+        "methodology: what to flag, at what threshold, and in what order of severity.\n\n"
+        "Work through it in order, report CRITICAL findings first, and say explicitly "
+        "when you do not have the data to judge a section rather than assuming it is "
+        "healthy.\n\n---\n\n" + hit['body'].rstrip() +
+        "\n\n---\n\nSource: %s in the dba-tools repo (https://sqldba.blog/scripts/)."
+        % hit['source']
+    )
+
+
+def pathlib_stem(p: str) -> str:
+    base = p.rsplit('/', 1)[-1]
+    return base.rsplit('.', 1)[0] if '.' in base else base
+
+
+# --- FAQ ------------------------------------------------------------------------------
+
+def answer_question(question: str) -> str:
+    """Answer a how/why/should-I question from Peter's published FAQ answers."""
+    q = (question or '').strip()
+    if not q:
+        return "Ask a question, e.g. 'should I add a second data file?'"
+
+    # Coverage floor: a single shared term is not an answer. See Index.search.
+    hits = data.faq_index().search(q, limit=4, min_coverage=0.5)
+    if not hits:
+        return ("Nothing in the published FAQ answers matches that.\n\n"
+                "This covers %d questions answered across sqldba.blog. For a specific "
+                "error number use `lookup_error`, for a wait type use `explain_wait`, "
+                "for a build number use `check_build`, and to find a script use "
+                "`find_script`." % len(data.faqs()))
+
+    best, best_score = hits[0]
+    lines = ['**%s**' % best['question'], '', best['answer'], '',
+             'From: %s' % best['url']]
+
+    others = [h for h, _ in hits[1:3]]
+    if others:
+        lines += ['', 'Related questions answered:']
+        for o in others:
+            lines.append('- %s  %s' % (o['question'], o['url']))
     return '\n'.join(lines)

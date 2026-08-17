@@ -45,10 +45,18 @@ class TestData(unittest.TestCase):
         The generator enforces this too, but the generator is private and this file is not,
         so the public repo verifies its own data rather than trusting an upstream promise.
         """
-        forbidden = [r'PWSQL\d+', r'HPAI\d+', r'sqldba-staging', r'[A-Za-z]:\\Users\\',
-                     r'localhost', r'\bAPI[_-]?KEY\b']
+        always = [r'PWSQL\d+', r'HPAI\d+', r'sqldba-staging', r'sk-ant-[A-Za-z0-9]']
+        # Prose-only rules. `localhost` and a Windows path are a leak in an article and
+        # entirely legitimate in a DBA script (`-ServerInstance localhost`, output-files
+        # paths). scripts/docs/prompts are verbatim copies of files already public in
+        # this repo, so applying the prose rules to them would fail the build over a
+        # disclosure that has already happened. Same split as the generator's
+        # scrub(mode=...), asserted here so the two cannot drift apart.
+        prose_only = [r'localhost', r'[A-Za-z]:\\Users\\', r'\bAPI[_-]?KEY\b']
+        code_corpora = {'scripts.json', 'docs.json', 'prompts.json'}
         for path in sorted(DATA_DIR.glob('*.json')):
             blob = path.read_text(encoding='utf-8')
+            forbidden = always + ([] if path.name in code_corpora else prose_only)
             for pat in forbidden:
                 hit = re.search(pat, blob, re.I)
                 self.assertIsNone(hit, 'PRIVATE DATA IN %s: %r'
@@ -176,7 +184,8 @@ class TestContract(unittest.TestCase):
             if hasattr(server.server, '_tool_manager') else None
         if names is None:
             self.skipTest('SDK internals differ; covered by test_selftest')
-        self.assertEqual(names, {'lookup_error', 'explain_wait', 'check_build'})
+        self.assertEqual(names, {'lookup_error', 'explain_wait', 'check_build',
+                                 'find_script', 'get_script', 'answer_question'})
 
     def test_selftest_describes_the_load(self):
         d = server.describe()

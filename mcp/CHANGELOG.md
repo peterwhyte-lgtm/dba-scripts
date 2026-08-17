@@ -3,6 +3,47 @@
 All notable changes to the sqldba MCP server. Follows [Keep a Changelog](https://keepachangelog.com/)
 and [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-08-17
+
+Widened from a lookup service to a reference for the whole library: scripts, docs and the
+questions Peter has already answered in public.
+
+### Added
+- `find_script` - intent search over 230 scripts (181 SQL, 49 PowerShell orchestrators).
+  Surfaces the SAFE/IMPACT safety class on every hit, which is the field that makes this
+  worth more than a GitHub search.
+- `get_script` - full verbatim body, header and safety annotations intact. Lists candidates
+  rather than guessing when a name is ambiguous.
+- `answer_question` - 434 questions answered in Peter's own words, extracted from the FAQ
+  accordions on 162 published posts.
+- **Resources**: 9 repo docs at stable `sqldba://docs/...` URIs. Offered, not chosen, so
+  they cost nothing against tool-selection accuracy.
+- **Prompt** `sql-server-health-triage`: the repo's own AI assessment rubric, reusable by
+  any client. The first thing here that carries judgement rather than facts.
+- **Retrieval eval** (`tests/eval_faq.py`): 793 scored questions across five suites, run in
+  CI as a regression gate. Headline 95.9% top-1 on reworded questions.
+- **Freshness contract** (`tests/check_freshness.py`): re-derives the script, doc and prompt
+  datasets from the repo and compares byte for byte. Hand-edit one and the build fails.
+  `check_build` also volunteers a warning in its own answer once the data passes 90 days.
+- 29 more tests (26 -> 55), including the index/corpus boundary in both directions, tool
+  routing, and negative tests for the search.
+
+### Changed
+- Tool count 3 -> 6, and capped there by a test. Past roughly six an agent starts choosing
+  wrong, and a wrong pick is worse than no server.
+- Search now requires a query to share enough vocabulary with a record before it counts as
+  a hit. "How do I configure an nginx reverse proxy" previously returned a SQL Agent *proxy*
+  answer with full confidence.
+- Thin wrappers under `powershell/wrappers/` are excluded from the corpus - they are a 1:1
+  shim for the web UI and would double every search result.
+
+### Notes
+- The boundary is deliberately asymmetric: script bodies ship in full because the body is
+  the product and the repo is already public; post write-ups stay on sqldba.blog. Tests
+  assert both directions so a refactor cannot quietly flip either.
+- Multi-line `Purpose :` headers are now read to the end. Roughly a third of script purposes
+  were being truncated mid-sentence in search results.
+
 ## [0.1.0] - 2026-08-17
 
 First working version. Proof of concept, but built to the repo's production bar.

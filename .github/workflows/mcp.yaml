@@ -42,6 +42,16 @@ jobs:
       - name: Tests
         run: python -m unittest discover -s tests -v
 
+      - name: Retrieval eval (regression gate + published score)
+        run: python tests/eval_faq.py
+
+      # Freshness contract. The datasets are GENERATED - if someone hand-edits one, or a
+      # source changes without a re-export, the committed data and its source disagree and
+      # the server starts citing a post that no longer says what it claims. That must break
+      # the build, not surface as a quiet wrong answer months later.
+      - name: Freshness - datasets must not have drifted from their sources
+        run: python tests/check_freshness.py
+
       - name: Build a wheel and confirm the datasets are inside it
         run: |
           pip install build

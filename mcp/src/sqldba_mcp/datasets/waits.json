@@ -571,7 +571,7 @@
   "verdict": "Treat it exactly like you treat CXPACKET : it is evidence of parallel queries running, not proof of a problem.",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the queries running in parallel: sys.dm_exec_query_stats filtered to plans with max_degree_of_parallelism > 1 , ordered by elapsed time.",
+  "what_to_do": "Identify the queries running in parallel: sys.dm_exec_query_stats filtered to plans with max_dop > 1 , ordered by elapsed time.",
   "url": "https://sqldba.blog/sql-server-wait-exchange/"
  },
  {
