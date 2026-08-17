@@ -1,10 +1,9 @@
-"""Entry point: `python -m sqldba_mcp` (stdio) or `--selftest` to check the install."""
-import sys
+"""Entry point for `python -m sqldba_mcp`.
 
-from .server import describe, main
+Delegates to the same main() as the `sqldba-mcp` console script so the two routes cannot
+drift apart again. They did once: --selftest worked here and silently did nothing there.
+"""
+from .server import main
 
 if __name__ == '__main__':
-    if '--selftest' in sys.argv:
-        print(describe())
-        sys.exit(0)
     main()

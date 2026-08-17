@@ -251,3 +251,30 @@ class TestLeakGate(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TestEntryPoints(unittest.TestCase):
+    """`sqldba-mcp` and `python -m sqldba_mcp` must behave identically.
+
+    They did not. --selftest was implemented only in __main__.py, so the README's first
+    command started a stdio server, read EOF, and exited 0 printing nothing. A new user's
+    first impression was a command that looks like it worked and did nothing at all.
+    """
+
+    def test_selftest_prints_the_summary(self):
+        import io
+        import contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            server.main(['--selftest'])
+        out = buf.getvalue()
+        self.assertIn('sqldba MCP', out)
+        self.assertIn('errors', out)
+
+    def test_version_flag(self):
+        import io
+        import contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            server.main(['--version'])
+        self.assertIn(server.__version__, buf.getvalue())

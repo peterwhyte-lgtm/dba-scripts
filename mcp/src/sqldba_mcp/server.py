@@ -184,5 +184,20 @@ def describe() -> str:
                m.get('generated'), age))
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
+    """Console entry point (`sqldba-mcp`) and `python -m sqldba_mcp`.
+
+    Both routes must behave identically. They did not: `--selftest` was handled only in
+    __main__.py, so the README's `sqldba-mcp --selftest` silently started a stdio server,
+    read EOF and exited 0 with no output - the very first command a new user runs, doing
+    nothing and looking like success.
+    """
+    import sys
+    args = sys.argv[1:] if argv is None else argv
+    if '--selftest' in args:
+        print(describe())
+        return
+    if '--version' in args:
+        print(__version__)
+        return
     server.run(transport='stdio')
