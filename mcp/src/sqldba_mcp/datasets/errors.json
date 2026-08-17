@@ -1,0 +1,425 @@
+[
+ {
+  "error_number": 53,
+  "severity": 20,
+  "title": "Network path was not found",
+  "message": "A network-related or instance-specific error occurred. (provider: Named Pipes Provider, error: 40)",
+  "meaning": "The instance was never reached. Name resolution, port, firewall or the Browser service.",
+  "category": "Connection and login",
+  "url": "https://sqldba.blog/sql-server-network-path-not-found-error-53/"
+ },
+ {
+  "error_number": 102,
+  "severity": 15,
+  "title": "Incorrect syntax near",
+  "message": "Incorrect syntax near 'X'.",
+  "meaning": "Often a compatibility level or version issue rather than a real typo, when the same code works elsewhere.",
+  "category": "Query and data errors",
+  "url": null
+ },
+ {
+  "error_number": 207,
+  "severity": 16,
+  "title": "Invalid column name",
+  "message": "Invalid column name 'X'.",
+  "meaning": "Typo, wrong alias, or a column that exists in a different environment to the one you are on.",
+  "category": "Query and data errors",
+  "url": "https://sqldba.blog/sql-server-msg-207-invalid-column-name/"
+ },
+ {
+  "error_number": 208,
+  "severity": 16,
+  "title": "Invalid object name",
+  "message": "Invalid object name 'dbo.X'.",
+  "meaning": "Wrong database context or schema more often than a missing object.",
+  "category": "Query and data errors",
+  "url": null
+ },
+ {
+  "error_number": 229,
+  "severity": 14,
+  "title": "SELECT permission denied",
+  "message": "The SELECT permission was denied on the object 'X', database 'Y', schema 'dbo'.",
+  "meaning": "Object-level permission, or a DENY inherited from a role.",
+  "category": "Permissions",
+  "url": "https://sqldba.blog/sql-server-select-permission-denied-229/"
+ },
+ {
+  "error_number": 245,
+  "severity": 16,
+  "title": "Conversion failed when converting",
+  "message": "Conversion failed when converting the varchar value 'abc' to data type int.",
+  "meaning": "Implicit conversion meeting a value that will not convert. Also a performance smell.",
+  "category": "Query and data errors",
+  "url": null
+ },
+ {
+  "error_number": 262,
+  "severity": 14,
+  "title": "CREATE DATABASE permission denied",
+  "message": "CREATE DATABASE permission denied in database 'master'.",
+  "meaning": "Needs dbcreator or sysadmin, and it is the same shape for most CREATE permissions.",
+  "category": "Permissions",
+  "url": null
+ },
+ {
+  "error_number": 300,
+  "severity": 14,
+  "title": "VIEW SERVER STATE permission denied",
+  "message": "VIEW SERVER STATE permission was denied on object 'server', database 'master'.",
+  "meaning": "Every interesting DMV is behind this. Database roles cannot reach it.",
+  "category": "Permissions",
+  "url": "https://sqldba.blog/grant-view-server-state-in-sql-server/"
+ },
+ {
+  "error_number": 547,
+  "severity": 16,
+  "title": "Conflict with a FOREIGN KEY constraint",
+  "message": "The INSERT statement conflicted with the FOREIGN KEY constraint 'FK_X'.",
+  "meaning": "The parent row does not exist, or you are deleting one that still has children.",
+  "category": "Query and data errors",
+  "url": null
+ },
+ {
+  "error_number": 605,
+  "severity": 21,
+  "title": "Attempt to fetch logical page belongs to a different object",
+  "message": "Attempt to fetch logical page ... in database ... belongs to object ..., not to object ...",
+  "meaning": "Allocation corruption. Stop and go to backups.",
+  "category": "Corruption and hardware",
+  "url": null
+ },
+ {
+  "error_number": 701,
+  "severity": 17,
+  "title": "Insufficient system memory",
+  "message": "There is insufficient system memory in resource pool 'default' to run this query.",
+  "meaning": "Real memory pressure, or a single query asking for far more than it should.",
+  "category": "Blocking, deadlocks and memory",
+  "url": null
+ },
+ {
+  "error_number": 823,
+  "severity": 24,
+  "title": "I/O error, the operating system reported a failure",
+  "message": "The operating system returned error 21 to SQL Server during a read at offset 0x... in file 'X'.",
+  "meaning": "The storage layer failed the request. This is hardware or driver, not SQL Server.",
+  "category": "Corruption and hardware",
+  "url": null
+ },
+ {
+  "error_number": 824,
+  "severity": 24,
+  "title": "Logical consistency-based I/O error",
+  "message": "SQL Server detected a logical consistency-based I/O error: incorrect checksum.",
+  "meaning": "The read succeeded and the page was wrong. Check the backups before anything else.",
+  "category": "Corruption and hardware",
+  "url": null
+ },
+ {
+  "error_number": 825,
+  "severity": 10,
+  "title": "Read-retry succeeded",
+  "message": "A read of the file 'X' at offset ... succeeded after failing N attempt(s).",
+  "meaning": "The quiet one. Severity 10 so nothing alerts, and it is the warning before 823 and 824.",
+  "category": "Corruption and hardware",
+  "url": "https://sqldba.blog/sql-server-read-retry-825/"
+ },
+ {
+  "error_number": 916,
+  "severity": 14,
+  "title": "Not able to access the database under the current security context",
+  "message": "The server principal \"X\" is not able to access the database \"Y\" under the current security context.",
+  "meaning": "Common in SSMS Object Explorer when a login has no user in one database on the instance.",
+  "category": "Permissions",
+  "url": "https://sqldba.blog/sql-server-not-able-to-access-database-916/"
+ },
+ {
+  "error_number": 927,
+  "severity": 14,
+  "title": "Database is in the middle of a restore",
+  "message": "Database 'X' cannot be opened. It is in the middle of a restore.",
+  "meaning": "RESTORING state. The question is whether a restore is running or the database was stranded.",
+  "category": "Backup and restore",
+  "url": "https://sqldba.blog/database-cannot-be-opened-it-is-in-the-middle-of-a-restore/"
+ },
+ {
+  "error_number": 945,
+  "severity": 21,
+  "title": "Database cannot be opened due to inaccessible files",
+  "message": "Database 'X' cannot be opened due to inaccessible files or insufficient memory or disk space.",
+  "meaning": "The files are missing, the service account lost access, or the volume is gone.",
+  "category": "Space, log and files",
+  "url": null
+ },
+ {
+  "error_number": 1105,
+  "severity": 17,
+  "title": "Could not allocate space, filegroup is full",
+  "message": "Could not allocate space for object 'X' in database 'Y' because the 'PRIMARY' filegroup is full.",
+  "meaning": "Data file, not log. Autogrowth off, disk full, or a size cap reached.",
+  "category": "Space, log and files",
+  "url": "https://sqldba.blog/sql-server-filegroup-is-full-1105/"
+ },
+ {
+  "error_number": 1205,
+  "severity": 13,
+  "title": "Deadlock victim",
+  "message": "Transaction (Process ID 52) was deadlocked on lock resources with another process and has been chosen as the deadlock victim.",
+  "meaning": "The engine picked the cheaper transaction to kill. The fix is in the access pattern, not the error.",
+  "category": "Blocking, deadlocks and memory",
+  "url": "https://sqldba.blog/sql-server-deadlock-troubleshooting/"
+ },
+ {
+  "error_number": 1222,
+  "severity": 16,
+  "title": "Lock request time out period exceeded",
+  "message": "Lock request time out period exceeded.",
+  "meaning": "Blocking, not deadlock. Something held a lock longer than the timeout allowed.",
+  "category": "Blocking, deadlocks and memory",
+  "url": "https://sqldba.blog/sql-server-lock-request-timeout-1222/"
+ },
+ {
+  "error_number": 2601,
+  "severity": 14,
+  "title": "Cannot insert duplicate key row in unique index",
+  "message": "Cannot insert duplicate key row in object 'dbo.X' with unique index 'IX_Y'.",
+  "meaning": "Same as 2627 but from a unique index rather than a primary key.",
+  "category": "Query and data errors",
+  "url": "https://sqldba.blog/sql-server-duplicate-key-errors-2627-2601/"
+ },
+ {
+  "error_number": 2627,
+  "severity": 14,
+  "title": "Violation of PRIMARY KEY constraint",
+  "message": "Violation of PRIMARY KEY constraint 'PK_X'. Cannot insert duplicate key in object 'dbo.Y'.",
+  "meaning": "A duplicate insert, often a retry that succeeded the first time.",
+  "category": "Query and data errors",
+  "url": "https://sqldba.blog/sql-server-duplicate-key-errors-2627-2601/"
+ },
+ {
+  "error_number": 2628,
+  "severity": 16,
+  "title": "String or binary data would be truncated in table",
+  "message": "String or binary data would be truncated in table 'db.dbo.T', column 'c'. Truncated value: 'X'.",
+  "meaning": "The 2019 and later version of 8152. It names the table, the column and the value.",
+  "category": "Query and data errors",
+  "url": "https://sqldba.blog/sql-server-string-or-binary-data-truncated/"
+ },
+ {
+  "error_number": 3013,
+  "severity": 16,
+  "title": "Restore database is terminating abnormally",
+  "message": "RESTORE DATABASE is terminating abnormally.",
+  "meaning": "The companion message, never the cause. The error immediately above it is the real one.",
+  "category": "Backup and restore",
+  "url": null
+ },
+ {
+  "error_number": 3154,
+  "severity": 16,
+  "title": "The backup set holds a backup of a database other than the existing one",
+  "message": "The backup set holds a backup of a database other than the existing 'X' database.",
+  "meaning": "Restoring over a different database needs WITH REPLACE, and deserves a pause first.",
+  "category": "Backup and restore",
+  "url": null
+ },
+ {
+  "error_number": 3201,
+  "severity": 16,
+  "title": "Cannot open backup device",
+  "message": "Cannot open backup device 'X'. Operating system error 5(Access is denied.).",
+  "meaning": "Almost always the SQL Server service account, not your own account, lacking access to the path.",
+  "category": "Backup and restore",
+  "url": "https://sqldba.blog/sql-server-cannot-open-backup-device/"
+ },
+ {
+  "error_number": 3241,
+  "severity": 16,
+  "title": "Media family on device is incorrectly formed",
+  "message": "The media family on device 'X' is incorrectly formed. SQL Server cannot process this media family.",
+  "meaning": "Wrong file, truncated copy, or a backup from a newer version being restored to an older one.",
+  "category": "Backup and restore",
+  "url": null
+ },
+ {
+  "error_number": 3417,
+  "severity": 21,
+  "title": "Cannot recover the master database",
+  "message": "Cannot recover the master database. SQL Server is unable to run.",
+  "meaning": "The instance will not start. Master is damaged, moved, or its permissions changed.",
+  "category": "Corruption and hardware",
+  "url": null
+ },
+ {
+  "error_number": 4060,
+  "severity": 11,
+  "title": "Cannot open database requested by the login",
+  "message": "Cannot open database \"X\" requested by the login. The login failed.",
+  "meaning": "The login is fine. The database named in the connection string is missing, offline or not permitted.",
+  "category": "Connection and login",
+  "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/"
+ },
+ {
+  "error_number": 4064,
+  "severity": 11,
+  "title": "Cannot open user default database",
+  "message": "Cannot open user default database. Login failed.",
+  "meaning": "The login's default database is unavailable. Fixable without touching the database.",
+  "category": "Connection and login",
+  "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/"
+ },
+ {
+  "error_number": 5030,
+  "severity": 16,
+  "title": "Database could not be exclusively locked",
+  "message": "The database could not be exclusively locked to perform the operation.",
+  "meaning": "Something is connected. Common when setting a database to single user or restoring over it.",
+  "category": "Space, log and files",
+  "url": null
+ },
+ {
+  "error_number": 5123,
+  "severity": 16,
+  "title": "CREATE FILE encountered operating system error",
+  "message": "CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open the file 'X'.",
+  "meaning": "Service account permissions on the target folder, or a path that does not exist.",
+  "category": "Space, log and files",
+  "url": null
+ },
+ {
+  "error_number": 5171,
+  "severity": 22,
+  "title": "Not a primary database file",
+  "message": "'X.mdf' is not a primary database file.",
+  "meaning": "A corrupt or wrong file being attached, or a file copied while the instance was running.",
+  "category": "Space, log and files",
+  "url": null
+ },
+ {
+  "error_number": 8152,
+  "severity": 16,
+  "title": "String or binary data would be truncated",
+  "message": "String or binary data would be truncated.",
+  "meaning": "Pre-2019 it will not tell you which column. 2019 and later name the column and the value.",
+  "category": "Query and data errors",
+  "url": "https://sqldba.blog/sql-server-string-or-binary-data-truncated/"
+ },
+ {
+  "error_number": 8623,
+  "severity": 16,
+  "title": "Query processor ran out of internal resources",
+  "message": "The query processor ran out of internal resources and could not produce a query plan.",
+  "meaning": "Nearly always an enormous IN list or a generated query of extreme size.",
+  "category": "Blocking, deadlocks and memory",
+  "url": null
+ },
+ {
+  "error_number": 8645,
+  "severity": 17,
+  "title": "Timeout waiting for memory resources",
+  "message": "A timeout occurred while waiting for memory resources to execute the query.",
+  "meaning": "RESOURCE_SEMAPHORE waits. Query memory grants are the thing to look at.",
+  "category": "Blocking, deadlocks and memory",
+  "url": null
+ },
+ {
+  "error_number": 9002,
+  "severity": 17,
+  "title": "Transaction log is full",
+  "message": "The transaction log for database 'X' is full due to 'LOG_BACKUP'.",
+  "meaning": "The reason in quotes is the diagnosis, and it is rarely solved by shrinking.",
+  "category": "Space, log and files",
+  "url": "https://sqldba.blog/sql-server-transaction-log-full/"
+ },
+ {
+  "error_number": 10054,
+  "severity": 20,
+  "title": "Existing connection was forcibly closed",
+  "message": "A connection was successfully established with the server, but then an error occurred during the login process.",
+  "meaning": "Not a login problem. The handshake failed before credentials were checked.",
+  "category": "Connection and login",
+  "url": "https://sqldba.blog/sql-server-pre-login-handshake-error/"
+ },
+ {
+  "error_number": 15023,
+  "severity": 16,
+  "title": "User already exists in current database",
+  "message": "User, group, or role 'X' already exists in the current database.",
+  "meaning": "The classic orphaned user after a restore. The user exists, its SID no longer matches a login.",
+  "category": "Permissions",
+  "url": "https://sqldba.blog/sql-server-orphaned-users-15023/"
+ },
+ {
+  "error_number": 15138,
+  "severity": 16,
+  "title": "Database principal owns a schema",
+  "message": "The database principal owns a schema in the database, and cannot be dropped.",
+  "meaning": "Reassign the schema owner first, then drop the user.",
+  "category": "Permissions",
+  "url": null
+ },
+ {
+  "error_number": 15517,
+  "severity": 16,
+  "title": "Cannot execute as the database principal",
+  "message": "Cannot execute as the database principal because the principal \"dbo\" does not exist.",
+  "meaning": "Usually a database whose owner SID no longer resolves, after a restore or a domain change.",
+  "category": "Permissions",
+  "url": null
+ },
+ {
+  "error_number": 17806,
+  "severity": 20,
+  "title": "SSPI handshake failed",
+  "message": "SSPI handshake failed with error code 0x8009030c.",
+  "meaning": "Kerberos or NTLM could not complete. Usually a duplicate or missing SPN, or clock skew.",
+  "category": "Connection and login",
+  "url": "https://sqldba.blog/sql-server-sspi-handshake-failed/"
+ },
+ {
+  "error_number": 18452,
+  "severity": 14,
+  "title": "Login from an untrusted domain",
+  "message": "Login failed. The login is from an untrusted domain and cannot be used with Integrated authentication.",
+  "meaning": "Windows authentication could not be negotiated, often SPN or trust related rather than a password problem.",
+  "category": "Connection and login",
+  "url": "https://sqldba.blog/sql-server-login-untrusted-domain-18452/"
+ },
+ {
+  "error_number": 18456,
+  "severity": 14,
+  "title": "Login failed for user",
+  "message": "Login failed for user 'X'.",
+  "meaning": "The client only ever sees State 1. The real state is in the error log and names the cause.",
+  "category": "Connection and login",
+  "url": "https://sqldba.blog/sql-server-login-failed-error-18456/"
+ },
+ {
+  "error_number": 18470,
+  "severity": 14,
+  "title": "Login disabled",
+  "message": "Login failed for user 'X'. Reason: The account is disabled.",
+  "meaning": "The login exists and the password may even be right. It is switched off.",
+  "category": "Connection and login",
+  "url": "https://sqldba.blog/sql-server-login-disabled-18470/"
+ },
+ {
+  "error_number": 33111,
+  "severity": 16,
+  "title": "Cannot find server certificate",
+  "message": "Cannot find server certificate with thumbprint 'X'.",
+  "meaning": "A TDE-encrypted backup restored to an instance without the certificate. Restore the certificate first.",
+  "category": "Backup and restore",
+  "url": null
+ },
+ {
+  "error_number": null,
+  "severity": null,
+  "title": "Certificate chain not trusted",
+  "message": "The certificate chain was issued by an authority that is not trusted.",
+  "meaning": "The client now validates the certificate by default. Your server did not change.",
+  "category": "Connection and login",
+  "url": "https://sqldba.blog/ssms-certificate-chain-not-trusted-error-trust-server-certificate-fix/"
+ }
+]

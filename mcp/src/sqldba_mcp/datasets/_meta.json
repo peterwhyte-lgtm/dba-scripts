@@ -1,0 +1,22 @@
+{
+ "generated": "2026-08-17",
+ "generator": "personal/tools/site-manager/export-mcp-data.py (private)",
+ "source_of_truth": "sqldba.blog + dba-tools",
+ "contains": "posts: lookup index only, full write-ups live at the linked URLs. scripts: full bodies, because the body is the product and the repo is already public.",
+ "post_cache_size": 482,
+ "counts": {
+  "errors": 47,
+  "waits": 224,
+  "wait_types": 232,
+  "versions": 7,
+  "faqs": 434,
+  "faq_posts": 162,
+  "scripts": 230,
+  "scripts_sql": 181,
+  "scripts_powershell": 49,
+  "scripts_healthcheck": 45,
+  "scripts_without_post": 38,
+  "docs": 9,
+  "prompts": 1
+ }
+}

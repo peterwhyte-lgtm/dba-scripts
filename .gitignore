@@ -42,3 +42,10 @@ $RECYCLE.BIN/
 .vscode/settings.json
 .vscode/launch.json
 .vscode/*.code-workspace
+
+# Python build artifacts (mcp/)
+__pycache__/
+*.py[cod]
+*.egg-info/
+mcp/dist/
+mcp/build/

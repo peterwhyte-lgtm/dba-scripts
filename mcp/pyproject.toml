@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sqldba-mcp"
+version = "0.2.0"
+description = "A working DBA's verified SQL Server reference - errors, wait types, builds, 181 scripts and 434 answered questions - as MCP tools"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Peter Whyte", email = "security@sqldba.blog" }]
+keywords = ["sql-server", "mssql", "dba", "mcp", "model-context-protocol", "wait-types"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: System Administrators",
+    "Topic :: Database :: Database Engines/Servers",
+    "Programming Language :: Python :: 3",
+]
+
+# Runtime depends on the MCP SDK and nothing else. The datasets ship inside the package,
+# so the server needs no network, no database and no filesystem access outside itself.
+dependencies = ["mcp>=2.0.0"]
+
+[project.urls]
+Homepage = "https://sqldba.blog/"
+Repository = "https://github.com/peterwhyte-lgtm/dba-tools"
+Issues = "https://github.com/peterwhyte-lgtm/dba-tools/issues"
+
+[project.scripts]
+sqldba-mcp = "sqldba_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+sqldba_mcp = ["datasets/*.json"]
