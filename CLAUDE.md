@@ -30,6 +30,15 @@ These rules apply across the repo:
 - Document purpose, permissions, expected output, and when **not** to use a script.
 - Keep script docs and script behavior aligned so the output is trustworthy.
 - Treat `output-files/` as generated runtime output, not permanent source content.
+- **`mcp/src/sqldba_mcp/datasets/*.json` are GENERATED — never hand-edit them.** A correction
+  typed into a dataset is lost on the next export and silently disagrees with the script or
+  post it cites. Fix the source instead: a script's purpose or safety class in its `.sql`
+  header here, an error or wait explanation in its post. `mcp/tests/check_freshness.py`
+  re-derives the script, doc and prompt datasets from this repo and compares them byte for
+  byte, so a hand-edit fails the build and names the file.
+- **Script headers are a product surface, not tidiness.** `Author`, `Purpose`, `Requires`,
+  `-- SAFE:` and `-- IMPACT:` are what an AI agent shows a DBA *before* they run something.
+  A wrong or missing safety class is a public defect, not a formatting nit.
 - Keep scripts easy to understand in isolation, even if the repo provides wrappers or launchers.
 - Treat multi-server tooling as optional convenience, not as the main model for every script.
 - Avoid overengineering and avoid adding complexity that hides operational intent.
@@ -224,12 +233,16 @@ powershell/
 
 web-ui/               — browser UI: Start-WebUi.ps1, Generate-ScriptIndex.ps1
 
-mcp/                  — the MCP server: the repo's reference data as tools any AI agent can call
-                        (lookup_error, explain_wait, check_build). Independent installable Python
-                        package (`pip install ./mcp`, entry point `sqldba-mcp`) that depends on
-                        nothing else in the repo, no network and no SQL connection — the datasets
-                        ship inside the package. Its own tests + CI (.github/workflows/mcp.yaml).
-                        The datasets are GENERATED; never hand-edit src/sqldba_mcp/datasets/*.json.
+mcp/                  — the MCP server: this repo's reference, as tools any AI agent can call.
+                        Six tools — lookup_error, explain_wait, check_build, find_script,
+                        get_script, answer_question — plus the docs as Resources
+                        (`sqldba://docs/...`) and the health-check rubric as the MCP prompt
+                        `sql-server-health-triage`. Independent installable package
+                        (`pip install ./mcp`, entry point `sqldba-mcp`) depending on nothing
+                        else in the repo, with no network and no SQL connection: the datasets
+                        ship inside it, so it runs on an air-gapped box. Its own tests and CI
+                        (.github/workflows/mcp.yaml), plus a scored retrieval eval
+                        (`mcp/tests/eval_faq.py`).
 
 tools/
   local-sql/    — Invoke-RepoSql.ps1 (the core runner), Set-SqlConnection.ps1, Test-SqlConnectivity.ps1,

@@ -34,6 +34,30 @@ The rubric that drives every assessment is
 [`powershell/reporting/ai-assessment-rubric.md`](../powershell/reporting/ai-assessment-rubric.md).
 Edit that file and every future assessment changes shape.
 
+## Ask your own AI assistant about SQL Server
+
+The [`mcp/`](../mcp/README.md) folder is an MCP server: it hands this repo's reference to whatever
+AI assistant you already use, so you can ask in plain English instead of searching.
+
+```bash
+pip install "sqldba-mcp @ git+https://github.com/peterwhyte-lgtm/dba-tools.git#subdirectory=mcp"
+claude mcp add sqldba -- sqldba-mcp
+```
+
+Then ask things like *"my server is on 16.0.4165.4, is it patched?"*, *"I'm seeing PAGEIOLATCH_SH,
+does it matter?"* or *"find me a script for blocking chains"*. Six tools cover SQL Server errors,
+wait types, build and support levels, and the scripts in this repo — including each script's
+required permission and its `SAFE:`/`IMPACT:` class, so your assistant tells you what a script
+does to a server *before* you run it. Every answer links back to the full write-up on
+[sqldba.blog](https://sqldba.blog/).
+
+It never connects to your SQL Server. There is no connection string and no network call — the data
+is bundled inside the package, so it works on a locked-down jump box. It also declines to guess:
+ask about something not in the library and it says so rather than inventing an answer.
+
+The health-check rubric above ships with it as a reusable prompt, so your assistant can triage a
+server the same way this repo does.
+
 ## Reference
 
 | Doc | What it is |
