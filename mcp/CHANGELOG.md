@@ -32,6 +32,9 @@ questions Peter has already answered in public.
   `check_build` also volunteers a warning in its own answer once the data passes 90 days.
 - 29 more tests (26 -> 55), including the index/corpus boundary in both directions, tool
   routing, and negative tests for the search.
+- `scripts-missing-post-url.txt`: the 38 SQL scripts whose `Author :` header carries the bare
+  domain rather than a post URL, so `find_script` ships `url: null` for them. Named for what it
+  measures - a header gap, not a content gap. Most of the 38 have a published write-up already.
 
 ### Changed
 

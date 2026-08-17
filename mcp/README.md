@@ -117,7 +117,18 @@ The boundary is deliberately asymmetric:
 
 Tests assert both directions, so a later refactor cannot quietly flip either one.
 
-## Corrections — one source, two surfaces
+## The 38 scripts with no link
+
+`find_script` returns a write-up URL for 143 of the 181 SQL scripts. The other 38 come back
+with no link — and that is a **header** problem, not missing content. Checked against the live
+site: most of those 38 already have a published write-up. Their `Author :` line just reads
+`https://sqldba.blog` instead of naming the post, so nothing can map the script to it.
+
+That is why script headers are treated as a product surface here rather than housekeeping.
+`Author`, `Purpose`, `Requires`, `SAFE:` and `IMPACT:` are what your assistant shows you
+*before* you run something. The list is in [`scripts-missing-post-url.txt`](scripts-missing-post-url.txt).
+
+## Corrections — one source, three surfaces
 
 `src/sqldba_mcp/datasets/*.json` are **generated**. Never hand-edit them: the change is lost at the
 next export and, worse, silently disagrees with the post it cites. Corrections go to the source:
@@ -129,7 +140,10 @@ next export and, worse, silently disagrees with the post it cites. Corrections g
 | A script's purpose or safety class | the `.sql` header in this repo |
 | A build, CU or support date | the builds data behind the lifecycle page |
 
-Then re-export. Every correction improves the published site and the server at once.
+Then re-export. There is one source of truth and three ways to reach it — the blog is where a
+human reads it, this repo is where a DBA runs it, and the MCP server is where an AI agent calls
+it. A correction made at the source improves all three at once; a correction typed into a dataset
+improves nothing and is gone at the next export.
 
 CI enforces this. `tests/check_freshness.py` re-derives the script, doc and prompt datasets from the
 files in this repo and compares them byte for byte — a hand-edit or a stale export fails the build
