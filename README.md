@@ -21,7 +21,7 @@ The core workflow is three steps. A health check collection runs 45 diagnostic s
 
 Underneath that sits everything else a production DBA needs, usable on its own:
 
-- **170+ SQL scripts** you open and paste directly into SSMS — no parameters, no magic variables, no install
+- **181 SQL scripts** you open and paste directly into SSMS — no parameters, no magic variables, no install
 - **PowerShell wrappers** that run the same scripts from the terminal and export CSVs
 - **A local web UI** where collections are viewed, verified, and diagnosed — health scorecard, security drill-down, disk capacity, AI reports, live incident triage
 - **Runbooks, change orders, and a migration toolkit** for the planned work when there's time to do it right
@@ -148,7 +148,8 @@ Browse `sql/` and copy directly into SSMS. No parameters, no magic variables, no
 | [`sql/high-availability/`](sql/high-availability/) | AG replica health, sync state, latency, readable secondary usage |
 | [`sql/maintenance/`](sql/maintenance/) | Generate backup jobs, index maintenance jobs, housekeeping DDL, maintenance job status |
 
-Full list with descriptions: [docs/script-catalog.md](docs/script-catalog.md)
+Full list with descriptions and companion posts: [docs/script-catalog.md](docs/script-catalog.md).
+Folder map and what is safe to run: [sql/README.md](sql/README.md).
 
 ---
 
@@ -207,9 +208,14 @@ Covers: compatibility gaps, deprecated features in active use, edition-only feat
 | | Minimum | Recommended |
 |-|---------|-------------|
 | SQL Server | 2016 (13.x) | 2019+ |
-| PowerShell | 5.1 | 7+ (required for parallel multi-server scripts) |
+| PowerShell | 7 | 7+ |
 | SQL execution | `sqlcmd.exe` on PATH | SqlServer module (`Invoke-Sqlcmd`) |
 | Permissions | `VIEW SERVER STATE`, `VIEW ANY DATABASE` | Same |
+
+The SQL scripts themselves need no PowerShell at all — open them from `sql/` and paste into SSMS. The
+tooling around them (`run.ps1`, the wrappers, the health check) uses PowerShell 7 syntax; `run.ps1`
+hands off to `pwsh` automatically if you start it from Windows PowerShell 5.1, but `pwsh` has to be
+installed. `winget install Microsoft.PowerShell`.
 
 ```powershell
 Install-Module -Name SqlServer -Scope CurrentUser -Force

@@ -99,11 +99,11 @@ Latency thresholds: >20ms read or >10ms write on data files is concerning.
 ## Health check workflow — collect, review, AI-assess
 
 The healthcheck is the centrepiece of the repo, and it has THREE steps. The whole point of
-collecting 39 CSVs is so that both the rules engine and an AI can review the instance —
+collecting 45 CSVs is so that both the rules engine and an AI can review the instance —
 security, performance, backups, everything. Do not stop at step 2.
 
 ```powershell
-# 1. Collect all 39 healthcheck scripts → named CSVs in output-files\healthcheck\
+# 1. Collect all 45 healthcheck scripts → named CSVs in output-files\healthcheck\
 .\powershell\reporting\Invoke-HealthCheckCollection.ps1 -ServerInstance PROD01
 
 # 2. Rules review — surfaces CRITICAL / WARNING / INFO from fixed thresholds
@@ -129,7 +129,14 @@ The 45 scripts in the healthcheck suite are tagged `HealthCheck : Yes` in their 
 
 ## What is safe to run immediately
 
-**Everything in `sql/monitoring/`, `sql/performance/`, `sql/backups/`, `sql/security/`, `sql/high-availability/`** — all read-only, `SET NOCOUNT ON`, no `USE database`. Safe to run in production at any time. (`sql/lab/` and `sql/maintenance/Generate-*` are excluded — those write data or create objects.)
+**175 of the 181 scripts in `sql/` are read-only** — `SET NOCOUNT ON`, no `USE database`, safe to run in production at any time. That is all of `inventory/`, `monitoring/`, `performance/`, `backups/`, `security/`, `high-availability/`, `maintenance/`, `migration/`, and `collectors/`.
+
+Only six are not, and each says so in its own `-- SAFE:` annotation:
+
+- `sql/traces/Create-*` (3 scripts, `CreatesObjects`) — running one creates a live Extended Events session
+- `sql/lab/*` (3 scripts, `WritesData` / creates databases) — dev and test only
+
+**The `Generate-*` scripts are read-only despite the name**, in `collectors/`, `maintenance/`, `backups/`, and `migration/` alike. They return a T-SQL script as their result set; nothing is created until a human reviews that output and runs it. Never assume a `Generate-` prefix means the script changes the server — check the annotation.
 
 **Everything in `powershell/wrappers/`** — thin wrappers that call Invoke-RepoSql with the matching SQL script. Same safety level as the SQL scripts themselves.
 

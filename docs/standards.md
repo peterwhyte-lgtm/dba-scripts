@@ -62,11 +62,24 @@ SET NOCOUNT ON;
 | Server/instance cataloguing and inventory lists | `sql/inventory/` |
 | Extended Events session creation, review, cleanup | `sql/traces/` |
 
-Every SQL script in `sql/` must have a matching wrapper in `powershell/wrappers/<same-category>/` — this is what makes it runnable from the web UI and `run.ps1`.
+Every SQL script in `sql/` must have a matching wrapper in `powershell/wrappers/`, at the same relative path including the subfolder — this is what makes it runnable from the web UI and `run.ps1`. `tests/WrapperParity.Tests.ps1` enforces it.
+
+Four groups are deliberately exempt, and the parity test excludes them by name:
+
+- `sql/lab/` — dev and test only, not exposed in the web UI
+- `sql/collectors/` — deployed once as Agent jobs, nothing to launch on demand
+- `sql/migration/Generate-*.sql` — driven by the orchestrators in `powershell/migration/`, which bypass the CSV pipeline to capture the full `NVARCHAR(MAX)` output
+- `Get-ActiveRequests`, `Get-ActiveRequestsWithPlan`, `Get-BlockingChains`, `Get-BlockingChainsWithPlan` — served by the richer runners in `powershell/diagnostics/`, which pick between the plain and `WithPlan` variants via `-IncludePlan`
 
 ### Blog posts
 
-`blog/` is a drafting workspace — it has no public output. Scripts are documented publicly on sqldba.blog; Peter drafts in `blog/<slug>/index.md` using `blog/_template/index.md` and adds the live URL to `docs/script-catalog.md` once published. Title and content rules are in `CLAUDE.md`.
+Scripts are documented publicly on [sqldba.blog](https://sqldba.blog). Once a post is live, its URL goes on the script's own `Author` line in the header:
+
+```sql
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-vlf-counts/)
+```
+
+That header line is the single source of truth — `docs/script-catalog.md` reads it into the **Post** column, so there is no second list to keep in sync. Until a script has a post, the `Author` line stays at the plain `https://sqldba.blog` placeholder.
 
 ---
 

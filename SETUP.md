@@ -155,7 +155,7 @@ No external dependencies for the server itself. Chart.js is loaded from CDN on t
 
 ## Multi-server scripts
 
-Scripts in `powershell/multi-server/` run operations across multiple servers simultaneously. They have two extra requirements:
+Scripts in `powershell/reporting/multi-server/` run operations across multiple servers simultaneously. They have two extra requirements:
 
 **For PowerShell remoting scripts** (GetDiskSpace, GetFirewallRules, GetRecentEventLogs, RestartService):
 
@@ -168,22 +168,24 @@ Enable-PSRemoting -Force
 
 ```powershell
 # Example: check backup status across three instances
-.\tools\multi-server-scripts\sql\MultiServer-GetBackupStatus.ps1 -Servers "SVR01,SVR02,SVR03"
+.\powershell\reporting\multi-server\MultiServer-GetBackupStatus.ps1 -Servers "SVR01,SVR02,SVR03"
 
 # Generate a custom multi-server wrapper from any SQL file
-.\tools\multi-server-query\New-MultiServerScript.ps1 `
+.\tools\scaffolding\New-MultiServerScript.ps1 `
     -ScriptPath sql\performance\Get-WaitStatistics.sql `
     -Servers "SVR01,SVR02,SVR03" `
     -OutputFile C:\Temp\run-waits.ps1
 ```
 
+Full list and per-script parameters: [powershell/reporting/multi-server/README.md](powershell/reporting/multi-server/README.md).
+
 ---
 
 ## Collectors (scheduled monitoring)
 
-Collectors run on a schedule and build timestamped CSV histories for trend analysis and post-incident review. Set them up once in SQL Agent and forget.
+Collectors run on a schedule and build a history in a `DBAMonitor` database for trend analysis and post-incident review. Set them up once in SQL Agent and forget.
 
-See [sql/collectors/](sql/collectors/) for the full list — one `Generate-CollectorJob-*.sql` per collector; running it creates the SQL Agent job and its DBAMonitor table.
+See [sql/collectors/README.md](sql/collectors/README.md) for the full list, default intervals, and how to read the history back. One `Generate-CollectorJob-*.sql` per collector: running it outputs the DDL, and running that DDL creates the SQL Agent job and its `DBAMonitor` table.
 
 **Minimum permissions** for the SQL Agent service account:
 
@@ -196,7 +198,7 @@ GRANT VIEW ANY DATABASE TO [domain\sqlsvc];
 GRANT VIEW DATABASE STATE TO [domain\sqlsvc];
 ```
 
-The service account also needs write access to the `output-files\collectors\` folder on the server.
+Creating the jobs in the first place needs **sysadmin** — that is what runs the generated DDL. The collectors write to tables in `DBAMonitor`, not to files, so no folder permissions are involved.
 
 ---
 

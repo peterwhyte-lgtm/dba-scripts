@@ -14,7 +14,7 @@ Fully functional production DBA toolkit. The repo has a category-first layout: `
 - Multi-server scripts — 12 self-contained scripts for fleet-wide operations
 - Browser UI — script browser, CSV viewer, triage page, health check runner, security page (surface area vitals + access risk + findings panel)
 - Environment setup — `Initialize-Environment.ps1` + `SETUP.md`
-- Pester tests — SQL header standards, path resolution, wrapper parity (635 tests, all passing)
+- Pester tests — SQL header standards, path resolution, wrapper parity (644 tests, all passing)
 - CI — GitHub Actions: Pester, PSScriptAnalyzer, markdownlint, SQL standards audit, secrets scan
 
 ---
@@ -23,24 +23,24 @@ Fully functional production DBA toolkit. The repo has a category-first layout: `
 
 ### Phase 3 — Script blog coverage (in progress, Peter-driven)
 
-39 post drafts in `blog/` covering performance, monitoring, security, HA/DR, and the wait statistics series. Publishing queue and index in `blog/README.md`. Two consolidations completed 2026-06-21: `sysadmin-members` (stub duplicate) deleted into `sysadmin-audit`; `writelog-tempdb` merged as a section of the `writelog` post.
+143 of the 181 SQL scripts now have a published companion post on sqldba.blog. Drafting happens outside this repo; the only thing that lands here is the URL.
 
 For each script that merits a post:
 
-1. Draft in `blog/<slug>/index.md` using `blog/_template/index.md`
-2. Take screenshots; add to `images/`, replace `<!-- SCREENSHOT: ... -->` markers
-3. Publish to sqldba.blog
-4. Set the header `Author` line URL to `https://sqldba.blog/<slug>/` (the only blog link in a header since 2026-08-14)
+1. Publish to sqldba.blog
+2. Set the header `Author` line URL to `https://sqldba.blog/<slug>/` (the only blog link in a header since 2026-08-14)
 
-The repo's internal documentation layer is the script header only (Purpose, Requires, SAFE/IMPACT annotations). Internal docs otherwise stay light and general — no per-script READMEs or sidecars.
+`docs/script-catalog.md` reads those `Author` lines into its **Post** column, so there is no second list to maintain.
+
+The repo's documentation layer is the script header first (Purpose, Requires, SAFE/IMPACT annotations), then a folder README where a whole area needs orienting — currently `sql/`, `sql/collectors/`, `sql/traces/`, and `sql/migration/`. No per-script READMEs or sidecars.
 
 ### Phase 4 — CI and quality gates (complete 2026-06-17)
 
 | Item | Status | Notes |
 |------|--------|-------|
-| GitHub Actions: Pester | ✅ | `Invoke-Pester tests/` on push — SqlPathResolution, WrapperParity, New-MultiServerScript |
+| GitHub Actions: Pester | ✅ | `Invoke-Pester tests/` on push — SqlHeaderStandards, SqlPathResolution, WrapperParity |
 | GitHub Actions: PSScriptAnalyzer | ✅ | Covers all `.ps1` under sql/, powershell/, web-ui/, tools/ |
-| GitHub Actions: markdownlint | ✅ | `.markdownlint.jsonc` wired via ci.yaml (excludes blog/ and CLAUDE.md) |
+| GitHub Actions: markdownlint | ✅ | `.markdownlint.jsonc` wired via ci.yaml (excludes CLAUDE.md) |
 | GitHub Actions: SQL standards audit | ✅ | `Get-StandardsAudit.ps1 -FailsOnly` — fails CI on any FAIL status |
 | GitHub Actions: secrets scan | ✅ | gitleaks on full history |
 | SQLFluff | — | Not added — Get-StandardsAudit covers NOLOCK, deprecated views, USE, GO |
