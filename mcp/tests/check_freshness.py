@@ -45,6 +45,17 @@ def load(name: str):
     return json.loads((DATASETS / ('%s.json' % name)).read_text(encoding='utf-8'))
 
 
+def normalise(s: str) -> str:
+    """Compare content, not line endings.
+
+    The datasets are generated on Windows (CRLF) and CI checks out on Linux (LF), so a
+    byte-for-byte comparison reported every single file as drifted - a gate that fails
+    for everyone on the wrong platform teaches people to ignore it. Newlines are not
+    content; a real edit still shows.
+    """
+    return s.replace('\r\n', '\n').replace('\r', '\n')
+
+
 def check_scripts() -> None:
     """Every shipped script body must match the file it came from, byte for byte."""
     shipped = {s['path']: s for s in load('scripts')}
@@ -72,7 +83,7 @@ def check_scripts() -> None:
         path = REPO / rel
         if not path.exists():
             continue
-        if path.read_text(encoding='utf-8', errors='replace') != record['body']:
+        if normalise(path.read_text(encoding='utf-8', errors='replace')) != normalise(record['body']):
             drifted.append(rel)
     if drifted:
         problems.append('%d script body/bodies differ from the repo (re-export): %s'
@@ -88,14 +99,14 @@ def check_docs_and_prompts() -> None:
         if not path.exists():
             problems.append('doc source missing: %s' % d['path'])
             continue
-        if path.read_text(encoding='utf-8', errors='replace') != d['body']:
+        if normalise(path.read_text(encoding='utf-8', errors='replace')) != normalise(d['body']):
             drifted.append(d['path'])
     for p in load('prompts'):
         path = REPO / p['source']
         if not path.exists():
             problems.append('prompt source missing: %s' % p['source'])
             continue
-        if path.read_text(encoding='utf-8', errors='replace') != p['body']:
+        if normalise(path.read_text(encoding='utf-8', errors='replace')) != normalise(p['body']):
             drifted.append(p['source'])
     if drifted:
         problems.append('%d doc/prompt body/bodies differ from the repo (re-export): %s'

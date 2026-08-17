@@ -241,6 +241,20 @@ class TestLeakGate(unittest.TestCase):
             bad = sorted({c for c in raw if ord(c) > 127})
             self.assertEqual(bad, [], 'non-ASCII in %s: %r' % (path.name, bad[:5]))
 
+
+    def test_shipped_bodies_use_lf_only(self):
+        """Datasets must not carry CRLF.
+
+        They are generated on Windows and consumed by Linux CI. When they carried CRLF the
+        freshness gate reported all 230 scripts as drifted the moment it ran anywhere but
+        the generating machine - a gate that fails for everyone on the wrong platform is a
+        gate people learn to ignore.
+        """
+        for corpus in (data.scripts(), data.docs(), data.prompts()):
+            for record in corpus:
+                self.assertNotIn(chr(13), record['body'],
+                                 'CRLF in %s' % record.get('path') or record.get('name'))
+
     def test_meta_counts_match_the_new_corpora(self):
         c = data.meta()['counts']
         self.assertEqual(c['faqs'], len(data.faqs()))
