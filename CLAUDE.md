@@ -13,18 +13,7 @@ The repo is built around four core ideas:
 3. **Run it directly when possible** — scripts should be understandable and runnable in isolation.
 4. **Docs and outputs matter** — the repo should explain what a script does, what it returns, and what to do next.
 
-The web UI is where collection output is viewed, verified, and diagnosed — part of the flagship workflow, though every workflow also works from the terminal alone. Multi-server ("the many part") is the planned build-out of the main gig, not yet current scope.
-
-## Product positioning (Peter's directive, 2026-07-06)
-
-Treat dba-tools like a **product**: the AI integration is the selling point; everything underneath must hold production value against the community's long-established gold standards. The bar, per area:
-
-- **Activity/session visibility** as good as the field's best-known live-activity tooling
-- **Maintenance plan generation** as good as the de facto standard maintenance solution
-- **Diagnostic scripts** as complete as the well-known community diagnostic query sets, but more pertinent
-- **Wait statistics** material better than the established reference libraries
-
-When improving or reviewing scripts in these areas, that community bar is the floor the AI story stands on.
+The web UI is where collection output is viewed, verified, and diagnosed — part of the flagship workflow, though every workflow also works from the terminal alone. Multi-server ("the many part") is planned, not yet current scope.
 
 ## Operating rules
 
@@ -116,171 +105,10 @@ Migration DDL generators:
 
 ## Blog / content guidance
 
-> **MOVED 2026-07-16 — the blog drafting workspace no longer lives in this repo.** It migrated to
-> the **Publisher** app at **`personal/tools/site-publisher/`** (private repo, backed up). The
-> `dba-scripts-*` gold is in `site-publisher/workspace/sqldba/{published,drafts}/`, all legacy drafts +
-> the 74 published archives are in `site-publisher/archive/sqldba/`, the master template is
-> `site-publisher/templates/dba-script/index.md`, the how-to is `site-publisher/reference/DRAFTING.md`, and
-> the publishing checklist (103 posts + the 6-post traces cluster #104–#109, 6 live) is `site-publisher/PUBLISHING.md`. Scaffold a post
-> with `python publisher.py draft Get-ScriptName` (the Python port of the old `New-ScriptPost.ps1`).
-> **dba-tools stays the operational home of the SQL scripts** the posts link to; only the blog
-> drafting/content moved out. The taxonomy below remains the shared reference model.
-
-The blog workspace assists Peter in writing posts for sqldba.blog — it has no public-facing output and is not a documentation layer for the repo. The live sqldba.blog post is the public documentation artifact for each script. Links to live posts are added by Peter after publishing, not generated automatically.
-
-The repo should reflect the intended blog taxonomy so that scripts and posts can be organized consistently over time, while keeping the main repo focused on usable DBA tooling.
-
-### Blog category framework
-
-**Live WordPress categories (authoritative — sqldba.blog, consolidated 2026-07-13):** Performance,
-Monitoring, Troubleshooting, Maintenance, Backups & Recovery, Security, High Availability & DR,
-Migration & Upgrades, Installation & Configuration, T-SQL Fundamentals, T-SQL & Internals, AI, Labs
-— plus **DBA Scripts** (added 2026-07-16, <https://sqldba.blog/category/dba-scripts/>): the home
-for all master-template script posts (see Script post standard below).
-The old `dba-operations` / `dba-scripts` / `dba-engineering` containers are retired. When choosing
-where a post goes, use this set. Full plan, per-post mapping, and edge-case rules (patching vs
-upgrade, trace flags, restore vs stuck-restore): `personal/tools/site-publisher/reference/CATEGORY-PLAN.md`.
-Machine map for the `recategorize.py` sweep tool: `site-publisher/reference/recategorize-map.json`.
-
-The richer list below is the **internal planning model** for repo organization (it has finer
-buckets like inventory, incident-response, capacity-planning that fold into the live set above —
-e.g. inventory + instance-config → Monitoring; environment-setup → Installation & Configuration).
-Use the following primary categories when deciding where a script or post belongs:
-
-1. **Core DBA operations**
-   - performance
-   - monitoring
-   - inventory
-   - maintenance
-   - backup-recovery
-   - security
-   - high-availability
-   - migration-upgrades
-   - troubleshooting
-2. **Production operations**
-   - incident-response
-   - capacity-planning
-   - change-management
-   - data-integrity
-   - auditing-compliance
-3. **Engineering & architecture**
-   - data-architecture
-   - diagnostics
-   - environment-setup
-   - automation
-4. **Script ecosystem**
-   - scripts
-5. **Experimental & learning**
-   - labs
-6. **Meta / system thinking**
-   - engineering-notes
-   - ai-systems
-   - ai (tips and workflow learnings from building with AI tools — distinct from ai-systems which is technical AI integration)
-7. **Personal / optional**
-   - life-work
-8. **Future extensions**
-   - cloud (inactive unless needed)
-
-This framework is mainly an internal reference model for repo organization and content planning. It does not need to be exposed in a rigid way to every user, but it should guide how scripts and docs are classified and how future content is prioritized.
-
-### Repo structure as blog taxonomy signal
-
-The `sql/<category>/` directory maps to a blog primary category. The `sql/<category>/<subfolder>/` maps loosely to blog tags — not a rigid 1:1, but a directional guide:
-
-| sql/ path | Blog category | Tag signal |
-|---|---|---|
-| `sql/inventory/` | inventory | instance, databases, services |
-| `sql/monitoring/instance/` | monitoring | instance-config, memory |
-| `sql/monitoring/databases/` | monitoring | database-health, integrity |
-| `sql/monitoring/disk-space/` | monitoring | disk-space, growth, transaction-log, vlf |
-| `sql/monitoring/tempdb/` | monitoring | tempdb |
-| `sql/monitoring/jobs/` | monitoring | sql-agent |
-| `sql/monitoring/error-log/` | monitoring | error-log |
-| `sql/monitoring/features/` | monitoring | cdc, query-store, extended-events, service-broker |
-| `sql/performance/blocking-locking/` | performance | blocking, locking, deadlocks |
-| `sql/performance/indexes/` | performance | indexes, fragmentation |
-| `sql/performance/queries/` | performance | query-tuning, plan-cache, statistics |
-| `sql/performance/query-store/` | performance | query-store |
-| `sql/performance/active-sessions/` | performance | active-sessions |
-| `sql/security/access/` | security | logins, users, permissions, roles |
-| `sql/security/encryption/` | security | tde, encryption, certificates |
-| `sql/high-availability/always-on/` | high-availability | availability-groups |
-| `sql/high-availability/replication/` | high-availability | replication |
-| `sql/backups/` | backup-recovery | — |
-| `sql/migration/` | migration-upgrades | — |
-| `sql/traces/` | troubleshooting | extended-events, tracing, auditing |
-
-A post series (e.g., wait statistics, index series) can introduce more granular tags than the subfolder suggests — the subfolder is a starting point, not a ceiling.
-
-### Script post standard (master template, 2026-07-16)
-
-Every DBA script in the repo gets a blog post following the master template at
-`personal/tools/site-publisher/templates/dba-script/index.md`, established by the live post
-<https://sqldba.blog/dba-scripts-get-vlf-counts/>. Full conventions + section decision matrix:
-`site-publisher/reference/README.md` ("Master post template"). The non-negotiables:
-
-- Title starts `DBA Scripts: ` and slug starts `dba-scripts-` (hard rule, no exceptions;
-  usually `DBA Scripts: Get [Thing]` / `dba-scripts-get-thing`), category **DBA Scripts**, first line links the
-  project page: `Part of the [DBA-Tools](https://sqldba.blog/scripts/) Project.`
-- Core sections always: intro (problem-first), Why It Matters, When to Run, The Script
-  (full SQL including repo header), How To Run From The Repo (+ GitHub links to the
-  script's `sql/` path and wrapper), Example Output, Understanding the Results,
-  Related Scripts, Summary.
-- Optional sections (Common Symptoms, Common Causes, How to Fix, Best Practices, FAQ)
-  per the decision matrix — full for flagship diagnostics, compact for inventory scripts.
-- **Related Scripts is forever-updating**: populate from the script's `sql/` directory,
-  hyperlink items as their posts go live, and when a new post publishes, sweep the live
-  posts of same-directory scripts to add a link back.
-
-### How to choose a primary category
-
-When a script is added or updated, choose the single best primary category based on its main operational intent:
-
-- Use the category that best matches the main question the script answers
-- If the script is primarily about investigation, use the category that matches the investigation area
-- If the script is primarily about execution or automation, use the category that matches the operational workflow it supports
-- If the script is mainly a reusable utility, classify it based on the practical DBA task it helps with, not the implementation detail
-
-A script should not be spread across multiple categories just because it touches several topics.
-
-### Title rules
-
-**Script posts (the master template): HARD RULE (Peter, 2026-07-18) — every script post
-title starts `DBA Scripts: ` and every slug starts `dba-scripts-`, no exceptions.** The
-usual form is `DBA Scripts: Get [Thing]` — slug
-`dba-scripts-get-thing`. This supersedes the older patterns for script-backed posts
-(2026-07-16; the retired `Script:` prefix cleanup in
-`site-publisher/archive/sqldba/_planning-docs/SCRIPT-PREFIX-RETITLE.md` predates this — the 24
-legacy posts are being refit via `site-publisher/PUBLISHING.md` Phase 1).
-
-Non-script posts use one of:
-- Get [Thing] for SQL Server
-- Check [Thing] in SQL Server
-- Analyze [Thing] in SQL Server
-- Find [Thing] in SQL Server
-- SQL Server [Thing] Overview (rare cases only)
-
-### Content rules
-
-- Do not duplicate a blog post if a similar script already covers the same operational idea
-- Prefer one authoritative post per concept; if two scripts overlap, consolidate or clarify the distinction
-- Use the repo path to point to the real script location
-- Keep the post practical, not promotional, and focused on DBA outcomes
-- For similar concepts, prefer a clear distinction such as summary vs detailed drill-down (for example, a high-level summary script and a deeper script should be explained separately)
-- When a script is created or refined, classify it under the most appropriate primary category and keep that classification consistent across repo docs and any related post material
-- Treat the repo script as the operational artifact and the blog post as the explanatory artifact; they are related, but they are not the same thing
-
-### Additional recommendations
-
-- Add a short note to new scripts explaining what problem they solve, what permissions they need, and when not to use them
-- Prefer clear names that describe the DBA outcome, not just the internal implementation path
-- Keep the script and its surrounding documentation aligned so a reader can understand both the purpose and the expected output
-- If a script is likely to be used often, favour a stable, readable interface over clever shortcuts
-- Use the repo taxonomy to guide future planning, but do not let taxonomy become a barrier to practical action
-- Aim for scripts that are safe to review quickly by another DBA during an incident
-- Prefer defaults that reduce surprise and avoid hidden environment assumptions
-- Where a script is likely to be reused, make the expected inputs and outputs obvious from the script name and surrounding comments
-- When in doubt, choose the version that is easier to understand, debug, and explain under pressure
+Blog drafting does not happen in this repo and never should. The only thing that lands here is the
+post URL, on the script's own `Author` line once a post is live (see **SQL script standards** below).
+`docs/script-catalog.md` reads those lines into its Post column, so there is no second list to keep
+in sync.
 
 ## Layout
 
@@ -404,7 +232,8 @@ tools/
   maintenance/  — Clear-OutputFiles.ps1
 
 docs/ops/       — change orders, checklists, runbooks, rollback playbooks, SQL change templates
-docs/           — quick-start.md, roadmap.md, runbook.md, standards.md, repo-structure.md
+docs/           — README.md, quick-start.md, script-catalog.md, repo-structure.md,
+                  standards.md, templates.md, ai-assessment.md, ai-playbook.md, roadmap.md
 
 output-files/   — generated CSVs, healthcheck folders, reviews
 ```
@@ -504,7 +333,6 @@ Add `HealthCheck : Yes` (after `Requires`) to any script that runs as part of `I
 - No trailing blank lines; 0–1 blank lines at end of file
 - Keep output readable and deterministic
 
-
 ## Adding new scripts
 
 New SQL script: `sql/<category>/<subfolder>/Get-Something.sql` (or `sql/<category>/Get-Something.sql` if it belongs at the category root).
@@ -521,16 +349,6 @@ New orchestrator PS script (has real logic, not a thin wrapper): add to `powersh
 **When refactoring an existing script, summarise:** improved script, risk classification (`SAFE` / `MEDIUM` / `HIGH IMPACT`), key changes (bullets), suggested folder placement.
 
 **For each major script, document:** purpose in operational terms, example output interpretation, when **not** to use it, required permissions.
-
-## SQL session mode (memory-constrained workstations)
-
-On a workstation where SQL Server shares RAM with Docker containers and other services
-(e.g. the local site-lab staging rig), the OS will page SQL Server out under pressure —
-collections crawl, collector steps fail with error 802, and the plan cache gets flushed,
-which poisons every performance CSV. Before heavy SQL verification work (full healthcheck
-runs, integration testing batches): **stop the site-lab containers, run the SQL work,
-restart the containers after.** Keep max server memory modest on such a box (2048 MB
-ceiling here) rather than chasing the paging with a bigger cap.
 
 ## Healthcheck collection — what it covers
 
@@ -593,7 +411,7 @@ otherwise the folder is `<server>-<timestamp>` under `-OutputRoot`.
 
 ## Important caveats
 
-- AG scripts (`sql/high-availability/Get-AvailabilityGroupReplicaState.sql`, `Get-AvailabilityGroupLatency.sql`) guard against non-AG instances and return a status row instead of throwing.
+- AG scripts (`sql/high-availability/always-on/Get-AvailabilityGroupReplicaState.sql`, `Get-AvailabilityGroupLatency.sql`) guard against non-AG instances and return a status row instead of throwing.
 - Multi-result-set SQL scripts cannot be cleanly exported as a single CSV via `Invoke-RepoSql.ps1`. All scripts in `sql/` are single-result-set by design.
 - `output-files/` CSV files accumulate and should not be committed. Clear with `.\tools\maintenance\Clear-OutputFiles.ps1` before a fresh assessment run.
 - `docs/standards.md` is the detailed standards reference — the header in this file is the condensed authoritative version. Keep both in sync when standards change.
