@@ -279,3 +279,45 @@ class TestTheExporterIsLoudAboutWhatItCannotRead(unittest.TestCase):
         for field in ('question', 'answer', 'url'):
             with self.subTest(field=field):
                 self.assertEqual(self._missing(faqs, field), [])
+
+
+class TestTheGuardDoesNotRefuseRealQuestions(unittest.TestCase):
+    """The off-domain guard exists to stop false positives. It was causing false negatives.
+
+    There is no stemmer here, so "corruption" was in the script corpus and "corrupt" was
+    not. Asking `find_script("is my database corrupt")` put half the query in the unknown
+    bucket, tripped the guard, and returned "nothing in the dba-tools library matches
+    that" - from a library holding `Get-SuspectPages` and `Get-LastDbccCheckdb`. Refusing
+    a corruption question is the worst false negative this library can produce.
+
+    Both directions are asserted, because widening a guard is exactly the change that
+    quietly turns a refusal promise into a suggestion.
+    """
+
+    MUST_ANSWER = ['is my database corrupt', 'database corruption check',
+                   'check for corrupt pages', 'find blocking chains',
+                   'check backup coverage', 'missing indexes']
+
+    MUST_REFUSE = ['deploy a react frontend', 'make me a sandwich',
+                   'how do I configure an nginx reverse proxy',
+                   'what is the capital of France',
+                   'how do I vacuum a postgres table',
+                   'write me a python script to sort a list']
+
+    def test_real_dba_questions_are_answered(self):
+        for q in self.MUST_ANSWER:
+            with self.subTest(q=q):
+                self.assertFalse(declined(tools.find_script(q)),
+                                 'refused a question the library can answer: %r' % q)
+
+    def test_off_domain_questions_are_still_refused(self):
+        for q in self.MUST_REFUSE:
+            with self.subTest(q=q):
+                self.assertTrue(declined(tools.find_script(q)),
+                                'the widened guard let an off-domain query through: %r' % q)
+
+    def test_the_prefix_rule_does_not_match_on_fragments(self):
+        """Short tokens must not prefix-match half the corpus into looking familiar."""
+        index = data.script_index()
+        self.assertFalse(index._recognises('xyz'))
+        self.assertTrue(index._recognises('corrupt'))

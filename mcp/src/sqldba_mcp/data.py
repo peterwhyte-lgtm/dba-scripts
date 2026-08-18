@@ -163,8 +163,29 @@ class Index:
         q = tokens(query)
         if not q:
             return True
-        unknown = sum(1 for t in q if t not in self._idf)
+        unknown = sum(1 for t in q if not self._recognises(t))
         return (unknown / len(q)) > max_unknown
+
+    def _recognises(self, term: str) -> bool:
+        """Whether the corpus knows this word, allowing for the obvious word endings.
+
+        There is no stemmer here on purpose, but the guard cannot afford to be literal
+        about it. "corruption" is in the script corpus and "corrupt" is not, so asking
+        "is my database corrupt" put half the query in the unknown bucket, tripped this
+        guard, and got a flat refusal from a library that holds `Get-SuspectPages` and
+        `Get-LastDbccCheckdb`. Refusing to answer a corruption question is the single
+        worst false negative this library can produce.
+
+        A prefix match either way is enough to say "this vocabulary is not foreign",
+        which is all this guard decides. Ranking is untouched: nothing here changes
+        which record wins, only whether the question is answered at all.
+        """
+        if term in self._idf:
+            return True
+        if len(term) < 4:
+            return False
+        return any(known.startswith(term) or term.startswith(known)
+                   for known in self._idf if len(known) >= 4)
 
     def search(self, query: str, limit: int = 8,
                min_coverage: float = 0.0) -> list[tuple[dict, float]]:
