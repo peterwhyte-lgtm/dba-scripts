@@ -292,3 +292,217 @@ class TestEntryPoints(unittest.TestCase):
         with contextlib.redirect_stdout(buf):
             server.main(['--version'])
         self.assertIn(server.__version__, buf.getvalue())
+
+
+class TestErrorLookupTakesWhatPeoplePaste(unittest.TestCase):
+    """The forms an error arrives in, as opposed to the form the eval used to test.
+
+    `Msg 18456, Level 14, State 1, Line 1` is what SQL Server prints, so it is what lands
+    in a chat window. Until 0.2.1 the number was only read when the input was nothing but
+    digits, and the phrase search behind it was a raw substring test - so this exact paste
+    came back "not in the sqldba.blog library yet" for an error the library has always
+    covered. A false negative is the worst answer this server can give: the whole promise
+    is that "not in the library" can be trusted.
+    """
+
+    PASTES = ['18456', ' 18456 ', 'Msg 18456', 'msg 18456, Level 14, State 1, Line 1',
+              'error 18456', 'SQL Server error 18456', 'Error: 18456']
+
+    def test_every_paste_form_finds_the_error(self):
+        for paste in self.PASTES:
+            with self.subTest(paste=paste):
+                self.assertIn('18456', tools.lookup_error(paste))
+                self.assertNotIn('not in the sqldba.blog library',
+                                 tools.lookup_error(paste).lower())
+
+    def test_level_and_state_are_not_mistaken_for_the_error_number(self):
+        """`Msg 9002, Level 17, State 2` must not resolve to error 17 or error 2."""
+        out = tools.lookup_error('Msg 9002, Level 17, State 2, Line 1')
+        self.assertIn('9002', out)
+        self.assertIn('Transaction log', out)
+
+    def test_word_order_and_extra_words_still_match(self):
+        """A substring search failed both of these; ranked search must not."""
+        for phrase in ('failed login', 'incorrect syntax', 'transaction log full'):
+            with self.subTest(phrase=phrase):
+                self.assertNotIn('not in the sqldba.blog library',
+                                 tools.lookup_error(phrase).lower())
+
+    def test_a_number_that_is_genuinely_absent_still_says_so(self):
+        """The fix must not turn 'we do not have it' into a guess."""
+        out = tools.lookup_error('99999')
+        self.assertIn('99999', out)
+        self.assertIn('not in the', out.lower())
+
+    def test_off_topic_is_still_refused(self):
+        """The coverage floor and off-domain guard have to survive the rewrite."""
+        for q in ('how do I configure an nginx reverse proxy',
+                  'what is the capital of France'):
+            with self.subTest(q=q):
+                self.assertIn('not in the sqldba.blog library', tools.lookup_error(q).lower())
+
+
+class TestToolAnnotations(unittest.TestCase):
+    """The 'it never touches your SQL Server' promise, made machine-readable.
+
+    Prose in the README cannot be read by a client deciding whether to prompt the user.
+    These hints can, so a reference lookup is auto-approvable instead of asking a DBA to
+    confirm six times. If a tool is ever added that writes, connects, or reaches outside
+    the bundled corpus, this test is what fails.
+    """
+
+    def _tools(self):
+        import asyncio
+        return asyncio.run(server.server.list_tools())
+
+    def test_every_tool_declares_itself_read_only_and_closed_world(self):
+        for t in self._tools():
+            with self.subTest(tool=t.name):
+                self.assertIsNotNone(t.annotations, '%s has no annotations' % t.name)
+                self.assertTrue(t.annotations.read_only_hint)
+                self.assertFalse(t.annotations.destructive_hint)
+                self.assertTrue(t.annotations.idempotent_hint)
+                self.assertFalse(t.annotations.open_world_hint,
+                                 '%s claims an open world; this corpus is closed' % t.name)
+
+
+class TestCliContract(unittest.TestCase):
+    """Flags a user actually types, including the ones they mistype.
+
+    Anything unrecognised used to fall through to the stdio server, where it sat waiting
+    on a handshake a terminal never sends - so a typo looked like a hang, and exited 0.
+    """
+
+    def _run(self, args):
+        import contextlib
+        import io
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = server.main(args)
+        return code, out.getvalue(), err.getvalue()
+
+    def test_help_is_help_not_a_hung_server(self):
+        code, out, _ = self._run(['--help'])
+        self.assertEqual(code, 0)
+        self.assertIn('--selftest', out)
+        self.assertIn('claude mcp add sqldba', out)
+
+    def test_a_mistyped_flag_fails_loudly(self):
+        code, _, err = self._run(['--selftst'])
+        self.assertEqual(code, 2, 'a bad flag must not exit 0')
+        self.assertIn('--selftst', err)
+
+    def test_known_flags_exit_zero(self):
+        for flag in ('--selftest', '--version'):
+            with self.subTest(flag=flag):
+                self.assertEqual(self._run([flag])[0], 0)
+
+
+class TestVersionHasOneSourceOfTruth(unittest.TestCase):
+    """__version__ and the packaged version must not drift.
+
+    They are declared in two files. A release that bumps one and not the other ships a
+    server that reports a version it is not, which is the same class of error as a stale
+    build number - the thing this whole server exists to stop.
+    """
+
+    def test_pyproject_matches_dunder_version(self):
+        import pathlib
+        import re
+        pyproject = (pathlib.Path(__file__).resolve().parents[1] / 'pyproject.toml')
+        declared = re.search(r'(?m)^version\s*=\s*"([^"]+)"',
+                             pyproject.read_text(encoding='utf-8'))
+        self.assertIsNotNone(declared, 'no version in pyproject.toml')
+        self.assertEqual(declared.group(1), server.__version__)
+
+
+class TestSafetyClassification(unittest.TestCase):
+    r"""The class an agent shows a DBA *before* they run something.
+
+    Three header dialects exist in this repo and the exporter read one of them, so scripts
+    that were classified at source shipped as "safety class not stated":
+
+        sql/**             -- SAFE:ReadOnly       + -- IMPACT:Low
+        powershell/**      RiskLevel   : SAFE
+        multi-server .ps1  Safe        : Read-only  (the SQL dialect, inside a .ps1)
+
+    Twelve multi-server scripts were lost to the third. Ten more - every installation,
+    patching and SSMS script, which is to say the six most dangerous things in the library -
+    carried no class at all. And `-- SAFE:Creates objects` was captured by a `(\w+)` group
+    as "Creates", a class in no vocabulary, and shipped without a complaint.
+    """
+
+    SQL_CLASSES = ('ReadOnly', 'WritesData', 'CreatesObjects')
+    PS_CLASSES = ('SAFE', 'MEDIUM', 'HIGH IMPACT')
+
+    def test_every_script_resolves_to_read_only_true_or_false(self):
+        """None means 'nobody said', which is the state this test exists to prevent."""
+        unclassified = [s['path'] for s in data.scripts() if s.get('read_only') is None]
+        self.assertEqual(unclassified, [],
+                         '%d script(s) carry no usable safety class: %s'
+                         % (len(unclassified), unclassified[:6]))
+
+    def test_every_class_is_in_its_vocabulary(self):
+        for s in data.scripts():
+            allowed = self.SQL_CLASSES if s['language'] == 'sql' else self.PS_CLASSES
+            with self.subTest(path=s['path']):
+                self.assertIn(s['safe'], allowed)
+
+    def test_the_multi_server_dialect_is_read(self):
+        """These were classified at source the whole time and shipped as unstated."""
+        by_name = {s['name']: s for s in data.scripts()}
+        self.assertTrue(by_name['MultiServer-GetBackupStatus']['read_only'])
+        restart = by_name['MultiServer-RestartService']
+        self.assertFalse(restart['read_only'],
+                         'a script that restarts services on every target host is not read-only')
+
+    def test_the_dangerous_installers_are_classified(self):
+        by_name = {s['name']: s for s in data.scripts()}
+        for name in ('install-sql', 'uninstall-sql', 'configure-sql', 'Invoke-SqlPatch'):
+            with self.subTest(script=name):
+                self.assertEqual(by_name[name]['safe'], 'HIGH IMPACT')
+                self.assertFalse(by_name[name]['read_only'])
+
+
+class TestDangerLeadsTheAnswer(unittest.TestCase):
+    """Position, not just presence.
+
+    The class was always in the response - rendered as `SAFE: WritesData   IMPACT: High`,
+    carrying exactly the weight of the `path:` line under it. That is a label. An agent
+    summarising a tool result leads with whatever is loudest, so the sentence a DBA must
+    not miss has to BE the loudest and has to arrive before the body.
+    """
+
+    def _first_lines(self, text, n=6):
+        return '\n'.join(text.splitlines()[:n])
+
+    def test_a_non_read_only_script_warns_before_its_body(self):
+        out = tools.get_script('Kill-BlockingSession')
+        self.assertIn('NOT READ-ONLY', out)
+        self.assertLess(out.index('NOT READ-ONLY'), out.index('```'),
+                        'the warning must come before the script body')
+        self.assertIn('NOT READ-ONLY', self._first_lines(out),
+                      'the warning must be in the first few lines, not buried')
+
+    def test_the_warning_names_the_class_and_the_impact(self):
+        out = tools.get_script('Kill-BlockingSession')
+        self.assertIn('WritesData', out)
+        self.assertIn('High', out)
+
+    def test_a_read_only_script_is_not_cluttered_with_warnings(self):
+        """189 of 230 are read-only. A warning on all of them is a warning on none."""
+        out = tools.get_script('Get-WaitStatistics')
+        self.assertNotIn('NOT READ-ONLY', out)
+        self.assertIn('SAFE: ReadOnly', out)
+
+    def test_find_script_carries_the_warning_too(self):
+        """The first place a DBA meets a script is usually the search result."""
+        out = tools.find_script('kill a blocking session')
+        self.assertIn('Kill-BlockingSession', out)
+        self.assertIn('NOT READ-ONLY', out)
+
+    def test_every_non_read_only_script_produces_a_warning(self):
+        for s in data.scripts():
+            if s['read_only'] is False:
+                with self.subTest(script=s['name']):
+                    self.assertIn('NOT READ-ONLY', tools.get_script(s['path']))

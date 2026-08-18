@@ -8,7 +8,7 @@ Purpose     : Generates SQL Agent DDL for routine housekeeping jobs:
               DBA - Cycle Error Log   sp_cycle_errorlog to rotate the SQL Server error log
                                       and prevent it growing unbounded (weekly)
               Edit the parameters section, review the output, then run on the target instance.
-Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-maintenance-jobs/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-database-integrity-and-housekeeping-jobs/)
 Requires    : VIEW ANY DATABASE
 Notes       : DBCC CHECKDB is resource-intensive. Schedule on a quiet period.
               On a large estate, consider reducing to monthly or running per-filegroup.

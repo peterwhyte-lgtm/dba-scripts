@@ -16,9 +16,9 @@ the date it was checked — and says so when that date gets old.
 | Tool | Ask it | Returns |
 |------|--------|---------|
 | `lookup_error` | "what is error 18456?" / "login failed" | Message text, what it actually means, severity, link |
-| `explain_wait` | "explain PAGEIOLATCH_SH" | Worth chasing or normal noise, when to ignore, what to do, link |
+| `explain_wait` | "explain PAGEIOLATCH_SH", or paste a whole `sys.dm_os_wait_stats` result | One wait explained, or a triaged result set: worth chasing first, noise you can filter, and what is not covered |
 | `check_build` | "is 16.0.4165.4 current?" (or paste `@@VERSION`) | Version, patch level on its servicing train, support status, the KB to install |
-| `find_script` | "find blocking chains", "check backup coverage" | Matching scripts with purpose, required permission, and **safety class** |
+| `find_script` | "find blocking chains", "check backup coverage" | Matching scripts with purpose, required permission, and **safety class** — anything not read-only leads with a warning |
 | `get_script` | "get Get-BlockingChains" | The complete verbatim script, header and safety annotations intact |
 | `answer_question` | "should I add a second data file?" | The published answer to that question, plus the post it came from |
 
@@ -49,14 +49,23 @@ Very few MCP servers publish a number for this. Run it yourself: `python tests/e
 |---|---:|---:|---:|
 | **FAQ, questions reworded** | 434 | **95.9%** | **99.5%** |
 | FAQ, verbatim question | 434 | 98.6% | 99.8% |
-| Errors, searched by phrase | 47 | 100% | 100% |
+| **Errors, phrase reworded** | 47 | **95.7%** | **100%** |
 | Errors, by number | 46 | 100% | 100% |
 | Wait types, by name | 232 | 100% | 100% |
 
-**Only the first row is a retrieval measure.** Searching with the verbatim question that is already
+**Only the bold rows are retrieval measures.** Searching with the verbatim question that is already
 in the index scores 98.6% and means nothing — it is string equality wearing a costume. The headline
 number asks each question in fewer words than published. Even that is an upper bound: the rewording
 drops terms but cannot introduce synonyms, so treat 95.9% as the ceiling rather than a promise.
+
+The error row used to read **100%**, and that number was wrong in exactly the way this section
+warns about. It searched with each error's *verbatim title* against a substring match, so every
+record contained its own query by construction, and it counted an answer as correct if the error
+number appeared anywhere in it — including buried in a list of eight candidates. Scored the same
+way as the headline row, the search behind it was really getting **29.8%**: a DBA who typed
+`incorrect syntax` instead of `Incorrect syntax near` got *"not in the library yet"*. Fixed in
+0.2.1 by putting error search through the same ranked index as everything else. **A test suite
+that cannot fail is worse than no test suite, because it is quoted.**
 
 The misses are written to `output-files/eval-misses-*.txt`. Each one is either a retrieval bug or a
 genuine gap in the published content, which makes the list a content roadmap as well as a test.
@@ -100,6 +109,17 @@ means.
 There is deliberately **no `run_script` tool**. Having no database connection is a property worth
 more than the convenience it costs.
 
+All six tools declare themselves **read-only, non-destructive and closed-world** in their MCP
+annotations, so a client can auto-approve them instead of asking you to confirm a reference lookup
+six times. That is the same promise as the paragraph above, in the form a client can actually read.
+
+The scripts it hands you are a different matter, and it says so. **14 of the 230 change something**
+— they write data, create objects, install, patch or restart — and every one of those leads its
+answer with a warning naming the class, the impact and the reason, before the body. The other 216
+are read-only and stay uncluttered, because a warning on everything is a warning on nothing. A test
+asserts that no script can ship without resolving to read-only *true or false*: "not stated" is not
+an available answer.
+
 It also **will not guess**. Ask about an error that is not in the library and it says so. Ask
 something off-topic and it declines rather than returning the least-bad row — a question about an
 nginx reverse proxy used to match a SQL Agent *proxy* answer, so queries now have to share enough
@@ -128,6 +148,18 @@ That is why script headers are treated as a product surface here rather than hou
 `Author`, `Purpose`, `Requires`, `SAFE:` and `IMPACT:` are what your assistant shows you
 *before* you run something. The list is in [`scripts-missing-post-url.txt`](scripts-missing-post-url.txt).
 
+## The 22 errors with no link
+
+The same gap on the other surface, and worth stating plainly because the tools promise a source
+link with every answer: **25 of the 47 errors carry a write-up URL, and 22 do not.** Those 22 still
+return the message text, what it means and the severity — all hand-written and verified — and the
+answer now *says* no article exists rather than quietly omitting the link, so an agent can quote
+them and knows it cannot cite them.
+
+Unlike the scripts above this is a genuine **content** gap, not a header one: those errors have no
+post yet. `102 Incorrect syntax near`, `208 Invalid object name`, `701 Insufficient system memory`
+and `823 I/O error` are on that list, which makes it a fair reading order for the Error Library.
+
 ## Corrections — one source, three surfaces
 
 `src/sqldba_mcp/datasets/*.json` are **generated**. Never hand-edit them: the change is lost at the
@@ -149,21 +181,32 @@ CI enforces this. `tests/check_freshness.py` re-derives the script, doc and prom
 files in this repo and compares them byte for byte — a hand-edit or a stale export fails the build
 and names the file.
 
+**One practical note: the server reads its datasets once, at start-up.** After a re-export, a client
+that already has the server running keeps answering from the data it loaded, so a correction can be
+in the repo and still not be in the answer. Restart the MCP client (or the server process) to pick
+it up. This is easy to miss precisely because the fix *looks* applied everywhere you check.
+
 Found something wrong? Open an issue. Corrections from working DBAs are the point.
 
 ## Development
 
 ```bash
-python -m unittest discover -s tests -v     # 55 tests, no test dependencies
+python -m unittest discover -s tests -v     # 116 tests, no test dependencies
 python tests/eval_faq.py                    # retrieval scorecard
 python tests/check_freshness.py             # dataset drift gate
 pytest                                      # also works
 ```
 
-The tests worth reading are the ones that are not happy paths: the servicing-train logic (a wrong
-train silently misstates whether a server is patched), the index/corpus boundary in both directions,
-the leak gate, and tool routing — a question answered by the wrong tool is a defect even when the
-answer reads fine.
+The tests worth reading are the ones that are not happy paths:
+
+- **`test_red_team.py`** — the refuse-rather-than-guess promise, in both directions. A refusal
+  battery alone is passed by a server that refuses everything, so the positive case is asserted
+  on the same shipped path.
+- **`test_protocol.py`** — a real subprocess, a real stdio handshake. The only test that would
+  notice the server failing to start at all.
+- **the patch-level logic** — a server that is current on its train can still be behind on its
+  series, and saying otherwise is the one answer this whole thing exists to prevent.
+- the index/corpus boundary in both directions, and the leak gate.
 
 ## Licence
 

@@ -8,6 +8,9 @@ number to a known CU level, and displays SSMS version alongside patch log histor
 
 .EXAMPLE
 .\admin\patching\patch-summary.ps1
+
+.NOTES
+RiskLevel   : SAFE - reports installed versions and patch state; changes nothing
 #>
 
 $ErrorActionPreference = 'SilentlyContinue'

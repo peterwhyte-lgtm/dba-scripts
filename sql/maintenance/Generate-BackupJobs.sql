@@ -6,7 +6,7 @@ Purpose     : Generates SQL Agent DDL to create three scheduled maintenance jobs
               DBA - Backup - LOG      transaction log backups on a short interval (default 15 min)
               DBA - Backup - Cleanup  removes old backup files based on retention policy
               Edit the parameters section, review the output, then run on the target instance.
-Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-maintenance-jobs/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-backup-jobs/)
 Requires    : VIEW ANY DATABASE
 Notes       : Output requires sysadmin or SQLAgentOperatorRole on the target instance.
               The backup root path must exist on the SQL Server host before jobs first run.

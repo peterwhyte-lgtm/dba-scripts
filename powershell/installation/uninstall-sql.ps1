@@ -22,6 +22,9 @@ Show what would run without executing.
 .EXAMPLE
 .\admin\installation\uninstall-sql.ps1 -SetupPath D:\SQL2022\setup.exe
 .\admin\installation\uninstall-sql.ps1 -SetupPath D:\SQL2022\setup.exe -InstanceName SQL2022 -RemoveDataDirs
+
+.NOTES
+RiskLevel   : HIGH IMPACT - removes a SQL Server instance and can delete its data directories
 #>
 param(
     [string]$SetupPath,

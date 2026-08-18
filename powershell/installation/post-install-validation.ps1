@@ -22,6 +22,9 @@ Expected MaxDOP. If 0, validates it is not at default (0).
 .EXAMPLE
 .\admin\installation\post-install-validation.ps1
 .\admin\installation\post-install-validation.ps1 -ServerInstance PROD01\SQL2022 -InstanceName SQL2022
+
+.NOTES
+RiskLevel   : SAFE - read-only queries; changes no configuration
 #>
 param(
     [string]$ServerInstance      = '.',

@@ -4,7 +4,7 @@ Category    : migration
 Purpose     : Generate RESTORE DATABASE scripts with WITH MOVE for all online user databases.
               Run on SOURCE server. Supply the backup path and path prefix mappings for
               data and log files before executing the output on TARGET.
-Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-migration-scripts/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-restore-with-move-script/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
 */
 -- SAFE:ReadOnly
@@ -93,20 +93,28 @@ BEGIN
 
     WHILE @@FETCH_STATUS = 0
     BEGIN
-        -- Replace old path prefix with new path prefix
+        -- Replace old path prefix with new path prefix.
+        -- Only when the source path actually STARTS with the configured prefix.
+        -- If it does not, the prefix arithmetic below would chop a fixed number of
+        -- characters off an unrelated path and produce a plausible-looking but wrong
+        -- target (E:\SQLData against a real D:\MSSQL\DATA\x.mdf yields
+        -- D:\SQLDataATA\x.mdf). Fall back to the UNCHANGED source path instead: the
+        -- restore then either works, because the layout already matches, or fails
+        -- loudly on a path that does not exist. It never silently invents one.
         SET @new_path = CASE
-            WHEN @file_type = 'LOG'
+            WHEN @file_type = 'LOG' AND LEFT(@old_path, LEN(@OldLogRoot)) = @OldLogRoot
                 THEN @NewLogRoot  + SUBSTRING(@old_path, LEN(@OldLogRoot)  + 1, LEN(@old_path))
-            ELSE
-                @NewDataRoot + SUBSTRING(@old_path, LEN(@OldDataRoot) + 1, LEN(@old_path))
+            WHEN @file_type <> 'LOG' AND LEFT(@old_path, LEN(@OldDataRoot)) = @OldDataRoot
+                THEN @NewDataRoot + SUBSTRING(@old_path, LEN(@OldDataRoot) + 1, LEN(@old_path))
+            ELSE @old_path
         END;
 
         SET @block = @block
             + CASE
                 WHEN @file_type = 'LOG' AND LEFT(@old_path, LEN(@OldLogRoot)) <> @OldLogRoot
-                    THEN N'       -- WARNING: source path does not start with @OldLogRoot (''' + @OldLogRoot + N'''), computed path below is unreliable, verify manually. Actual source: ' + @old_path + @crlf
+                    THEN N'       -- WARNING: source path does not start with @OldLogRoot (''' + @OldLogRoot + N'''), so NO remap was applied. The MOVE below still points at the SOURCE path. Set @OldLogRoot to match, or edit this line by hand.' + @crlf
                 WHEN @file_type <> 'LOG' AND LEFT(@old_path, LEN(@OldDataRoot)) <> @OldDataRoot
-                    THEN N'       -- WARNING: source path does not start with @OldDataRoot (''' + @OldDataRoot + N'''), computed path below is unreliable, verify manually. Actual source: ' + @old_path + @crlf
+                    THEN N'       -- WARNING: source path does not start with @OldDataRoot (''' + @OldDataRoot + N'''), so NO remap was applied. The MOVE below still points at the SOURCE path. Set @OldDataRoot to match, or edit this line by hand.' + @crlf
                 ELSE N''
               END
             + N'       ,MOVE N''' + REPLACE(@logical_name, N'''', N'''''') + N''' TO N''' + REPLACE(@new_path, N'''', N'''''') + N'''' + @crlf;

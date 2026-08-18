@@ -40,6 +40,9 @@ Apply all recommended settings using hardware auto-detection. Ignores individual
 
 # Review current settings without changing anything (use -WhatIf)
 .\admin\installation\configure-sql.ps1 -ApplyRecommended -WhatIf
+
+.NOTES
+RiskLevel   : HIGH IMPACT - runs sp_configure and RECONFIGURE against a live instance; some settings take effect immediately
 #>
 param(
     [string]$ServerInstance         = '.',

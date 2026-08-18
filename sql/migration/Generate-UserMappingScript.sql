@@ -2,8 +2,14 @@
 Script Name : Generate-UserMappingScript
 Category    : migration
 Purpose     : Generate CREATE USER and role membership DDL for all user databases.
-Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-migration-scripts/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-user-mapping-script/)
 Requires    : VIEW ANY DATABASE, VIEW DEFINITION on each database
+Notes       : Where a user cannot be scripted faithfully the script emits a commented
+              MANUAL block instead of a working-looking statement. Two cases:
+              contained users with their own password (the password is not readable, so
+              a real CREATE USER would silently drop authentication), and users whose
+              login cannot be resolved by SID on the source. Search the output for
+              "MANUAL" before running it.
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low
@@ -55,7 +61,7 @@ BEGIN
         SET @chunk = @chunk
             + N'-- Database owner' + @crlf
             + N'IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = N''' + REPLACE(@owner, N'''', N'''''') + N''')' + @crlf
-            + N'    ALTER AUTHORIZATION ON DATABASE::[' + @dbname + N'] TO [' + REPLACE(@owner, N']', N']]') + N'];' + @crlf
+            + N'    ALTER AUTHORIZATION ON DATABASE::' + QUOTENAME(@dbname) + N' TO ' + QUOTENAME(@owner) + N';' + @crlf
             + N'GO' + @crlf + @crlf;
 
     -- ── 2. Custom database roles ───────────────────────────────────────────────
@@ -68,7 +74,7 @@ BEGIN
 
     SELECT @chunk = @chunk
         + N'IF NOT EXISTS (SELECT 1 FROM [' + @dbname + N'].sys.database_principals WHERE name = N''' + REPLACE(rname, N'''', N'''''') + N''' AND type = ''R'')' + @crlf
-        + N'    CREATE ROLE [' + rname + N'];' + @crlf
+        + N'    CREATE ROLE ' + QUOTENAME(rname) + N';' + @crlf
         + N'GO' + @crlf + @crlf
     FROM #roles
     ORDER BY rname;
@@ -77,29 +83,51 @@ BEGIN
 
     -- ── 3. Database users ─────────────────────────────────────────────────────
     IF OBJECT_ID('tempdb..#users') IS NOT NULL DROP TABLE #users;
-    CREATE TABLE #users (uname NVARCHAR(128), utype CHAR(1), auth_type NVARCHAR(60), usid VARBINARY(85));
+    CREATE TABLE #users (uname NVARCHAR(128), utype CHAR(1), auth_type NVARCHAR(60), usid VARBINARY(85), login_name NVARCHAR(128) NULL);
     SET @q = N'SELECT name, type, authentication_type_desc, sid
                FROM [' + @dbname + N'].sys.database_principals
                WHERE type IN (''S'', ''U'', ''G'')
                  AND name NOT IN (N''dbo'', N''guest'', N''INFORMATION_SCHEMA'', N''sys'', N''public'')
                  AND name NOT LIKE N''##%##''
                ORDER BY name';
-    INSERT INTO #users EXEC sp_executesql @q;
+    INSERT INTO #users (uname, utype, auth_type, usid) EXEC sp_executesql @q;
 
+    -- Resolve each user's login from the SERVER CATALOG, by SID, once.
+    -- Not SUSER_SNAME: on an unresolvable Windows SID that can go out to the
+    -- domain controller and stall the whole generation.
+    UPDATE u
+       SET login_name = sp.name
+      FROM #users u
+      JOIN sys.server_principals sp ON sp.sid = u.usid;
+
+    -- Each branch must either script the user FAITHFULLY or refuse and say so.
+    -- A statement that runs but changes how the user authenticates is worse than
+    -- no statement at all, because nothing fails and nobody looks again.
     SELECT @chunk = @chunk
         + CASE
-            WHEN utype IN ('U', 'G')
+            -- Contained user carrying its own password: the password is not readable,
+            -- so there is no faithful CREATE USER. Do NOT emit WITHOUT LOGIN, that
+            -- succeeds and silently leaves an account that can never authenticate.
+            WHEN auth_type = 'DATABASE'
+                THEN N'-- MANUAL: [' + uname + N'] is a contained user (authentication_type = DATABASE).' + @crlf
+                   + N'-- Its password cannot be read from the source, so it is not scripted here.' + @crlf
+                   + N'-- Recreate it on the target with the password from your credential store:' + @crlf
+                   + N'--   CREATE USER ' + QUOTENAME(uname) + N' WITH PASSWORD = N''ENTER_PASSWORD_HERE'';' + @crlf
+                   + N'-- Target database must have CONTAINMENT = PARTIAL.' + @crlf
+            -- Mapped to a server login: resolve by SID, never by name. A name match
+            -- to a different login on the target hands the roles to the wrong identity.
+            WHEN login_name IS NOT NULL
                 THEN N'IF NOT EXISTS (SELECT 1 FROM [' + @dbname + N'].sys.database_principals WHERE name = N''' + REPLACE(uname, N'''', N'''''') + N''')' + @crlf
-                   + N'    CREATE USER [' + uname + N'] FOR LOGIN [' + uname + N']' + @crlf
-            WHEN utype = 'S'
-                 AND usid IS NOT NULL
-                 AND EXISTS (SELECT 1 FROM sys.server_principals sp WHERE sp.sid = usid)
+                   + N'    CREATE USER ' + QUOTENAME(uname) + N' FOR LOGIN ' + QUOTENAME(login_name) + @crlf
+            -- Genuinely login-less (EXECUTE AS / impersonation user). Faithful as-is.
+            WHEN auth_type = 'NONE'
                 THEN N'IF NOT EXISTS (SELECT 1 FROM [' + @dbname + N'].sys.database_principals WHERE name = N''' + REPLACE(uname, N'''', N'''''') + N''')' + @crlf
-                   + N'    CREATE USER [' + uname + N'] FOR LOGIN [' + ISNULL(SUSER_SNAME(usid), uname) + N']' + @crlf
-            WHEN utype = 'S' AND auth_type = 'DATABASE'
-                THEN N'IF NOT EXISTS (SELECT 1 FROM [' + @dbname + N'].sys.database_principals WHERE name = N''' + REPLACE(uname, N'''', N'''''') + N''')' + @crlf
-                   + N'    CREATE USER [' + uname + N'] WITHOUT LOGIN' + @crlf
-            ELSE N'-- SKIP (no matching server login): ' + uname + @crlf
+                   + N'    CREATE USER ' + QUOTENAME(uname) + N' WITHOUT LOGIN' + @crlf
+            -- SID present but no server principal owns it: the login is already
+            -- missing on the SOURCE. Scripting a guess here would invent a mapping.
+            ELSE N'-- MANUAL: no server login resolves for [' + uname + N'] (SID '
+                   + ISNULL(CONVERT(NVARCHAR(MAX), usid, 1), N'NULL') + N').' + @crlf
+               + N'-- Create the login first, then re-run this script.' + @crlf
           END
         + N'GO' + @crlf + @crlf
     FROM #users
@@ -122,7 +150,7 @@ BEGIN
 
     SELECT @chunk = @chunk
         + N'IF EXISTS (SELECT 1 FROM [' + @dbname + N'].sys.database_principals WHERE name = N''' + REPLACE(mname, N'''', N'''''') + N''')' + @crlf
-        + N'    ALTER ROLE [' + rname + N'] ADD MEMBER [' + mname + N'];' + @crlf
+        + N'    ALTER ROLE ' + QUOTENAME(rname) + N' ADD MEMBER ' + QUOTENAME(mname) + N';' + @crlf
         + N'GO' + @crlf + @crlf
     FROM #rolemem
     ORDER BY rname, mname;
@@ -134,9 +162,9 @@ BEGIN
     BEGIN
         SET @ddl = @ddl
             + N'-- ----------------------------------------------------------------' + @crlf
-            + N'-- Database: [' + @dbname + N']' + @crlf
+            + N'-- Database: ' + QUOTENAME(@dbname) + @crlf
             + N'-- ----------------------------------------------------------------' + @crlf
-            + N'USE [' + @dbname + N'];' + @crlf
+            + N'USE ' + QUOTENAME(@dbname) + N';' + @crlf
             + N'GO' + @crlf + @crlf
             + @chunk;
     END

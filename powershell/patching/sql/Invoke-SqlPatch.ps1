@@ -58,6 +58,9 @@ Skip the per-server install confirmation prompt.
 
 # Patch multiple remote servers with alternate credentials
 .\Invoke-SqlPatch.ps1 -Server SQL01,SQL02 -Credential (Get-Credential) -Force
+
+.NOTES
+RiskLevel   : HIGH IMPACT - applies a Cumulative Update; SQL Server restarts mid-install
 #>
 param(
     [string]$ConfigPath  = (Join-Path $PSScriptRoot 'patch-config.psd1'),

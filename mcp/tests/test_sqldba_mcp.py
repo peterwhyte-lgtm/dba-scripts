@@ -26,7 +26,14 @@ class TestData(unittest.TestCase):
         self.assertGreaterEqual(len(data.waits()), 200)
         self.assertGreaterEqual(len(data.builds()['versions']), 5)
 
-    def test_every_record_has_a_source_url(self):
+    def test_source_urls_point_at_the_blog(self):
+        """Every URL that IS present must be a real sqldba.blog link.
+
+        Named for what it checks. It used to be called test_every_record_has_a_source_url,
+        which is not what it does and not what is true: waits, builds and FAQ answers all
+        carry one, but 22 of the 47 errors have no post to cite yet. That is a content gap,
+        tracked in the README, not something to assert away here.
+        """
         for e in data.errors():
             if e.get('url'):
                 self.assertTrue(e['url'].startswith('https://sqldba.blog/'), e)
@@ -195,3 +202,136 @@ class TestContract(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TestPatchLevelNeverFalselyReassures(unittest.TestCase):
+    """The one answer this tool must never give: "patched" when it is not.
+
+    `_train_for` was written against SQL 2022, where the CU build (16.0.4265.3) is HIGHER
+    than the CU+GDR build (16.0.4262.2). That shape inverts once a version reaches its
+    final CU: Microsoft stops shipping CUs and puts later security fixes out as GDR on top
+    of the last one, so CU+GDR climbs while CU stands still. On 2019 the final CU is from
+    February 2025 and CU32+GDR is from July 2026; on 2017 the gap is nearly four years.
+
+    Preferring the CU train within a series therefore measured 2017/2019/2014 servers
+    against a build frozen years ago and called them UP TO DATE - on exactly the versions
+    still in the field on extended support, where patch level is the whole conversation.
+    """
+
+    def _lines(self, build):
+        return tools.check_build(build)
+
+    def test_final_cu_is_not_called_up_to_date_when_gdr_moved_on(self):
+        for build, expect_higher in (('15.0.4430.1', '15.0.4480.2'),
+                                     ('14.0.3456.2', '14.0.3540.1'),
+                                     ('12.0.6329.1', '12.0.6449.1')):
+            with self.subTest(build=build):
+                out = self._lines(build)
+                self.assertIn('NOT the highest build on this series', out)
+                self.assertIn(expect_higher, out, 'the higher build must be named')
+
+    def test_a_build_between_the_final_cu_and_latest_gdr_is_flagged(self):
+        """The dangerous middle: above the last CU, below the newest security build."""
+        out = self._lines('15.0.4470.0')
+        self.assertIn('NOT the highest build on this series', out)
+        self.assertIn('15.0.4480.2', out)
+
+    def test_a_genuinely_current_build_still_gets_a_clean_verdict(self):
+        """The fix must not cry wolf on servers that really are fully patched."""
+        for build in ('15.0.4480.2', '14.0.3540.1', '16.0.4265.3', '16.0.1190.2'):
+            with self.subTest(build=build):
+                out = self._lines(build)
+                self.assertIn('UP TO DATE on this train', out)
+                self.assertNotIn('NOT the highest build on this series', out)
+
+    def test_the_gdr_train_is_not_measured_against_the_cu_train(self):
+        """A box on the RTM security train sits at a lower build BY DESIGN.
+
+        This is the original reason series matter, and it must survive the fix.
+        """
+        out = self._lines('16.0.1190.2')
+        self.assertIn('GDR', out)
+        self.assertNotIn('16.0.4265.3', out)
+
+    def test_the_reason_given_matches_the_direction_of_the_gap(self):
+        """2022 is behind a newer CU, not a GDR - the explanation must not say GDR."""
+        out = self._lines('16.0.4262.2')
+        self.assertIn('newer cumulative update', out)
+        self.assertNotIn('After the final CU', out)
+
+    def test_still_behind_is_still_reported_as_behind(self):
+        out = self._lines('16.0.4200.0')
+        self.assertIn('BEHIND', out)
+        self.assertIn('16.0.4265.3', out)
+
+
+class TestWaitTriage(unittest.TestCase):
+    """A whole pasted result set, not one wait at a time.
+
+    Nobody reads sys.dm_os_wait_stats a row at a time, so the tool has to accept the shape
+    the data actually arrives in. This is the same tool, not a seventh one: more than one
+    recognised type means a result set, exactly one means the question it always answered.
+
+    The verdict split is the point - `matters` is the most valuable judgement in the whole
+    corpus, and until now it was only reachable one lookup at a time.
+    """
+
+    PASTE = """wait_type                    waiting_tasks_count  wait_time_ms  signal_wait_time_ms
+PAGEIOLATCH_SH               184023               982311        12043
+CXPACKET                     77201                551200        8801
+WRITELOG                     42188                310922        5512
+SLEEP_TASK                   55012                88211         412
+BROKER_TASK_STOP             900                  60112         22
+PARALLEL_REDO_WORKER_WAIT    450                  9002          12
+(6 rows affected)"""
+
+    def test_a_single_wait_is_unchanged(self):
+        """The old behaviour must survive exactly; one type is not a result set."""
+        out = tools.explain_wait('PAGEIOLATCH_SH')
+        self.assertTrue(out.startswith('## PAGEIOLATCH_SH'))
+        self.assertNotIn('Triaged', out)
+
+    def test_a_pasted_result_set_is_triaged(self):
+        out = tools.explain_wait(self.PASTE)
+        self.assertIn('Triaged', out)
+        for name in ('PAGEIOLATCH_SH', 'CXPACKET', 'WRITELOG', 'BROKER_TASK_STOP'):
+            with self.subTest(wait=name):
+                self.assertIn(name, out)
+
+    def test_column_headers_and_numbers_are_not_mistaken_for_waits(self):
+        out = tools.explain_wait(self.PASTE)
+        self.assertNotIn('WAITING_TASKS_COUNT', out)
+        self.assertNotIn('SIGNAL_WAIT_TIME_MS', out)
+
+    def test_unrecognised_types_are_reported_never_dropped(self):
+        """Silently swallowing these is how a refusal promise dies at scale."""
+        out = tools.explain_wait(self.PASTE)
+        self.assertIn('NOT IN THE LIBRARY', out)
+        self.assertIn('PARALLEL_REDO_WORKER_WAIT', out)
+
+    def test_the_verdict_split_is_shown(self):
+        out = tools.explain_wait(self.PASTE)
+        self.assertIn('WORTH INVESTIGATING', out)
+        self.assertIn('USUALLY NOISE', out)
+
+    def test_a_post_covering_several_types_is_not_repeated(self):
+        """CXPACKET and CXCONSUMER share one write-up; it should appear once."""
+        out = tools.explain_wait('CXPACKET and CXCONSUMER and WRITELOG')
+        self.assertEqual(out.count('sql-server-wait-statistics-cxpacket-cxconsumer'), 1)
+
+    def test_text_with_no_known_wait_still_refuses(self):
+        """Triage must not become a way to get an answer out of nothing."""
+        out = tools.explain_wait('HOW DO I CONFIGURE AN NGINX REVERSE PROXY')
+        self.assertNotIn('Triaged', out)
+        self.assertIn('not in the', out.lower())
+
+    def test_lowercase_paste_still_works(self):
+        """A DBA pasting from a lowercased report should not silently get nothing."""
+        out = tools.explain_wait('pageiolatch_sh, cxpacket, writelog')
+        self.assertIn('PAGEIOLATCH_SH', out)
+
+    def test_a_huge_paste_does_not_produce_an_unbounded_answer(self):
+        junk = '\n'.join('FAKE_WAIT_TYPE_%d' % i for i in range(200))
+        out = tools.explain_wait('PAGEIOLATCH_SH\nCXPACKET\n' + junk)
+        self.assertIn('and 1', out)          # the "... and N more" tail
+        self.assertLess(len(out), 8000, 'the unknown list must be capped')

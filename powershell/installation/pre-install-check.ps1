@@ -24,6 +24,9 @@ SQL Server version being installed (2016|2017|2019|2022). Default: 2022.
 .EXAMPLE
 .\admin\installation\pre-install-check.ps1
 .\admin\installation\pre-install-check.ps1 -SqlVersion 2019 -DataDir D:\SQLData
+
+.NOTES
+RiskLevel   : SAFE - reads only; writes nothing to the machine or the instance
 #>
 param(
     [string]$InstanceName = 'MSSQLSERVER',
