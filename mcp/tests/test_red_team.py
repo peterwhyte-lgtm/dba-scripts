@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import unittest
 
-from sqldba_mcp import tools
+from sqldba_mcp import data, tools
 
 # The phrases the tools use to decline. If a refusal is ever reworded, this list is the
 # single place it has to change - and a reword that forgets to update it fails loudly
@@ -191,3 +191,91 @@ class TestInputItShouldNotChokeOn(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TestEveryErrorAnswerSaysWhereItStands(unittest.TestCase):
+    """Rule 1 of tools.py, made assertable instead of aspirational.
+
+    22 of the 47 errors have no post yet. The URL line was simply omitted for those, so a
+    verified answer was indistinguishable from an uncited one and an agent could not tell
+    "there is no source" from "the source was withheld". Every error answer now ends with
+    either a real write-up link or an explicit statement that none exists.
+    """
+
+    def test_every_single_error_answer_states_its_source_position(self):
+        for e in data.errors():
+            if e['error_number'] is None:
+                continue
+            with self.subTest(error=e['error_number']):
+                answer = tools.lookup_error(str(e['error_number']))
+                cited = 'https://sqldba.blog/' in answer and 'Full write-up:' in answer
+                declared = 'No write-up published for this error yet' in answer
+                self.assertTrue(cited or declared,
+                                'error %s neither cites a post nor says it has none'
+                                % e['error_number'])
+
+    def test_an_uncited_error_still_hands_over_the_verified_content(self):
+        """Saying "no post" must not become a refusal - the content is verified."""
+        uncited = next(e for e in data.errors() if not e.get('url') and e['error_number'])
+        answer = tools.lookup_error(str(uncited['error_number']))
+        self.assertIn('No write-up published', answer)
+        self.assertIn(str(uncited['error_number']), answer)
+        self.assertNotIn('Not in the sqldba.blog library', answer)
+
+
+class TestTheExporterIsLoudAboutWhatItCannotRead(unittest.TestCase):
+    r"""The bug class that bit three times in one session, turned into a gate.
+
+    Every one had the same shape: a parser read a source too narrowly and emitted None or
+    a truncated value without complaint.
+
+      * `Safe :` was never looked for, so 12 classified scripts shipped as "not stated"
+      * `-- SAFE:Creates objects` matched `(\w+)` and became the class "Creates"
+      * NEGATIVE anchored at the first word, so 13 wait verdicts inverted
+
+    None of them broke anything visibly. They just quietly made the library wrong. These
+    coverage floors are deliberately set below today's numbers so an unrelated content
+    change does not turn the build red, but a parser that stops understanding a whole
+    dialect will drop straight through them.
+    """
+
+    def _missing(self, rows, field):
+        return [r for r in rows if not r.get(field) and r.get(field) is not False]
+
+    def test_errors_carry_their_substance(self):
+        errors = data.errors()
+        for field in ('title', 'message', 'meaning', 'category'):
+            with self.subTest(field=field):
+                missing = self._missing(errors, field)
+                self.assertLessEqual(len(missing), len(errors) * 0.10,
+                                     '%d of %d errors have no %s'
+                                     % (len(missing), len(errors), field))
+
+    def test_every_wait_has_a_verdict_and_a_judgement(self):
+        waits = data.waits()
+        self.assertEqual([w['wait_types'] for w in waits if w.get('matters') is None], [],
+                         'a wait with no matters flag cannot be triaged')
+        self.assertLessEqual(len(self._missing(waits, 'verdict')), len(waits) * 0.05)
+        self.assertLessEqual(len(self._missing(waits, 'what_to_do')), len(waits) * 0.15)
+
+    def test_the_wait_verdict_split_stays_plausible(self):
+        """A parser regression tends to slam everything to one side of the split."""
+        waits = data.waits()
+        chase = sum(1 for w in waits if w['matters'] is True)
+        share = chase / len(waits)
+        self.assertTrue(0.20 <= share <= 0.75,
+                        '%.0f%% of waits flagged worth investigating - a split that lopsided '
+                        'usually means the verdict parser broke, not that the library changed'
+                        % (100 * share))
+
+    def test_scripts_carry_purpose_and_class(self):
+        scripts = data.scripts()
+        self.assertLessEqual(len(self._missing(scripts, 'purpose')), len(scripts) * 0.05)
+        self.assertEqual(self._missing(scripts, 'safe'), [],
+                         'a script with no safety class must never ship')
+
+    def test_faq_pairs_are_complete(self):
+        faqs = data.faqs()
+        for field in ('question', 'answer', 'url'):
+            with self.subTest(field=field):
+                self.assertEqual(self._missing(faqs, field), [])

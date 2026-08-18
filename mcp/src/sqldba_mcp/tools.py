@@ -43,9 +43,18 @@ def _fmt_error(e: dict) -> str:
     if e.get('meaning'):
         lines.append('**What it actually means**')
         lines.append(e['meaning'])
+    lines.append('')
     if e.get('url'):
-        lines.append('')
         lines.append('Full write-up: %s' % e['url'])
+    else:
+        # 22 of the 47 errors have no post yet. Omitting the line silently made a verified
+        # answer look like an uncited one, and left an agent unable to tell "no source" from
+        # "source withheld". Saying it plainly costs nothing and is the difference between a
+        # gap and a mystery. Rule 1 in this module is then assertable rather than aspirational.
+        lines.append('**No write-up published for this error yet.** The message text, '
+                     'meaning and severity above are from the hand-verified error pool, so '
+                     'they can be quoted - but there is no article to cite. '
+                     'Index: https://sqldba.blog/')
     return '\n'.join(lines)
 
 

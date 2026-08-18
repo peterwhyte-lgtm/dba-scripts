@@ -50,6 +50,22 @@ Safety classification and wait triage. No new tools: six remains the ceiling.
   failure inverted, and far more expensive. Chase list: 105 -> 92. The verdicts were always
   right; the regex was reading them wrong.
 
+- **An error with no post looked uncited rather than uncovered.** 22 of the 47 errors have
+  no write-up, and the source line was simply omitted for those - so a hand-verified answer
+  was indistinguishable from one whose source had been withheld, and an agent could not tell
+  the two apart. Every error answer now ends with either a real link or an explicit "no
+  write-up published for this error yet", which makes rule 1 of `tools.py` assertable
+  instead of aspirational. It is not a refusal: the verified content is still handed over.
+
+- **A coverage gate on what the exporter could not read.** Every defect found in this
+  session had one shape - a parser read a source too narrowly and emitted `None` or a
+  truncated value without complaint, three times in one file. Floors are now asserted on
+  the fields that carry the substance (error message and meaning, wait verdict and
+  `matters`, script purpose and class, FAQ completeness), plus a sanity check that the
+  wait chase/noise split has not slammed to one side - which is what a broken verdict
+  parser looks like from the outside. Set below today's numbers so a content change does
+  not redden the build, but a dialect stopping being understood drops straight through.
+
 ### Added
 
 - **`explain_wait` accepts a whole pasted result set.** Nobody reads
@@ -64,7 +80,7 @@ Safety classification and wait triage. No new tools: six remains the ceiling.
 - Tests for all of the above: every script must resolve to read-only true or false, every
   class must be in its vocabulary, the warning must appear before the body, prose must not
   be mistaken for a result set, and unrecognised wait types must be reported rather than
-  dropped (**109 tests**, up from 91).
+  dropped (**116 tests**, up from 91).
 
 ### Known, not fixed
 

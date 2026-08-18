@@ -152,8 +152,9 @@ That is why script headers are treated as a product surface here rather than hou
 
 The same gap on the other surface, and worth stating plainly because the tools promise a source
 link with every answer: **25 of the 47 errors carry a write-up URL, and 22 do not.** Those 22 still
-return the message text, what it means and the severity — all hand-written and verified — but with
-nothing to click, so an agent can quote them and cannot cite them.
+return the message text, what it means and the severity — all hand-written and verified — and the
+answer now *says* no article exists rather than quietly omitting the link, so an agent can quote
+them and knows it cannot cite them.
 
 Unlike the scripts above this is a genuine **content** gap, not a header one: those errors have no
 post yet. `102 Incorrect syntax near`, `208 Invalid object name`, `701 Insufficient system memory`
@@ -185,7 +186,7 @@ Found something wrong? Open an issue. Corrections from working DBAs are the poin
 ## Development
 
 ```bash
-python -m unittest discover -s tests -v     # 109 tests, no test dependencies
+python -m unittest discover -s tests -v     # 116 tests, no test dependencies
 python tests/eval_faq.py                    # retrieval scorecard
 python tests/check_freshness.py             # dataset drift gate
 pytest                                      # also works
