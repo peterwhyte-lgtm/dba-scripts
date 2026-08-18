@@ -1,4 +1,5 @@
 # install-ssms.ps1 - Install or update SQL Server Management Studio
+# RiskLevel   : MEDIUM - installs or upgrades SSMS on this machine; does not touch the database engine
 #
 # SSMS 22+   (default) : downloads vs_SSMS.exe from aka.ms/ssms/22/release/vs_SSMS.exe
 # SSMS 17-20 (winget)  : winget install Microsoft.SQLServerManagementStudio

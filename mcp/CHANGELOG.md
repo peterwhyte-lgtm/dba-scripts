@@ -3,6 +3,75 @@
 All notable changes to the sqldba MCP server. Follows [Keep a Changelog](https://keepachangelog.com/)
 and [Semantic Versioning](https://semver.org/).
 
+## [0.2.2] - 2026-08-18
+
+Safety classification and wait triage. No new tools: six remains the ceiling.
+
+### Fixed
+
+- **The six most dangerous scripts in the library shipped with no safety class.** Every
+  installation, patching and SSMS script - `install-sql`, `uninstall-sql`, `configure-sql`,
+  `Invoke-SqlPatch`, `install-ssms`, `uninstall-ssms` - rendered as *"safety class not
+  stated"*, which is precisely the script you would most want a warning on. They now carry
+  a `RiskLevel` line naming the class and the reason.
+
+- **Twelve more were classified at source and silently dropped in the export.** Three header
+  dialects exist in the repo and the exporter read one of them: `-- SAFE:`/`-- IMPACT:` in
+  SQL, `RiskLevel :` in PowerShell, and the SQL-style `Safe :`/`Impact :` block that the
+  multi-server `.ps1` scripts use. The third was never looked for, so
+  `MultiServer-RestartService` - which restarts a named service on every target host -
+  shipped unclassified. All three dialects are read now.
+
+- **`-- SAFE:Creates objects` was captured as `Creates`.** The class was matched with
+  `(\w+)`, which stops at the space, producing a class that is in no vocabulary and
+  shipping it without complaint. The whole line is read and validated against the
+  vocabulary, and the source header was corrected to `CreatesObjects`.
+
+- **The export now refuses to ship an unclassified or unrecognised class** rather than
+  emitting "not stated". Unclassified scripts: 23 before, **0** now.
+
+- **The safety class was present but not prominent.** It rendered as
+  `SAFE: WritesData   IMPACT: High`, carrying the same visual weight as the `path:` line
+  under it - a label, not a warning. Anything that is not read-only now leads its answer
+  with a warning that names the class, the impact and the reason, before the purpose and a
+  long way before the body, because an agent summarising a tool result carries the loudest
+  line and drops what sits under it. Read-only scripts are untouched: 216 of 230 are
+  read-only and a warning on all of them is a warning on none.
+
+- **`matters` misread 13 wait verdicts, all in the dangerous direction.** The flag that
+  drives "worth investigating" was derived by anchoring a negative-word regex at the first
+  word of the verdict sentence. Peter writes *"Usually not; ..."*, *"Normally no; ..."*,
+  *"By design, no; ..."* and *"In sys.dm_os_wait_stats totals, no; ..."* - all four read as
+  "yes, chase this", putting textbook-ignorable waits including `SLEEP_TASK`,
+  `CLR_SEMAPHORE` and `HADR_GROUP_COMMIT` on the investigate list. A leading hedge is now
+  allowed, but a multi-word opening clause must close with a comma or semicolon: without
+  that, the clause runs on and finds a negative later in the sentence, so *"In practice
+  this is a serious problem and not something to ignore"* would read as benign - the same
+  failure inverted, and far more expensive. Chase list: 105 -> 92. The verdicts were always
+  right; the regex was reading them wrong.
+
+### Added
+
+- **`explain_wait` accepts a whole pasted result set.** Nobody reads
+  `sys.dm_os_wait_stats` one row at a time. More than one recognised wait type means a
+  result set and the answer becomes a triage: worth investigating first with each verdict
+  and link, then the noise safe to filter, then - never omitted - the types not in the
+  library at all. Exactly one recognised type behaves as it always has. Types are matched
+  in any case so a lowercased report still works, but a token is only named as *not*
+  covered when it was upper-case, which keeps the not-covered list from filling with
+  ordinary prose. This is the same tool, not a seventh one.
+
+- Tests for all of the above: every script must resolve to read-only true or false, every
+  class must be in its vocabulary, the warning must appear before the body, prose must not
+  be mistaken for a result set, and unrecognised wait types must be reported rather than
+  dropped (**109 tests**, up from 91).
+
+### Known, not fixed
+
+- `ASYNC_NETWORK_IO` is still flagged worth investigating while its verdict reads *"Very
+  common and almost always harmless."* Catching it needs a mid-sentence match, which
+  re-opens the over-match failure above. It is a content judgement, not a regex one.
+
 ## [0.2.1] - 2026-08-18
 
 A quality pass, not new surface. The headline item is a false negative in the tool most

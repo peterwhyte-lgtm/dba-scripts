@@ -16,9 +16,9 @@ the date it was checked — and says so when that date gets old.
 | Tool | Ask it | Returns |
 |------|--------|---------|
 | `lookup_error` | "what is error 18456?" / "login failed" | Message text, what it actually means, severity, link |
-| `explain_wait` | "explain PAGEIOLATCH_SH" | Worth chasing or normal noise, when to ignore, what to do, link |
+| `explain_wait` | "explain PAGEIOLATCH_SH", or paste a whole `sys.dm_os_wait_stats` result | One wait explained, or a triaged result set: worth chasing first, noise you can filter, and what is not covered |
 | `check_build` | "is 16.0.4165.4 current?" (or paste `@@VERSION`) | Version, patch level on its servicing train, support status, the KB to install |
-| `find_script` | "find blocking chains", "check backup coverage" | Matching scripts with purpose, required permission, and **safety class** |
+| `find_script` | "find blocking chains", "check backup coverage" | Matching scripts with purpose, required permission, and **safety class** — anything not read-only leads with a warning |
 | `get_script` | "get Get-BlockingChains" | The complete verbatim script, header and safety annotations intact |
 | `answer_question` | "should I add a second data file?" | The published answer to that question, plus the post it came from |
 
@@ -113,6 +113,13 @@ All six tools declare themselves **read-only, non-destructive and closed-world**
 annotations, so a client can auto-approve them instead of asking you to confirm a reference lookup
 six times. That is the same promise as the paragraph above, in the form a client can actually read.
 
+The scripts it hands you are a different matter, and it says so. **14 of the 230 change something**
+— they write data, create objects, install, patch or restart — and every one of those leads its
+answer with a warning naming the class, the impact and the reason, before the body. The other 216
+are read-only and stay uncluttered, because a warning on everything is a warning on nothing. A test
+asserts that no script can ship without resolving to read-only *true or false*: "not stated" is not
+an available answer.
+
 It also **will not guess**. Ask about an error that is not in the library and it says so. Ask
 something off-topic and it declines rather than returning the least-bad row — a question about an
 nginx reverse proxy used to match a SQL Agent *proxy* answer, so queries now have to share enough
@@ -178,7 +185,7 @@ Found something wrong? Open an issue. Corrections from working DBAs are the poin
 ## Development
 
 ```bash
-python -m unittest discover -s tests -v     # 91 tests, no test dependencies
+python -m unittest discover -s tests -v     # 109 tests, no test dependencies
 python tests/eval_faq.py                    # retrieval scorecard
 python tests/check_freshness.py             # dataset drift gate
 pytest                                      # also works

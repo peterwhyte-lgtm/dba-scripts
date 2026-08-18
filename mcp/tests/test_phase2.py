@@ -414,3 +414,95 @@ class TestVersionHasOneSourceOfTruth(unittest.TestCase):
                              pyproject.read_text(encoding='utf-8'))
         self.assertIsNotNone(declared, 'no version in pyproject.toml')
         self.assertEqual(declared.group(1), server.__version__)
+
+
+class TestSafetyClassification(unittest.TestCase):
+    r"""The class an agent shows a DBA *before* they run something.
+
+    Three header dialects exist in this repo and the exporter read one of them, so scripts
+    that were classified at source shipped as "safety class not stated":
+
+        sql/**             -- SAFE:ReadOnly       + -- IMPACT:Low
+        powershell/**      RiskLevel   : SAFE
+        multi-server .ps1  Safe        : Read-only  (the SQL dialect, inside a .ps1)
+
+    Twelve multi-server scripts were lost to the third. Ten more - every installation,
+    patching and SSMS script, which is to say the six most dangerous things in the library -
+    carried no class at all. And `-- SAFE:Creates objects` was captured by a `(\w+)` group
+    as "Creates", a class in no vocabulary, and shipped without a complaint.
+    """
+
+    SQL_CLASSES = ('ReadOnly', 'WritesData', 'CreatesObjects')
+    PS_CLASSES = ('SAFE', 'MEDIUM', 'HIGH IMPACT')
+
+    def test_every_script_resolves_to_read_only_true_or_false(self):
+        """None means 'nobody said', which is the state this test exists to prevent."""
+        unclassified = [s['path'] for s in data.scripts() if s.get('read_only') is None]
+        self.assertEqual(unclassified, [],
+                         '%d script(s) carry no usable safety class: %s'
+                         % (len(unclassified), unclassified[:6]))
+
+    def test_every_class_is_in_its_vocabulary(self):
+        for s in data.scripts():
+            allowed = self.SQL_CLASSES if s['language'] == 'sql' else self.PS_CLASSES
+            with self.subTest(path=s['path']):
+                self.assertIn(s['safe'], allowed)
+
+    def test_the_multi_server_dialect_is_read(self):
+        """These were classified at source the whole time and shipped as unstated."""
+        by_name = {s['name']: s for s in data.scripts()}
+        self.assertTrue(by_name['MultiServer-GetBackupStatus']['read_only'])
+        restart = by_name['MultiServer-RestartService']
+        self.assertFalse(restart['read_only'],
+                         'a script that restarts services on every target host is not read-only')
+
+    def test_the_dangerous_installers_are_classified(self):
+        by_name = {s['name']: s for s in data.scripts()}
+        for name in ('install-sql', 'uninstall-sql', 'configure-sql', 'Invoke-SqlPatch'):
+            with self.subTest(script=name):
+                self.assertEqual(by_name[name]['safe'], 'HIGH IMPACT')
+                self.assertFalse(by_name[name]['read_only'])
+
+
+class TestDangerLeadsTheAnswer(unittest.TestCase):
+    """Position, not just presence.
+
+    The class was always in the response - rendered as `SAFE: WritesData   IMPACT: High`,
+    carrying exactly the weight of the `path:` line under it. That is a label. An agent
+    summarising a tool result leads with whatever is loudest, so the sentence a DBA must
+    not miss has to BE the loudest and has to arrive before the body.
+    """
+
+    def _first_lines(self, text, n=6):
+        return '\n'.join(text.splitlines()[:n])
+
+    def test_a_non_read_only_script_warns_before_its_body(self):
+        out = tools.get_script('Kill-BlockingSession')
+        self.assertIn('NOT READ-ONLY', out)
+        self.assertLess(out.index('NOT READ-ONLY'), out.index('```'),
+                        'the warning must come before the script body')
+        self.assertIn('NOT READ-ONLY', self._first_lines(out),
+                      'the warning must be in the first few lines, not buried')
+
+    def test_the_warning_names_the_class_and_the_impact(self):
+        out = tools.get_script('Kill-BlockingSession')
+        self.assertIn('WritesData', out)
+        self.assertIn('High', out)
+
+    def test_a_read_only_script_is_not_cluttered_with_warnings(self):
+        """189 of 230 are read-only. A warning on all of them is a warning on none."""
+        out = tools.get_script('Get-WaitStatistics')
+        self.assertNotIn('NOT READ-ONLY', out)
+        self.assertIn('SAFE: ReadOnly', out)
+
+    def test_find_script_carries_the_warning_too(self):
+        """The first place a DBA meets a script is usually the search result."""
+        out = tools.find_script('kill a blocking session')
+        self.assertIn('Kill-BlockingSession', out)
+        self.assertIn('NOT READ-ONLY', out)
+
+    def test_every_non_read_only_script_produces_a_warning(self):
+        for s in data.scripts():
+            if s['read_only'] is False:
+                with self.subTest(script=s['name']):
+                    self.assertIn('NOT READ-ONLY', tools.get_script(s['path']))

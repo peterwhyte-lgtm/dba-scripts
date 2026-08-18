@@ -14,6 +14,8 @@ Two rules every response follows:
 """
 from __future__ import annotations
 
+import re
+
 from . import data
 
 NOT_COVERED = (
@@ -83,8 +85,97 @@ def lookup_error(error: str) -> str:
     return '\n'.join(out)
 
 
+# Candidate tokens are matched in any case, because a lowercased report is still a report
+# and a DBA pasting one should not silently get nothing. Case is used for one thing only:
+# deciding whether an UNRECOGNISED token is worth naming as "not in the library".
+#
+# Wait types are upper-case by convention in DMV output while column headers are lower-case
+# (`wait_type`, `wait_time_ms`), so requiring caps there keeps the not-covered list honest
+# without ever suppressing a real answer - a known type is found by index lookup, which is
+# case-insensitive and authoritative.
+_TOKEN = re.compile(r'\b[A-Za-z][A-Za-z0-9_]+\b')
+
+# Words that arrive in a pasted result set or query and are not wait types. Only used to
+# keep the "not in the library" list honest - a known type is matched by index lookup, so
+# nothing here can ever suppress a real answer.
+_NOT_WAITS = {
+    'SELECT', 'FROM', 'WHERE', 'ORDER', 'GROUP', 'DESC', 'INNER', 'OUTER', 'JOIN',
+    'UNION', 'HAVING', 'SERVER', 'DATABASE', 'MASTER', 'TEMPDB', 'TOTAL', 'PERCENT',
+    'WAITING', 'TASKS', 'COUNT', 'SIGNAL', 'RESOURCE_MS', 'NULL', 'ROWS', 'AFFECTED',
+    'WAIT_TYPE', 'WAIT_TIME_MS', 'MAX_WAIT_TIME_MS', 'SIGNAL_WAIT_TIME_MS',
+    'WAITING_TASKS_COUNT', 'SQL', 'CPU', 'AVG', 'MIN', 'MAX', 'SUM',
+}
+
+
+def _wait_types_in(text: str) -> tuple[list[str], list[str]]:
+    """Every wait type in a block of text, split into known and unrecognised.
+
+    Nobody reads sys.dm_os_wait_stats one row at a time, so the tool has to accept the
+    shape the data actually arrives in. Order is preserved and duplicates dropped.
+    """
+    index = data.waits_by_type()
+    seen, known, unknown = set(), [], []
+    for token in _TOKEN.findall(text or ''):
+        name = data.normalise_wait(token)
+        if not name or name in seen or name in _NOT_WAITS:
+            continue
+        seen.add(name)
+        if name in index:
+            known.append(name)
+        elif token.isupper() and ('_' in name or len(name) >= 8):
+            # Shaped like a wait type, upper-case like one, and not in the library.
+            # Reported, never dropped: silently swallowing these is how a refusal promise
+            # dies at scale. Lower-case tokens are skipped here rather than filling the
+            # not-covered list with ordinary prose.
+            unknown.append(name)
+    return known, unknown
+
+
+def _triage_waits(known: list[str], unknown: list[str]) -> str:
+    """Rank a pasted result set by the verdict, which is the judgement worth having."""
+    index = data.waits_by_type()
+    chase, noise, unrated, seen_posts = [], [], [], set()
+    for name in known:
+        hit = index[name]
+        if hit['url'] in seen_posts:
+            continue          # one post can cover several types; do not repeat it
+        seen_posts.add(hit['url'])
+        verdict = hit.get('matters')
+        (chase if verdict is True else noise if verdict is False else unrated).append(
+            (name, hit))
+
+    lines = ['Triaged %d wait type(s) from that. **%d worth investigating.**'
+             % (len(known), len(chase)), '']
+    if chase:
+        lines += ['**WORTH INVESTIGATING**', '']
+        for name, hit in chase:
+            lines.append('- **%s** - %s  \n  %s'
+                         % (name, (hit.get('verdict') or '').strip(), hit['url']))
+        lines.append('')
+    if noise:
+        lines += ['**USUALLY NOISE - normally belongs on your filter list**', '',
+                  ', '.join('`%s`' % n for n, _ in noise), '']
+    if unrated:
+        lines += ['**NO VERDICT RECORDED**', '',
+                  ', '.join('`%s`' % n for n, _ in unrated), '']
+    if unknown:
+        lines += ['**NOT IN THE LIBRARY (%d)** - covered nowhere on sqldba.blog yet, so '
+                  'no verdict is offered on them:' % len(unknown), '',
+                  ', '.join('`%s`' % n for n in unknown[:25])
+                  + (' ... and %d more' % (len(unknown) - 25) if len(unknown) > 25 else ''),
+                  '']
+    lines.append('Ask about any single one by name for the full write-up.')
+    return '\n'.join(lines)
+
+
 def explain_wait(wait_type: str) -> str:
-    """Explain a SQL Server wait type and say whether it is worth chasing."""
+    """Explain a SQL Server wait type, or triage a whole pasted result set."""
+    # More than one recognised type means this is a result set, not a question about a
+    # single wait. One type behaves exactly as it always has.
+    known, unknown = _wait_types_in(wait_type or '')
+    if len(known) > 1:
+        return _triage_waits(known, unknown)
+
     name = data.normalise_wait(wait_type)
     if not name:
         return "Give me a wait type, e.g. PAGEIOLATCH_SH or CXPACKET."
@@ -268,15 +359,41 @@ def check_build(build: str) -> str:
 # --- scripts --------------------------------------------------------------------------
 
 def _safety(s: dict) -> str:
-    bits = [b for b in (s.get('safe'), s.get('impact')) if b]
-    if not bits:
-        return 'safety class not stated'
-    if s.get('language') == 'powershell':
-        return 'RiskLevel: %s' % bits[0]
-    out = 'SAFE: %s' % s['safe'] if s.get('safe') else ''
+    """The class line, worded the way the script's own header words it."""
+    label = 'RiskLevel' if s.get('language') == 'powershell' else 'SAFE'
+    out = '%s: %s' % (label, s['safe']) if s.get('safe') else ''
     if s.get('impact'):
         out += '   IMPACT: %s' % s['impact']
+    if out and s.get('safety_note'):
+        out += ' - %s' % s['safety_note']
     return out or 'safety class not stated'
+
+
+def _warning(s: dict) -> str | None:
+    """A loud line for anything that changes a server, or that nobody classified.
+
+    The class was already present in every response - as `SAFE: WritesData   IMPACT: High`,
+    carrying exactly the same visual weight as the line below it that says `path:`. That is
+    a label, not a warning. An agent summarising a tool result leads with whatever is
+    loudest in it, so the sentence a DBA must not miss has to BE the loudest, and it has to
+    come before the body rather than after the purpose.
+
+    Returns None for read-only scripts: 189 of 230 are read-only, and a warning on all of
+    them is a warning on none of them.
+    """
+    if s.get('read_only') is None:
+        return ("**UNCLASSIFIED - this script's header states no safety class.** Treat it "
+                "as unsafe until you have read it in full.")
+    if s['read_only']:
+        return None
+    bits = ['**NOT READ-ONLY - %s.' % (s.get('safe') or 'class not recognised')]
+    if s.get('impact'):
+        bits.append(' Impact: %s.' % s['impact'])
+    bits.append('** This changes the server.')
+    if s.get('safety_note'):
+        bits.append(' %s.' % s['safety_note'].rstrip('.'))
+    bits.append(' Read the header and confirm the target before running it on production.')
+    return ''.join(bits)
 
 
 def find_script(task: str) -> str:
@@ -296,6 +413,9 @@ def find_script(task: str) -> str:
     lines = ['Found %d script(s) for "%s":' % (len(hits), term), '']
     for s, _score in hits:
         lines.append('### %s' % s['name'])
+        warn = _warning(s)
+        if warn:
+            lines.append(warn)
         if s.get('purpose'):
             lines.append(s['purpose'])
         meta_bits = [_safety(s), 'path: `%s`' % s['path']]
@@ -351,6 +471,10 @@ def get_script(name: str) -> str:
     s = exact[0]
     fence = 'sql' if s['language'] == 'sql' else 'powershell'
     lines = ['## %s' % s['name'], '']
+    # Before the purpose, and a long way before the body. See _warning.
+    warn = _warning(s)
+    if warn:
+        lines += [warn, '']
     if s.get('purpose'):
         lines += [s['purpose'], '']
     lines.append('%s   \npath: `%s`' % (_safety(s), s['path']))

@@ -263,3 +263,75 @@ class TestPatchLevelNeverFalselyReassures(unittest.TestCase):
         out = self._lines('16.0.4200.0')
         self.assertIn('BEHIND', out)
         self.assertIn('16.0.4265.3', out)
+
+
+class TestWaitTriage(unittest.TestCase):
+    """A whole pasted result set, not one wait at a time.
+
+    Nobody reads sys.dm_os_wait_stats a row at a time, so the tool has to accept the shape
+    the data actually arrives in. This is the same tool, not a seventh one: more than one
+    recognised type means a result set, exactly one means the question it always answered.
+
+    The verdict split is the point - `matters` is the most valuable judgement in the whole
+    corpus, and until now it was only reachable one lookup at a time.
+    """
+
+    PASTE = """wait_type                    waiting_tasks_count  wait_time_ms  signal_wait_time_ms
+PAGEIOLATCH_SH               184023               982311        12043
+CXPACKET                     77201                551200        8801
+WRITELOG                     42188                310922        5512
+SLEEP_TASK                   55012                88211         412
+BROKER_TASK_STOP             900                  60112         22
+PARALLEL_REDO_WORKER_WAIT    450                  9002          12
+(6 rows affected)"""
+
+    def test_a_single_wait_is_unchanged(self):
+        """The old behaviour must survive exactly; one type is not a result set."""
+        out = tools.explain_wait('PAGEIOLATCH_SH')
+        self.assertTrue(out.startswith('## PAGEIOLATCH_SH'))
+        self.assertNotIn('Triaged', out)
+
+    def test_a_pasted_result_set_is_triaged(self):
+        out = tools.explain_wait(self.PASTE)
+        self.assertIn('Triaged', out)
+        for name in ('PAGEIOLATCH_SH', 'CXPACKET', 'WRITELOG', 'BROKER_TASK_STOP'):
+            with self.subTest(wait=name):
+                self.assertIn(name, out)
+
+    def test_column_headers_and_numbers_are_not_mistaken_for_waits(self):
+        out = tools.explain_wait(self.PASTE)
+        self.assertNotIn('WAITING_TASKS_COUNT', out)
+        self.assertNotIn('SIGNAL_WAIT_TIME_MS', out)
+
+    def test_unrecognised_types_are_reported_never_dropped(self):
+        """Silently swallowing these is how a refusal promise dies at scale."""
+        out = tools.explain_wait(self.PASTE)
+        self.assertIn('NOT IN THE LIBRARY', out)
+        self.assertIn('PARALLEL_REDO_WORKER_WAIT', out)
+
+    def test_the_verdict_split_is_shown(self):
+        out = tools.explain_wait(self.PASTE)
+        self.assertIn('WORTH INVESTIGATING', out)
+        self.assertIn('USUALLY NOISE', out)
+
+    def test_a_post_covering_several_types_is_not_repeated(self):
+        """CXPACKET and CXCONSUMER share one write-up; it should appear once."""
+        out = tools.explain_wait('CXPACKET and CXCONSUMER and WRITELOG')
+        self.assertEqual(out.count('sql-server-wait-statistics-cxpacket-cxconsumer'), 1)
+
+    def test_text_with_no_known_wait_still_refuses(self):
+        """Triage must not become a way to get an answer out of nothing."""
+        out = tools.explain_wait('HOW DO I CONFIGURE AN NGINX REVERSE PROXY')
+        self.assertNotIn('Triaged', out)
+        self.assertIn('not in the', out.lower())
+
+    def test_lowercase_paste_still_works(self):
+        """A DBA pasting from a lowercased report should not silently get nothing."""
+        out = tools.explain_wait('pageiolatch_sh, cxpacket, writelog')
+        self.assertIn('PAGEIOLATCH_SH', out)
+
+    def test_a_huge_paste_does_not_produce_an_unbounded_answer(self):
+        junk = '\n'.join('FAKE_WAIT_TYPE_%d' % i for i in range(200))
+        out = tools.explain_wait('PAGEIOLATCH_SH\nCXPACKET\n' + junk)
+        self.assertIn('and 1', out)          # the "... and N more" tail
+        self.assertLess(len(out), 8000, 'the unknown list must be capped')

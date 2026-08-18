@@ -15,6 +15,9 @@ Root folder to scan for logs. Default: output-files\ in the repo root.
 .EXAMPLE
 .\admin\installation\generate-install-report.ps1
 .\admin\installation\generate-install-report.ps1 -OutputFormat Csv
+
+.NOTES
+RiskLevel   : SAFE - reads setup logs; writes only a local report file
 #>
 param(
     [string]$LogRoot      = '',

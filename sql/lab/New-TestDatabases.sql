@@ -9,7 +9,7 @@ Notes       : Edit the DECLARE parameter block before running in SSMS.
               For parameterised execution from a script use powershell\lab\Run-CreateTestDatabases.ps1.
 */
 -- WARNING: Creates databases — review @Count and @Prefix before running
--- SAFE:Creates objects
+-- SAFE:CreatesObjects
 -- IMPACT:High
 SET NOCOUNT ON;
 

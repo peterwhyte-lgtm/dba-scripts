@@ -128,7 +128,7 @@
   ],
   "title": "BPSORT Wait Type in SQL Server",
   "verdict": "Mostly no, with one documented exception worth knowing cold: on SQL Server 2016-era builds, a batch-mode sort could hit an inefficiency so severe it resembled a non-yielding scheduler, a query that simply never completes.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "For a stuck query showing batch sort behaviour: capture the plan, check build currency, and test trace flag 9358 (or a query-level workaround that avoids the batch sort) to confirm the diagnosis.",
   "url": "https://sqldba.blog/sql-server-wait-bpsort/"
@@ -249,7 +249,7 @@
   ],
   "title": "CHECK_TABLES_THREAD_BARRIER Wait Type in SQL Server",
   "verdict": "Usually not; it is normal parallel-DBCC coordination and safe to ignore in routine analysis.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Ignore routine amounts; they track your DBCC schedule.",
   "url": "https://sqldba.blog/sql-server-wait-check-tables-thread-barrier/"
@@ -293,7 +293,7 @@
   ],
   "title": "CLR_SEMAPHORE Wait Type in SQL Server",
   "verdict": "Usually not; it sits on the benign filter list and has not been a contention point in ordinary operation.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script excludes it by default.",
   "url": "https://sqldba.blog/sql-server-wait-clr-semaphore/"
@@ -404,7 +404,7 @@
   ],
   "title": "DBMIRRORING_CMD Wait Type in SQL Server",
   "verdict": "Usually not; it is typical background residue on any mirrored instance and normally filtered out.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Filter it in routine analysis.",
   "url": "https://sqldba.blog/sql-server-wait-dbmirroring-cmd/"
@@ -683,7 +683,7 @@
   ],
   "title": "HADR_CLUSAPI_CALL Wait Type in SQL Server",
   "verdict": "Normally no; it is filtered as benign, and steady low-level accumulation just means the AG plumbing is talking to the cluster as designed.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script already does.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-clusapi-call/"
@@ -716,7 +716,7 @@
   ],
   "title": "HADR_GROUP_COMMIT Wait Type in SQL Server",
   "verdict": "By design, no; it is an expected condition that optimises log I/O and AG send efficiency, and moderate accumulation on a busy AG primary is the feature working.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Baseline first: is transaction throughput actually suffering, or is the wait just present?",
   "url": "https://sqldba.blog/sql-server-wait-hadr-group-commit/"
@@ -1839,7 +1839,7 @@
   ],
   "title": "QRY_PROFILE_LIST_MUTEX Wait Type in SQL Server",
   "verdict": "Normally no, but know the exception: SQL Server 2016 and 2017 had a known issue (KB 4089239) where this wait type featured in a hang when using trace flag 7412 , the flag that enabled lightweight profiling before it became default behaviour.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "On 2016/2017 with TF 7412: confirm your build against KB 4089239 and patch or drop the flag.",
   "url": "https://sqldba.blog/sql-server-wait-qry-profile-list-mutex/"
@@ -1916,7 +1916,7 @@
   ],
   "title": "RESERVED_MEMORY_ALLOCATION_EXT Wait Type in SQL Server",
   "verdict": "Usually not; the standard profile is a large count of tiny waits.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Compute the average wait duration; microseconds means it is noise regardless of the total.",
   "url": "https://sqldba.blog/sql-server-wait-reserved-memory-allocation-ext/"
@@ -1993,7 +1993,7 @@
   ],
   "title": "RTDATA_LIST Wait Type in SQL Server",
   "verdict": "Usually not, with a version-specific exception: SQL Server 2014 had a known bug (KB 3007050) causing excessive waits on this type when using natively-compiled procedures, fixed in subsequent updates.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "On 2014: verify the build against KB 3007050.",
   "url": "https://sqldba.blog/sql-server-wait-rtdata-list/"
@@ -2026,7 +2026,7 @@
   ],
   "title": "SLEEP_BPOOL_FLUSH Wait Type in SQL Server",
   "verdict": "Normally no; it is one of the standard benign waits and worth filtering out of analysis.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Filter it out of routine wait analysis; our Get-WaitStatistics script already treats it as noise.",
   "url": "https://sqldba.blog/sql-server-wait-sleep-bpool-flush/"
@@ -2059,7 +2059,7 @@
   ],
   "title": "SLEEP_TASK Wait Type in SQL Server",
   "verdict": "In sys.dm_os_wait_stats totals, no; the accumulated number is dominated by background noise and safely filtered out.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Filter it from cumulative wait analysis; our Get-WaitStatistics script already does.",
   "url": "https://sqldba.blog/sql-server-wait-sleep-task/"
@@ -2103,7 +2103,7 @@
   ],
   "title": "SOS_MEMORY_TOPLEVELBLOCKALLOCATOR Wait Type in SQL Server",
   "verdict": "Usually not, but its known escalations are specific.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Verify build currency against KB 3074434 if you are on 2012/2014.",
   "url": "https://sqldba.blog/sql-server-wait-sos-memory-toplevelblockallocator/"
@@ -2466,7 +2466,7 @@
   ],
   "title": "XTP_PREEMPTIVE_TASK Wait Type in SQL Server",
   "verdict": "Normally no; it accumulates as XTP background machinery hums, and it is filtered as benign.",
-  "matters": true,
+  "matters": false,
   "when_to_ignore": "",
   "what_to_do": "Filter it in routine analysis.",
   "url": "https://sqldba.blog/sql-server-wait-xtp-preemptive-task/"

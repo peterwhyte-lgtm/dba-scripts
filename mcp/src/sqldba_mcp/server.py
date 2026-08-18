@@ -22,7 +22,7 @@ from . import data, tools
 READ_ONLY = ToolAnnotations(read_only_hint=True, destructive_hint=False,
                             idempotent_hint=True, open_world_hint=False)
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 server = MCPServer(
     name='sqldba',

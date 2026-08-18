@@ -90,6 +90,9 @@ Preview the setup.exe command without executing it.
     -SetupPath D:\SQL2022\setup.exe `
     -AnswerFile .\admin\installation\templates\sql-server-install-default.ini `
     -SAPassword (Read-Host 'SA password' -AsSecureString)
+
+.NOTES
+RiskLevel   : HIGH IMPACT - runs setup.exe and installs a SQL Server instance
 #>
 param(
     [string]$SetupPath,
