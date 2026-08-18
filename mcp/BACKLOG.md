@@ -16,6 +16,15 @@ Each entry: what was observed, why it matters, what the fix looks like.
 
 ## Open
 
+### ~~`check_build` hedges on a train it can already identify~~ — WITHDRAWN
+
+**Withdrawn 2026-08-19.** Raised against 0.2.0 and wrong. The 0.2.1 entry in `CHANGELOG.md`
+makes the naming deliberate: identifying the train and judging currency were split into
+separate questions, and the train is *"still named and still assumed out loud"* on purpose,
+because preferring the CU train within a series is exactly what produced false `UP TO DATE`
+verdicts on post-final-CU versions. The hedge is the fix, not a weakness. Original text kept
+below as a record of how a stale install misleads a reviewer.
+
 ### `check_build` hedges on a train it can already identify
 
 **Observed 2026-08-19**, asking "is my server patched?" against the local SQL 2025 instance
@@ -84,9 +93,12 @@ where the working tree had `SAFE` / `Low`.
 The failure mode is worse than a crash. A stale build answers confidently with retired data,
 which is precisely the thing this server exists to prevent for SQL Server builds.
 
-**Fix:** surface the version and dataset date in tool output, or at minimum in `--selftest`.
-`_meta.json` already carries a dataset date and `data.freshness_warning()` already exists,
-so the mechanism is there. Also document the reinstall properly in the README: pip caches
+**Fix:** surface the version and dataset date in *tool output*. `--selftest` already reports
+both (`sqldba MCP v0.2.2 | ... | data generated 2026-08-18 (1 days old)`), which is exactly
+why this went unnoticed: the one place the staleness was visible is a command you run once
+at install time and never again. The agent calling `find_script` forty times never sees it.
+`data.freshness_warning()` already exists, so the mechanism is there. Also document the
+reinstall properly in the README: pip caches
 the git clone, so `--force-reinstall` on its own can still land on a stale commit, and
 `--no-cache-dir` or an explicit `@<commit>` is what makes it deterministic.
 
