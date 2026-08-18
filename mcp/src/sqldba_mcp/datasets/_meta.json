@@ -11,11 +11,11 @@
   "versions": 7,
   "faqs": 434,
   "faq_posts": 162,
-  "scripts": 230,
-  "scripts_sql": 181,
+  "scripts": 231,
+  "scripts_sql": 182,
   "scripts_powershell": 49,
   "scripts_healthcheck": 45,
-  "scripts_without_post": 38,
+  "scripts_without_post": 39,
   "docs": 9,
   "prompts": 1
  }

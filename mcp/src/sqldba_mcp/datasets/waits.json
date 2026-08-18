@@ -1938,7 +1938,7 @@
   ],
   "title": "RESOURCE_SEMAPHORE Wait Type in SQL Server",
   "verdict": "No, not meaningfully.",
-  "matters": false,
+  "matters": true,
   "when_to_ignore": "",
   "what_to_do": "Add missing indexes , this is the fix most of the time.",
   "url": "https://sqldba.blog/sql-server-wait-statistics-resource-semaphore/"
@@ -2224,7 +2224,7 @@
   ],
   "title": "THREADPOOL Wait Type in SQL Server",
   "verdict": "No. There is no safe level of THREADPOOL during production operations.",
-  "matters": false,
+  "matters": true,
   "when_to_ignore": "",
   "what_to_do": "If it is happening right now, stop the bleeding first: Find the head blocker causing the blocking chain and kill it: KILL [session_id]; -- the head blocker session This releases all blocked sessions, which release their threads.",
   "url": "https://sqldba.blog/sql-server-wait-statistics-threadpool/"

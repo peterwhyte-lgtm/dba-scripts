@@ -33,6 +33,7 @@ sql/inventory/Get-VersionAndEdition.sql
 sql/lab/Create-BlockingScenario.sql
 sql/lab/Kill-BlockingSession.sql
 sql/maintenance/Generate-IndexMaintenanceScript.sql
+sql/migration/Get-LoginMigrationParity.sql
 sql/monitoring/databases/Get-LastDbccCheckdb.sql
 sql/monitoring/disk-space/Get-AutogrowthHistory.sql
 sql/monitoring/disk-space/Get-DatabaseGrowthEvents.sql
