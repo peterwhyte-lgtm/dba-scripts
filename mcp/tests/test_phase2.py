@@ -292,3 +292,125 @@ class TestEntryPoints(unittest.TestCase):
         with contextlib.redirect_stdout(buf):
             server.main(['--version'])
         self.assertIn(server.__version__, buf.getvalue())
+
+
+class TestErrorLookupTakesWhatPeoplePaste(unittest.TestCase):
+    """The forms an error arrives in, as opposed to the form the eval used to test.
+
+    `Msg 18456, Level 14, State 1, Line 1` is what SQL Server prints, so it is what lands
+    in a chat window. Until 0.2.1 the number was only read when the input was nothing but
+    digits, and the phrase search behind it was a raw substring test - so this exact paste
+    came back "not in the sqldba.blog library yet" for an error the library has always
+    covered. A false negative is the worst answer this server can give: the whole promise
+    is that "not in the library" can be trusted.
+    """
+
+    PASTES = ['18456', ' 18456 ', 'Msg 18456', 'msg 18456, Level 14, State 1, Line 1',
+              'error 18456', 'SQL Server error 18456', 'Error: 18456']
+
+    def test_every_paste_form_finds_the_error(self):
+        for paste in self.PASTES:
+            with self.subTest(paste=paste):
+                self.assertIn('18456', tools.lookup_error(paste))
+                self.assertNotIn('not in the sqldba.blog library',
+                                 tools.lookup_error(paste).lower())
+
+    def test_level_and_state_are_not_mistaken_for_the_error_number(self):
+        """`Msg 9002, Level 17, State 2` must not resolve to error 17 or error 2."""
+        out = tools.lookup_error('Msg 9002, Level 17, State 2, Line 1')
+        self.assertIn('9002', out)
+        self.assertIn('Transaction log', out)
+
+    def test_word_order_and_extra_words_still_match(self):
+        """A substring search failed both of these; ranked search must not."""
+        for phrase in ('failed login', 'incorrect syntax', 'transaction log full'):
+            with self.subTest(phrase=phrase):
+                self.assertNotIn('not in the sqldba.blog library',
+                                 tools.lookup_error(phrase).lower())
+
+    def test_a_number_that_is_genuinely_absent_still_says_so(self):
+        """The fix must not turn 'we do not have it' into a guess."""
+        out = tools.lookup_error('99999')
+        self.assertIn('99999', out)
+        self.assertIn('not in the', out.lower())
+
+    def test_off_topic_is_still_refused(self):
+        """The coverage floor and off-domain guard have to survive the rewrite."""
+        for q in ('how do I configure an nginx reverse proxy',
+                  'what is the capital of France'):
+            with self.subTest(q=q):
+                self.assertIn('not in the sqldba.blog library', tools.lookup_error(q).lower())
+
+
+class TestToolAnnotations(unittest.TestCase):
+    """The 'it never touches your SQL Server' promise, made machine-readable.
+
+    Prose in the README cannot be read by a client deciding whether to prompt the user.
+    These hints can, so a reference lookup is auto-approvable instead of asking a DBA to
+    confirm six times. If a tool is ever added that writes, connects, or reaches outside
+    the bundled corpus, this test is what fails.
+    """
+
+    def _tools(self):
+        import asyncio
+        return asyncio.run(server.server.list_tools())
+
+    def test_every_tool_declares_itself_read_only_and_closed_world(self):
+        for t in self._tools():
+            with self.subTest(tool=t.name):
+                self.assertIsNotNone(t.annotations, '%s has no annotations' % t.name)
+                self.assertTrue(t.annotations.read_only_hint)
+                self.assertFalse(t.annotations.destructive_hint)
+                self.assertTrue(t.annotations.idempotent_hint)
+                self.assertFalse(t.annotations.open_world_hint,
+                                 '%s claims an open world; this corpus is closed' % t.name)
+
+
+class TestCliContract(unittest.TestCase):
+    """Flags a user actually types, including the ones they mistype.
+
+    Anything unrecognised used to fall through to the stdio server, where it sat waiting
+    on a handshake a terminal never sends - so a typo looked like a hang, and exited 0.
+    """
+
+    def _run(self, args):
+        import contextlib
+        import io
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = server.main(args)
+        return code, out.getvalue(), err.getvalue()
+
+    def test_help_is_help_not_a_hung_server(self):
+        code, out, _ = self._run(['--help'])
+        self.assertEqual(code, 0)
+        self.assertIn('--selftest', out)
+        self.assertIn('claude mcp add sqldba', out)
+
+    def test_a_mistyped_flag_fails_loudly(self):
+        code, _, err = self._run(['--selftst'])
+        self.assertEqual(code, 2, 'a bad flag must not exit 0')
+        self.assertIn('--selftst', err)
+
+    def test_known_flags_exit_zero(self):
+        for flag in ('--selftest', '--version'):
+            with self.subTest(flag=flag):
+                self.assertEqual(self._run([flag])[0], 0)
+
+
+class TestVersionHasOneSourceOfTruth(unittest.TestCase):
+    """__version__ and the packaged version must not drift.
+
+    They are declared in two files. A release that bumps one and not the other ships a
+    server that reports a version it is not, which is the same class of error as a stale
+    build number - the thing this whole server exists to stop.
+    """
+
+    def test_pyproject_matches_dunder_version(self):
+        import pathlib
+        import re
+        pyproject = (pathlib.Path(__file__).resolve().parents[1] / 'pyproject.toml')
+        declared = re.search(r'(?m)^version\s*=\s*"([^"]+)"',
+                             pyproject.read_text(encoding='utf-8'))
+        self.assertIsNotNone(declared, 'no version in pyproject.toml')
+        self.assertEqual(declared.group(1), server.__version__)

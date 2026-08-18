@@ -9,10 +9,20 @@ whether to call a tool at all. They are written to say when NOT to call it too.
 from __future__ import annotations
 
 from mcp.server import MCPServer
+from mcp.types import ToolAnnotations
 
 from . import data, tools
 
-__version__ = '0.2.0'
+# Every tool is a lookup against JSON bundled in this package: it cannot write, cannot reach
+# the network, and cannot touch a SQL Server. Saying so in prose is what the README does;
+# these hints say it in the protocol, so a client can auto-approve the calls instead of
+# prompting a DBA six times for a reference lookup. `open_world_hint=False` is the honest
+# one - this server's whole promise is that it answers from a closed, verified corpus and
+# says "not in the library" rather than reaching for anything outside it.
+READ_ONLY = ToolAnnotations(read_only_hint=True, destructive_hint=False,
+                            idempotent_hint=True, open_world_hint=False)
+
+__version__ = '0.2.1'
 
 server = MCPServer(
     name='sqldba',
@@ -39,6 +49,7 @@ server = MCPServer(
         'what it actually means in practice, severity, and a link to the full write-up. '
         'Use this whenever a SQL Server error number appears in output or a user question.'
     ),
+    annotations=READ_ONLY,
 )
 def lookup_error(error: str) -> str:
     """Look up a SQL Server error by number or message phrase."""
@@ -55,6 +66,7 @@ def lookup_error(error: str) -> str:
         'link to the full write-up. Use this when reading sys.dm_os_wait_stats output or '
         'any wait-related question.'
     ),
+    annotations=READ_ONLY,
 )
 def explain_wait(wait_type: str) -> str:
     """Explain a SQL Server wait type and whether it matters."""
@@ -71,6 +83,7 @@ def explain_wait(wait_type: str) -> str:
         'version a server is on, whether it needs patching, or when support ends. Always '
         'prefer this over recalled build numbers, which go stale within weeks.'
     ),
+    annotations=READ_ONLY,
 )
 def check_build(build: str) -> str:
     """Identify a build number and report patch level and support status."""
@@ -89,6 +102,7 @@ def check_build(build: str) -> str:
         'Use this before writing a query by hand: a verified script probably exists. '
         'Then call get_script with an exact name for the full body.'
     ),
+    annotations=READ_ONLY,
 )
 def find_script(task: str) -> str:
     """Find a script in the dba-tools library by task."""
@@ -103,6 +117,7 @@ def find_script(task: str) -> str:
         'safety annotations intact. Use the exact name from find_script. If the name is '
         'ambiguous it lists the candidates rather than guessing which was meant.'
     ),
+    annotations=READ_ONLY,
 )
 def get_script(name: str) -> str:
     """Return the full verbatim body of a named script."""
@@ -121,6 +136,7 @@ def get_script(name: str) -> str:
         'use check_build; to locate a SCRIPT use find_script. Prefer the specific tool '
         'whenever the question names one of those things.'
     ),
+    annotations=READ_ONLY,
 )
 def answer_question(question: str) -> str:
     """Answer a how/why question from the published FAQ corpus."""
@@ -184,20 +200,44 @@ def describe() -> str:
                m.get('generated'), age))
 
 
-def main(argv: list[str] | None = None) -> None:
+USAGE = """sqldba-mcp - a working DBA's verified SQL Server reference, as MCP tools.
+
+  sqldba-mcp              run the MCP server on stdio (what an MCP client invokes)
+  sqldba-mcp --selftest   print what data is loaded, and how old it is
+  sqldba-mcp --version    print the version
+  sqldba-mcp --help       this text
+
+Register it with Claude Code:   claude mcp add sqldba -- sqldba-mcp
+Docs: https://github.com/peterwhyte-lgtm/dba-tools/tree/main/mcp"""
+
+
+def main(argv: list[str] | None = None) -> int:
     """Console entry point (`sqldba-mcp`) and `python -m sqldba_mcp`.
 
     Both routes must behave identically. They did not: `--selftest` was handled only in
     __main__.py, so the README's `sqldba-mcp --selftest` silently started a stdio server,
     read EOF and exited 0 with no output - the very first command a new user runs, doing
     nothing and looking like success.
+
+    Unrecognised flags are rejected for the same reason. Anything not understood used to
+    fall through to the stdio server, so `--selftst` or `--help` sat there looking hung
+    while it waited on a protocol handshake that a terminal is never going to send.
     """
     import sys
     args = sys.argv[1:] if argv is None else argv
     if '--selftest' in args:
         print(describe())
-        return
+        return 0
     if '--version' in args:
         print(__version__)
-        return
+        return 0
+    if '--help' in args or '-h' in args:
+        print(USAGE)
+        return 0
+    unknown = [a for a in args if a.startswith('-')]
+    if unknown:
+        print('sqldba-mcp: unrecognised option %s\n\n%s' % (unknown[0], USAGE),
+              file=sys.stderr)
+        return 2
     server.run(transport='stdio')
+    return 0

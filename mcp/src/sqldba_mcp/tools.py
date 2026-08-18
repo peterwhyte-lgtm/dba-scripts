@@ -53,17 +53,20 @@ def lookup_error(error: str) -> str:
     if not term:
         return "Give me an error number (e.g. 18456) or a phrase from the message."
 
-    digits = ''.join(ch for ch in term if ch.isdigit())
-    if digits and digits == term.replace(' ', ''):
-        hit = data.errors_by_number().get(int(digits))
+    # Take a number out of it if one is in there. `Msg 18456, Level 14, State 1, Line 1` is
+    # what SQL Server prints and so what gets pasted; reading that as "no number given" had
+    # the agent reporting 18456 missing from a library that has covered it since day one.
+    # A number that misses still falls through to the phrase search rather than stopping.
+    number = data.parse_error_number(term)
+    if number is not None:
+        hit = data.errors_by_number().get(number)
         if hit:
             return _fmt_error(hit)
-        return (
-            "Error %s is not in the library yet.\n\n%s" % (digits, NOT_COVERED)
-        )
 
     hits = data.search_errors(term)
     if not hits:
+        if number is not None:
+            return "Error %s is not in the library yet.\n\n%s" % (number, NOT_COVERED)
         return NOT_COVERED
     if len(hits) == 1:
         return _fmt_error(hits[0])
@@ -71,8 +74,10 @@ def lookup_error(error: str) -> str:
     out = ['Found %d matching errors:' % len(hits), '']
     for e in hits:
         num = e['error_number']
-        out.append('- **%s** - %s   %s' % (num if num is not None else '(no number)',
-                                           e['title'], e.get('url') or ''))
+        # Not every error has a post to cite yet, so do not leave the trailing gap where
+        # the link would have gone.
+        row = '- **%s** - %s' % (num if num is not None else '(no number)', e['title'])
+        out.append('%s   %s' % (row, e['url']) if e.get('url') else row)
     out.append('')
     out.append('Ask again with a number for the full entry.')
     return '\n'.join(out)
@@ -152,6 +157,40 @@ def _train_for(build: tuple[int, ...], version: dict) -> tuple[str, dict] | tupl
     return pool[0][0], pool[0][1]
 
 
+def _higher_in_series(build: tuple[int, ...], version: dict) -> tuple[str, dict] | None:
+    """The highest build on the same series, when it is above the one given.
+
+    Naming the train is not the same question as judging whether a server is current, and
+    conflating them produced the one answer this tool must never give.
+
+    Once a version reaches its FINAL CU, Microsoft stops shipping CUs and puts later
+    security fixes out as GDR on top of that CU - so `latest_cu_gdr` keeps climbing while
+    `latest_cu` stands still. On SQL 2019 the final CU is 15.0.4430.1 from February 2025
+    and CU32+GDR is 15.0.4480.2 from July 2026; on 2017 the gap is closer to four years.
+    That inverts the shape `_train_for` was written against (on 2022, CU is the higher of
+    the two), so preferring the CU train told a box sitting anywhere between the two that
+    it was UP TO DATE while it was missing 17 months of security updates.
+
+    Those are exactly the versions still in the field on extended support, where patch
+    level is the entire conversation. So whenever something higher exists on the same
+    series, it gets named - the verdict is additive rather than a silent reassurance.
+    """
+    series = build[2] // 1000
+    candidates = []
+    for key, label in (('latest_cu', 'CU'), ('latest_sp', 'Service Pack'),
+                       ('latest_cu_gdr', 'CU + GDR'), ('latest_gdr', 'GDR (RTM security)')):
+        t = version.get(key)
+        if not (t and t.get('build')):
+            continue
+        parsed = data.parse_build(t['build'])
+        if parsed and parsed[2] // 1000 == series and parsed > build:
+            candidates.append((parsed, label, t))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    return candidates[0][1], candidates[0][2]
+
+
 def check_build(build: str) -> str:
     """Identify a SQL Server build number and say whether it is current and still supported."""
     parsed = data.parse_build(build)
@@ -176,14 +215,39 @@ def check_build(build: str) -> str:
         latest = data.parse_build(train['build'])
         lines.append('**Servicing train assumed:** %s - check this is the train you are on.'
                      % label)
+        higher = _higher_in_series(parsed, version)
+        if higher and higher[1].get('build') == train.get('build'):
+            higher = None
+
         if latest and parsed >= latest:
-            lines.append('**Patch level:** UP TO DATE on this train (%s, %s).'
-                         % (train.get('name'), train['build']))
+            # "UP TO DATE" must not be the headline when something higher exists on the
+            # same series - an agent summarising this will carry the first bold phrase and
+            # drop the qualifier underneath it.
+            if higher:
+                lines.append('**Patch level:** up to date on this train (%s, %s), but '
+                             '**NOT the highest build on this series** - see below.'
+                             % (train.get('name'), train['build']))
+            else:
+                lines.append('**Patch level:** UP TO DATE on this train (%s, %s).'
+                             % (train.get('name'), train['build']))
         elif latest:
             lines.append('**Patch level:** BEHIND. Latest on this train is **%s** (%s, released %s).'
                          % (train.get('name'), train['build'], train.get('date')))
             if train.get('kb_url'):
                 lines.append('Download: %s (%s)' % (train['kb_url'], train.get('kb')))
+
+        # Being current on your train is not the same as being current. See _higher_in_series.
+        if higher:
+            hlabel, ht = higher
+            why = ('After the final CU, later security fixes ship as GDR on top of it, so '
+                   'a server sitting past the last CU can still be missing them.'
+                   if 'GDR' in hlabel else
+                   'A newer cumulative update has shipped since that build.')
+            lines.append('**Higher build on this series:** %s is **%s** (released %s). %s '
+                         'Confirm which line you are on before treating this server as '
+                         'patched.' % (hlabel, ht['build'], ht.get('date'), why))
+            if ht.get('kb_url'):
+                lines.append('Download: %s (%s)' % (ht['kb_url'], ht.get('kb')))
         lines.append('')
 
     status = (version.get('support_status') or '').replace('_', ' ')
@@ -337,7 +401,7 @@ def answer_question(question: str) -> str:
                 "for a build number use `check_build`, and to find a script use "
                 "`find_script`." % len(data.faqs()))
 
-    best, best_score = hits[0]
+    best = hits[0][0]
     lines = ['**%s**' % best['question'], '', best['answer'], '',
              'From: %s' % best['url']]
 

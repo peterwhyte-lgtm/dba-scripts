@@ -217,6 +217,20 @@ def script_index() -> Index:
     return Index(scripts(), {'name': 3.0, 'purpose': 2.0, 'category': 1.2, 'path': 1.0})
 
 
+@lru_cache(maxsize=1)
+def error_index() -> Index:
+    """Ranked search over the error corpus.
+
+    This used to be a raw substring test, which meant `search_errors` was the only search
+    in the package not going through this class - and it failed on the way people actually
+    type. "incorrect syntax" missed "Incorrect syntax near" because of one trailing word;
+    "failed login" missed "Login failed for user" purely on word order. The eval did not
+    catch it because it searched with each error's verbatim title, which a substring test
+    can never fail.
+    """
+    return Index(errors(), {'title': 3.0, 'message': 1.5, 'meaning': 1.0, 'category': 0.8})
+
+
 # --- indexes ------------------------------------------------------------------------------
 
 @lru_cache(maxsize=1)
@@ -234,22 +248,44 @@ def waits_by_type() -> dict[str, dict]:
     return idx
 
 
+# `Msg 18456, Level 14, State 1, Line 1` is what SQL Server itself prints and therefore what
+# a DBA pastes. Anchor on the Msg/error keyword so the Level and State numbers that follow
+# cannot be mistaken for the error number.
+_ERR_NUM = re.compile(r'\b(?:msg|errors?)\b\s*[:#]?\s*(\d{1,5})\b', re.I)
+
+
+def parse_error_number(term: str) -> int | None:
+    """Pull an error number out of the forms people actually paste, or None.
+
+    '18456' / 'Msg 18456, Level 14, State 1' / 'SQL Server error 9002' -> the number.
+    'login failed' -> None, so the caller falls through to a phrase search.
+    """
+    t = (term or '').strip()
+    if not t:
+        return None
+    bare = t.replace(' ', '').replace(',', '')
+    if bare.isdigit():
+        return int(bare)
+    m = _ERR_NUM.search(t)
+    return int(m.group(1)) if m else None
+
+
 def normalise_wait(name: str) -> str:
     """Accept the sloppy forms a DBA actually pastes: lowercase, spaces, trailing colons."""
     return re.sub(r'[^A-Z0-9_]', '', (name or '').strip().upper().replace(' ', '_'))
 
 
 def search_errors(term: str, limit: int = 8) -> list[dict]:
-    """Free-text search over title, message and meaning."""
-    t = (term or '').strip().lower()
-    if not t:
+    """Ranked free-text search over title, message, meaning and category.
+
+    The coverage floor is lower than the FAQ's because an error title is a handful of
+    words, not a sentence: requiring half of "incorrect syntax" to match leaves nothing
+    to be strict about. The off-domain guard still applies, so an unrelated question
+    gets nothing rather than the least-bad row.
+    """
+    if not (term or '').strip():
         return []
-    hits = []
-    for e in errors():
-        blob = ' '.join(str(e.get(k) or '') for k in ('title', 'message', 'meaning', 'category'))
-        if t in blob.lower():
-            hits.append(e)
-    return hits[:limit]
+    return [e for e, _score in error_index().search(term, limit=limit, min_coverage=0.34)]
 
 
 def search_waits(term: str, limit: int = 8) -> list[dict]:

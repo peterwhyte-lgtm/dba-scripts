@@ -11,7 +11,9 @@ scorecard says so rather than letting a flattering number stand unqualified:
   faq-reworded  434  questions asked in FEWER words than published -> must find that post
   faq-exact     434  the verbatim question, which is already in the index. A dictionary
                      lookup, not retrieval - it scored 98.6% and means nothing on its own
-  err-phrase     47  search by what the error SAYS, not its number -> real retrieval
+  err-phrase     47  the error's TITLE reworded the same way -> must find that error.
+                     Real retrieval, and only since the substring search was replaced:
+                     scored honestly, the old one got 29.8% while publishing 100%
   err-number     46  exact number in -> exact record out. Plumbing
   wait-name     232  exact wait name in -> exact record out. Plumbing, by design: waits
                      are looked up by name, so 100% here is correctness, not cleverness
@@ -44,6 +46,7 @@ OUT_DIR = pathlib.Path(__file__).resolve().parents[2] / 'output-files'
 MIN_FAQ_TOP1 = 0.60
 MIN_FAQ_TOP3 = 0.70
 MIN_ERROR = 0.90
+MIN_ERR_PHRASE = 0.80
 MIN_WAIT = 0.90
 
 
@@ -109,21 +112,39 @@ def eval_faq() -> dict:
 
 
 def eval_errors_by_phrase() -> dict:
-    """Real retrieval: search by what the error SAYS, not by its number."""
-    total = hit = 0
+    """Real retrieval: search by what the error SAYS, in fewer words than it says it.
+
+    This row used to score 100% and that number was worthless, in exactly the way this
+    file warns about two suites further down. It queried with each error's VERBATIM
+    title while `search_errors` was a substring test, so every record contained its own
+    query by construction - and it accepted an answer as correct if the error number
+    appeared anywhere in it, including buried in a list of eight candidates. Two
+    independent ways to be unfalsifiable, stacked.
+
+    So it is scored like the headline FAQ row now: the same deterministic rewording, and
+    the record itself has to come back top, not merely be somewhere in the output. Under
+    that measure the substring search scored 29.8% - which is what a DBA typing
+    "incorrect syntax" rather than "Incorrect syntax near" was actually getting.
+    """
+    index = data.error_index()
+    total = top1 = top3 = 0
     misses = []
     for e in data.errors():
         if not e.get('title'):
             continue
         total += 1
-        answer = tools.lookup_error(e['title'])
-        ok = (e.get('url') and e['url'] in answer) or (
-            e['error_number'] is not None and str(e['error_number']) in answer)
-        if ok:
-            hit += 1
+        query = _degrade(e['title'])
+        hits = [h for h, _ in index.search(query, limit=3, min_coverage=0.34)]
+        if hits[:1] == [e]:
+            top1 += 1
+            top3 += 1
+        elif e in hits:
+            top3 += 1
         else:
-            misses.append((e['title'], e.get('url') or '', answer[:60]))
-    return {'name': 'err-phrase', 'total': total, 'top1': hit, 'top3': hit, 'misses': misses}
+            misses.append((query, e.get('url') or e['title'],
+                           hits[0]['title'] if hits else '(nothing)'))
+    return {'name': 'err-phrase', 'total': total, 'top1': top1, 'top3': top3,
+            'misses': misses}
 
 
 def eval_errors() -> dict:
@@ -221,6 +242,13 @@ class TestRetrievalEval(unittest.TestCase):
         score = r['top1'] / r['total']
         self.assertGreaterEqual(score, MIN_ERROR,
                                 'error lookup fell to %.1f%%' % (100 * score))
+
+    def test_errors_by_phrase(self):
+        """The suite that was unfalsifiable until 0.2.1. Gate it like a real one."""
+        r = self.results['err-phrase']
+        score = r['top1'] / r['total']
+        self.assertGreaterEqual(score, MIN_ERR_PHRASE,
+                                'error phrase retrieval fell to %.1f%%' % (100 * score))
 
     def test_waits(self):
         r = self.results['wait-name']
