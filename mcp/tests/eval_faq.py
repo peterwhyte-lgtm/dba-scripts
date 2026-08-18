@@ -36,6 +36,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / 'src'))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from sqldba_mcp import data, tools  # noqa: E402
 
@@ -48,6 +49,7 @@ MIN_FAQ_TOP3 = 0.70
 MIN_ERROR = 0.90
 MIN_ERR_PHRASE = 0.80
 MIN_WAIT = 0.90
+MIN_SCRIPT_RECALL = 0.60
 
 
 def _ascii(s: str) -> str:
@@ -180,9 +182,33 @@ def eval_waits() -> dict:
             'misses': misses}
 
 
+# --- scripts ------------------------------------------------------------------------------
+
+def eval_scripts() -> dict:
+    """Can a DBA find the script they mean, asking in their own words?
+
+    See tests/script_questions.py for the set and why it is scored on recall@8.
+    """
+    from script_questions import QUESTIONS
+    index = data.script_index()
+    total = top1 = top8 = 0
+    misses = []
+    for question, expected in QUESTIONS:
+        total += 1
+        hits = [h['name'] for h, _ in index.search(question, limit=8, min_coverage=0.34)]
+        if hits[:1] and hits[0] in expected:
+            top1 += 1
+        if any(h in expected for h in hits):
+            top8 += 1
+        else:
+            misses.append((question, '/'.join(expected), ', '.join(hits[:3]) or '(nothing)'))
+    return {'name': 'script-nl', 'total': total, 'top1': top1, 'top3': top8,
+            'misses': misses}
+
+
 def run_all(write_misses: bool = True) -> list[dict]:
     results = [eval_faq(), eval_faq_verbatim(), eval_errors_by_phrase(),
-               eval_errors(), eval_waits()]
+               eval_errors(), eval_waits(), eval_scripts()]
     if write_misses:
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         for r in results:
@@ -249,6 +275,13 @@ class TestRetrievalEval(unittest.TestCase):
         score = r['top1'] / r['total']
         self.assertGreaterEqual(score, MIN_ERR_PHRASE,
                                 'error phrase retrieval fell to %.1f%%' % (100 * score))
+
+    def test_scripts_natural_language(self):
+        """recall@8: is the script a DBA meant among the eight they are shown?"""
+        r = self.results['script-nl']
+        score = r['top3'] / r['total']
+        self.assertGreaterEqual(score, MIN_SCRIPT_RECALL,
+                                'script recall@8 fell to %.1f%%' % (100 * score))
 
     def test_waits(self):
         r = self.results['wait-name']

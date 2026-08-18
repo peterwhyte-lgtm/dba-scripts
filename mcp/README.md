@@ -181,6 +181,11 @@ CI enforces this. `tests/check_freshness.py` re-derives the script, doc and prom
 files in this repo and compares them byte for byte — a hand-edit or a stale export fails the build
 and names the file.
 
+**One practical note: the server reads its datasets once, at start-up.** After a re-export, a client
+that already has the server running keeps answering from the data it loaded, so a correction can be
+in the repo and still not be in the answer. Restart the MCP client (or the server process) to pick
+it up. This is easy to miss precisely because the fix *looks* applied everywhere you check.
+
 Found something wrong? Open an issue. Corrections from working DBAs are the point.
 
 ## Development

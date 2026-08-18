@@ -405,6 +405,27 @@ def _warning(s: dict) -> str | None:
     return ''.join(bits)
 
 
+# A DBA asking a question wants to SEE, not to change. "give me a script to find blocking"
+# led with `Create-BlockingScenario` - a lab script that CREATES blocking - and "orphaned
+# users" led with `Fix-OrphanedUsers`. Both are near-ties on wording, and on a near-tie the
+# read-only script is both the better answer and the safer one. The nudge is small enough
+# that a clearly better match still wins, and it is switched off entirely when the query
+# actually asks for an action.
+_ACTION_WORDS = {'fix', 'kill', 'create', 'generate', 'rebuild', 'drop', 'delete', 'set',
+                 'change', 'apply', 'install', 'patch', 'restore', 'shrink', 'enable',
+                 'disable', 'add', 'remove', 'update', 'configure', 'make', 'build'}
+
+
+def _prefer_reading(query: str, hits: list) -> list:
+    """Break near-ties toward the script that only reads."""
+    if any(t in _ACTION_WORDS for t in data.tokens(query)):
+        return hits
+    adjusted = [(record, score * (1.0 if record.get('read_only') is not False else 0.80))
+                for record, score in hits]
+    adjusted.sort(key=lambda pair: -pair[1])
+    return adjusted
+
+
 def find_script(task: str) -> str:
     """Find a script in the dba-tools library by what you are trying to do."""
     term = (task or '').strip()
@@ -412,7 +433,21 @@ def find_script(task: str) -> str:
         return ("Describe the task, e.g. 'find blocking chains', 'check backup coverage', "
                 "'list missing indexes'.")
 
-    hits = data.script_index().search(term, limit=8, min_coverage=0.34)
+    # Strip the ask before scoring it. "show me who has sysadmin" and "sysadmin members"
+    # are the same question, and only one of them used to work.
+    cleaned, is_browse = data.normalise_script_query(term)
+    if is_browse:
+        return (
+            "That is a request for a curated list rather than a search, and this library "
+            "cannot rank one honestly - it carries no usage or popularity data, so any "
+            "'top 10' would be whatever scored highest on the word 'top'.\n\n"
+            "Browse the full catalogue instead: https://sqldba.blog/scripts/\n\n"
+            "Or describe the task and it will find the script: 'find blocking chains', "
+            "'check backup coverage', 'last time checkdb ran'."
+        )
+
+    hits = data.script_index().search(cleaned or term, limit=8, min_coverage=0.34)
+    hits = _prefer_reading(cleaned or term, hits)
     if not hits:
         return ("Nothing in the dba-tools library matches that.\n\n"
                 "The library is 181 SQL scripts plus PowerShell orchestrators, covering "

@@ -107,12 +107,140 @@ _STOP = {
     'do', 'does', 'did', 'how', 'what', 'why', 'when', 'should', 'can', 'be', 'this',
     'that', 'with', 'from', 'are', 'was', 'if', 'so', 'me', 'you', 'your', 'not', 'at',
     'get', 'have', 'has', 'but', 'as', 'by', 'there', 'they', 'them',
+    # 'am' only. "what version am I on" left the tokens ['version', 'am'], so half the
+    # query was vocabulary the corpus had never seen, the off-domain guard fired, and the
+    # question was refused outright. A wider sweep of function words was tried and reverted:
+    # adding 'all', 'out', 'over', 'now' and friends cost the FAQ suite 0.5pp, because in
+    # DBA prose they are content - "out of space", "over 80% full", "all user databases".
+    'am',
 }
 
 
+# Split CamelCase, including the ACRONYMWord boundary, so `Get-VlfCount` gives up `Vlf`
+# and `Count` while `PAGEIOLATCH_SH` stays whole (no lower-case letter follows a capital).
+_CAMEL = re.compile(r'(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])')
+_WORD = re.compile(r'[A-Za-z0-9_]+')
+
+
 def tokens(s: str) -> list[str]:
-    """Lowercase word tokens, stopwords dropped, SQL identifiers kept whole."""
-    return [t for t in _TOKEN.findall((s or '').lower()) if t not in _STOP and len(t) > 1]
+    """Lowercase word tokens, stopwords dropped, SQL identifiers kept whole.
+
+    Script names are CamelCase, and lowercasing before splitting made the highest-weighted
+    field in the index useless for natural language: `Get-BlockingChains` became the single
+    token `blockingchains`, which the word "blocking" does not match. A DBA asking "what is
+    blocking right now" could only reach that script through its purpose line, at a third
+    of the weight, and often did not reach it at all.
+
+    So an identifier contributes three things: itself, its parts, and its adjacent pairs.
+    The pairs matter as much as the parts - `Get-TempDbConfiguration` splits to
+    `temp`+`db`+`configuration`, and nobody types "temp db". They type "tempdb", which is
+    the pair. Prose is unaffected: a word with no internal capital has no parts and no
+    pairs, so this costs nothing on the FAQ and error corpora.
+    """
+    out = []
+    for raw in _WORD.findall(s or ''):
+        low = raw.lower()
+        if low not in _STOP and len(low) > 1:
+            out.append(low)
+        parts = [p for p in _CAMEL.split(raw) if p]
+        if len(parts) < 2:
+            continue
+        for p in parts:
+            pl = p.lower()
+            if pl not in _STOP and len(pl) > 1:
+                out.append(pl)
+        for a, b in zip(parts, parts[1:]):
+            out.append((a + b).lower())
+    return out
+
+
+# --- how a DBA actually types ------------------------------------------------------------
+#
+# "sysadmin members" worked and "show me who has sysadmin" returned nothing. Same intent,
+# opposite outcomes, because the index rewarded the query that already looked like a script
+# name - exactly backwards from how anyone asks. Every filler token was being scored, so
+# adding natural language made the answer worse.
+
+# The ask, as opposed to the thing being asked for. Stripped before anything is scored.
+_ASK_FRAME = re.compile(
+    r"""(?ix)
+    \b(?:
+        (?:can|could|would)\s+you(?:\s+please)?
+      | (?:please)
+      | (?:i\s+(?:need|want|would\s+like))
+      | (?:is\s+there)
+      | (?:do\s+you\s+have)
+      | (?:give|show|find|fetch|send|list)\s+(?:me|us)?
+      | (?:what|which)\s+(?:script|scripts|query|queries)
+      | (?:how\s+do\s+i\s+(?:see|check|find|get|run))
+      | (?:anything|something)\s+(?:useful\s+)?(?:for|to)
+      | (?:that\s+(?:are\s+)?(?:useful\s+)?(?:for|to))
+      | (?:a\s+)?list\s+of
+    )\b
+    """)
+
+# Nouns and verbs that carry no signal when the thing being searched IS a script library.
+# `check` is deliberately absent: "check integrity" means something, and Get-DatabaseIntegrityChecks
+# contains the word.
+_ASK_NOISE = {'script', 'scripts', 'query', 'queries', 'show', 'showing', 'shows', 'give',
+              'need', 'want', 'find', 'see', 'run', 'please', 'me', 'us', 'useful',
+              'anything', 'something', 'thing', 'stuff', 'help'}
+
+# A request for a curated SET, not a match. The package carries no popularity signal, so
+# "the top 10 scripts" cannot be ranked honestly - and returning whatever scored highest is
+# how "give me a list of top 10 scripts" came back with Get-TopCpuQueries, matched on "top".
+_BROWSE_WORDS = {'top', 'best', 'all', 'everything', 'every', 'most', 'popular', 'good',
+                 'favourite', 'favorite', 'recommended', 'useful', 'list'}
+
+# Recency is the difference between Get-LastDatabaseBackupTimes and Get-BackupChainIntegrity,
+# and it was being spent on nothing. Expanded on the DOCUMENT side, not the query side, so a
+# query stays exactly as long as the user typed it and the coverage floor is unaffected.
+SYNONYMS = {
+    'last': ('recent', 'latest', 'current', 'newest'),
+    'recent': ('last', 'latest', 'current', 'newest'),
+    'latest': ('last', 'recent', 'current', 'newest'),
+    'current': ('last', 'recent', 'latest', 'active'),
+    'active': ('current', 'running'),
+    'failure': ('failed', 'failing', 'failures'),
+    'failed': ('failure', 'failures', 'failing'),
+    'size': ('sizes', 'space'),
+    'space': ('size', 'sizes', 'free'),
+    'permission': ('permissions', 'rights', 'access'),
+    'permissions': ('permission', 'rights', 'access'),
+}
+
+
+def _other_number(term: str) -> str | None:
+    """The other of singular/plural for a plain word, or None.
+
+    Deliberately not a stemmer: it handles the one inflection that actually separated a
+    DBA's question from the script that answers it, and nothing else.
+    """
+    if len(term) < 4 or '_' in term or term.isdigit():
+        return None
+    if term.endswith('ies') and len(term) > 4:
+        return term[:-3] + 'y'
+    if term.endswith(('ss', 'us', 'is')):
+        return None
+    if term.endswith('es') and term[-3:-2] in ('x', 's', 'h', 'z'):
+        return term[:-2]
+    if term.endswith('s'):
+        return term[:-1]
+    return term + 's'
+
+
+def normalise_script_query(query: str) -> tuple[str, bool]:
+    """Strip the ask, keep the intent. Returns (query, is_a_browse_request).
+
+    A browse request is detected by what is LEFT once the frame and the noise are gone: if
+    nothing remains but quantifiers, the user asked for a curated set rather than a match,
+    and the honest answer is the catalogue rather than whatever scored highest.
+    """
+    cleaned = _ASK_FRAME.sub(' ', query or '')
+    kept = [t for t in tokens(cleaned) if t not in _ASK_NOISE]
+    if not kept or all(t in _BROWSE_WORDS or t.isdigit() for t in kept):
+        return ' '.join(kept), True
+    return ' '.join(kept), False
 
 
 def _idf(corpus_tokens: list[list[str]]) -> dict[str, float]:
@@ -134,9 +262,18 @@ class Index:
     title means much more than the same term buried in a body.
     """
 
-    def __init__(self, records: list[dict], fields: dict[str, float]):
+    def __init__(self, records: list[dict], fields: dict[str, float],
+                 guard_fields: tuple[str, ...] | None = None,
+                 expand: bool = False):
         self.records = records
         self.fields = fields
+        # Which fields decide whether a question is even ON TOPIC, as opposed to which
+        # fields decide ranking. Indexing script header comments lifted recall sharply and
+        # simultaneously taught the corpus ordinary English - "write", "list", "sort" - so
+        # "write me a python script to sort a list" stopped being off-domain and came back
+        # with eight scripts. Topicality is judged from the curated fields only; incidental
+        # prose can win a ranking but must never make a foreign question look familiar.
+        self._guard_fields = guard_fields or tuple(fields)
         self._doc_tokens = []
         self._weighted = []
         for r in records:
@@ -144,12 +281,27 @@ class Index:
             flat = []
             for f, w in fields.items():
                 toks = tokens(str(r.get(f) or ''))
+                if expand:
+                    # Singular and plural, on the document. `Get-LastDatabaseBackupTimes`
+                    # carries `backup` and a DBA types "most recent backups"; without this
+                    # the two never meet. Underscored identifiers are left alone so wait
+                    # types and column names are not mangled.
+                    toks = toks + [_other_number(t) for t in set(toks) if _other_number(t)]
+                    # Synonyms go on the DOCUMENT, never the query: a query stays exactly
+                    # as long as the user typed it, so the coverage floor still means what
+                    # it meant. `Get-LastDatabaseBackupTimes` answers to "most recent
+                    # backups" because the record learned `recent`, not because the query
+                    # grew three words it did not contain.
+                    toks = toks + [alt for t in set(toks) for alt in SYNONYMS.get(t, ())]
                 per_field[f] = toks
                 flat.extend(toks)
             self._doc_tokens.append(flat)
             self._weighted.append(per_field)
         self._idf = _idf(self._doc_tokens)
         self._avg_len = (sum(len(d) for d in self._doc_tokens) / len(records)) if records else 1
+        self._guard_vocab = {t for per_field in self._weighted
+                             for f in self._guard_fields
+                             for t in per_field.get(f, ())}
 
     def off_domain(self, query: str, max_unknown: float = 0.4) -> bool:
         """True when too much of the query is vocabulary this corpus has never seen.
@@ -180,12 +332,12 @@ class Index:
         which is all this guard decides. Ranking is untouched: nothing here changes
         which record wins, only whether the question is answered at all.
         """
-        if term in self._idf:
+        if term in self._guard_vocab:
             return True
         if len(term) < 4:
             return False
         return any(known.startswith(term) or term.startswith(known)
-                   for known in self._idf if len(known) >= 4)
+                   for known in self._guard_vocab if len(known) >= 4)
 
     def search(self, query: str, limit: int = 8,
                min_coverage: float = 0.0) -> list[tuple[dict, float]]:
@@ -235,7 +387,17 @@ def faq_index() -> Index:
 
 @lru_cache(maxsize=1)
 def script_index() -> Index:
-    return Index(scripts(), {'name': 3.0, 'purpose': 2.0, 'category': 1.2, 'path': 1.0})
+    """Ranked search over the script library.
+
+    Indexing each script's HEADER COMMENT BLOCK as a fifth field was measured and is not
+    enabled. It lifts recall@8 over 43 natural questions from 65.1% to 72.1%, and it lets
+    three more off-domain questions through - "write me a python script to sort a list",
+    "write a bash script to tail a log file", "compress a folder into a zip file" - because
+    header prose teaches the corpus ordinary English that its curated fields do not carry.
+    Trading a published refusal promise for recall is Peter's call, not this file's.
+    """
+    return Index(scripts(), {'name': 3.0, 'purpose': 2.0, 'category': 1.2, 'path': 1.0},
+                 guard_fields=('name', 'purpose', 'category'), expand=True)
 
 
 @lru_cache(maxsize=1)
