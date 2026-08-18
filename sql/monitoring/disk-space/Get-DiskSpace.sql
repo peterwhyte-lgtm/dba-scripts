@@ -2,7 +2,7 @@
 Script Name : Get-DiskSpace
 Category    : storage-capacity-management
 Purpose     : Show free and used space per volume that hosts SQL Server database files.
-Author      : Peter Whyte (https://sqldba.blog/script-check-disk-space-on-sql-server/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-disk-space/)
 Requires    : VIEW SERVER STATE
 Notes       : Uses sys.dm_os_volume_stats — shows only volumes with at least one database
               file. For OS-level disk summary across all drives use Get-DiskSpaceSummary.ps1.

@@ -2,7 +2,7 @@
 Script Name : New-TestDatabases
 Category    : dba-lab
 Purpose     : Create multiple test databases with randomised names for lab and migration scenarios.
-Author      : Peter Whyte (https://sqldba.blog/script-generate-test-databases/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-test-databases/)
 Requires    : sysadmin or dbcreator
 Notes       : Edit the DECLARE parameter block before running in SSMS.
               For PowerShell-driven creation use powershell\lab\New-MultipleDatabases.ps1.

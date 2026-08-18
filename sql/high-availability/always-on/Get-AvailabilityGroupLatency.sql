@@ -2,7 +2,7 @@
 Script Name : Get-AvailabilityGroupLatency
 Category    : high-availability
 Purpose     : Display AG replica synchronization timing, queue health, and replication rates.
-Author      : Peter Whyte (https://sqldba.blog/script-check-always-on-availability-group-latency/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-check-always-on-availability-group-latency/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */

@@ -3,7 +3,7 @@ Script Name : Generate-LinkedServerScript
 Category    : migration
 Purpose     : Generate sp_addlinkedserver + sp_addlinkedsrvlogin DDL for all linked servers.
               Run on SOURCE server. Execute the output on TARGET after migration.
-Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-migration-scripts/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-linked-server-script/)
 Requires    : VIEW ANY DEFINITION or sysadmin
 */
 -- SAFE:ReadOnly

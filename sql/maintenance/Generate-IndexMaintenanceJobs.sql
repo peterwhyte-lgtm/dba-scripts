@@ -9,7 +9,7 @@ Purpose     : Generates SQL Agent DDL for:
               DBA - Statistics Update   runs sp_updatestats on every online user database
                                         (tables that had rows modified since last update only).
               Edit the parameters section, review the output, then run on the target instance.
-Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-maintenance-jobs/)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-generate-index-maintenance-jobs/)
 Requires    : VIEW ANY DATABASE, VIEW DATABASE STATE
 Notes       : Index maintenance runtime varies widely with database count and size.
               Schedule outside peak hours. On a busy 3 000-database estate, consider
