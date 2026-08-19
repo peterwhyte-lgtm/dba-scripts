@@ -306,6 +306,28 @@ def _higher_in_series(build: tuple[int, ...], version: dict) -> tuple[str, dict]
     return candidates[0][1], candidates[0][2]
 
 
+def _freshness_note() -> str:
+    """When this build data was generated, and a warning once it is old.
+
+    Build and lifecycle data is the fastest-rotting thing in the library - a new CU can
+    ship the day after an export - and this is the one tool whose pitch is "prefer this
+    over what a model remembers". It was never stating its own age, so a caller had no way
+    to tell a fresh answer from a stale one. A running server answers from what it loaded
+    at start-up, which makes that worse, not better.
+    """
+    stamp = data.meta().get('generated')
+    if not stamp:
+        return '_Build data generation date unknown - treat CU currency with caution._'
+    age = data.data_age_days()
+    # Only ever states the date. Escalating past STALE_AFTER_DAYS is data.freshness_warning()'s
+    # job, and it is already appended to this reply - saying it twice reads like a bug.
+    if age is None:
+        return '_Build data generated %s._' % stamp
+    return ('_Build data generated %s (%d day%s ago). CUs ship roughly monthly, so verify '
+            'against the lifecycle page if currency matters._'
+            % (stamp, age, '' if age == 1 else 's'))
+
+
 def _fmt_version_only(version: dict) -> str:
     """Answer a question that named a PRODUCT but gave no build.
 
@@ -352,6 +374,7 @@ def _fmt_version_only(version: dict) -> str:
               'particular server is. Paste `SELECT @@VERSION` or a build like %s for that._'
               % ((version.get('latest_cu') or {}).get('build') or '16.0.4265.3'),
               '',
+              _freshness_note(), '',
               'Full version and lifecycle table: %s' % version.get('url')]
     return '\n'.join(lines)
 
@@ -469,7 +492,8 @@ def check_build(build: str) -> str:
                         version.get('extended_end')))
     if version.get('notes'):
         lines += ['', version['notes']]
-    lines += ['', 'Full version and lifecycle table: %s' % version['url']]
+    lines += ['', _freshness_note(), '',
+              'Full version and lifecycle table: %s' % version['url']]
     # Build data ages badly. The server volunteers this rather than waiting to be asked.
     return '\n'.join(lines) + data.freshness_warning()
 
@@ -590,6 +614,16 @@ def find_script(task: str) -> str:
         lines.append('  \n'.join(meta_bits))
         if s.get('url'):
             lines.append('Write-up: %s' % s['url'])
+        else:
+            # 89 of 232 scripts have no post yet. Omitting the line silently made an
+            # uncited answer look identical to a cited one, against a README promising a
+            # source on every answer - and left a caller unable to tell "no source" from
+            # "source withheld". lookup_error has said this plainly since day one; there
+            # was no reason for find_script to be quieter about the same gap. The script
+            # body itself is still verbatim and still quotable.
+            lines.append('_No write-up published for this script yet - the body and '
+                         'safety class above are from the repo, but there is no article '
+                         'to cite._')
         lines.append('')
     lines.append('Call `get_script` with an exact name for the full body.')
     lines.append('')

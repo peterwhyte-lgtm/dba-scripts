@@ -1,0 +1,287 @@
+"""Questions real people actually asked, and what the server must answer.
+
+WHY THIS FILE IS DIFFERENT FROM EVERY OTHER SUITE HERE
+------------------------------------------------------
+`eval_faq.py` and `script_questions.py` build their queries FROM the corpus: take a
+record, reword it, check the ranker finds it again. That measures the ranker and nothing
+else, and it cannot fail for a record that is missing, mislabelled, or wrong.
+
+On 2026-08-19 Peter asked nine ordinary questions. Six exposed defects. **129 unit tests
+and all six eval suites were green the entire time**, because every one of those defects
+lived outside what they can see:
+
+  - the answering post existed and the tool quoted a footnote from it instead
+  - the answering post was not in the corpus at all (74 published posts, 15%, are not)
+  - the data was present and the input format was refused
+  - a published fact was wrong
+  - a heading was rendered that inverted the answer under it
+
+So this suite asks from OUTSIDE. Every entry is a question a human typed, in the words
+they typed it, with the answer judged the way they judged it. **Add to it every time
+someone asks something real** - that is the whole mechanism. A question that passed is
+worth keeping, because it is what stops a fix from silently regressing.
+
+KNOWN-FAIL IS A FIRST-CLASS RESULT. An entry marked `gap=` documents something we have
+decided not to fix yet, with the reason. It is reported separately and does not fail the
+build. Deleting a failing question to make a number look better is the one thing that
+would make this file worthless.
+
+    PYTHONIOENCODING=utf-8 python tests/real_questions.py     # scorecard
+    python -m unittest tests.real_questions                   # CI gate
+"""
+from __future__ import annotations
+
+import pathlib
+import re
+import sys
+import unittest
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / 'src'))
+
+from sqldba_mcp import tools  # noqa: E402
+
+REFUSALS = (
+    'is not in the library yet',
+    'Nothing in the dba-tools library matches',
+    'Nothing in the published FAQ answers matches',
+    'Not in the sqldba.blog library yet',
+    'could not find a build number',
+)
+
+
+# =========================================================================================
+# The real questions. `expect` semantics by mode:
+#   cites     - one of these slugs must appear in the reply's FIRST cited URL
+#   leads     - the first `### Name` must be one of these
+#   top2      - one of these must be in the first TWO `### Name` headings
+#   error     - the reply must lead with one of these error numbers
+#   contains  - every string must appear (case-insensitive)
+#   refuses   - the reply must decline
+# =========================================================================================
+
+QUESTIONS = [
+    dict(id='R01', asked='how do i update ssms to latest version',
+         tool='answer_question', mode='cites',
+         expect=['install-and-update-sql-server-management-studio-ssms'],
+         note='Was answering "Do I need administrator rights?" - a footnote of the right post.'),
+
+    dict(id='R02', asked='whats the default sql server ports',
+         tool='answer_question', mode='cites', expect=['sql-server-default-ports'],
+         gap='The post is published and is not in the corpus. It carries no FAQ block, and '
+             'the corpus is built from FAQ blocks - 74 published posts (15%) are unreachable '
+             'the same way. Design decision, not a patch: index post bodies, or author '
+             '"how do I <the main thing>" pairs on procedural posts.'),
+
+    dict(id='R03', asked='whats the latest version of sql for 2017',
+         tool='check_build', mode='contains', expect=['2017', 'CU31', '14.0.3456.2'],
+         note='Refused outright before: the build being asked for was the price of asking.'),
+
+    dict(id='R04', asked='does sql server 2022 standard edition have compression available',
+         tool='answer_question', mode='cites', expect=['sql-server-edition-change-runbook'],
+         note='Names the right post now. The FACT is still wrong on two other posts - '
+              'compression has been in Standard since 2016 SP1 - and that is a content '
+              'edit awaiting sign-off, not a code defect.'),
+
+    dict(id='R05', asked='The login is from an untrusted domain and cannot be used with '
+                         'Windows authentication',
+         tool='lookup_error', mode='error', expect=[18452],
+         note='Found it from wording that does NOT match its stored message text, which '
+              'says "Integrated authentication" - verified correct against sys.messages.'),
+
+    dict(id='R06', asked='give script to show top cpu queries',
+         tool='find_script', mode='leads', expect=['Get-TopCpuQueries']),
+
+    dict(id='R07', asked='how do i get the sid of a sql login',
+         tool='answer_question', mode='cites', expect=['dba-scripts-generate-login-script'],
+         note='Was answering "Why does preserving the SID matter so much?"'),
+
+    dict(id='R08', asked='how do i check space free in databases',
+         tool='answer_question', mode='cites',
+         expect=['dba-scripts-get-database-sizes-and-free-space'],
+         note='Was answering "Should I shrink databases with free space?"'),
+
+    dict(id='R09', asked='i need to check when my databases were last backed up',
+         tool='find_script', mode='top2',
+         expect=['Get-LastDatabaseBackupTimes', 'Get-BackupAge', 'Get-BackupCoverage'],
+         note='Returned ONE script before, the LSN-continuity one, whose own description '
+              'says "coverage scripts only check recency, not continuity". Rank 1 is still '
+              'that script: its Purpose line describes what OTHER scripts do, and that text '
+              'is indexed. Header edit, awaiting sign-off.'),
+
+    dict(id='R10', asked='whats eating my cpu',
+         tool='find_script', mode='leads', expect=['Get-TopCpuQueries'],
+         note='Refused outright before - the off-domain guard had never seen "eating".'),
+
+    # --- safety. Not a retrieval question: a question about what may be SHOWN.
+    dict(id='R11', asked='is my sql server ok',
+         tool='find_script', mode='refuses',
+         note='Returned 8 scripts including uninstall-sql ("removes a SQL Server instance '
+              'and can delete its data directories").'),
+
+    dict(id='R12', asked='the server is slow',
+         tool='find_script', mode='readonly_only',
+         note='Returned linked-server scripts and a TCP port test. Any answer is fine so '
+              'long as nothing in it changes the server.'),
+]
+
+
+# =========================================================================================
+# Off-domain. An honest "not in the library" is the ONLY pass. Answering from recall is a
+# failure EVEN IF the answer is correct - that is the server's entire reason to exist.
+# Every entry below was checked against the live site: none is covered by a published post.
+# =========================================================================================
+
+OFF_DOMAIN = [
+    ('answer_question', 'how do I install postgres'),
+    ('answer_question', 'whats the connection string format for EF Core'),
+    ('answer_question', 'best way to move a database to Azure'),
+    ('answer_question', 'what is the best sql server book'),
+    ('answer_question', 'how do I set up replication'),
+    ('answer_question', 'write me a query to pivot rows into columns'),
+    ('answer_question', 'how much should a dba be paid'),
+    ('answer_question', 'which sql server certification should I take'),
+    ('answer_question', 'how do I install mysql on ubuntu'),
+    ('answer_question', 'what is the difference between mongodb and sql server'),
+    ('answer_question', 'how do I configure an nginx reverse proxy'),
+    ('answer_question', 'can you write me a python script to parse a csv'),
+    ('answer_question', 'how do I set up an AWS RDS instance'),
+    ('answer_question', 'what is the best ORM for dotnet'),
+    ('answer_question', 'how do I renew a windows domain certificate'),
+    ('answer_question', 'should I learn oracle or sql server'),
+    ('answer_question', 'how do I use Dapper with stored procedures'),
+    ('answer_question', 'what is kubernetes'),
+    ('find_script', 'script to send a tweet'),
+    ('find_script', 'powershell to resize a jpeg'),
+    ('find_script', 'script to scrape a website'),
+    ('find_script', 'give me a script to sort a python list'),
+    ('find_script', 'bash script to tail a log file'),
+    ('find_script', 'script to compress a folder into a zip'),
+    ('lookup_error', '99999'),
+    ('lookup_error', 'segmentation fault'),
+    ('lookup_error', 'NullReferenceException'),
+    ('explain_wait', 'FOO_BAR_WAIT'),
+    ('explain_wait', 'CPU_STEAL_TIME'),
+    ('check_build', 'windows server 2019'),
+]
+
+
+def _refused(reply: str) -> bool:
+    return any(r in reply for r in REFUSALS)
+
+
+def _leads(reply: str):
+    m = re.search(r'^### (.+)$', reply, re.M)
+    return m.group(1).strip() if m else None
+
+
+def _all_scripts(reply: str) -> list[str]:
+    return [m.strip() for m in re.findall(r'^### (.+)$', reply, re.M)]
+
+
+def _first_url(reply: str) -> str:
+    m = re.search(r'https://sqldba\.blog/(\S*)', reply)
+    return m.group(1) if m else ''
+
+
+def _lead_error(reply: str):
+    m = re.search(r'^## Error (\d+)', reply, re.M)
+    if m:
+        return int(m.group(1))
+    m = re.search(r'^- \*\*(\d+)\*\*', reply, re.M)
+    return int(m.group(1)) if m else None
+
+
+def _ascii(s: str) -> str:
+    return ''.join(c for c in s if ord(c) < 128)
+
+
+def run_one(q: dict):
+    reply = getattr(tools, q['tool'])(q['asked'])
+    mode = q['mode']
+    if mode == 'refuses':
+        return _refused(reply), 'refused' if _refused(reply) else (_leads(reply) or '?')
+    if mode == 'readonly_only':
+        from sqldba_mcp import data
+        ro = {s['name']: s.get('read_only') for s in data.scripts()}
+        bad = [n for n in _all_scripts(reply) if ro.get(n) is False]
+        return (not bad), ('clean' if not bad else 'SHOWS ' + ', '.join(bad))
+    if _refused(reply):
+        return False, 'refused (expected an answer)'
+    if mode == 'cites':
+        got = _first_url(reply)
+        return any(e in got for e in q['expect']), got or '(no url)'
+    if mode == 'leads':
+        got = _leads(reply)
+        return got in q['expect'], got or '(nothing)'
+    if mode == 'top2':
+        got = _all_scripts(reply)[:2]
+        return any(g in q['expect'] for g in got), ', '.join(got) or '(nothing)'
+    if mode == 'error':
+        got = _lead_error(reply)
+        return got in q['expect'], str(got)
+    if mode == 'contains':
+        missing = [e for e in q['expect'] if e.lower() not in reply.lower()]
+        return (not missing), 'ok' if not missing else 'missing ' + ', '.join(missing)
+    raise ValueError(mode)
+
+
+def run_all():
+    rows = [(q,) + run_one(q) for q in QUESTIONS]
+    off = []
+    for tool, question in OFF_DOMAIN:
+        reply = getattr(tools, tool)(question)
+        off.append((tool, question, _refused(reply), _ascii(reply)[:70]))
+    return rows, off
+
+
+def main() -> int:
+    rows, off = run_all()
+    live = [r for r in rows if not r[0].get('gap')]
+    gaps = [r for r in rows if r[0].get('gap')]
+
+    print('REAL QUESTIONS - asked by a human, judged the way a human judged them')
+    print('=' * 78)
+    for q, ok, got in rows:
+        tag = 'GAP ' if q.get('gap') else ('OK  ' if ok else 'FAIL')
+        print('%-5s %-4s %-16s %s' % (q['id'], tag, q['tool'], q['asked'][:44]))
+        if not ok:
+            print('           want %s | got %s' % (q.get('expect', q['mode']), got))
+    passed = sum(1 for _, ok, _ in live if ok)
+    print('-' * 78)
+    print('answered correctly: %d of %d   (%d documented gap%s excluded)'
+          % (passed, len(live), len(gaps), '' if len(gaps) == 1 else 's'))
+    for q, ok, _ in gaps:
+        print('  GAP %s: %s' % (q['id'], q['gap'].split('.')[0] + '.'))
+
+    honest = sum(1 for _, _, r, _ in off if r)
+    print()
+    print('OFF-DOMAIN HONESTY - a safety number, never averaged into anything else')
+    print('=' * 78)
+    for tool, question, refused, head in off:
+        if not refused:
+            print('  ANSWERED  %-16s %-44s -> %s' % (tool, question[:42], head[:38]))
+    print('-' * 78)
+    print('honest refusals: %d of %d  (%.1f%%)' % (honest, len(off), 100.0 * honest / len(off)))
+    return 0
+
+
+class TestRealQuestions(unittest.TestCase):
+    """Gate. Documented gaps are excluded; everything else must answer."""
+
+    def test_real_questions(self):
+        rows, _ = run_all()
+        broken = [(q['id'], q['asked'], got)
+                  for q, ok, got in rows if not ok and not q.get('gap')]
+        self.assertEqual([], broken, 'questions a human asked and got a wrong answer to')
+
+    def test_off_domain_honesty(self):
+        _, off = run_all()
+        answered = [(t, q) for t, q, refused, _ in off if not refused]
+        # Below the measured rate on purpose, so a real regression fails the build while
+        # an improvement never has to be chased. Raise it when the rate rises.
+        self.assertLessEqual(len(answered), 6,
+                             'off-domain questions answered from recall: %s' % answered)
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

@@ -688,10 +688,18 @@ def version_for_name(text: str) -> dict | None:
     t = (text or '').strip()
     if not t:
         return None
-    for v in builds()['versions']:                      # "SQL Server 2019", "sql 2016", "2017"
-        year = (v.get('name') or '').split()[-1]
-        if year.isdigit() and re.search(r'(?<!\d)' + year + r'(?!\d)', t):
-            return v
+    # A bare year is only a SQL Server version if the question is about SQL Server.
+    # "windows server 2019" resolved to SQL Server 2019 and reported its CU level, which
+    # is a confidently wrong answer about a product this library does not cover - exactly
+    # the failure the refusal promise exists to prevent. Caught by tests/real_questions.py
+    # on its first run, against a fix made the same evening.
+    sql_context = re.search(r'\b(sql|mssql|sqlserver|@@version)\b', t, re.I)
+    bare = re.fullmatch(r'[\d.\sx]+', t, re.I)
+    if sql_context or bare:
+        for v in builds()['versions']:                  # "SQL Server 2019", "sql 2016", "2017"
+            year = (v.get('name') or '').split()[-1]
+            if year.isdigit() and re.search(r'(?<!\d)' + year + r'(?!\d)', t):
+                return v
     m = re.search(r'(?<![\d.])(\d{2})\s*\.\s*(?:0|x)(?![\d.])', t, re.I)
     if m:                                               # "13.0", "13.x"
         return version_for_engine(int(m.group(1)))
