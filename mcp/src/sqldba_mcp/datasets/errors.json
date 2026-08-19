@@ -6,7 +6,8 @@
   "message": "A network-related or instance-specific error occurred. (provider: Named Pipes Provider, error: 40)",
   "meaning": "The instance was never reached. Name resolution, port, firewall or the Browser service.",
   "category": "Connection and login",
-  "url": "https://sqldba.blog/sql-server-network-path-not-found-error-53/"
+  "url": "https://sqldba.blog/sql-server-network-path-not-found-error-53/",
+  "ms_docs": null
  },
  {
   "error_number": 102,
@@ -15,7 +16,8 @@
   "message": "Incorrect syntax near 'X'.",
   "meaning": "Often a compatibility level or version issue rather than a real typo, when the same code works elsewhere.",
   "category": "Query and data errors",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-102-database-engine-error"
  },
  {
   "error_number": 207,
@@ -24,7 +26,8 @@
   "message": "Invalid column name 'X'.",
   "meaning": "Typo, wrong alias, or a column that exists in a different environment to the one you are on.",
   "category": "Query and data errors",
-  "url": "https://sqldba.blog/sql-server-msg-207-invalid-column-name/"
+  "url": "https://sqldba.blog/sql-server-msg-207-invalid-column-name/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-207-database-engine-error"
  },
  {
   "error_number": 208,
@@ -33,7 +36,8 @@
   "message": "Invalid object name 'dbo.X'.",
   "meaning": "Wrong database context or schema more often than a missing object.",
   "category": "Query and data errors",
-  "url": "https://sqldba.blog/sql-server-invalid-object-name-208/"
+  "url": "https://sqldba.blog/sql-server-invalid-object-name-208/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-208-database-engine-error"
  },
  {
   "error_number": 229,
@@ -42,7 +46,8 @@
   "message": "The SELECT permission was denied on the object 'X', database 'Y', schema 'dbo'.",
   "meaning": "Object-level permission, or a DENY inherited from a role.",
   "category": "Permissions",
-  "url": "https://sqldba.blog/sql-server-select-permission-denied-229/"
+  "url": "https://sqldba.blog/sql-server-select-permission-denied-229/",
+  "ms_docs": null
  },
  {
   "error_number": 245,
@@ -51,7 +56,8 @@
   "message": "Conversion failed when converting the varchar value 'abc' to data type int.",
   "meaning": "Implicit conversion meeting a value that will not convert. Also a performance smell.",
   "category": "Query and data errors",
-  "url": "https://sqldba.blog/sql-server-conversion-failed-245/"
+  "url": "https://sqldba.blog/sql-server-conversion-failed-245/",
+  "ms_docs": null
  },
  {
   "error_number": 262,
@@ -60,7 +66,8 @@
   "message": "CREATE DATABASE permission denied in database 'master'.",
   "meaning": "Needs dbcreator or sysadmin, and it is the same shape for most CREATE permissions.",
   "category": "Permissions",
-  "url": null
+  "url": null,
+  "ms_docs": null
  },
  {
   "error_number": 300,
@@ -69,7 +76,8 @@
   "message": "VIEW SERVER STATE permission was denied on object 'server', database 'master'.",
   "meaning": "Every interesting DMV is behind this. Database roles cannot reach it.",
   "category": "Permissions",
-  "url": "https://sqldba.blog/grant-view-server-state-in-sql-server/"
+  "url": "https://sqldba.blog/grant-view-server-state-in-sql-server/",
+  "ms_docs": null
  },
  {
   "error_number": 547,
@@ -78,7 +86,8 @@
   "message": "The INSERT statement conflicted with the FOREIGN KEY constraint 'FK_X'.",
   "meaning": "The parent row does not exist, or you are deleting one that still has children.",
   "category": "Query and data errors",
-  "url": "https://sqldba.blog/sql-server-foreign-key-conflict-547/"
+  "url": "https://sqldba.blog/sql-server-foreign-key-conflict-547/",
+  "ms_docs": null
  },
  {
   "error_number": 605,
@@ -87,7 +96,8 @@
   "message": "Attempt to fetch logical page ... in database ... belongs to object ..., not to object ...",
   "meaning": "Allocation corruption. Stop and go to backups.",
   "category": "Corruption and hardware",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-605-database-engine-error"
  },
  {
   "error_number": 701,
@@ -96,7 +106,8 @@
   "message": "There is insufficient system memory in resource pool 'default' to run this query.",
   "meaning": "Real memory pressure, or a single query asking for far more than it should.",
   "category": "Blocking, deadlocks and memory",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-701-database-engine-error"
  },
  {
   "error_number": 823,
@@ -105,7 +116,8 @@
   "message": "The operating system returned error 21 to SQL Server during a read at offset 0x... in file 'X'.",
   "meaning": "The storage layer failed the request. This is hardware or driver, not SQL Server.",
   "category": "Corruption and hardware",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-823-database-engine-error"
  },
  {
   "error_number": 824,
@@ -114,7 +126,8 @@
   "message": "SQL Server detected a logical consistency-based I/O error: incorrect checksum.",
   "meaning": "The read succeeded and the page was wrong. Check the backups before anything else.",
   "category": "Corruption and hardware",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-824-database-engine-error"
  },
  {
   "error_number": 825,
@@ -123,7 +136,8 @@
   "message": "A read of the file 'X' at offset ... succeeded after failing N attempt(s).",
   "meaning": "The quiet one. Severity 10 so nothing alerts, and it is the warning before 823 and 824.",
   "category": "Corruption and hardware",
-  "url": "https://sqldba.blog/sql-server-read-retry-825/"
+  "url": "https://sqldba.blog/sql-server-read-retry-825/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-825-database-engine-error"
  },
  {
   "error_number": 916,
@@ -132,7 +146,8 @@
   "message": "The server principal \"X\" is not able to access the database \"Y\" under the current security context.",
   "meaning": "Common in SSMS Object Explorer when a login has no user in one database on the instance.",
   "category": "Permissions",
-  "url": "https://sqldba.blog/sql-server-not-able-to-access-database-916/"
+  "url": "https://sqldba.blog/sql-server-not-able-to-access-database-916/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-916-database-engine-error"
  },
  {
   "error_number": 927,
@@ -141,7 +156,8 @@
   "message": "Database 'X' cannot be opened. It is in the middle of a restore.",
   "meaning": "RESTORING state. The question is whether a restore is running or the database was stranded.",
   "category": "Backup and restore",
-  "url": "https://sqldba.blog/database-cannot-be-opened-it-is-in-the-middle-of-a-restore/"
+  "url": "https://sqldba.blog/database-cannot-be-opened-it-is-in-the-middle-of-a-restore/",
+  "ms_docs": null
  },
  {
   "error_number": 945,
@@ -150,7 +166,8 @@
   "message": "Database 'X' cannot be opened due to inaccessible files or insufficient memory or disk space.",
   "meaning": "The files are missing, the service account lost access, or the volume is gone.",
   "category": "Space, log and files",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-945-database-engine-error"
  },
  {
   "error_number": 1105,
@@ -159,7 +176,8 @@
   "message": "Could not allocate space for object 'X' in database 'Y' because the 'PRIMARY' filegroup is full.",
   "meaning": "Data file, not log. Autogrowth off, disk full, or a size cap reached.",
   "category": "Space, log and files",
-  "url": "https://sqldba.blog/sql-server-filegroup-is-full-1105/"
+  "url": "https://sqldba.blog/sql-server-filegroup-is-full-1105/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-1105-database-engine-error"
  },
  {
   "error_number": 1205,
@@ -168,7 +186,8 @@
   "message": "Transaction (Process ID 52) was deadlocked on lock resources with another process and has been chosen as the deadlock victim.",
   "meaning": "The engine picked the cheaper transaction to kill. The fix is in the access pattern, not the error.",
   "category": "Blocking, deadlocks and memory",
-  "url": "https://sqldba.blog/sql-server-deadlock-troubleshooting/"
+  "url": "https://sqldba.blog/sql-server-deadlock-troubleshooting/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-1205-database-engine-error"
  },
  {
   "error_number": 1222,
@@ -177,7 +196,8 @@
   "message": "Lock request time out period exceeded.",
   "meaning": "Blocking, not deadlock. Something held a lock longer than the timeout allowed.",
   "category": "Blocking, deadlocks and memory",
-  "url": "https://sqldba.blog/sql-server-lock-request-timeout-1222/"
+  "url": "https://sqldba.blog/sql-server-lock-request-timeout-1222/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-1222-database-engine-error"
  },
  {
   "error_number": 2601,
@@ -186,7 +206,8 @@
   "message": "Cannot insert duplicate key row in object 'dbo.X' with unique index 'IX_Y'.",
   "meaning": "Same as 2627 but from a unique index rather than a primary key.",
   "category": "Query and data errors",
-  "url": "https://sqldba.blog/sql-server-duplicate-key-errors-2627-2601/"
+  "url": "https://sqldba.blog/sql-server-duplicate-key-errors-2627-2601/",
+  "ms_docs": null
  },
  {
   "error_number": 2627,
@@ -195,7 +216,8 @@
   "message": "Violation of PRIMARY KEY constraint 'PK_X'. Cannot insert duplicate key in object 'dbo.Y'.",
   "meaning": "A duplicate insert, often a retry that succeeded the first time.",
   "category": "Query and data errors",
-  "url": "https://sqldba.blog/sql-server-duplicate-key-errors-2627-2601/"
+  "url": "https://sqldba.blog/sql-server-duplicate-key-errors-2627-2601/",
+  "ms_docs": null
  },
  {
   "error_number": 2628,
@@ -204,7 +226,8 @@
   "message": "String or binary data would be truncated in table 'db.dbo.T', column 'c'. Truncated value: 'X'.",
   "meaning": "The 2019 and later version of 8152. It names the table, the column and the value.",
   "category": "Query and data errors",
-  "url": "https://sqldba.blog/sql-server-string-or-binary-data-truncated/"
+  "url": "https://sqldba.blog/sql-server-string-or-binary-data-truncated/",
+  "ms_docs": null
  },
  {
   "error_number": 3013,
@@ -213,7 +236,8 @@
   "message": "RESTORE DATABASE is terminating abnormally.",
   "meaning": "The companion message, never the cause. The error immediately above it is the real one.",
   "category": "Backup and restore",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-3013-database-engine-error"
  },
  {
   "error_number": 3154,
@@ -222,7 +246,8 @@
   "message": "The backup set holds a backup of a database other than the existing 'X' database.",
   "meaning": "Restoring over a different database needs WITH REPLACE, and deserves a pause first.",
   "category": "Backup and restore",
-  "url": "https://sqldba.blog/sql-server-backup-set-different-database-3154/"
+  "url": "https://sqldba.blog/sql-server-backup-set-different-database-3154/",
+  "ms_docs": null
  },
  {
   "error_number": 3201,
@@ -231,7 +256,8 @@
   "message": "Cannot open backup device 'X'. Operating system error 5(Access is denied.).",
   "meaning": "Almost always the SQL Server service account, not your own account, lacking access to the path.",
   "category": "Backup and restore",
-  "url": "https://sqldba.blog/sql-server-cannot-open-backup-device/"
+  "url": "https://sqldba.blog/sql-server-cannot-open-backup-device/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-3201-database-engine-error"
  },
  {
   "error_number": 3241,
@@ -240,7 +266,8 @@
   "message": "The media family on device 'X' is incorrectly formed. SQL Server cannot process this media family.",
   "meaning": "Wrong file, truncated copy, or a backup from a newer version being restored to an older one.",
   "category": "Backup and restore",
-  "url": null
+  "url": null,
+  "ms_docs": null
  },
  {
   "error_number": 3417,
@@ -249,7 +276,8 @@
   "message": "Cannot recover the master database. SQL Server is unable to run.",
   "meaning": "The instance will not start. Master is damaged, moved, or its permissions changed.",
   "category": "Corruption and hardware",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-3417-database-engine-error"
  },
  {
   "error_number": 4060,
@@ -258,7 +286,8 @@
   "message": "Cannot open database \"X\" requested by the login. The login failed.",
   "meaning": "The login is fine. The database named in the connection string is missing, offline or not permitted.",
   "category": "Connection and login",
-  "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/"
+  "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/",
+  "ms_docs": null
  },
  {
   "error_number": 4064,
@@ -267,7 +296,8 @@
   "message": "Cannot open user default database. Login failed.",
   "meaning": "The login's default database is unavailable. Fixable without touching the database.",
   "category": "Connection and login",
-  "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/"
+  "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-4064-database-engine-error"
  },
  {
   "error_number": 5030,
@@ -276,7 +306,8 @@
   "message": "The database could not be exclusively locked to perform the operation.",
   "meaning": "Something is connected. Common when setting a database to single user or restoring over it.",
   "category": "Space, log and files",
-  "url": "https://sqldba.blog/sql-server-database-could-not-be-exclusively-locked-5030/"
+  "url": "https://sqldba.blog/sql-server-database-could-not-be-exclusively-locked-5030/",
+  "ms_docs": null
  },
  {
   "error_number": 5123,
@@ -285,7 +316,8 @@
   "message": "CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open the file 'X'.",
   "meaning": "Service account permissions on the target folder, or a path that does not exist.",
   "category": "Space, log and files",
-  "url": null
+  "url": null,
+  "ms_docs": null
  },
  {
   "error_number": 5171,
@@ -294,7 +326,8 @@
   "message": "'X.mdf' is not a primary database file.",
   "meaning": "A corrupt or wrong file being attached, or a file copied while the instance was running.",
   "category": "Space, log and files",
-  "url": null
+  "url": null,
+  "ms_docs": null
  },
  {
   "error_number": 8152,
@@ -303,7 +336,8 @@
   "message": "String or binary data would be truncated.",
   "meaning": "Pre-2019 it will not tell you which column. 2019 and later name the column and the value.",
   "category": "Query and data errors",
-  "url": "https://sqldba.blog/sql-server-string-or-binary-data-truncated/"
+  "url": "https://sqldba.blog/sql-server-string-or-binary-data-truncated/",
+  "ms_docs": null
  },
  {
   "error_number": 8623,
@@ -312,7 +346,8 @@
   "message": "The query processor ran out of internal resources and could not produce a query plan.",
   "meaning": "Nearly always an enormous IN list or a generated query of extreme size.",
   "category": "Blocking, deadlocks and memory",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-8623-database-engine-error"
  },
  {
   "error_number": 8645,
@@ -321,7 +356,8 @@
   "message": "A timeout occurred while waiting for memory resources to execute the query.",
   "meaning": "RESOURCE_SEMAPHORE waits. Query memory grants are the thing to look at.",
   "category": "Blocking, deadlocks and memory",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-8645-database-engine-error"
  },
  {
   "error_number": 9002,
@@ -330,7 +366,8 @@
   "message": "The transaction log for database 'X' is full due to 'LOG_BACKUP'.",
   "meaning": "The reason in quotes is the diagnosis, and it is rarely solved by shrinking.",
   "category": "Space, log and files",
-  "url": "https://sqldba.blog/sql-server-transaction-log-full/"
+  "url": "https://sqldba.blog/sql-server-transaction-log-full/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-9002-database-engine-error"
  },
  {
   "error_number": 10054,
@@ -339,7 +376,8 @@
   "message": "A connection was successfully established with the server, but then an error occurred during the login process.",
   "meaning": "Not a login problem. The handshake failed before credentials were checked.",
   "category": "Connection and login",
-  "url": "https://sqldba.blog/sql-server-pre-login-handshake-error/"
+  "url": "https://sqldba.blog/sql-server-pre-login-handshake-error/",
+  "ms_docs": null
  },
  {
   "error_number": 15023,
@@ -348,7 +386,8 @@
   "message": "User, group, or role 'X' already exists in the current database.",
   "meaning": "The classic orphaned user after a restore. The user exists, its SID no longer matches a login.",
   "category": "Permissions",
-  "url": "https://sqldba.blog/sql-server-orphaned-users-15023/"
+  "url": "https://sqldba.blog/sql-server-orphaned-users-15023/",
+  "ms_docs": null
  },
  {
   "error_number": 15138,
@@ -357,7 +396,8 @@
   "message": "The database principal owns a schema in the database, and cannot be dropped.",
   "meaning": "Reassign the schema owner first, then drop the user.",
   "category": "Permissions",
-  "url": "https://sqldba.blog/sql-server-principal-owns-schema-15138/"
+  "url": "https://sqldba.blog/sql-server-principal-owns-schema-15138/",
+  "ms_docs": null
  },
  {
   "error_number": 15517,
@@ -366,7 +406,8 @@
   "message": "Cannot execute as the database principal because the principal \"dbo\" does not exist.",
   "meaning": "Usually a database whose owner SID no longer resolves, after a restore or a domain change.",
   "category": "Permissions",
-  "url": null
+  "url": null,
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-15517-database-engine-error"
  },
  {
   "error_number": 17806,
@@ -375,7 +416,8 @@
   "message": "SSPI handshake failed with error code 0x8009030c.",
   "meaning": "Kerberos or NTLM could not complete. Usually a duplicate or missing SPN, or clock skew.",
   "category": "Connection and login",
-  "url": "https://sqldba.blog/sql-server-sspi-handshake-failed/"
+  "url": "https://sqldba.blog/sql-server-sspi-handshake-failed/",
+  "ms_docs": null
  },
  {
   "error_number": 18452,
@@ -384,7 +426,8 @@
   "message": "Login failed. The login is from an untrusted domain and cannot be used with Integrated authentication.",
   "meaning": "Windows authentication could not be negotiated, often SPN or trust related rather than a password problem.",
   "category": "Connection and login",
-  "url": "https://sqldba.blog/sql-server-login-untrusted-domain-18452/"
+  "url": "https://sqldba.blog/sql-server-login-untrusted-domain-18452/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-18452-database-engine-error"
  },
  {
   "error_number": 18456,
@@ -393,7 +436,8 @@
   "message": "Login failed for user 'X'.",
   "meaning": "The client only ever sees State 1. The real state is in the error log and names the cause.",
   "category": "Connection and login",
-  "url": "https://sqldba.blog/sql-server-login-failed-error-18456/"
+  "url": "https://sqldba.blog/sql-server-login-failed-error-18456/",
+  "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-18456-database-engine-error"
  },
  {
   "error_number": 18470,
@@ -402,7 +446,8 @@
   "message": "Login failed for user 'X'. Reason: The account is disabled.",
   "meaning": "The login exists and the password may even be right. It is switched off.",
   "category": "Connection and login",
-  "url": "https://sqldba.blog/sql-server-login-disabled-18470/"
+  "url": "https://sqldba.blog/sql-server-login-disabled-18470/",
+  "ms_docs": null
  },
  {
   "error_number": 33111,
@@ -411,7 +456,8 @@
   "message": "Cannot find server certificate with thumbprint 'X'.",
   "meaning": "A TDE-encrypted backup restored to an instance without the certificate. Restore the certificate first.",
   "category": "Backup and restore",
-  "url": null
+  "url": null,
+  "ms_docs": null
  },
  {
   "error_number": null,
@@ -420,6 +466,7 @@
   "message": "The certificate chain was issued by an authority that is not trusted.",
   "meaning": "The client now validates the certificate by default. Your server did not change.",
   "category": "Connection and login",
-  "url": "https://sqldba.blog/ssms-certificate-chain-not-trusted-error-trust-server-certificate-fix/"
+  "url": "https://sqldba.blog/ssms-certificate-chain-not-trusted-error-trust-server-certificate-fix/",
+  "ms_docs": null
  }
 ]

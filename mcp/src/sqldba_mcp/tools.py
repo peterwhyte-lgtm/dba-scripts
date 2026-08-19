@@ -44,6 +44,12 @@ def _fmt_error(e: dict) -> str:
         lines.append('**What it actually means**')
         lines.append(e['meaning'])
     lines.append('')
+    if e.get('ms_docs'):
+        # Microsoft's own page, alongside the hand-written one. Two independent sources beat
+        # one, and it lets a reader check the library rather than take its word. Present on
+        # 23 of 47: every URL was probed and kept only if it returned 200 and still named
+        # this error, so its ABSENCE means Microsoft has no page, not that nobody looked.
+        lines.append('Microsoft reference: %s' % e['ms_docs'])
     if e.get('url'):
         lines.append('Full write-up: %s' % e['url'])
     else:
