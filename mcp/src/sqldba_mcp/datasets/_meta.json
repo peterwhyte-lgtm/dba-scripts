@@ -6,8 +6,8 @@
  "post_cache_size": 488,
  "counts": {
   "errors": 47,
-  "waits": 224,
-  "wait_types": 232,
+  "waits": 225,
+  "wait_types": 233,
   "versions": 7,
   "faqs": 448,
   "faq_posts": 168,

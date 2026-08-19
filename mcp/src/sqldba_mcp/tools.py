@@ -217,7 +217,14 @@ def explain_wait(wait_type: str) -> str:
 
     lines = ['## %s' % ' / '.join(hit['wait_types']), '', '**%s**' % badge, '']
     if hit.get('verdict'):
-        lines += ['**Is it a problem?**', hit['verdict'], '']
+        # Ask the question the POST asked. Most wait posts ask "Is This Wait Expected?"
+        # and a handful ask "Is It a Problem?", and those invert each other: under the
+        # first, "No" means the wait is bad. Printing every answer under a hardcoded
+        # "Is it a problem?" made THREADPOOL read "Is it a problem? No. There is no safe
+        # level of THREADPOOL during production operations." - the opposite of the post,
+        # directly under a WORTH INVESTIGATING badge.
+        lines += ['**%s**' % (hit.get('verdict_question') or 'Is it a problem?'),
+                  hit['verdict'], '']
     if hit.get('when_to_ignore'):
         lines += ['**When to ignore it**', hit['when_to_ignore'], '']
     if hit.get('what_to_do'):
@@ -514,18 +521,29 @@ def _warning(s: dict) -> str | None:
 # that a clearly better match still wins, and it is switched off entirely when the query
 # actually asks for an action.
 _ACTION_WORDS = {'fix', 'kill', 'create', 'generate', 'rebuild', 'drop', 'delete', 'set',
-                 'change', 'apply', 'install', 'patch', 'restore', 'shrink', 'enable',
-                 'disable', 'add', 'remove', 'update', 'configure', 'make', 'build'}
+                 'change', 'apply', 'install', 'uninstall', 'patch', 'restore', 'shrink',
+                 'enable', 'disable', 'add', 'remove', 'update', 'configure', 'make',
+                 'build', 'restart', 'reboot', 'deploy', 'provision'}
 
 
 def _prefer_reading(query: str, hits: list) -> list:
-    """Break near-ties toward the script that only reads."""
+    """Withhold the 14 scripts that change a server unless the question asked to change one.
+
+    This used to multiply their score by 0.8, which is a preference, not a guarantee - and
+    a preference is not enough here. "is my sql server ok" returned an eight-script list
+    with `uninstall-sql` in it ("removes a SQL Server instance and can delete its data
+    directories"), alongside Patch-SqlServer and configure-sql. The reply did label each
+    one NOT READ-ONLY, and that labelling is good, but a beginner's health question should
+    never have surfaced them at all.
+
+    So: no action word in the question, no server-changing script in the answer. Asking to
+    install, patch, kill, uninstall or create still returns exactly what it always did -
+    "create test databases" still leads with New-TestDatabases and its HIGH IMPACT
+    warning. The cost of being wrong in this direction is a script a DBA runs.
+    """
     if any(t in _ACTION_WORDS for t in data.tokens(query)):
         return hits
-    adjusted = [(record, score * (1.0 if record.get('read_only') is not False else 0.80))
-                for record, score in hits]
-    adjusted.sort(key=lambda pair: -pair[1])
-    return adjusted
+    return [(record, score) for record, score in hits if record.get('read_only') is not False]
 
 
 def find_script(task: str) -> str:

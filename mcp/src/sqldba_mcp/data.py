@@ -428,6 +428,12 @@ class Index:
         """
         if term in self._guard_vocab:
             return True
+        # A word the corpus knows under another name is not foreign vocabulary. Without
+        # this the guard counted "eating" as off-domain and refused "whats eating my cpu"
+        # outright, from a library holding Get-TopCpuQueries - while the synonym table
+        # right below could already have matched it.
+        if any(alt in self._guard_vocab for alt in _SYNONYMS.get(term, ())):
+            return True
         if len(term) < 3:
             return False
         return any((known.startswith(term) or term.startswith(known))
