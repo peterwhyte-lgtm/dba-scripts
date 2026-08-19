@@ -2550,6 +2550,18 @@
   "url": "https://sqldba.blog/sql-server-orphaned-users-15023/"
  },
  {
+  "question": "Should I drop the schema or reassign it?",
+  "answer": "Count the objects first. Empty and unreferenced, drop it. Holding anything at all, reassign it to dbo : that changes nothing about permissions and is the safer default when you are unsure.",
+  "post_title": "The Database Principal Owns a Schema in the Database and Cannot Be Dropped (Error 15138)",
+  "url": "https://sqldba.blog/sql-server-principal-owns-schema-15138/"
+ },
+ {
+  "question": "Why does the user own a schema I never created?",
+  "answer": "When a user is created without an explicit DEFAULT_SCHEMA , some tooling creates a schema of the same name and makes the user its owner. After a migration you often find a row of empty, user-named schemas that exist for no other reason.",
+  "post_title": "The Database Principal Owns a Schema in the Database and Cannot Be Dropped (Error 15138)",
+  "url": "https://sqldba.blog/sql-server-principal-owns-schema-15138/"
+ },
+ {
   "question": "It says it succeeded, so is there a problem?",
   "answer": "Yes. The data is fine right now and the hardware is not. SQL Server had to retry a read because the storage returned bad data. This is the warning that arrives before 823 and 824, which are the ones that take a database offline.",
   "post_title": "A Read of the File Succeeded After Failing (Error 825, the Read-Retry Warning)",

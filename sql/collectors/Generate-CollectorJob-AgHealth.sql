@@ -17,6 +17,10 @@ Notes       : Default interval: every 5 minutes. Requires SQL Server 2016+ (temp
               (queue sizes, timing) are not tracked in history to avoid noise.
               Filter WHERE ag_name <> 'NO_AG' when querying production replica data.
               If upgrading from the non-temporal version, drop collector.AgHealth manually first.
+              PK is NONCLUSTERED deliberately: the four key columns are all identifiers
+              (sysname, nvarchar(128)), so the key is 1024 bytes. That exceeds SQL Server's
+              900-byte CLUSTERED index key limit but fits the 1700-byte nonclustered limit.
+              Narrowing the columns instead would truncate legal 128-character identifiers.
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low
@@ -166,7 +170,7 @@ SET @ddl +=
     N'CREATE TABLE [' + @TargetDatabase + N'].[collector].[AgHealthCurrent] ('                 + @crlf +
     N'    server_name                      nvarchar(128)  NOT NULL,'                           + @crlf +
     N'    ag_name                          nvarchar(128)  NOT NULL,'                           + @crlf +
-    N'    replica_server_name              nvarchar(256)  NOT NULL,'                           + @crlf +
+    N'    replica_server_name              nvarchar(128)  NOT NULL,'                           + @crlf +
     N'    database_name                    nvarchar(128)  NOT NULL,'                           + @crlf +
     N'    role_desc                        nvarchar(60)   NULL,'                               + @crlf +
     N'    operational_state_desc           nvarchar(60)   NULL,'                               + @crlf +
@@ -188,7 +192,7 @@ SET @ddl +=
     N'    SysEndTime                       datetime2(2)   GENERATED ALWAYS AS ROW END   NOT NULL,' + @crlf +
     N'    PERIOD FOR SYSTEM_TIME (SysStartTime, SysEndTime),'                                 + @crlf +
     N'    CONSTRAINT [PK_AgHealthCurrent]'                                                    + @crlf +
-    N'        PRIMARY KEY (server_name, ag_name, replica_server_name, database_name)'         + @crlf +
+    N'        PRIMARY KEY NONCLUSTERED (server_name, ag_name, replica_server_name, database_name)'         + @crlf +
     N') WITH (SYSTEM_VERSIONING = ON ('                                                       + @crlf +
     N'    HISTORY_TABLE        = [collector].[AgHealthHistory],'                              + @crlf +
     N'    DATA_CONSISTENCY_CHECK = ON));'                                                      + @crlf +

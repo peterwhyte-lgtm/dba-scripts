@@ -357,7 +357,7 @@
   "message": "The database principal owns a schema in the database, and cannot be dropped.",
   "meaning": "Reassign the schema owner first, then drop the user.",
   "category": "Permissions",
-  "url": null
+  "url": "https://sqldba.blog/sql-server-principal-owns-schema-15138/"
  },
  {
   "error_number": 15517,
