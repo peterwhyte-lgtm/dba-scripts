@@ -1,7 +1,7 @@
 [
  {
   "error_number": 53,
-  "severity": 20,
+  "severity": null,
   "title": "Network path was not found",
   "message": "A network-related or instance-specific error occurred. (provider: Named Pipes Provider, error: 40)",
   "meaning": "The instance was never reached. Name resolution, port, firewall or the Browser service.",
@@ -55,7 +55,7 @@
  },
  {
   "error_number": 262,
-  "severity": 14,
+  "severity": 16,
   "title": "CREATE DATABASE permission denied",
   "message": "CREATE DATABASE permission denied in database 'master'.",
   "meaning": "Needs dbcreator or sysadmin, and it is the same shape for most CREATE permissions.",
@@ -91,7 +91,7 @@
  },
  {
   "error_number": 701,
-  "severity": 17,
+  "severity": 19,
   "title": "Insufficient system memory",
   "message": "There is insufficient system memory in resource pool 'default' to run this query.",
   "meaning": "Real memory pressure, or a single query asking for far more than it should.",
@@ -145,7 +145,7 @@
  },
  {
   "error_number": 945,
-  "severity": 21,
+  "severity": 16,
   "title": "Database cannot be opened due to inaccessible files",
   "message": "Database 'X' cannot be opened due to inaccessible files or insufficient memory or disk space.",
   "meaning": "The files are missing, the service account lost access, or the volume is gone.",
@@ -289,7 +289,7 @@
  },
  {
   "error_number": 5171,
-  "severity": 22,
+  "severity": 16,
   "title": "Not a primary database file",
   "message": "'X.mdf' is not a primary database file.",
   "meaning": "A corrupt or wrong file being attached, or a file copied while the instance was running.",
@@ -334,7 +334,7 @@
  },
  {
   "error_number": 10054,
-  "severity": 20,
+  "severity": null,
   "title": "Existing connection was forcibly closed",
   "message": "A connection was successfully established with the server, but then an error occurred during the login process.",
   "meaning": "Not a login problem. The handshake failed before credentials were checked.",
