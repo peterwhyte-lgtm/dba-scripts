@@ -2112,6 +2112,24 @@
   "url": "https://sqldba.blog/install-and-update-sql-server-management-studio-ssms/"
  },
  {
+  "question": "How do I see what is really in the backup file?",
+  "answer": "RESTORE HEADERONLY reads it without touching anything, and RESTORE FILELISTONLY gives you the logical file names for WITH MOVE . Both answer \u201cis this the file I think it is\u201d before you commit to anything.",
+  "post_title": "The Backup Set Holds a Backup of a Database Other Than the Existing Database (Error 3154)",
+  "url": "https://sqldba.blog/sql-server-backup-set-different-database-3154/"
+ },
+ {
+  "question": "Is WITH REPLACE safe?",
+  "answer": "It waives two checks, not one: the database-identity check that raised 3154, and the check that the tail of the existing log has been backed up. The second is the dangerous half, because committed work since the last log backup is destroyed without a further warning.",
+  "post_title": "The Backup Set Holds a Backup of a Database Other Than the Existing Database (Error 3154)",
+  "url": "https://sqldba.blog/sql-server-backup-set-different-database-3154/"
+ },
+ {
+  "question": "The names match, so why does SQL Server think they are different databases?",
+  "answer": "Lineage, not name. A database restored from another server, or dropped and recreated, carries a different family GUID even with an identical name. That is exactly what the check is for.",
+  "post_title": "The Backup Set Holds a Backup of a Database Other Than the Existing Database (Error 3154)",
+  "url": "https://sqldba.blog/sql-server-backup-set-different-database-3154/"
+ },
+ {
   "question": "Are Cumulative Updates really cumulative?",
   "answer": "Yes. The latest CU includes everything from all earlier CUs for that version, so a new server goes straight from RTM to the newest CU in one step. There is no need to chain updates.",
   "post_title": "SQL Server Builds: Complete Version List and Support Lifecycle",
@@ -2164,6 +2182,24 @@
   "answer": "No. Authentication already succeeded. Both errors report as \"login failed\" and neither involves the password. The database is the problem, not the login.",
   "post_title": "Cannot Open Database Requested by the Login (Errors 4060 and 4064)",
   "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/"
+ },
+ {
+  "question": "Is ISNUMERIC good enough for the check?",
+  "answer": "No. ISNUMERIC returns 1 for 1e5 , 1.5 , $10 and 1,000 , none of which convert to int . It answers a different question from the one you have.",
+  "post_title": "Conversion Failed When Converting the varchar Value to Data Type int (Error 245)",
+  "url": "https://sqldba.blog/sql-server-conversion-failed-245/"
+ },
+ {
+  "question": "Why is SQL Server converting the column and not my value?",
+  "answer": "Data type precedence. int outranks varchar , so the column side converts, not the literal. Quoting the literal stops the conversion, and usually makes the query faster by keeping the predicate sargable.",
+  "post_title": "Conversion Failed When Converting the varchar Value to Data Type int (Error 245)",
+  "url": "https://sqldba.blog/sql-server-conversion-failed-245/"
+ },
+ {
+  "question": "Is WITH ROLLBACK IMMEDIATE safe?",
+  "answer": "It is decisive, not safe. It rolls back every open transaction in that database rather than waiting for them, so it belongs in a maintenance window. Other people\u2019s in-flight work is what gets rolled back.",
+  "post_title": "The Database Could Not Be Exclusively Locked to Perform the Operation (Error 5030)",
+  "url": "https://sqldba.blog/sql-server-database-could-not-be-exclusively-locked-5030/"
  },
  {
   "question": "Can I stop my transaction being chosen as the victim?",
@@ -2284,6 +2320,42 @@
   "answer": "Autogrowth is almost certainly switched off, or the file has hit a MAXSIZE cap. A file with growth = 0 will never grow no matter how much disk is free, and volume monitoring will never see it coming.",
   "post_title": "Could Not Allocate Space Because the Filegroup Is Full (Error 1105)",
   "url": "https://sqldba.blog/sql-server-filegroup-is-full-1105/"
+ },
+ {
+  "question": "Can I just disable the constraint?",
+  "answer": "You can, and it costs more than it saves. A disabled constraint is marked is_not_trusted , so the optimiser stops using it for join elimination while you still pay to maintain it, and you now hold orphan rows nobody has counted. Re-enable it with WITH CHECK CHECK CONSTRAINT , which validates the existing data.",
+  "post_title": "The DELETE Statement Conflicted With a FOREIGN KEY Constraint (Error 547)",
+  "url": "https://sqldba.blog/sql-server-foreign-key-conflict-547/"
+ },
+ {
+  "question": "Should I add ON DELETE CASCADE?",
+  "answer": "Only for a genuine ownership relationship. It is right for order lines under an order, and dangerous on a lookup table, where one delete can silently remove millions of rows.",
+  "post_title": "The DELETE Statement Conflicted With a FOREIGN KEY Constraint (Error 547)",
+  "url": "https://sqldba.blog/sql-server-foreign-key-conflict-547/"
+ },
+ {
+  "question": "Which table is actually blocking me?",
+  "answer": "The message names it, including the database, table and column. On a wide schema it names the first blocker only, so query sys.foreign_keys for every table referencing the parent before you start.",
+  "post_title": "The DELETE Statement Conflicted With a FOREIGN KEY Constraint (Error 547)",
+  "url": "https://sqldba.blog/sql-server-foreign-key-conflict-547/"
+ },
+ {
+  "question": "Could this be a permissions problem instead?",
+  "answer": "Not directly. Referencing an object you have no rights on returns Msg 229 , naming the object and the permission, and a cross-database reference with no user account in the target returns Msg 916 . Both were measured rather than assumed. Permissions do reach you through the back door though: you cannot see an object you have no rights on, so OBJECT_ID() returns NULL and any tool that probes with it will tell you the object does not exist. Use HAS_PERMS_BY_NAME to tell \"absent\" apart from \"not for you\".",
+  "post_title": "Invalid Object Name in SQL Server (Error 208)",
+  "url": "https://sqldba.blog/sql-server-invalid-object-name-208/"
+ },
+ {
+  "question": "The procedure created without an error, so how can the table be missing?",
+  "answer": "Deferred name resolution. SQL Server resolves object names when the statement runs, not when the procedure is created, so a clean deployment proves nothing about whether every referenced object exists.",
+  "post_title": "Invalid Object Name in SQL Server (Error 208)",
+  "url": "https://sqldba.blog/sql-server-invalid-object-name-208/"
+ },
+ {
+  "question": "Why does my TRY/CATCH not catch 208?",
+  "answer": "Because 208 happens at compile time, when the batch is bound, and a batch that will not compile never runs, including its CATCH . Move the reference into sp_executesql so binding happens at execution time, and the outer CATCH will see it.",
+  "post_title": "Invalid Object Name in SQL Server (Error 208)",
+  "url": "https://sqldba.blog/sql-server-invalid-object-name-208/"
  },
  {
   "question": "Is this a deadlock?",

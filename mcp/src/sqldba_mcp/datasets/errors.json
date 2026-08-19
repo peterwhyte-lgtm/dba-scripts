@@ -33,7 +33,7 @@
   "message": "Invalid object name 'dbo.X'.",
   "meaning": "Wrong database context or schema more often than a missing object.",
   "category": "Query and data errors",
-  "url": null
+  "url": "https://sqldba.blog/sql-server-invalid-object-name-208/"
  },
  {
   "error_number": 229,
@@ -51,7 +51,7 @@
   "message": "Conversion failed when converting the varchar value 'abc' to data type int.",
   "meaning": "Implicit conversion meeting a value that will not convert. Also a performance smell.",
   "category": "Query and data errors",
-  "url": null
+  "url": "https://sqldba.blog/sql-server-conversion-failed-245/"
  },
  {
   "error_number": 262,
@@ -78,7 +78,7 @@
   "message": "The INSERT statement conflicted with the FOREIGN KEY constraint 'FK_X'.",
   "meaning": "The parent row does not exist, or you are deleting one that still has children.",
   "category": "Query and data errors",
-  "url": null
+  "url": "https://sqldba.blog/sql-server-foreign-key-conflict-547/"
  },
  {
   "error_number": 605,
@@ -222,7 +222,7 @@
   "message": "The backup set holds a backup of a database other than the existing 'X' database.",
   "meaning": "Restoring over a different database needs WITH REPLACE, and deserves a pause first.",
   "category": "Backup and restore",
-  "url": null
+  "url": "https://sqldba.blog/sql-server-backup-set-different-database-3154/"
  },
  {
   "error_number": 3201,
@@ -276,7 +276,7 @@
   "message": "The database could not be exclusively locked to perform the operation.",
   "meaning": "Something is connected. Common when setting a database to single user or restoring over it.",
   "category": "Space, log and files",
-  "url": null
+  "url": "https://sqldba.blog/sql-server-database-could-not-be-exclusively-locked-5030/"
  },
  {
   "error_number": 5123,

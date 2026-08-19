@@ -94,7 +94,11 @@ def check_build(build: str) -> str:
     name='find_script',
     title='Find a DBA script by task',
     description=(
-        'Search 181 production SQL Server scripts plus PowerShell orchestrators by what '
+        # Counted from the shipped dataset, not typed. This read 181 while the library
+        # held 183: a hand-typed figure in a tool DESCRIPTION drifts silently, because
+        # check_freshness.py gates the datasets and never reads the prose around them.
+        'Search %d production SQL Server scripts plus PowerShell orchestrators by what '
+        % sum(1 for s in data.scripts() if s.get('language') != 'powershell') +
         'you are trying to do ("find blocking chains", "check backup coverage", "missing '
         'indexes"). Returns each script with its purpose, the permission it needs, and '
         'its SAFE/IMPACT safety class - always report that class to the user, because '

@@ -570,12 +570,26 @@ def answer_question(question: str) -> str:
                 "`find_script`." % len(data.faqs()))
 
     best = hits[0][0]
-    lines = ['**%s**' % best['question'], '', best['answer'], '',
-             'From: %s' % best['url']]
+    # Name the article the answer came from, above the answer itself.
+    #
+    # Many of these questions are only meaningful inside their own post. "How long before
+    # the window should Phase 0 run?" has no referent until you know it concerns the
+    # standalone migration runbook, and "Days, not hours" quoted bare reads as a general
+    # rule about SQL Server rather than one step of one runbook. The post title was always
+    # in the record and simply was not rendered, so an agent had no way to qualify what it
+    # was repeating. Front it, because a caller that truncates keeps the top.
+    lines = ['**%s**' % best['question'], '',
+             'Answered in: %s' % (best.get('post_title') or best['url']), '',
+             best['answer'], '',
+             'Full post: %s' % best['url']]
 
     others = [h for h, _ in hits[1:3]]
     if others:
+        # Same reasoning: a bare related question is an invitation to quote it out of
+        # context, and these are the ones the reader has NOT seen the answer to.
         lines += ['', 'Related questions answered:']
         for o in others:
-            lines.append('- %s  %s' % (o['question'], o['url']))
+            title = o.get('post_title')
+            lines.append('- %s%s  %s'
+                         % (o['question'], ' (in: %s)' % title if title else '', o['url']))
     return '\n'.join(lines)
