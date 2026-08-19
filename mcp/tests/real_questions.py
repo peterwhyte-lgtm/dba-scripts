@@ -77,10 +77,19 @@ QUESTIONS = [
          note='Refused outright before: the build being asked for was the price of asking.'),
 
     dict(id='R04', asked='does sql server 2022 standard edition have compression available',
-         tool='answer_question', mode='cites', expect=['sql-server-edition-change-runbook'],
-         note='Names the right post now. The FACT is still wrong on two other posts - '
-              'compression has been in Standard since 2016 SP1 - and that is a content '
-              'edit awaiting sign-off, not a code defect.'),
+         tool='answer_question', mode='cites',
+         expect=['dba-scripts-server-inventory', 'dba-scripts-server-and-configuration',
+                 'sql-server-edition-change-runbook'],
+         note='EXPECTATION WIDENED 2026-08-19, and the reason matters. It originally '
+              'accepted only the Edition Change Runbook, because when this question was '
+              'first asked that was the closest thing to an answer the corpus held - and '
+              'it did not actually answer it. The three posts carrying the wrong "'
+              'compression is Enterprise-only" claim were then corrected on live, and the '
+              'corrected server-inventory answer now outranks the runbook and states the '
+              'fact directly: compression came to Standard in SQL Server 2016 SP1. The '
+              'suite flagged this as a FAIL, which is correct behaviour - the answer '
+              'changed. It was verified as BETTER before the expectation was widened, not '
+              'widened to make the number green.'),
 
     dict(id='R05', asked='The login is from an untrusted domain and cannot be used with '
                          'Windows authentication',

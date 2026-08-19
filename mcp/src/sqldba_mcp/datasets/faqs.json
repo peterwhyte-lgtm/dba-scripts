@@ -1963,7 +1963,7 @@
  },
  {
   "question": "Why does edition matter so much?",
-  "answer": "Because it silently governs capability. Compression, online index rebuilds, and several availability features are Enterprise-only, so a script that works on one instance can fail on another for licensing reasons rather than technical ones.",
+  "answer": "Because it silently governs capability. Online index rebuilds, Resource Governor and readable secondaries are Enterprise-only on every version, so a script that works on one instance can fail on another for licensing reasons rather than technical ones. Check the version before assuming the rest, because several features moved: compression, partitioning, CDC and database snapshots came to Standard in SQL Server 2016 SP1, and TDE followed in 2019.",
   "post_title": "DBA Scripts: Server and Configuration",
   "url": "https://sqldba.blog/dba-scripts-server-and-configuration/"
  },
@@ -1981,7 +1981,7 @@
  },
  {
   "question": "Why does edition matter more than version?",
-  "answer": "Version tells you what syntax works; edition tells you what you are licensed to run. Compression, online index rebuilds and several availability features are Enterprise-only, so an identical script can be valid on one instance and a licensing problem on another.",
+  "answer": "Version tells you what syntax works; edition tells you what you are licensed to run. Online index rebuilds, Resource Governor and readable secondaries are Enterprise-only on every version, so an identical script can be valid on one instance and a licensing problem on another. Edition alone is not the whole answer either, because several features moved: compression, partitioning, CDC and database snapshots came to Standard in SQL Server 2016 SP1, and TDE followed in 2019.",
   "post_title": "DBA Scripts: Server Inventory",
   "url": "https://sqldba.blog/dba-scripts-server-inventory/"
  },
@@ -2251,7 +2251,7 @@
  },
  {
   "question": "What most often blocks a Standard downgrade?",
-  "answer": "TDE and readable secondaries, then online index rebuilds hiding inside maintenance plans. The last one is quiet: nothing fails until the next maintenance run.",
+  "answer": "Readable secondaries, then online index rebuilds hiding inside maintenance plans. TDE belongs on that list only if you are on SQL Server 2017 or earlier, because it moved to Standard in 2019. The last one is quiet: nothing fails until the next maintenance run.",
   "post_title": "SQL Server Edition Change Runbook: Upgrade and Downgrade",
   "url": "https://sqldba.blog/sql-server-edition-change-runbook/"
  },
