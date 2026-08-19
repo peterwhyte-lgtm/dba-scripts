@@ -1653,6 +1653,18 @@
  },
  {
   "wait_types": [
+   "PREEMPTIVE_OS_ACCEPTSECURITYCONTEXT"
+  ],
+  "title": "PREEMPTIVE_OS Security Wait Types in SQL Server",
+  "verdict": "At routine levels, no; they are the itemised cost of Windows security working.",
+  "verdict_question": "Are They a Problem?",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Correlate with login rates and connection behaviour; storms show in the count, AD slowness in the averages.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-security-waits/"
+ },
+ {
+  "wait_types": [
    "PREEMPTIVE_OS_AUTHENTICATIONOPS"
   ],
   "title": "PREEMPTIVE_OS_AUTHENTICATIONOPS Wait Type in SQL Server",
@@ -1665,6 +1677,64 @@
  },
  {
   "wait_types": [
+   "PREEMPTIVE_OS_BACKUPREAD",
+   "PREEMPTIVE_OS_CLOSEHANDLE"
+  ],
+  "title": "PREEMPTIVE_OS File Operation Wait Types in SQL Server",
+  "verdict": "Individually, almost never; none has been a meaningful contention point.",
+  "verdict_question": "Are They a Problem?",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Map accumulation to the file-touching activity at the time (backups, FILESTREAM, file growth).",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-file-waits/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_BCRYPTIMPORTKEY"
+  ],
+  "title": "PREEMPTIVE_OS Crypto Wait Types in SQL Server",
+  "verdict": "Rarely; key operations are infrequent and fast against local providers.",
+  "verdict_question": "Are They a Problem?",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Map accumulation to the crypto activity: TDE operations, encrypted backup windows, EKM usage, service or CLR startup.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-crypto-waits/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_CLUSTEROPS"
+  ],
+  "title": "PREEMPTIVE_OS Cluster Wait Types in SQL Server",
+  "verdict": "Normally no; they are the same story as HADR_CLUSAPI_CALL, cluster plumbing being consulted as designed, and they belong on the benign filter list for clustered environments.",
+  "verdict_question": "Are They a Problem?",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter them in routine analysis on clustered instances.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-cluster-waits/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_COMOPS",
+   "PREEMPTIVE_OS_DEVICEIOCONTROL",
+   "PREEMPTIVE_OS_FORMATMESSAGE",
+   "PREEMPTIVE_OS_PDH_WMI_INIT",
+   "PREEMPTIVE_OS_PROCESSOPS",
+   "PREEMPTIVE_OS_RSFXDEVICEOPS",
+   "PREEMPTIVE_OS_SERVICEOPS",
+   "PREEMPTIVE_OS_SQMLAUNCH",
+   "PREEMPTIVE_OS_VSSOPS",
+   "PREEMPTIVE_OS_WSASETLASTERROR"
+  ],
+  "title": "Miscellaneous PREEMPTIVE_OS Wait Types in SQL Server",
+  "verdict": "None has been a noticeable contention point.",
+  "verdict_question": "Are They a Problem?",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Filter them in routine analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-misc-waits/"
+ },
+ {
+  "wait_types": [
    "PREEMPTIVE_OS_CREATEFILE"
   ],
   "title": "PREEMPTIVE_OS_CREATEFILE Wait Type in SQL Server",
@@ -1674,6 +1744,21 @@
   "when_to_ignore": "",
   "what_to_do": "Identify the file-touching operations running when the wait accumulates (FILESTREAM access, backups, file-growth events).",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-createfile/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_DISCONNECTNAMEDPIPE",
+   "PREEMPTIVE_OS_GETADDRINFO",
+   "PREEMPTIVE_OS_MESSAGEQUEUEOPS",
+   "PREEMPTIVE_OS_WINSOCKOPS"
+  ],
+  "title": "PREEMPTIVE_OS Network Wait Types in SQL Server",
+  "verdict": "At trace levels, no. The member with the sharpest teeth is GETADDRINFO: slow or flaky DNS makes every outbound name resolution stall, which surfaces as slow linked server connections, slow AG endpoint operations, and mysterious...",
+  "verdict_question": "Are They a Problem?",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "For GETADDRINFO growth: test resolution of the actual names involved (linked servers, replicas) from the host with nslookup / Resolve-DnsName; slowness reproduces outside SQL Server.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-network-waits/"
  },
  {
   "wait_types": [
@@ -1710,6 +1795,20 @@
   "when_to_ignore": "",
   "what_to_do": "On Linux: read Microsoft's guidance on the forced flush behaviour, verify what your storage actually guarantees, and only then consider trace flag 3979.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-flushfilebuffers/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_FREELIBRARY",
+   "PREEMPTIVE_OS_LIBRARYOPS",
+   "PREEMPTIVE_OS_LOADLIBRARY"
+  ],
+  "title": "PREEMPTIVE_OS Library Wait Types in SQL Server",
+  "verdict": "Rarely; loads are once-per-DLL events and the calls are quick from local disk.",
+  "verdict_question": "Are They a Problem?",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Inventory what loads: registered XPs, and anything else configured to bring DLLs in-process.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-library-waits/"
  },
  {
   "wait_types": [
@@ -1758,6 +1857,18 @@
   "when_to_ignore": "",
   "what_to_do": "Find the calling code: catch sessions in this wait via sys.dm_exec_requests and look for SID translation in the SQL text.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-lookupaccountsid/"
+ },
+ {
+  "wait_types": [
+   "PREEMPTIVE_OS_NETGROUPGETUSERS"
+  ],
+  "title": "PREEMPTIVE_OS Group Lookup Wait Types in SQL Server",
+  "verdict": "At background levels, no.",
+  "verdict_question": "Are They a Problem?",
+  "matters": true,
+  "when_to_ignore": "",
+  "what_to_do": "Find the frequent callers (audit jobs, apps doing per-request membership checks) and cache results instead of re-asking.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-ad-lookup-waits/"
  },
  {
   "wait_types": [
@@ -2406,6 +2517,21 @@
   "when_to_ignore": "",
   "what_to_do": "Read it with SQLCLR_APPDOMAIN and the error log's appdomain messages; stability there quiets this wait too.",
   "url": "https://sqldba.blog/sql-server-wait-sqlclr-assembly/"
+ },
+ {
+  "wait_types": [
+   "SQLTRACE_FILE_BUFFER",
+   "SQLTRACE_FILE_READ_IO_COMPLETION",
+   "SQLTRACE_FILE_WRITE_IO_COMPLETION",
+   "SQLTRACE_PENDING_BUFFER_WRITERS"
+  ],
+  "title": "SQLTRACE File Wait Types in SQL Server",
+  "verdict": "Rarely; none has been a noticeable contention point.",
+  "verdict_question": "Are They a Problem?",
+  "matters": false,
+  "when_to_ignore": "",
+  "what_to_do": "Filter the family in routine analysis.",
+  "url": "https://sqldba.blog/sql-server-wait-sqltrace-file-waits/"
  },
  {
   "wait_types": [
