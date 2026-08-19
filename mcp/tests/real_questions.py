@@ -296,9 +296,18 @@ class TestRealQuestions(unittest.TestCase):
     def test_off_domain_honesty(self):
         _, off = run_all()
         answered = [(t, q) for t, q, refused, _ in off if not refused]
-        # Below the measured rate on purpose, so a real regression fails the build while
-        # an improvement never has to be chased. Raise it when the rate rises.
-        self.assertLessEqual(len(answered), 6,
+        # 8 of 30 are answered today (73.3% honest). The gate sits one ABOVE that, so a
+        # real regression fails the build while the current state passes.
+        #
+        # It was first written as `<= 6`, copying the house habit of setting a gate BELOW
+        # the measured score - which inverts for a count of FAILURES and made the gate red
+        # from the moment it was written. Nobody noticed because `python tests/
+        # real_questions.py` runs main(), not this, and `unittest discover` matches
+        # test*.py so it never ran either. Two ways of never running, in one file whose
+        # entire purpose is to run.
+        #
+        # LOWER THIS as the rate improves. Do not raise it to make a red build green.
+        self.assertLessEqual(len(answered), 9,
                              'off-domain questions answered from recall: %s' % answered)
 
 
