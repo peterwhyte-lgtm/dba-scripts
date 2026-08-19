@@ -1,12 +1,18 @@
 name: MCP server
 
+# The path filter must cover every tree the freshness gate reads, not just mcp/.
+# check_freshness.py re-derives scripts.json from sql/**/*.sql and powershell/**/*.ps1, and
+# docs.json/prompts.json from docs/** and powershell/**/*.md. With the filter set to mcp/**
+# alone, editing a script never ran the gate that exists to catch exactly that drift: the
+# datasets and their sources disagreed and CI stayed green. That is how the datasets went
+# stale twice, and how a branch stranded carrying the fix.
 on:
   push:
     branches: [ main ]
-    paths: [ 'mcp/**', '.github/workflows/mcp.yaml' ]
+    paths: [ 'mcp/**', 'sql/**', 'powershell/**', 'docs/**', '.github/workflows/mcp.yaml' ]
   pull_request:
     branches: [ main ]
-    paths: [ 'mcp/**', '.github/workflows/mcp.yaml' ]
+    paths: [ 'mcp/**', 'sql/**', 'powershell/**', 'docs/**', '.github/workflows/mcp.yaml' ]
 
 # Default: no permissions. Each job declares only what it needs.
 permissions: {}
