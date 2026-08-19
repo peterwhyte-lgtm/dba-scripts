@@ -8,7 +8,8 @@ Purpose     : Generates DDL to create the DBA - Collector Alert SQL Agent job.
               Edit parameters, review output, then run on the target instance.
 Author      : Peter Whyte (https://sqldba.blog)
 Requires    : sysadmin (to run generated DDL); SELECT on [DBAMonitor].[collector].* at job runtime
-Notes       : Thresholds match Invoke-CollectorAlert.ps1:
+Notes       : Depends on the individual collector jobs already being installed and running.
+              Thresholds match Invoke-CollectorAlert.ps1:
                 wait-stats  PAGEIOLATCH_* >40% CRITICAL / >20% WARNING
                 wait-stats  RESOURCE_SEMAPHORE >20% CRITICAL / >10% WARNING
                 wait-stats  LCK_M_* >30% CRITICAL / >15% WARNING
