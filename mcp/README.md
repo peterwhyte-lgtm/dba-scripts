@@ -26,8 +26,8 @@ Six is a ceiling, not a target. Past roughly half a dozen, an agent starts picki
 and a wrong pick is worse than no server at all — so anything else this could expose is a Resource
 or a Prompt instead. A test enforces the cap.
 
-Covering **47 errors**, **232 wait types**, **7 SQL Server versions** with all **472 published
-builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **446 answered questions**.
+Covering **47 errors**, **260 wait types**, **7 SQL Server versions** with all **472 published
+builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **448 answered questions**.
 
 ### Also included
 
@@ -47,11 +47,11 @@ Very few MCP servers publish a number for this. Run it yourself: `python tests/e
 
 | Suite | n | top-1 | top-3 |
 |---|---:|---:|---:|
-| **FAQ, questions reworded** | 434 | **95.9%** | **99.5%** |
-| FAQ, verbatim question | 434 | 98.6% | 99.8% |
+| **FAQ, questions reworded** | 448 | **95.8%** | **99.6%** |
+| FAQ, verbatim question | 448 | 98.7% | 99.8% |
 | **Errors, phrase reworded** | 47 | **95.7%** | **100%** |
 | Errors, by number | 46 | 100% | 100% |
-| Wait types, by name | 232 | 100% | 100% |
+| Wait types, by name | 260 | 100% | 100% |
 
 **Only the bold rows are retrieval measures.** Searching with the verbatim question that is already
 in the index scores 98.6% and means nothing — it is string equality wearing a costume. The headline
@@ -189,7 +189,7 @@ That is why script headers are treated as a product surface here rather than hou
 ## The 17 errors with no link
 
 The same gap on the other surface, and worth stating plainly because the tools promise a source
-link with every answer: **30 of the 47 errors carry a write-up URL, and 17 do not.** Those 17 still
+link with every answer: **31 of the 47 errors carry a write-up URL, and 16 do not.** Those 16 still
 return the message text, what it means and the severity — all hand-written and verified — and the
 answer *says* no article exists rather than quietly omitting the link, so an agent can quote
 them and knows it cannot cite them.
@@ -200,9 +200,17 @@ post yet. `102 Incorrect syntax near`, `701 Insufficient system memory`, `823 I/
 for the Error Library. It was 22 as recently as this week — 208, 245, 547, 3154 and 5030 have
 since been written up.
 
-One of the 17 is different from the rest: **15138** has a post written and scheduled, not
-missing. A citation whose post is not live yet is deliberately shipped *without* the link and
-picked up at the next export, rather than blocking every other correction behind it.
+A citation whose post is written but not yet live is deliberately shipped *without* the link
+and picked up at the next export, rather than blocking every other correction behind it. 15138
+was the case that earned that behaviour: one scheduled post had been holding up an export
+carrying twelve unrelated fixes. It is live now, and its link attached by itself.
+
+**Where Microsoft publishes a page for an error, the answer cites that too** - 23 of the 47
+have one. Those URLs are verified rather than constructed: the pattern is predictable, and a
+guessed link that 404s looks like provenance and is not. Each was fetched once and kept only
+if it returned 200 *and* still named that error. Error 10054 returns 200 and redirects to a
+general TLS page, so a status-code-only check would have shipped a citation pointing somewhere
+else.
 
 ## Corrections — one source, three surfaces
 
@@ -242,6 +250,7 @@ Found something wrong? Open an issue. Corrections from working DBAs are the poin
 
 ```bash
 python -m unittest discover -s tests -v     # 129 tests, no test dependencies
+python -m unittest tests.real_questions     # the questions people actually asked
 python tests/eval_faq.py                    # retrieval scorecard
 python tests/check_freshness.py             # dataset drift gate
 pytest                                      # also works

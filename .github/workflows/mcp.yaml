@@ -51,6 +51,14 @@ jobs:
       - name: Retrieval eval (regression gate + published score)
         run: python tests/eval_faq.py
 
+      # The suite that asks from OUTSIDE the corpus. `unittest discover` matches test*.py,
+      # so real_questions.py was silently excluded from the step above - which would have
+      # been a quiet joke, given it exists precisely because the other suites cannot fail
+      # for a record that is missing, mislabelled or wrong. It gates two things: the real
+      # questions people have asked, and the off-domain refusal rate.
+      - name: Real questions (asked from outside the corpus) + off-domain honesty
+        run: python -m unittest tests.real_questions -v
+
       # Freshness contract. The datasets are GENERATED - if someone hand-edits one, or a
       # source changes without a re-export, the committed data and its source disagree and
       # the server starts citing a post that no longer says what it claims. That must break
