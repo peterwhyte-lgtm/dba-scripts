@@ -2,12 +2,21 @@
 Script Name : Get-BackupChainIntegrity
 Category    : backups
 Purpose     : LSN continuity analysis for each user database. Verifies the log backup chain
-              from the most recent full backup to now is unbroken. A gap in the log chain
-              means point-in-time restore is impossible for that window — coverage scripts
-              only check recency, not continuity. Also surfaces damaged backup sets.
+              from the most recent full backup to now is unbroken, and surfaces damaged
+              backup sets. A gap in the log chain means point-in-time restore is impossible
+              for that window.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-backup-chain-integrity/)
 Requires    : SELECT on msdb, VIEW ANY DATABASE
+Related     : Get-BackupCoverage, Get-LastDatabaseBackupTimes, Get-BackupAge check backup
+              RECENCY. This checks CONTINUITY, which recency cannot see: a database backed
+              up an hour ago can still have an unrestorable gap behind it.
 */
+-- The Purpose line above deliberately describes only what THIS script does. It used to end
+-- "coverage scripts only check recency, not continuity", and because Purpose is the
+-- second-highest weighted field in the MCP script index, that sentence made this script win
+-- the word "check" on every backup-recency question - so "i need to check when my databases
+-- were last backed up" returned the continuity script instead of Get-LastDatabaseBackupTimes.
+-- A Purpose line that describes its neighbours competes with them. Comparisons go in Related.
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
