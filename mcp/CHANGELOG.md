@@ -3,6 +3,56 @@
 All notable changes to the sqldba MCP server. Follows [Keep a Changelog](https://keepachangelog.com/)
 and [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-08-19
+
+`check_build` learns to identify a build, and FAQ answers learn to say where they came from.
+
+### Added
+
+- **The full servicing ladder: 472 published builds across 2012-2025.** Every CU, GDR,
+  Service Pack and RTM, with its KB and release date, parsed from Microsoft's own build
+  tables and bundled per version. `check_build` could previously only COMPARE a build; it
+  can now IDENTIFY one. `13.0.5426.0` comes back as *CU8 (KB4505830), released 2019-07-31,
+  eight CU updates behind* instead of just "BEHIND".
+
+- **Unrecognised builds are bracketed, not guessed at.** A build Microsoft never published
+  publicly - usually an on-demand hotfix - is reported as sitting between two named
+  published builds, with the lower one named as the effective patch level. An unidentified
+  build is exactly where a model stops looking things up and starts filling in from memory.
+
+- **A "how far behind" count**, withheld unless the build was identified exactly. On an
+  unrecognised build the servicing train is an assumption, and a specific number attached to
+  an assumption reads as far more certain than it is.
+
+### Fixed
+
+- **`answer_question` never said which article an answer came from.** The post title was in
+  the dataset all along and simply was not rendered. Many of these questions only mean
+  anything inside their own post - *"How long before the window should Phase 0 run?"* has no
+  referent until you know it is the standalone migration runbook, and *"Days, not hours"*
+  quoted bare reads as a general rule about SQL Server. Reported by Peter from live use.
+
+- **`find_script` advertised 181 SQL scripts against a library of 183.** Now counted from
+  the shipped dataset. `check_freshness.py` gates the datasets and never reads the prose
+  wrapped around them, so a hand-typed figure in a tool description drifts silently - and
+  gets quoted by the model on every single call.
+
+- **Five errors gained the write-up URLs their posts had already earned** (208, 245, 547,
+  3154, 5030), and the FAQ index picked up 12 new answers. A citation whose post is written
+  but not yet live is now shipped without the link rather than blocking the entire export.
+
+### Note on method
+
+The ladder is scraped; the `latest_cu` / `latest_gdr` / `latest_sp` / `rtm` summaries remain
+hand-verified and are not overwritten by it. All 29 reconcile, and a test enforces that.
+
+The reconciliation earned its place on the first run: the harvest classified the **Azure
+Connect Pack** as a cumulative update, and on 2016 and 2017 the ACP sits on a *higher* build
+number than the final CU - so it outranked SP2 CU17 as "the latest CU" for 2016. That would
+have told a DBA on the CU train they were 1100 builds behind on a train they are not on. The
+scraped value was wrong and the hand-checked one was right, which is the entire argument for
+keeping a human-verified number next to a machine-read one.
+
 ## [0.2.2] - 2026-08-18
 
 Safety classification and wait triage. No new tools: six remains the ceiling.

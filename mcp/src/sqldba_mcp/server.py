@@ -22,7 +22,7 @@ from . import data, tools
 READ_ONLY = ToolAnnotations(read_only_hint=True, destructive_hint=False,
                             idempotent_hint=True, open_world_hint=False)
 
-__version__ = '0.2.2'
+__version__ = '0.3.0'
 
 server = MCPServer(
     name='sqldba',
@@ -78,10 +78,14 @@ def explain_wait(wait_type: str) -> str:
     title='Check a SQL Server build number',
     description=(
         'Identify a SQL Server build number (e.g. 16.0.4265.3, or pasted @@VERSION output) '
-        'and report the version, patch level against the latest update on its servicing '
-        'train, and whether it is still in support. Use this for any question about what '
-        'version a server is on, whether it needs patching, or when support ends. Always '
-        'prefer this over recalled build numbers, which go stale within weeks.'
+        'and report which update it IS - the CU or GDR name, its KB and release date - '
+        'along with the version, patch level against the latest update on its servicing '
+        'train, how far behind it is, and whether it is still in support. Covers every '
+        'published build back to SQL Server 2012, so it answers "what am I running" as '
+        'well as "am I current", including for old and out-of-support builds. Use this for '
+        'any question about what version a server is on, whether it needs patching, or '
+        'when support ends. Always prefer this over recalled build numbers: CU numbering '
+        'and lifecycle dates are exactly what a model misremembers.'
     ),
     annotations=READ_ONLY,
 )
