@@ -38,9 +38,9 @@ SELECT
     a.on_failure_desc AS on_failure,
     CASE
         WHEN a.is_state_enabled = 0
-            THEN 'WARN — audit exists but is not running'
+            THEN 'WARN - audit exists but is not running'
         WHEN a.on_failure_desc = 'CONTINUE'
-            THEN 'INFO — on_failure = CONTINUE; audit records can be lost silently on I/O error'
+            THEN 'INFO - on_failure = CONTINUE; audit records can be lost silently on I/O error'
         ELSE 'OK'
     END AS status
 FROM sys.server_audits AS a;
@@ -57,7 +57,7 @@ SELECT
     CASE s.is_state_enabled WHEN 1 THEN 'ENABLED' ELSE 'DISABLED' END,
     NULL,
     CASE WHEN s.is_state_enabled = 0
-         THEN 'WARN — specification is disabled'
+         THEN 'WARN - specification is disabled'
          ELSE 'OK'
     END
 FROM sys.server_audit_specifications AS s
@@ -77,8 +77,8 @@ SELECT
     'GAP_CHECK',
     critical_group,
     CASE WHEN EXISTS (SELECT 1 FROM @covered_groups WHERE action_group = critical_group)
-         THEN 'OK — covered by an enabled specification'
-         ELSE gap_severity + ' — ' + critical_group + ' is not audited; ' + why_it_matters
+         THEN 'OK - covered by an enabled specification'
+         ELSE gap_severity + ' - ' + critical_group + ' is not audited; ' + why_it_matters
     END
 FROM (VALUES
     ('FAILED_LOGIN_GROUP', 'CRITICAL', 'brute-force attacks and failed access go undetected'),
@@ -133,7 +133,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.server_audits)
 BEGIN
     INSERT INTO #audit_info (result_type, status)
     VALUES ('GAP_CHECK',
-            'CRITICAL — No SQL Server Audit objects configured on this instance. ' +
+            'CRITICAL - No SQL Server Audit objects configured on this instance. ' +
             'Login monitoring and sp_configure checks are not a substitute for SQL Audit. ' +
             'Create a server audit with FAILED_LOGIN_GROUP and SERVER_ROLE_MEMBER_CHANGE_GROUP at minimum.');
 END;

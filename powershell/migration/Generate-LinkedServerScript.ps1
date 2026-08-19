@@ -122,10 +122,10 @@ if (-not $ddlText -or $ddlText.Trim() -eq '') {
 [System.IO.File]::WriteAllText($sqlOutPath, $ddlText, [System.Text.Encoding]::UTF8)
 
 $lineCount = ($ddlText -split "`n").Count
-Write-Host "[generate] Done — $lineCount lines" -ForegroundColor Green
+Write-Host "[generate] Done - $lineCount lines" -ForegroundColor Green
 Write-Host "[generate] .sql   : $sqlOutPath" -ForegroundColor Green
 Write-Host ''
-Write-Host 'Review ENTER_PASSWORD_HERE placeholders — stored credentials cannot be scripted.' -ForegroundColor Yellow
+Write-Host 'Review ENTER_PASSWORD_HERE placeholders - stored credentials cannot be scripted.' -ForegroundColor Yellow
 Write-Host 'Run Get-LinkedServerSecurity.ps1 to identify HIGH-risk login mappings.' -ForegroundColor Yellow
 Write-Host ''
 

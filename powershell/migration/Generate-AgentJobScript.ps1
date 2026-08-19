@@ -128,14 +128,14 @@ if ($invokeSqlcmd) {
 }
 
 if (-not $ddlText -or $ddlText.Trim() -eq '') {
-    Write-Host '[generate] No DDL produced — instance may have no SQL Agent jobs.' -ForegroundColor Yellow
+    Write-Host '[generate] No DDL produced - instance may have no SQL Agent jobs.' -ForegroundColor Yellow
     return
 }
 
 [System.IO.File]::WriteAllText($sqlOutPath, $ddlText, [System.Text.Encoding]::UTF8)
 
 $lineCount = ($ddlText -split "`n").Count
-Write-Host "[generate] Done — $lineCount lines, $($ddlText.Length) characters" -ForegroundColor Green
+Write-Host "[generate] Done - $lineCount lines, $($ddlText.Length) characters" -ForegroundColor Green
 Write-Host "[generate] .sql   : $sqlOutPath" -ForegroundColor Green
 Write-Host ''
 Write-Host 'Review owner_login_name values and map to valid logins on the target before running.' -ForegroundColor Yellow

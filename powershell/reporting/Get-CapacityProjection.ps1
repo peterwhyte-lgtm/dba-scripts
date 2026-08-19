@@ -88,10 +88,10 @@ if (Test-Path $dbGrowthDir) {
             $status      = 'OK'
 
             if ($ratePerDay -le 0) {
-                $status = 'OK — stable or shrinking'
+                $status = 'OK - stable or shrinking'
             } else {
                 # Days until some threshold — use disk free if available, else just show rate
-                $status = 'INFO — growing at ' + [math]::Round($ratePerDay, 1) + ' MB/day'
+                $status = 'INFO - growing at ' + [math]::Round($ratePerDay, 1) + ' MB/day'
                 if ($ratePerDay -gt 0) {
                     $daysToFull = $null  # set per-drive below
                 }
@@ -116,7 +116,7 @@ if (Test-Path $dbGrowthDir) {
     }
 }
 else {
-    Write-Warning "Collector directory not found: $dbGrowthDir — install the DatabaseGrowth collector job first (sql\collectors\Generate-CollectorJob-DatabaseGrowth.sql)."
+    Write-Warning "Collector directory not found: $dbGrowthDir - install the DatabaseGrowth collector job first (sql\collectors\Generate-CollectorJob-DatabaseGrowth.sql)."
 }
 
 # ── Disk space projection ──────────────────────────────────────────────────────
@@ -163,14 +163,14 @@ if (Test-Path $diskDir) {
             if ($ratePerDay -lt 0 -and $latestFree -gt 0) {
                 $daysToFull = [math]::Round($latestFree / [math]::Abs($ratePerDay), 0)
                 $status = if ($daysToFull -le $CritDaysToFull) {
-                    "CRITICAL — drive fills in ~$daysToFull days at current rate"
+                    "CRITICAL - drive fills in ~$daysToFull days at current rate"
                 } elseif ($daysToFull -le $WarnDaysToFull) {
-                    "WARN — drive fills in ~$daysToFull days"
+                    "WARN - drive fills in ~$daysToFull days"
                 } else {
-                    "OK — ~$daysToFull days of capacity remaining"
+                    "OK - ~$daysToFull days of capacity remaining"
                 }
             } elseif ($ratePerDay -ge 0) {
-                $status = 'OK — free space stable or increasing'
+                $status = 'OK - free space stable or increasing'
             }
 
             $results.Add([PSCustomObject]@{
@@ -189,7 +189,7 @@ if (Test-Path $diskDir) {
     }
 }
 else {
-    Write-Warning "Collector directory not found: $diskDir — install the StorageIO collector job first (sql\collectors\Generate-CollectorJob-StorageIO.sql)."
+    Write-Warning "Collector directory not found: $diskDir - install the StorageIO collector job first (sql\collectors\Generate-CollectorJob-StorageIO.sql)."
 }
 
 if ($results.Count -eq 0) {
@@ -197,7 +197,7 @@ if ($results.Count -eq 0) {
     return
 }
 
-Write-Host "Capacity Projection — $LookbackDays-day lookback ($($results.Count) items)" -ForegroundColor Cyan
+Write-Host "Capacity Projection - $LookbackDays-day lookback ($($results.Count) items)" -ForegroundColor Cyan
 
 $sorted = $results | Sort-Object {
     switch -Wildcard ($_.status) {

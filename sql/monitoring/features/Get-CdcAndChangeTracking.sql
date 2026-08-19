@@ -55,7 +55,7 @@ END
 ELSE IF EXISTS (SELECT 1 FROM sys.databases WHERE database_id > 4 AND is_cdc_enabled = 1)
 BEGIN
     INSERT INTO #cdc_ct (feature, database_name, feature_enabled, status)
-    SELECT 'CDC', d.name, d.is_cdc_enabled, 'OK — CDC enabled'
+    SELECT 'CDC', d.name, d.is_cdc_enabled, 'OK - CDC enabled'
     FROM sys.databases AS d
     WHERE d.database_id > 4 AND d.is_cdc_enabled = 1;
 END
@@ -85,8 +85,8 @@ SELECT
                                         WHEN 3 THEN 1440
                                         ELSE 1
                                     END < 1440
-            THEN 'WARN — retention < 24 hours; consumers may miss changes between syncs'
-        ELSE 'OK — Change Tracking enabled'
+            THEN 'WARN - retention < 24 hours; consumers may miss changes between syncs'
+        ELSE 'OK - Change Tracking enabled'
     END
 FROM sys.change_tracking_databases AS ct;
 

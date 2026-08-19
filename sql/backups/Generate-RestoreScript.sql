@@ -24,7 +24,7 @@ SET @WithClause += CASE WHEN @WithNoRecovery = 1 THEN N'NORECOVERY, ' ELSE N'' E
 SET @WithClause += N'STATS = ' + CAST(@StatsInterval AS nvarchar(3)) + N';';
 
 DECLARE @cmd nvarchar(max) =
-    N'-- RESTORE script — ' + @@SERVERNAME                                 + CHAR(13) + CHAR(10) +
+    N'-- RESTORE script - ' + @@SERVERNAME                                 + CHAR(13) + CHAR(10) +
     N'-- Path  : ' + @BackupPath                                            + CHAR(13) + CHAR(10) +
     N'-- Set @ts to the timestamp of the backup files to restore.'          + CHAR(13) + CHAR(10) +
     N'-- Review WITH MOVE if restoring to a different server or drive.'     + CHAR(13) + CHAR(10) +

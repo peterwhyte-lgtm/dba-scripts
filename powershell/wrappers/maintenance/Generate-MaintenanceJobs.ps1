@@ -113,7 +113,7 @@ if ($isCsv) {
 }
 
 $lineCount = ($ddlText -split "`n").Count
-Write-Host "[generate] Done — $lineCount lines" -ForegroundColor Green
+Write-Host "[generate] Done - $lineCount lines" -ForegroundColor Green
 Write-Host "[generate] Output : $sqlOutPath" -ForegroundColor Green
 Write-Host ''
 Write-Host 'Review history retention days and schedule hours in the SQL before running on target.' -ForegroundColor Yellow

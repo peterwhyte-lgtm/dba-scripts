@@ -35,11 +35,11 @@ SELECT
     rs_g.active_request_count AS group_active_requests,
     CASE
         WHEN c.is_enabled = 0
-            THEN 'INFO — Resource Governor is disabled; all sessions use default pool'
+            THEN 'INFO - Resource Governor is disabled; all sessions use default pool'
         WHEN c.classifier_function_id IS NULL
-            THEN 'WARN — RG enabled but no classifier function; all connections go to default pool'
+            THEN 'WARN - RG enabled but no classifier function; all connections go to default pool'
         WHEN p.name = 'default' AND g.name = 'default'
-            THEN 'INFO — sessions landing in default pool/group; verify classifier is routing correctly'
+            THEN 'INFO - sessions landing in default pool/group; verify classifier is routing correctly'
         ELSE 'OK'
     END AS status
 FROM sys.resource_governor_configuration AS c

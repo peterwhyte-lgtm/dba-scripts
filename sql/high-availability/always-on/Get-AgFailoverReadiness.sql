@@ -53,23 +53,23 @@ BEGIN
         -- COLLATE DATABASE_DEFAULT on catalog columns avoids collation conflicts with literals
         CASE
             WHEN ars.role_desc COLLATE DATABASE_DEFAULT = 'PRIMARY'
-            THEN 'PRIMARY — this is the source'
+            THEN 'PRIMARY - this is the source'
             WHEN drs.database_state_desc COLLATE DATABASE_DEFAULT <> 'ONLINE'
-            THEN 'CRITICAL — database is ' + (drs.database_state_desc COLLATE DATABASE_DEFAULT) + ' on this replica'
+            THEN 'CRITICAL - database is ' + (drs.database_state_desc COLLATE DATABASE_DEFAULT) + ' on this replica'
             WHEN drs.synchronization_state_desc COLLATE DATABASE_DEFAULT = 'SYNCHRONIZED'
                  AND ar.availability_mode_desc COLLATE DATABASE_DEFAULT = 'SYNCHRONOUS_COMMIT'
-            THEN 'OK — SYNCHRONIZED; ready for automatic/manual failover (zero data loss)'
+            THEN 'OK - SYNCHRONIZED; ready for automatic/manual failover (zero data loss)'
             WHEN drs.synchronization_state_desc COLLATE DATABASE_DEFAULT = 'SYNCHRONIZING'
                  AND drs.redo_rate > 0
                  AND drs.redo_queue_size / drs.redo_rate < 60
-            THEN 'OK — SYNCHRONIZING; est. RTO ' +
+            THEN 'OK - SYNCHRONIZING; est. RTO ' +
                  CAST(drs.redo_queue_size / NULLIF(drs.redo_rate, 0) AS VARCHAR) + 's to drain redo queue'
             WHEN drs.redo_queue_size > 1048576
-            THEN 'WARN — redo queue > 1 GB; RTO will be minutes at best'
+            THEN 'WARN - redo queue > 1 GB; RTO will be minutes at best'
             WHEN ar.availability_mode_desc COLLATE DATABASE_DEFAULT = 'ASYNCHRONOUS_COMMIT'
-            THEN 'INFO — async replica; manual forced failover only (data loss likely: ' +
+            THEN 'INFO - async replica; manual forced failover only (data loss likely: ' +
                  CAST(CAST(drs.log_send_queue_size / 1024.0 AS INT) AS VARCHAR) + ' MB RPO exposure)'
-            ELSE 'INFO — ' + (drs.synchronization_state_desc COLLATE DATABASE_DEFAULT)
+            ELSE 'INFO - ' + (drs.synchronization_state_desc COLLATE DATABASE_DEFAULT)
         END AS readiness_status,
         -- Numeric sort key avoids collation conflict in ORDER BY string comparison
         CASE

@@ -126,7 +126,7 @@ INSERT #findings VALUES (
     CASE WHEN @cnt > 0 THEN 'WARN' ELSE 'NO' END,
     CASE WHEN @cnt > 0 THEN 'Resource Governor is enabled with active configuration'
          ELSE 'Resource Governor is not enabled' END,
-    CASE WHEN @cnt > 0 THEN 'Resource Governor does not work on Standard Edition — workload classification and pooling will be lost post-downgrade. Remove pools and classifiers if not needed.'
+    CASE WHEN @cnt > 0 THEN 'Resource Governor does not work on Standard Edition - workload classification and pooling will be lost post-downgrade. Remove pools and classifiers if not needed.'
          ELSE '' END
 );
 
@@ -233,7 +233,7 @@ INSERT #findings VALUES (
 -- Deprecated in SQL 2022. Enterprise-only at 2016 RTM; all editions from 2016 SP1.
 BEGIN TRY
     SELECT @cnt = COUNT(*) FROM sys.remote_data_archive_tables;
-    SET @detail = CASE WHEN @cnt > 0 THEN CAST(@cnt AS NVARCHAR) + ' Stretch-enabled table(s) — query sys.remote_data_archive_tables for details' ELSE 'No Stretch Database tables' END;
+    SET @detail = CASE WHEN @cnt > 0 THEN CAST(@cnt AS NVARCHAR) + ' Stretch-enabled table(s) - query sys.remote_data_archive_tables for details' ELSE 'No Stretch Database tables' END;
 END TRY
 BEGIN CATCH
     SET @cnt = 0; SET @detail = 'sys.remote_data_archive_tables not available (Stretch not installed or SQL 2022+)';
@@ -258,7 +258,7 @@ INSERT #findings VALUES (
     'External Scripts (ML Services / R / Python)',
     CASE WHEN @cnt = 1 THEN 'YES' ELSE 'NO' END,
     'NO',
-    CASE WHEN @cnt = 1 THEN 'External scripts are enabled — ML Services (R/Python) is in use'
+    CASE WHEN @cnt = 1 THEN 'External scripts are enabled - ML Services (R/Python) is in use'
          ELSE 'External scripts are not enabled' END,
     CASE WHEN @cnt = 1 THEN 'Standard supports External Scripts from SQL 2016 SP1. No action required for Standard downgrade unless targeting SQL 2016 RTM or earlier.'
          ELSE '' END
@@ -270,7 +270,7 @@ INSERT #findings VALUES (
     'Online Index Operations / Parallel Rebuild',
     'N/A',
     'WARN',
-    'Cannot be detected statically — check SQL Agent jobs and maintenance plans for REBUILD WITH (ONLINE=ON)',
+    'Cannot be detected statically - check SQL Agent jobs and maintenance plans for REBUILD WITH (ONLINE=ON)',
     'Online index operations (REBUILD WITH ONLINE=ON, REORGANIZE) are Enterprise only. On Standard, index rebuilds go offline. Review maintenance plans and set ONLINE=OFF or use REORGANIZE instead.'
 );
 

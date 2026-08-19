@@ -91,7 +91,7 @@ $settings = [ordered]@{
     'remote admin connections'      = @{ Value = $RemoteAdminConnections; Label = "Remote admin connections / DAC ($(if ($RemoteAdminConnections) {'on'} else {'off'}))" }
 }
 
-Write-DbaLog "SQL Server configuration — $ServerInstance" 'Cyan'
+Write-DbaLog "SQL Server configuration - $ServerInstance" 'Cyan'
 Write-DbaLog "Log: $logFile" 'DarkGray'
 
 # ── Read current settings ─────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ try {
     $current = Invoke-Sqlcmd -ServerInstance $ServerInstance -Query $currentSql `
                    -TrustServerCertificate -ErrorAction Stop
 } catch {
-    Write-DbaLog "ERROR: Cannot connect to $ServerInstance — $($_.Exception.Message)" 'Red'; exit 1
+    Write-DbaLog "ERROR: Cannot connect to $ServerInstance - $($_.Exception.Message)" 'Red'; exit 1
 }
 
 $currentMap = @{}

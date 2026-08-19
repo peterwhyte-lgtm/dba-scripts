@@ -89,7 +89,7 @@ SELECT
     data_size_mb,
     index_size_mb,
     total_size_mb,
-    CASE has_heap WHEN 1 THEN 'Yes — no clustered index' ELSE 'No' END AS is_heap
+    CASE has_heap WHEN 1 THEN 'Yes - no clustered index' ELSE 'No' END AS is_heap
 FROM #table_sizes
 ORDER BY total_size_mb DESC;
 

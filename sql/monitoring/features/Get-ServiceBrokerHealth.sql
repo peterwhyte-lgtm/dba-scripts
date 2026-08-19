@@ -101,20 +101,20 @@ DEALLOCATE db_cursor;
 UPDATE #sb_health SET status =
     CASE
         WHEN sb_enabled = 0
-            THEN 'INFO — Service Broker disabled on this database'
+            THEN 'INFO - Service Broker disabled on this database'
         WHEN endpoints_disconnected > 10000
-            THEN 'CRITICAL — ' + CAST(endpoints_disconnected AS VARCHAR) +
+            THEN 'CRITICAL - ' + CAST(endpoints_disconnected AS VARCHAR) +
                  ' disconnected endpoints; run END CONVERSATION ... WITH CLEANUP to reclaim resources'
         WHEN endpoints_disconnected > 1000
-            THEN 'WARN — ' + CAST(endpoints_disconnected AS VARCHAR) +
+            THEN 'WARN - ' + CAST(endpoints_disconnected AS VARCHAR) +
                  ' disconnected endpoints accumulating; schedule cleanup'
         WHEN endpoints_error > 100
-            THEN 'WARN — ' + CAST(endpoints_error AS VARCHAR) + ' conversation endpoints in ERROR state'
+            THEN 'WARN - ' + CAST(endpoints_error AS VARCHAR) + ' conversation endpoints in ERROR state'
         WHEN transmission_queue_errors > 0
-            THEN 'WARN — ' + CAST(transmission_queue_errors AS VARCHAR) +
+            THEN 'WARN - ' + CAST(transmission_queue_errors AS VARCHAR) +
                  ' messages stuck in transmission queue with delivery errors'
         WHEN transmission_queue_total > 1000
-            THEN 'WARN — ' + CAST(transmission_queue_total AS VARCHAR) +
+            THEN 'WARN - ' + CAST(transmission_queue_total AS VARCHAR) +
                  ' messages queued for transmission; check SB connectivity and activation'
         WHEN sb_enabled = 1
             THEN 'OK'

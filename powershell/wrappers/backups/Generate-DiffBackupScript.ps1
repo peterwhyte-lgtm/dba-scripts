@@ -88,7 +88,7 @@ if ($invokeSqlcmd) {
 }
 
 if (-not $ddlText -or $ddlText.Trim() -eq '') {
-    Write-Host '[generate] No output — no online user databases found.' -ForegroundColor Yellow
+    Write-Host '[generate] No output - no online user databases found.' -ForegroundColor Yellow
     return
 }
 
@@ -107,7 +107,7 @@ if ($OutputPath) {
 }
 
 $lineCount = ($ddlText -split "`n").Count
-Write-Host "[generate] Done — $lineCount lines  |  $($ddlText.Length) chars" -ForegroundColor Green
+Write-Host "[generate] Done - $lineCount lines  |  $($ddlText.Length) chars" -ForegroundColor Green
 Write-Host "[generate] .sql : $sqlOutPath" -ForegroundColor Green
 Write-Host ''
 Write-Host '  Open the .sql file above in SSMS to review and execute.' -ForegroundColor DarkGray

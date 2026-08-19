@@ -23,35 +23,35 @@ SELECT
     -- Service account risk: built-in high-privilege accounts are a security concern
     CASE
         WHEN service_account IN ('LocalSystem', 'NT AUTHORITY\SYSTEM')
-            THEN 'CRITICAL — LocalSystem has unrestricted local access; use a dedicated service account'
+            THEN 'CRITICAL - LocalSystem has unrestricted local access; use a dedicated service account'
         WHEN service_account = 'NT AUTHORITY\NETWORK SERVICE'
-            THEN 'WARN — NetworkService shares identity with other services; prefer a dedicated account'
+            THEN 'WARN - NetworkService shares identity with other services; prefer a dedicated account'
         WHEN service_account LIKE 'NT Service\%'
-            THEN 'OK — Managed Service Account (virtual account)'
+            THEN 'OK - Managed Service Account (virtual account)'
         WHEN service_account LIKE '%$'
-            THEN 'OK — Group Managed Service Account (gMSA)'
+            THEN 'OK - Group Managed Service Account (gMSA)'
         WHEN service_account IS NULL OR service_account = ''
-            THEN 'INFO — service account not visible (insufficient permissions or service not running)'
-        ELSE 'OK — dedicated service account'
+            THEN 'INFO - service account not visible (insufficient permissions or service not running)'
+        ELSE 'OK - dedicated service account'
     END AS account_risk,
     -- Startup type: SQL Engine and Agent should be Automatic
     CASE
         WHEN startup_type_desc = 'Disabled'
-            THEN 'CRITICAL — service is disabled; will not start after reboot'
+            THEN 'CRITICAL - service is disabled; will not start after reboot'
         WHEN startup_type_desc = 'Manual'
              AND servicename NOT LIKE '%Browser%'
              AND servicename NOT LIKE '%Full-text%'
-            THEN 'WARN — Manual startup; service will not auto-recover after reboot'
+            THEN 'WARN - Manual startup; service will not auto-recover after reboot'
         WHEN startup_type_desc = 'Manual'
-            THEN 'INFO — Manual startup (acceptable for Browser/Full-text if not required)'
+            THEN 'INFO - Manual startup (acceptable for Browser/Full-text if not required)'
         ELSE 'OK'
     END AS startup_risk,
     -- Running status
     CASE
         WHEN status_desc = 'Running'  THEN 'OK'
         WHEN status_desc = 'Stopped' AND servicename NOT LIKE '%Browser%'
-            THEN 'WARN — service is stopped'
-        ELSE 'INFO — ' + status_desc
+            THEN 'WARN - service is stopped'
+        ELSE 'INFO - ' + status_desc
     END AS running_status
 FROM sys.dm_server_services
 ORDER BY

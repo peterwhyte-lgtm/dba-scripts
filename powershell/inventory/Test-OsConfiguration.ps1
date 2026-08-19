@@ -58,9 +58,9 @@ try {
                     'WARN'
                 }
     $detail   = if ($status -eq 'CRITICAL') {
-                    'Balanced plan throttles CPU frequency under load — causes erratic query response times. Set to High Performance.'
+                    'Balanced plan throttles CPU frequency under load - causes erratic query response times. Set to High Performance.'
                 } elseif ($status -eq 'WARN') {
-                    "Unknown plan '$planName' — verify it does not use CPU throttling."
+                    "Unknown plan '$planName' - verify it does not use CPU throttling."
                 } else { 'No action required.' }
 
     Add-Finding 'Power Plan' $planName 'High Performance or Ultimate Performance' $status $detail
@@ -113,7 +113,7 @@ try {
     if ($pfro) { $pendingReboot = $true; $rebootReasons += 'Pending file rename operations' }
 
     $status = if ($pendingReboot) { 'WARN' } else { 'OK' }
-    $value  = if ($pendingReboot) { 'YES — ' + ($rebootReasons -join ', ') } else { 'No' }
+    $value  = if ($pendingReboot) { 'YES - ' + ($rebootReasons -join ', ') } else { 'No' }
     $detail = if ($pendingReboot) {
         'A reboot is pending. SQL Server will restart unexpectedly at next planned/unplanned reboot unless scheduled.'
     } else { 'No pending reboot detected.' }

@@ -40,25 +40,25 @@ SELECT
     os_off.offline_count AS sql_offline_schedulers,
     CASE
         WHEN os_off.offline_count > 0
-        THEN 'WARN — ' + CAST(os_off.offline_count AS VARCHAR) +
+        THEN 'WARN - ' + CAST(os_off.offline_count AS VARCHAR) +
              ' scheduler(s) offline; CPU affinity mask may be limiting SQL Server'
         ELSE 'OK'
     END AS scheduler_status,
     CASE
         WHEN n.numa_node_count > (osi.cpu_count / NULLIF(osi.hyperthread_ratio, 0))
-        THEN 'INFO — soft-NUMA active (' + CAST(n.numa_node_count AS VARCHAR) +
+        THEN 'INFO - soft-NUMA active (' + CAST(n.numa_node_count AS VARCHAR) +
              ' SQL NUMA nodes vs ' + CAST(osi.cpu_count / NULLIF(osi.hyperthread_ratio, 0) AS VARCHAR) + ' sockets)'
         WHEN n.numa_node_count = 1 AND osi.cpu_count > 8
-        THEN 'INFO — single NUMA node with ' + CAST(osi.cpu_count AS VARCHAR) +
+        THEN 'INFO - single NUMA node with ' + CAST(osi.cpu_count AS VARCHAR) +
              ' CPUs; consider soft-NUMA for NUMA-aware memory allocation'
         ELSE 'OK'
     END AS numa_status,
     osi.sql_memory_model_desc AS memory_model,
     CASE osi.sql_memory_model_desc
         WHEN 'CONVENTIONAL'
-        THEN 'WARN — LPIM not active; OS can page out SQL buffer pool under memory pressure'
-        WHEN 'LOCK_PAGES' THEN 'OK — Lock Pages in Memory is active'
-        WHEN 'LARGE_PAGES' THEN 'OK — Large Pages active (implies LPIM)'
+        THEN 'WARN - LPIM not active; OS can page out SQL buffer pool under memory pressure'
+        WHEN 'LOCK_PAGES' THEN 'OK - Lock Pages in Memory is active'
+        WHEN 'LARGE_PAGES' THEN 'OK - Large Pages active (implies LPIM)'
         ELSE 'UNKNOWN'
     END AS lpim_status,
     CAST(osi.physical_memory_kb / 1024.0 / 1024 AS DECIMAL(10,2)) AS physical_memory_gb,
@@ -86,10 +86,10 @@ SELECT
                 WHERE servicename LIKE 'SQL Server (%'
                   AND filename NOT LIKE '%sqlagent%'
                   AND instant_file_initialization_enabled = 'Y')
-        THEN 'OK — IFI active; autogrowth and data file creation do not zero pages'
+        THEN 'OK - IFI active; autogrowth and data file creation do not zero pages'
         WHEN CAST(SERVERPROPERTY('ProductMajorVersion') AS INT) >= 15
-        THEN 'WARN — IFI not enabled; autogrowth events stall while OS zeroes pages'
-        ELSE 'INFO — IFI cannot be confirmed via SQL on pre-2019 instances; verify SE_MANAGE_VOLUME_NAME Windows privilege'
+        THEN 'WARN - IFI not enabled; autogrowth events stall while OS zeroes pages'
+        ELSE 'INFO - IFI cannot be confirmed via SQL on pre-2019 instances; verify SE_MANAGE_VOLUME_NAME Windows privilege'
     END AS ifi_status,
     osi.sqlserver_start_time AS sql_start_time,
     DATEDIFF(DAY, osi.sqlserver_start_time, GETDATE()) AS uptime_days

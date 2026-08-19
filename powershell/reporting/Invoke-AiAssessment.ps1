@@ -96,7 +96,7 @@ Write-Host "  Collection : $FolderPath"
 # ── Step 2: Ensure findings.csv exists (run the rules review if not) ────────
 $findingsCsv = Join-Path $FolderPath 'findings.csv'
 if (-not (Test-Path -LiteralPath $findingsCsv)) {
-    Write-Host '  Findings   : missing — running Review-HealthCheckOutput...' -ForegroundColor DarkGray
+    Write-Host '  Findings   : missing - running Review-HealthCheckOutput...' -ForegroundColor DarkGray
     $reviewScript = Join-Path $PSScriptRoot 'Review-HealthCheckOutput.ps1'
     & $reviewScript -FolderPath $FolderPath -OutputFormat Csv | Out-Null
 }
@@ -199,7 +199,7 @@ if ($response.stop_reason -eq 'refusal') {
 $report = ($response.content | Where-Object { $_.type -eq 'text' } | ForEach-Object { $_.text }) -join "`n"
 if (-not $report) { throw "API returned no text content (stop_reason: $($response.stop_reason))." }
 if ($response.stop_reason -eq 'max_tokens') {
-    Write-Host '  WARNING    : report hit the max_tokens cap and may be truncated — re-run with a higher -MaxTokens.' -ForegroundColor Yellow
+    Write-Host '  WARNING    : report hit the max_tokens cap and may be truncated - re-run with a higher -MaxTokens.' -ForegroundColor Yellow
 }
 
 # ── Step 6: Write the report ────────────────────────────────────────────────

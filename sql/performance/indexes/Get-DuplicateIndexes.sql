@@ -127,14 +127,14 @@ SELECT
     CASE
         WHEN (a.user_seeks + a.user_scans + a.user_lookups = 0)
          AND (b.user_seeks + b.user_scans + b.user_lookups = 0)
-        THEN 'DROP — both unused; keep the one that is a PK/unique constraint if applicable'
+        THEN 'DROP - both unused; keep the one that is a PK/unique constraint if applicable'
         WHEN (b.user_seeks + b.user_scans + b.user_lookups = 0)
          AND b.is_primary_key = 0
-        THEN 'DROP index_b — unused duplicate; index_a is being used'
+        THEN 'DROP index_b - unused duplicate; index_a is being used'
         WHEN (a.user_seeks + a.user_scans + a.user_lookups = 0)
          AND a.is_primary_key = 0
-        THEN 'DROP index_a — unused duplicate; index_b is being used'
-        ELSE 'REVIEW — both used; keep the one that enforces a constraint; DROP the other'
+        THEN 'DROP index_a - unused duplicate; index_b is being used'
+        ELSE 'REVIEW - both used; keep the one that enforces a constraint; DROP the other'
     END AS recommendation
 FROM #idx AS a
 JOIN #idx AS b
@@ -170,10 +170,10 @@ SELECT
     b.user_updates,
     CASE
         WHEN b.is_primary_key = 1 OR b.is_unique = 1
-        THEN 'KEEP index_b — it enforces a constraint; consider expanding it to cover index_a''s columns'
+        THEN 'KEEP index_b - it enforces a constraint; consider expanding it to cover index_a''s columns'
         WHEN (b.user_seeks + b.user_scans + b.user_lookups = 0)
-        THEN 'DROP index_b — unused and made redundant by the wider index_a'
-        ELSE 'REVIEW — index_b is used but index_a covers its key columns; consider merging'
+        THEN 'DROP index_b - unused and made redundant by the wider index_a'
+        ELSE 'REVIEW - index_b is used but index_a covers its key columns; consider merging'
     END
 FROM #idx AS a
 JOIN #idx AS b

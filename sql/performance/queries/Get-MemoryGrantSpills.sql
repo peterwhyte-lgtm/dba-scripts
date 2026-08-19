@@ -40,12 +40,12 @@ BEGIN
         qs.creation_time AS plan_cached_at,
         CASE
             WHEN qs.total_spills / NULLIF(qs.execution_count, 0) > 1000
-            THEN 'CRITICAL — heavy spill every execution; query needs index, stats update, or hint'
+            THEN 'CRITICAL - heavy spill every execution; query needs index, stats update, or hint'
             WHEN qs.total_ideal_grant_kb > qs.total_grant_kb * 2
-            THEN 'WARN — grant consistently less than half of ideal; RESOURCE_SEMAPHORE pressure likely'
+            THEN 'WARN - grant consistently less than half of ideal; RESOURCE_SEMAPHORE pressure likely'
             WHEN qs.total_ideal_grant_kb > qs.total_grant_kb * 1.2
-            THEN 'WARN — grant undersized vs ideal; spills expected under load'
-            ELSE 'WARN — spilling (lower severity)'
+            THEN 'WARN - grant undersized vs ideal; spills expected under load'
+            ELSE 'WARN - spilling (lower severity)'
         END AS diagnosis,
         LEFT(qt.text, 500) AS query_text
     FROM sys.dm_exec_query_stats AS qs

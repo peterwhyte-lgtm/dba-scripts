@@ -212,11 +212,11 @@ $tgtIp = Resolve-Ip $tgtHost
 
 Add-Check 'DNS' "Resolve source hostname ($srcHost)" `
     $(if ($srcIp) { 'PASS' } else { 'FAIL' }) `
-    $(if ($srcIp) { "Resolved to $srcIp" } else { "Cannot resolve $srcHost — check DNS or use IP directly" })
+    $(if ($srcIp) { "Resolved to $srcIp" } else { "Cannot resolve $srcHost - check DNS or use IP directly" })
 
 Add-Check 'DNS' "Resolve target hostname ($tgtHost)" `
     $(if ($tgtIp) { 'PASS' } else { 'FAIL' }) `
-    $(if ($tgtIp) { "Resolved to $tgtIp" } else { "Cannot resolve $tgtHost — check DNS or use IP directly" })
+    $(if ($tgtIp) { "Resolved to $tgtIp" } else { "Cannot resolve $tgtHost - check DNS or use IP directly" })
 
 # ══════════════════════════════════════════════════════════════
 # SECTION 2 — NETWORK CONNECTIVITY (from this machine)
@@ -227,11 +227,11 @@ $tgtPortOk = Test-Port $tgtHost $SqlPort
 
 Add-Check 'Network (local→source)' "SQL port $SqlPort on $srcHost" `
     $(if ($srcPortOk) { 'PASS' } else { 'FAIL' }) `
-    $(if ($srcPortOk) { "Port $SqlPort reachable" } else { "Port $SqlPort NOT reachable from this machine — check firewall rules" })
+    $(if ($srcPortOk) { "Port $SqlPort reachable" } else { "Port $SqlPort NOT reachable from this machine - check firewall rules" })
 
 Add-Check 'Network (local→target)' "SQL port $SqlPort on $tgtHost" `
     $(if ($tgtPortOk) { 'PASS' } else { 'FAIL' }) `
-    $(if ($tgtPortOk) { "Port $SqlPort reachable" } else { "Port $SqlPort NOT reachable from this machine — check firewall rules" })
+    $(if ($tgtPortOk) { "Port $SqlPort reachable" } else { "Port $SqlPort NOT reachable from this machine - check firewall rules" })
 
 if ($BackupPath -and $BackupPath.StartsWith('\\')) {
     $shareParts   = $BackupPath.TrimStart('\').Split('\')
@@ -241,11 +241,11 @@ if ($BackupPath -and $BackupPath.StartsWith('\\')) {
 
     Add-Check 'Network (local→backup)' "SMB port 445 on $backupHost" `
         $(if ($smbOk) { 'PASS' } else { 'FAIL' }) `
-        $(if ($smbOk) { "Port 445 reachable" } else { "Port 445 not reachable — backup share may be inaccessible" })
+        $(if ($smbOk) { "Port 445 reachable" } else { "Port 445 not reachable - backup share may be inaccessible" })
 
     Add-Check 'Network (local→backup)' "UNC path accessible ($BackupPath)" `
         $(if ($localShareOk) { 'PASS' } else { 'WARN' }) `
-        $(if ($localShareOk) { "Path is accessible from this machine" } else { "Path not accessible from this machine — verify SQL Server service account has access" })
+        $(if ($localShareOk) { "Path is accessible from this machine" } else { "Path not accessible from this machine - verify SQL Server service account has access" })
 }
 
 # ══════════════════════════════════════════════════════════════
@@ -257,20 +257,20 @@ $tgtToSrc = Test-RemotePort $tgtHost $SqlPort $srcHost
 
 if ($srcToTgt.Skipped) {
     Add-Check 'Network (source→target)' "SQL port $SqlPort : $srcHost → $tgtHost" 'SKIP' `
-        "WinRM not available on $srcHost — test manually: Test-NetConnection -ComputerName $tgtHost -Port $SqlPort"
+        "WinRM not available on $srcHost - test manually: Test-NetConnection -ComputerName $tgtHost -Port $SqlPort"
 } else {
     Add-Check 'Network (source→target)' "SQL port $SqlPort : $srcHost → $tgtHost" `
         $(if ($srcToTgt.Success) { 'PASS' } else { 'FAIL' }) `
-        $(if ($srcToTgt.Success) { "Port $SqlPort reachable from $srcHost" } else { "Port $SqlPort NOT reachable from $srcHost — check firewall on target" })
+        $(if ($srcToTgt.Success) { "Port $SqlPort reachable from $srcHost" } else { "Port $SqlPort NOT reachable from $srcHost - check firewall on target" })
 }
 
 if ($tgtToSrc.Skipped) {
     Add-Check 'Network (target→source)' "SQL port $SqlPort : $tgtHost → $srcHost" 'SKIP' `
-        "WinRM not available on $tgtHost — test manually: Test-NetConnection -ComputerName $srcHost -Port $SqlPort"
+        "WinRM not available on $tgtHost - test manually: Test-NetConnection -ComputerName $srcHost -Port $SqlPort"
 } else {
     Add-Check 'Network (target→source)' "SQL port $SqlPort : $tgtHost → $srcHost" `
         $(if ($tgtToSrc.Success) { 'PASS' } else { 'FAIL' }) `
-        $(if ($tgtToSrc.Success) { "Port $SqlPort reachable from $tgtHost" } else { "Port $SqlPort NOT reachable from $tgtHost — check firewall on source" })
+        $(if ($tgtToSrc.Success) { "Port $SqlPort reachable from $tgtHost" } else { "Port $SqlPort NOT reachable from $tgtHost - check firewall on source" })
 }
 
 if ($CheckAG) {
@@ -280,16 +280,16 @@ if ($CheckAG) {
 
     if ($srcToTgtAG.Skipped) {
         Add-Check 'Network (AG endpoint)' "$label : $srcHost → $tgtHost" 'SKIP' `
-            "WinRM not available — test manually: Test-NetConnection -ComputerName $tgtHost -Port 5022"
+            "WinRM not available - test manually: Test-NetConnection -ComputerName $tgtHost -Port 5022"
     } else {
         Add-Check 'Network (AG endpoint)' "$label : $srcHost → $tgtHost" `
             $(if ($srcToTgtAG.Success) { 'PASS' } else { 'FAIL' }) `
-            $(if ($srcToTgtAG.Success) { "Port 5022 reachable" } else { "Port 5022 NOT reachable — AG mirroring endpoint will fail. Check firewall and that endpoint is created on both nodes." })
+            $(if ($srcToTgtAG.Success) { "Port 5022 reachable" } else { "Port 5022 NOT reachable - AG mirroring endpoint will fail. Check firewall and that endpoint is created on both nodes." })
     }
 
     if ($tgtToSrcAG.Skipped) {
         Add-Check 'Network (AG endpoint)' "$label : $tgtHost → $srcHost" 'SKIP' `
-            "WinRM not available — test manually: Test-NetConnection -ComputerName $srcHost -Port 5022"
+            "WinRM not available - test manually: Test-NetConnection -ComputerName $srcHost -Port 5022"
     } else {
         Add-Check 'Network (AG endpoint)' "$label : $tgtHost → $srcHost" `
             $(if ($tgtToSrcAG.Success) { 'PASS' } else { 'FAIL' }) `
@@ -305,11 +305,11 @@ if ($BackupPath -and $BackupPath.StartsWith('\\')) {
         $res = Test-RemotePort $srv 445 $backupHost
         if ($res.Skipped) {
             Add-Check 'Network (backup share)' "SMB 445 : $srv → $backupHost" 'SKIP' `
-                "WinRM not available — test manually on $srv"
+                "WinRM not available - test manually on $srv"
         } else {
             Add-Check 'Network (backup share)' "SMB 445 : $srv → $backupHost" `
                 $(if ($res.Success) { 'PASS' } else { 'FAIL' }) `
-                $(if ($res.Success) { "SMB 445 reachable from $srv" } else { "SMB 445 NOT reachable from $srv — backup/restore will fail. Check firewall and share permissions." })
+                $(if ($res.Success) { "SMB 445 reachable from $srv" } else { "SMB 445 NOT reachable from $srv - backup/restore will fail. Check firewall and share permissions." })
         }
     }
 }
@@ -338,13 +338,13 @@ function Compare-SqlVersions([string]$src, [string]$tgt) {
 $versionComparison = Compare-SqlVersions $srcVersion $tgtVersion
 
 if (-not $srcVersion) {
-    Add-Check 'SQL Server' "Connect to source ($SourceInstance)" 'FAIL' "Cannot connect — check instance name, port, and permissions"
+    Add-Check 'SQL Server' "Connect to source ($SourceInstance)" 'FAIL' "Cannot connect - check instance name, port, and permissions"
 } else {
     Add-Check 'SQL Server' "Source version" 'INFO' "$srcVersion ($srcEdition)"
 }
 
 if (-not $tgtVersion) {
-    Add-Check 'SQL Server' "Connect to target ($TargetInstance)" 'FAIL' "Cannot connect — check instance name, port, and permissions"
+    Add-Check 'SQL Server' "Connect to target ($TargetInstance)" 'FAIL' "Cannot connect - check instance name, port, and permissions"
 } else {
     Add-Check 'SQL Server' "Target version" 'INFO' "$tgtVersion ($tgtEdition)"
 }
@@ -399,7 +399,7 @@ if ($srcCollation -and $tgtCollation) {
         $(if ($collMatch) {
             "Both: $srcCollation"
         } else {
-            "Source: $srcCollation | Target: $tgtCollation — collation mismatch. Databases can still be restored but string comparisons between server collations may behave differently. Ensure application does not rely on server-level collation for dynamic SQL."
+            "Source: $srcCollation | Target: $tgtCollation - collation mismatch. Databases can still be restored but string comparisons between server collations may behave differently. Ensure application does not rely on server-level collation for dynamic SQL."
         })
 }
 
@@ -415,7 +415,7 @@ if ($tgtVersion) {
 
     Add-Check 'Target Config' 'SQL Agent status' `
         $(if ($agentStatus -eq 'Running') { 'PASS' } elseif ($agentStatus) { 'WARN' } else { 'SKIP' }) `
-        $(if ($agentStatus) { "SQL Server Agent: $agentStatus" } else { "Could not determine — check SQL Agent is installed and running on target" })
+        $(if ($agentStatus) { "SQL Server Agent: $agentStatus" } else { "Could not determine - check SQL Agent is installed and running on target" })
 
     # max server memory
     $maxMem = Invoke-SqlScalar $TargetInstance `
@@ -424,7 +424,7 @@ if ($tgtVersion) {
     Add-Check 'Target Config' 'Max server memory configured' `
         $(if ([long]$maxMem -ge 2147483647) { 'WARN' } elseif ([long]$maxMem -gt 0) { 'PASS' } else { 'SKIP' }) `
         $(if ([long]$maxMem -ge 2147483647) {
-            "max server memory = $maxMem MB (SQL Server default — unconfigured). Set this before production load to prevent memory pressure."
+            "max server memory = $maxMem MB (SQL Server default - unconfigured). Set this before production load to prevent memory pressure."
         } else {
             "max server memory = $maxMem MB"
         })
@@ -450,7 +450,7 @@ if ($tgtVersion) {
     Add-Check 'Target Config' 'Optimize for ad hoc workloads' `
         $(if ([int]$adHoc -eq 1) { 'PASS' } else { 'WARN' }) `
         $(if ([int]$adHoc -eq 1) {
-            'Enabled — reduces single-use plan cache bloat'
+            'Enabled - reduces single-use plan cache bloat'
         } else {
             "Not enabled. Enable before go-live: sp_configure 'optimize for ad hoc workloads', 1; RECONFIGURE"
         })
@@ -537,13 +537,13 @@ Write-Host ("  PASS: $passCount  |  WARN: $warnCount  |  FAIL: $failCount  |  SK
 
 if ($failCount -gt 0) {
     Write-Host ''
-    Write-Host '  BLOCKED — resolve all FAIL items before scheduling the migration window.' -ForegroundColor Red
+    Write-Host '  BLOCKED - resolve all FAIL items before scheduling the migration window.' -ForegroundColor Red
 } elseif ($warnCount -gt 0) {
     Write-Host ''
-    Write-Host '  CAUTION — review WARN items before proceeding.' -ForegroundColor Yellow
+    Write-Host '  CAUTION - review WARN items before proceeding.' -ForegroundColor Yellow
 } else {
     Write-Host ''
-    Write-Host '  GO — pre-flight checks passed. Proceed with Invoke-MigrationExport.ps1.' -ForegroundColor Green
+    Write-Host '  GO - pre-flight checks passed. Proceed with Invoke-MigrationExport.ps1.' -ForegroundColor Green
 }
 
 Write-Host ('-' * 60) -ForegroundColor DarkCyan

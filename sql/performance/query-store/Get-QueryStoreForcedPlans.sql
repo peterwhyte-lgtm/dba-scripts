@@ -72,18 +72,18 @@ BEGIN
                 WHEN bp.best_avg_cpu_ms < f.forced_avg_cpu_ms * 0.8
                 THEN CAST(CAST(100.0 * (f.forced_avg_cpu_ms - bp.best_avg_cpu_ms)
                          / NULLIF(bp.best_avg_cpu_ms, 0) AS INT) AS VARCHAR) +
-                     '% cheaper plan available — consider unforcing and testing'
-                ELSE 'OK — forced plan remains competitive'
+                     '% cheaper plan available - consider unforcing and testing'
+                ELSE 'OK - forced plan remains competitive'
             END AS plan_quality,
             CASE
                 WHEN f.force_failure_count > 0
-                THEN 'CRITICAL — force is FAILING (' + CAST(f.force_failure_count AS VARCHAR) +
+                THEN 'CRITICAL - force is FAILING (' + CAST(f.force_failure_count AS VARCHAR) +
                      ' failures, reason: ' + f.last_force_failure_reason_desc +
                      '); query is running without the forced plan'
                 WHEN f.plan_age_days > 180
-                THEN 'WARN — plan forced > 6 months ago; re-evaluate whether force is still needed'
+                THEN 'WARN - plan forced > 6 months ago; re-evaluate whether force is still needed'
                 WHEN bp.best_avg_cpu_ms < f.forced_avg_cpu_ms * 0.8
-                THEN 'WARN — cheaper plan now exists in QS; forced plan may be holding back performance'
+                THEN 'WARN - cheaper plan now exists in QS; forced plan may be holding back performance'
                 ELSE 'OK'
             END AS status
         FROM forced AS f

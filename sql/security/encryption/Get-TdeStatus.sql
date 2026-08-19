@@ -27,15 +27,15 @@ SELECT
     c.expiry_date AS certificate_expiry,
     CASE
         WHEN d.database_id = 2 AND d.is_encrypted = 1
-            THEN 'INFO — TempDB is encrypted because at least one user database uses TDE'
+            THEN 'INFO - TempDB is encrypted because at least one user database uses TDE'
         WHEN ek.encryption_state = 3 AND d.is_encrypted = 1
-            THEN 'OK — encrypted'
+            THEN 'OK - encrypted'
         WHEN ek.encryption_state IN (2, 4)
-            THEN 'INFO — encryption/key-change in progress (' + CAST(ek.percent_complete AS VARCHAR) + '% complete)'
+            THEN 'INFO - encryption/key-change in progress (' + CAST(ek.percent_complete AS VARCHAR) + '% complete)'
         WHEN ek.encryption_state = 5
-            THEN 'INFO — decryption in progress'
+            THEN 'INFO - decryption in progress'
         WHEN d.is_encrypted = 0 AND d.database_id NOT IN (1,2,3,4)
-            THEN 'INFO — not encrypted'
+            THEN 'INFO - not encrypted'
         ELSE 'OK'
     END AS status
 FROM sys.databases AS d

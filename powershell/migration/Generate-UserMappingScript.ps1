@@ -129,14 +129,14 @@ if ($invokeSqlcmd) {
 }
 
 if (-not $ddlText -or $ddlText.Trim() -eq '') {
-    Write-Host '[generate] No DDL produced — instance may have no user databases with non-default users.' -ForegroundColor Yellow
+    Write-Host '[generate] No DDL produced - instance may have no user databases with non-default users.' -ForegroundColor Yellow
     return
 }
 
 [System.IO.File]::WriteAllText($sqlOutPath, $ddlText, [System.Text.Encoding]::UTF8)
 
 $lineCount = ($ddlText -split "`n").Count
-Write-Host "[generate] Done — $lineCount lines, $($ddlText.Length) characters" -ForegroundColor Green
+Write-Host "[generate] Done - $lineCount lines, $($ddlText.Length) characters" -ForegroundColor Green
 Write-Host "[generate] .sql   : $sqlOutPath" -ForegroundColor Green
 Write-Host ''
 Write-Host 'Run on target AFTER databases are restored and logins are created.' -ForegroundColor Yellow

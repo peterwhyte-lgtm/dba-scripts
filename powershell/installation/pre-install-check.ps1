@@ -88,7 +88,7 @@ foreach ($key in $rebootKeys) {
 }
 Add-Check 'System' 'No pending reboot' `
     $(if ($pendingReboot) {'WARN'} else {'PASS'}) `
-    $(if ($pendingReboot) {'Pending reboot detected — install may fail'} else {'Clean'})
+    $(if ($pendingReboot) {'Pending reboot detected - install may fail'} else {'Clean'})
 
 # ── RAM ───────────────────────────────────────────────────────────────────────
 $ramGB = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 1)
@@ -125,7 +125,7 @@ foreach ($dc in $diskChecks) {
         $status = if ($freeGB -ge $dc.MinGB) {'PASS'} elseif ($freeGB -ge ($dc.MinGB / 2)) {'WARN'} else {'FAIL'}
         Add-Check 'Disk' $dc.Label $status "$freeGB GB free on $drive (need $($dc.MinGB) GB)"
     } else {
-        Add-Check 'Disk' $dc.Label 'WARN' "Drive $drive not found — will be created"
+        Add-Check 'Disk' $dc.Label 'WARN' "Drive $drive not found - will be created"
     }
 }
 
@@ -140,7 +140,7 @@ try {
 }
 Add-Check 'Network' 'TCP port 1433' `
     $(if ($port1433InUse) {'WARN'} else {'PASS'}) `
-    $(if ($port1433InUse) {'Already in use — check existing SQL instance'} else {'Available'})
+    $(if ($port1433InUse) {'Already in use - check existing SQL instance'} else {'Available'})
 
 # ── Existing SQL Server instances ─────────────────────────────────────────────
 $regInstances = @()
@@ -164,7 +164,7 @@ if ($regInstances.Count -eq 0) {
 try {
     $fwProfile = (Get-NetFirewallProfile -ErrorAction Stop | Where-Object Enabled -eq $true | Select-Object -First 1).Name
     if ($fwProfile) {
-        Add-Check 'Network' 'Windows Firewall' 'WARN' "Active profile: $fwProfile — ensure port 1433 rule is added post-install"
+        Add-Check 'Network' 'Windows Firewall' 'WARN' "Active profile: $fwProfile - ensure port 1433 rule is added post-install"
     } else {
         Add-Check 'Network' 'Windows Firewall' 'PASS' 'No active firewall profiles'
     }
@@ -176,9 +176,9 @@ try {
 Write-Host ""
 Write-Host ("  " + [string]::new('=',60)) -ForegroundColor DarkCyan
 $summaryColor = if ($fail -gt 0) {'Red'} elseif ($warn -gt 0) {'Yellow'} else {'Green'}
-$verdict      = if ($fail -gt 0) {'NOT READY — fix FAIL items before proceeding'} `
-                elseif ($warn -gt 0) {'READY WITH WARNINGS — review WARN items'} `
-                else {'READY — all checks passed'}
+$verdict      = if ($fail -gt 0) {'NOT READY - fix FAIL items before proceeding'} `
+                elseif ($warn -gt 0) {'READY WITH WARNINGS - review WARN items'} `
+                else {'READY - all checks passed'}
 Write-Host "  $verdict" -ForegroundColor $summaryColor
 Write-Host "  PASS: $pass   WARN: $warn   FAIL: $fail" -ForegroundColor $summaryColor
 Write-Host ""

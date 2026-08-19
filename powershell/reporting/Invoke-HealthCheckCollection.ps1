@@ -423,7 +423,7 @@ if ($uiUp) {
     Write-Host "  Dashboard: $reviewUrl" -ForegroundColor Cyan
 } else {
     Write-Host "  Dashboard: $reviewUrl" -ForegroundColor DarkGray
-    Write-Host "             (web UI not running — start with: .\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
+    Write-Host "             (web UI not running - start with: .\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
 }
 Write-Host ''
 Write-Host "  CLI review: .\powershell\reporting\Review-HealthCheckOutput.ps1" -ForegroundColor DarkGray

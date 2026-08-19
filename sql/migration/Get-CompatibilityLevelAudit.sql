@@ -43,7 +43,7 @@ SELECT
     @instance_compat AS instance_native_compat,
     CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(20)) AS instance_version,
     CASE
-        WHEN @instance_compat IS NULL THEN 'UNKNOWN — update this script''s version table'
+        WHEN @instance_compat IS NULL THEN 'UNKNOWN - update this script''s version table'
         WHEN d.compatibility_level < (@instance_compat - 20) THEN 'NEEDS UPGRADE'
         WHEN d.compatibility_level < @instance_compat THEN 'BELOW NATIVE'
         WHEN d.compatibility_level = @instance_compat THEN 'AT NATIVE'

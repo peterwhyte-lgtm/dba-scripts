@@ -39,7 +39,7 @@ SELECT
                 / NULLIF(COUNT(*), 0)
              AS decimal(5,1)) > 60
             AND cp.objtype = 'Adhoc'
-            THEN 'WARN — high ad-hoc single-use ratio; consider OPTIMIZE FOR AD HOC WORKLOADS'
+            THEN 'WARN - high ad-hoc single-use ratio; consider OPTIMIZE FOR AD HOC WORKLOADS'
         ELSE 'OK'
     END AS recommendation
 FROM sys.dm_exec_cached_plans cp

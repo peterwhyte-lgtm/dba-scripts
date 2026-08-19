@@ -36,7 +36,7 @@ SELECT
          AND    value_name   = N'ForceEncryption'),
         '0'
     )                                                                               AS running_value,
-    'ForceEncryption — 1 = all connections must encrypt; 0 = unencrypted allowed'  AS description
+    'ForceEncryption - 1 = all connections must encrypt; 0 = unencrypted allowed'  AS description
 
 UNION ALL
 

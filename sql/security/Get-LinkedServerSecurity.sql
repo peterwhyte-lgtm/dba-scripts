@@ -30,24 +30,24 @@ SELECT
     ISNULL(SUSER_SNAME(NULLIF(ll.local_principal_id, 0)), '(any login)') AS local_login,
     CASE
         WHEN ll.uses_self_credential = 1
-            THEN 'Impersonate — context of the calling login'
+            THEN 'Impersonate - context of the calling login'
         WHEN ll.remote_name IS NOT NULL AND ll.local_principal_id = 0
             THEN 'Catch-all mapping → ' + ll.remote_name
         WHEN ll.remote_name IS NOT NULL
             THEN 'Explicit mapping → ' + ll.remote_name
-        ELSE '(no mapping — will fail for unmatched logins)'
+        ELSE '(no mapping - will fail for unmatched logins)'
     END AS security_context,
     ll.uses_self_credential,
     ll.remote_name AS remote_login,
     CASE
         WHEN ll.remote_name IS NOT NULL AND ll.local_principal_id = 0
-            THEN 'HIGH — catch-all with stored credentials'
+            THEN 'HIGH - catch-all with stored credentials'
         WHEN ll.remote_name IS NOT NULL AND ll.local_principal_id != 0
-            THEN 'HIGH — explicit mapping with stored credentials'
+            THEN 'HIGH - explicit mapping with stored credentials'
         WHEN ll.uses_self_credential = 1
-            THEN 'MEDIUM — impersonation (caller context)'
+            THEN 'MEDIUM - impersonation (caller context)'
         WHEN ll.remote_name IS NULL AND ll.uses_self_credential = 0
-            THEN 'LOW — no mapping (access denied for unmatched logins)'
+            THEN 'LOW - no mapping (access denied for unmatched logins)'
         ELSE 'UNKNOWN'
     END AS risk_level,
     s.is_remote_login_enabled,

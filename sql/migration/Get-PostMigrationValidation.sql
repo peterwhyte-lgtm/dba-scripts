@@ -99,7 +99,7 @@ FROM (
     SELECT
         'windows_login_count',
         CAST(COUNT(*) AS nvarchar(200)),
-        'type IN (U, G) — Windows users and groups'
+        'type IN (U, G) - Windows users and groups'
     FROM sys.server_principals
     WHERE type IN ('U', 'G')
       AND name NOT LIKE N'NT SERVICE\%'

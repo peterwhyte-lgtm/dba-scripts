@@ -36,16 +36,16 @@ SELECT
     CASE
         WHEN d.is_encrypted = 1
              AND MAX(CASE bs.type WHEN 'D' THEN bs.key_algorithm END) IS NOT NULL
-            THEN 'OK — TDE + encrypted backups'
+            THEN 'OK - TDE + encrypted backups'
         WHEN d.is_encrypted = 1
              AND MAX(CASE bs.type WHEN 'D' THEN bs.key_algorithm END) IS NULL
-            THEN 'WARN — TDE enabled but backups not encrypted'
+            THEN 'WARN - TDE enabled but backups not encrypted'
         WHEN d.is_encrypted = 0
              AND MAX(CASE bs.type WHEN 'D' THEN bs.key_algorithm END) IS NOT NULL
-            THEN 'INFO — backup encrypted (no TDE on data files)'
+            THEN 'INFO - backup encrypted (no TDE on data files)'
         WHEN MAX(CASE bs.type WHEN 'D' THEN bs.backup_finish_date END) IS NULL
-            THEN 'WARN — no full backup in last 30 days'
-        ELSE 'INFO — no encryption on TDE or backup'
+            THEN 'WARN - no full backup in last 30 days'
+        ELSE 'INFO - no encryption on TDE or backup'
     END AS encryption_status
 FROM sys.databases d
 LEFT JOIN sys.dm_database_encryption_keys dek

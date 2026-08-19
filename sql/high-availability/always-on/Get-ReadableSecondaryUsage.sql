@@ -43,11 +43,11 @@ SELECT
     CASE
         WHEN ar.secondary_role_allow_connections_desc IN ('READ_ONLY', 'ALL')
              AND ar.read_only_routing_url IS NOT NULL
-            THEN 'Yes — connections and routing configured'
+            THEN 'Yes - connections and routing configured'
         WHEN ar.secondary_role_allow_connections_desc IN ('READ_ONLY', 'ALL')
              AND ar.read_only_routing_url IS NULL
-            THEN 'Partial — readable but no routing URL set'
-        ELSE 'No — secondary not configured for reads'
+            THEN 'Partial - readable but no routing URL set'
+        ELSE 'No - secondary not configured for reads'
     END AS routing_configured
 FROM sys.availability_groups ag
 JOIN sys.availability_replicas ar ON ar.group_id = ag.group_id

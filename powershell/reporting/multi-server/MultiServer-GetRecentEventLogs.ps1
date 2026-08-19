@@ -37,7 +37,7 @@ $logNames   = $LogName -split ','  | ForEach-Object { $_.Trim() } | Where-Object
 # Map string level names to WinEvent level values
 $levelMap = @{ Error=2; Warning=3; Information=4; Critical=1 }
 $levelNums = $Level -split ',' | ForEach-Object { $_.Trim() } | ForEach-Object {
-    if ($levelMap.ContainsKey($_)) { $levelMap[$_] } else { Write-Warning "Unknown level '$_' — skipping"; $null }
+    if ($levelMap.ContainsKey($_)) { $levelMap[$_] } else { Write-Warning "Unknown level '$_' - skipping"; $null }
 } | Where-Object { $null -ne $_ }
 
 if ($levelNums.Count -eq 0) {

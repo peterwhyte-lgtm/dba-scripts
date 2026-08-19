@@ -61,7 +61,7 @@ SELECT
         WHEN 9348 THEN 'Sets row limit for bulk insert via set-based ops based on cardinality estimate'
         WHEN 9389 THEN 'Enables dynamic memory grant for batch mode operators'
         WHEN 10316 THEN 'Enables temporal tables to have additional indexes on hidden period columns'
-        ELSE 'No description on file — check docs.microsoft.com for trace flag ' + CAST(tf.TraceFlag AS VARCHAR(10))
+        ELSE 'No description on file - check docs.microsoft.com for trace flag ' + CAST(tf.TraceFlag AS VARCHAR(10))
     END AS description
 FROM #trace_flags AS tf
 ORDER BY tf.Global DESC, tf.TraceFlag;

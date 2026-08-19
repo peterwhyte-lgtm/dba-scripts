@@ -77,19 +77,19 @@ BEGIN
              WHERE query_id = rw.query_id) AS total_plan_count,
             CASE
                 WHEN rw.avg_cpu_ms > bw.avg_cpu_ms * (@regression_factor * 2)
-                THEN 'CRITICAL — CPU ' +
+                THEN 'CRITICAL - CPU ' +
                      CAST(CAST(rw.avg_cpu_ms / NULLIF(bw.avg_cpu_ms, 0) AS INT) AS VARCHAR) +
                      'x baseline; likely plan regression or stats change'
                 WHEN rw.avg_duration_ms > bw.avg_duration_ms * (@regression_factor * 2)
-                THEN 'CRITICAL — duration ' +
+                THEN 'CRITICAL - duration ' +
                      CAST(CAST(rw.avg_duration_ms / NULLIF(bw.avg_duration_ms, 0) AS INT) AS VARCHAR) +
                      'x baseline'
                 WHEN rw.avg_cpu_ms > bw.avg_cpu_ms * @regression_factor
-                THEN 'WARN — CPU ' +
+                THEN 'WARN - CPU ' +
                      CAST(CAST(rw.avg_cpu_ms / NULLIF(bw.avg_cpu_ms, 0) AS DECIMAL(4,1)) AS VARCHAR) +
                      'x baseline'
                 WHEN rw.avg_duration_ms > bw.avg_duration_ms * @regression_factor
-                THEN 'WARN — duration ' +
+                THEN 'WARN - duration ' +
                      CAST(CAST(rw.avg_duration_ms / NULLIF(bw.avg_duration_ms, 0) AS DECIMAL(4,1)) AS VARCHAR) +
                      'x baseline'
                 ELSE 'INFO'

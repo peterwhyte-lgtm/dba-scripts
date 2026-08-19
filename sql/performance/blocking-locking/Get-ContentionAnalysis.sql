@@ -36,7 +36,7 @@ FROM (
         CAST(ws.wait_time_ms * 1.0
              / NULLIF(ws.waiting_tasks_count, 0) AS DECIMAL(12,2)) AS avg_wait_ms,
         uptime.days_since_restart,
-        'Locking contention — run Get-BlockingChains for real-time chain analysis' AS note
+        'Locking contention - run Get-BlockingChains for real-time chain analysis' AS note
     FROM sys.dm_os_wait_stats ws
     CROSS JOIN (
         SELECT DATEDIFF(DAY, sqlserver_start_time, GETDATE()) AS days_since_restart
@@ -60,14 +60,14 @@ FROM (
         uptime.days_since_restart,
         CASE
             WHEN ls.latch_class LIKE 'PAGEIOLATCH%'
-                THEN 'I/O latch — data page reads are slow; check disk latency'
+                THEN 'I/O latch - data page reads are slow; check disk latency'
             WHEN ls.latch_class LIKE 'ACCESS_METHODS%'
-                THEN 'Scan/seek contention — high concurrent read/write activity'
+                THEN 'Scan/seek contention - high concurrent read/write activity'
             WHEN ls.latch_class = 'BUFFER'
-                THEN 'Buffer pool contention — memory pressure or heavy page access'
+                THEN 'Buffer pool contention - memory pressure or heavy page access'
             WHEN ls.latch_class LIKE 'FGCB%'
-                THEN 'Filegroup cache contention — check filegroup configuration'
-            ELSE 'Internal latch contention — investigate if avg_wait_ms is high'
+                THEN 'Filegroup cache contention - check filegroup configuration'
+            ELSE 'Internal latch contention - investigate if avg_wait_ms is high'
         END
     FROM sys.dm_os_latch_stats ls
     CROSS JOIN (
@@ -93,9 +93,9 @@ FROM (
              / NULLIF(ws.waiting_tasks_count, 0) AS DECIMAL(12,2)),
         uptime.days_since_restart,
         CASE ws.wait_type
-            WHEN 'PAGELATCH_UP' THEN 'TempDB PFS/GAM/SGAM allocation contention — add TempDB files (up to # of logical CPUs, max 8)'
-            WHEN 'PAGELATCH_EX' THEN 'TempDB exclusive page latch — likely allocation bitmap contention'
-            ELSE 'TempDB shared page latch — allocation page reads'
+            WHEN 'PAGELATCH_UP' THEN 'TempDB PFS/GAM/SGAM allocation contention - add TempDB files (up to # of logical CPUs, max 8)'
+            WHEN 'PAGELATCH_EX' THEN 'TempDB exclusive page latch - likely allocation bitmap contention'
+            ELSE 'TempDB shared page latch - allocation page reads'
         END
     FROM sys.dm_os_wait_stats ws
     CROSS JOIN (
@@ -120,7 +120,7 @@ FROM (
         CAST(ss.spins * 1.0 / NULLIF(ss.collisions, 0) AS DECIMAL(12,2)), -- spin ratio
         uptime.days_since_restart,
         'Spin ratio: ' + CAST(CAST(ss.spins * 1.0 / NULLIF(ss.collisions, 0) AS DECIMAL(10,0)) AS VARCHAR)
-            + ' spins/collision — avg_wait_ms column shows spin ratio, not ms'
+            + ' spins/collision - avg_wait_ms column shows spin ratio, not ms'
     FROM sys.dm_os_spinlock_stats ss
     CROSS JOIN (
         SELECT DATEDIFF(DAY, sqlserver_start_time, GETDATE()) AS days_since_restart

@@ -50,7 +50,7 @@ if (-not (Test-Path -LiteralPath $sqlScript)) { throw "SQL script not found: $sq
 if (-not (Test-Path -LiteralPath $runner))    { throw "Runner not found: $runner" }
 
 if ($Database -eq 'master') {
-    Write-Host 'NOTE: Running against master — set -Database YourDatabase to audit a user database.' -ForegroundColor Yellow
+    Write-Host 'NOTE: Running against master - set -Database YourDatabase to audit a user database.' -ForegroundColor Yellow
 }
 Write-Host "Running database permissions audit against: $Database" -ForegroundColor Cyan
 & $runner -ScriptPath $sqlScript -ServerInstance $ServerInstance -Database $Database -OutputFormat $OutputFormat -OutputPath $OutputPath

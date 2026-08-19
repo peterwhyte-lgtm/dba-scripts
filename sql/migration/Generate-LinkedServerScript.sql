@@ -129,7 +129,7 @@ BEGIN
                          ELSE N'' END +
                     N'    ;' + @crlf
                 WHEN @ll_remote <> N'' AND @ll_local = N'' THEN
-                    N'    -- Catch-all mapping — ENTER_PASSWORD_HERE (stored credential, cannot be scripted)' + @crlf +
+                    N'    -- Catch-all mapping - ENTER_PASSWORD_HERE (stored credential, cannot be scripted)' + @crlf +
                     N'    EXEC sp_addlinkedsrvlogin' + @crlf +
                     N'        @rmtsrvname  = N''' + REPLACE(@ls_name,   N'''', N'''''') + N''',' + @crlf +
                     N'        @useself     = N''False'',' + @crlf +
@@ -137,7 +137,7 @@ BEGIN
                     N'        @rmtuser     = N''' + REPLACE(@ll_remote, N'''', N'''''') + N''',' + @crlf +
                     N'        @rmtpassword = N''ENTER_PASSWORD_HERE'';' + @crlf
                 WHEN @ll_remote <> N'' THEN
-                    N'    -- Explicit mapping — ENTER_PASSWORD_HERE (stored credential, cannot be scripted)' + @crlf +
+                    N'    -- Explicit mapping - ENTER_PASSWORD_HERE (stored credential, cannot be scripted)' + @crlf +
                     N'    EXEC sp_addlinkedsrvlogin' + @crlf +
                     N'        @rmtsrvname  = N''' + REPLACE(@ls_name,   N'''', N'''''') + N''',' + @crlf +
                     N'        @useself     = N''False'',' + @crlf +

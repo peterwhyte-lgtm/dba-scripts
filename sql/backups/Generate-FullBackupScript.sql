@@ -22,7 +22,7 @@ SET @WithClause += CASE WHEN @Compression = 1 THEN N'COMPRESSION, ' ELSE N'' END
 SET @WithClause += N'STATS = ' + CAST(@StatsInterval AS nvarchar(3)) + N';';
 
 DECLARE @cmd nvarchar(max) =
-    N'-- FULL backup script — ' + @@SERVERNAME                              + CHAR(13) + CHAR(10) +
+    N'-- FULL backup script - ' + @@SERVERNAME                              + CHAR(13) + CHAR(10) +
     N'-- Path  : ' + @BackupPath                                            + CHAR(13) + CHAR(10) +
     N'-- Verify path exists before executing.'                              + CHAR(13) + CHAR(10) +
                                                                               CHAR(13) + CHAR(10) +

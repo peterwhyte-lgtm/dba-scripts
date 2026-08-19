@@ -135,14 +135,14 @@ if ($invokeSqlcmd) {
 }
 
 if (-not $ddlText -or $ddlText.Trim() -eq '') {
-    Write-Host '[generate] No DDL produced — instance may have no user SQL/Windows logins.' -ForegroundColor Yellow
+    Write-Host '[generate] No DDL produced - instance may have no user SQL/Windows logins.' -ForegroundColor Yellow
     return
 }
 
 [System.IO.File]::WriteAllText($sqlOutPath, $ddlText, [System.Text.Encoding]::UTF8)
 
 $lineCount = ($ddlText -split "`n").Count
-Write-Host "[generate] Done — $lineCount lines, $($ddlText.Length) characters" -ForegroundColor Green
+Write-Host "[generate] Done - $lineCount lines, $($ddlText.Length) characters" -ForegroundColor Green
 Write-Host "[generate] .sql   : $sqlOutPath" -ForegroundColor Green
 Write-Host ''
 Write-Host 'Review the file and map owner logins to valid accounts on the target before running.' -ForegroundColor Yellow

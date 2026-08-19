@@ -98,7 +98,7 @@ if (-not $FolderPath) {
         throw "No healthcheck folders found under $hcRoot. Run Invoke-HealthCheckCollection.ps1 first."
     }
     $FolderPath = $latest.FullName
-    Write-Host "No FolderPath specified — using most recent: $FolderPath" -ForegroundColor Yellow
+    Write-Host "No FolderPath specified - using most recent: $FolderPath" -ForegroundColor Yellow
 }
 
 if (-not (Test-Path -LiteralPath $FolderPath)) {
@@ -140,11 +140,11 @@ foreach ($row in $dbHealth) {
     }
     if ($row.is_auto_shrink_on -in @('True', '1', 'YES')) {
         Add-Finding 'WARNING' 'Auto-Shrink' $row.database_name (
-            'AUTO_SHRINK is enabled — causes fragmentation and random I/O spikes')
+            'AUTO_SHRINK is enabled - causes fragmentation and random I/O spikes')
     }
     if ($row.is_auto_close_on -in @('True', '1', 'YES')) {
         Add-Finding 'WARNING' 'Auto-Close' $row.database_name (
-            'AUTO_CLOSE is enabled — causes overhead on every new connection')
+            'AUTO_CLOSE is enabled - causes overhead on every new connection')
     }
 }
 
@@ -168,7 +168,7 @@ foreach ($row in $backups) {
     if ($recovery -eq 'FULL' -or $recovery -eq 'BULK_LOGGED') {
         if (-not $row.last_log_backup -or $row.last_log_backup -eq '') {
             Add-Finding 'WARNING' 'Backup' $dbName (
-                "$recovery recovery model but no log backup on record — log will grow unbounded")
+                "$recovery recovery model but no log backup on record - log will grow unbounded")
         }
         elseif ([double]::TryParse($row.log_backup_age_hours, [ref]$null)) {
             $logAgeH = [double]$row.log_backup_age_hours
@@ -188,7 +188,7 @@ foreach ($row in $tlogs) {
     $pctCol = if ($row.PSObject.Properties['log_used_pct']) { $row.log_used_pct } else { $row.log_used_percent }
     if ([double]::TryParse($pctCol, [ref]$pct) -and $pct -gt 80) {
         Add-Finding 'WARNING' 'Transaction Log' $row.database_name (
-            "Log is $pct% used ($($row.log_used_mb) MB of $($row.log_size_mb) MB) — risk of log-full")
+            "Log is $pct% used ($($row.log_used_mb) MB of $($row.log_size_mb) MB) - risk of log-full")
     }
 }
 
@@ -197,7 +197,7 @@ $dbFiles = Read-Csv-Safe 'database-files'
 foreach ($row in $dbFiles) {
     if ($row.growth_is_percent -in @('True', '1', 'YES', 'true')) {
         Add-Finding 'WARNING' 'Autogrowth' "$($row.database_name) / $($row.logical_name)" (
-            "Percent-based autogrowth ($($row.auto_growth)) on $($row.file_type) file — can cause large unpredictable growths on large databases")
+            "Percent-based autogrowth ($($row.auto_growth)) on $($row.file_type) file - can cause large unpredictable growths on large databases")
     }
 }
 
@@ -241,18 +241,18 @@ $errCritical = @($errors | Where-Object {
     $_.log_text -match 'Error: 82[345]|Error: 832|Stack Dump|SQL Server is terminating' })
 if ($errCritical.Count -gt 0) {
     Add-Finding 'CRITICAL' 'Error Log' 'Corruption / crash indicators' (
-        "$($errCritical.Count) entry/entries matching 823/824/825/832 or stack dump patterns — read recent-errors.csv now")
+        "$($errCritical.Count) entry/entries matching 823/824/825/832 or stack dump patterns - read recent-errors.csv now")
 }
 $errMemory = @($errors | Where-Object {
     $_.log_text -match 'paged out|insufficient memory|Error 802|Error: 701' })
 if ($errMemory.Count -gt 0) {
     Add-Finding 'WARNING' 'Error Log' 'Memory pressure' (
-        "$($errMemory.Count) entry/entries reporting working set paged out or insufficient buffer pool memory — check max server memory vs host RAM")
+        "$($errMemory.Count) entry/entries reporting working set paged out or insufficient buffer pool memory - check max server memory vs host RAM")
 }
 
 if ($errors.Count -gt 0) {
     Add-Finding 'INFO' 'Error Log' 'SQL Server error log' (
-        "$($errors.Count) non-routine entry/entries in last 24h — review recent-errors.csv")
+        "$($errors.Count) non-routine entry/entries in last 24h - review recent-errors.csv")
 }
 
 # ── dbcc-checkdb ──────────────────────────────────────────────────────────────
@@ -260,16 +260,16 @@ $checkdb = Read-Csv-Safe 'dbcc-checkdb'
 foreach ($row in $checkdb) {
     if (-not $row.last_good_checkdb -or $row.last_good_checkdb -eq '') {
         Add-Finding 'CRITICAL' 'DBCC CHECKDB' $row.database_name (
-            'No CHECKDB ever recorded — integrity of this database is unknown')
+            'No CHECKDB ever recorded - integrity of this database is unknown')
     }
     elseif ([int]::TryParse($row.days_since_checkdb, [ref]$null)) {
         $days = [int]$row.days_since_checkdb
         if ($days -gt 14) {
             Add-Finding 'CRITICAL' 'DBCC CHECKDB' $row.database_name (
-                "CHECKDB overdue — $days days since last integrity check (run immediately)")
+                "CHECKDB overdue - $days days since last integrity check (run immediately)")
         } elseif ($days -gt 7) {
             Add-Finding 'WARNING' 'DBCC CHECKDB' $row.database_name (
-                "CHECKDB stale — $days days since last integrity check (run soon)")
+                "CHECKDB stale - $days days since last integrity check (run soon)")
         }
     }
 }
@@ -282,7 +282,7 @@ $activeSuspects = @($suspects | Where-Object {
 if ($activeSuspects.Count -gt 0) {
     $dbNames = ($activeSuspects | Select-Object -ExpandProperty database_name -Unique) -join ', '
     Add-Finding 'CRITICAL' 'Suspect Pages' 'msdb.dbo.suspect_pages' (
-        "$($activeSuspects.Count) active suspect page(s) — run DBCC CHECKDB immediately. Databases: $dbNames")
+        "$($activeSuspects.Count) active suspect page(s) - run DBCC CHECKDB immediately. Databases: $dbNames")
 }
 
 # ── io-usage (latency) ────────────────────────────────────────────────────────
@@ -294,11 +294,11 @@ foreach ($row in $ioStats) {
     [double]::TryParse($row.write_latency_ms, [ref]$writeLat) | Out-Null
     if ($readLat -gt 50) {
         Add-Finding 'WARNING' 'I/O Latency' $row.database_name (
-            "Read latency is $([Math]::Round($readLat, 1)) ms (threshold: 50ms) — check disk subsystem")
+            "Read latency is $([Math]::Round($readLat, 1)) ms (threshold: 50ms) - check disk subsystem")
     }
     if ($writeLat -gt 50) {
         Add-Finding 'WARNING' 'I/O Latency' $row.database_name (
-            "Write latency is $([Math]::Round($writeLat, 1)) ms (threshold: 50ms) — check disk subsystem")
+            "Write latency is $([Math]::Round($writeLat, 1)) ms (threshold: 50ms) - check disk subsystem")
     }
 }
 
@@ -314,21 +314,21 @@ foreach ($login in $logins) {
 # ── wait-stats (pressure patterns) ───────────────────────────────────────────
 $waits = Read-Csv-Safe 'wait-stats'
 $concernWaits = @{
-    'PAGEIOLATCH_SH'     = 'Data file read I/O bottleneck — disk reads are slow'
-    'PAGEIOLATCH_EX'     = 'Data file write I/O bottleneck — disk writes are slow'
-    'WRITELOG'           = 'Transaction log write bottleneck — check log disk or sync-commit AG'
-    'RESOURCE_SEMAPHORE' = 'Memory grant pressure — queries queuing for execution memory'
-    'CXPACKET'           = 'Parallelism waits — review MAXDOP and cost threshold for parallelism'
-    'CXCONSUMER'         = 'Parallelism waits — review MAXDOP and cost threshold for parallelism'
-    'LCK_M_X'            = 'Exclusive lock waits — blocking or high write concurrency'
-    'ASYNC_NETWORK_IO'   = 'Client network waits — application not consuming results fast enough'
+    'PAGEIOLATCH_SH'     = 'Data file read I/O bottleneck - disk reads are slow'
+    'PAGEIOLATCH_EX'     = 'Data file write I/O bottleneck - disk writes are slow'
+    'WRITELOG'           = 'Transaction log write bottleneck - check log disk or sync-commit AG'
+    'RESOURCE_SEMAPHORE' = 'Memory grant pressure - queries queuing for execution memory'
+    'CXPACKET'           = 'Parallelism waits - review MAXDOP and cost threshold for parallelism'
+    'CXCONSUMER'         = 'Parallelism waits - review MAXDOP and cost threshold for parallelism'
+    'LCK_M_X'            = 'Exclusive lock waits - blocking or high write concurrency'
+    'ASYNC_NETWORK_IO'   = 'Client network waits - application not consuming results fast enough'
 }
 foreach ($row in $waits) {
     if ($concernWaits.ContainsKey($row.wait_type)) {
         $pct = 0.0
         if ([double]::TryParse($row.pct_total_wait, [ref]$pct) -and $pct -gt 10) {
             Add-Finding 'WARNING' 'Wait Statistics' $row.wait_type (
-                "$([Math]::Round($pct,1))% of total wait time — $($concernWaits[$row.wait_type])")
+                "$([Math]::Round($pct,1))% of total wait time - $($concernWaits[$row.wait_type])")
         }
     }
 }
@@ -339,7 +339,7 @@ foreach ($row in $memConfig) {
     $maxMem = 0L
     if ([long]::TryParse($row.max_server_memory_mb, [ref]$maxMem) -and $maxMem -ge 2147483647) {
         Add-Finding 'WARNING' 'Memory Config' 'max server memory' (
-            'max server memory is at the SQL Server default (2,147,483,647 MB = uncapped) — SQL Server may consume all available RAM')
+            'max server memory is at the SQL Server default (2,147,483,647 MB = uncapped) - SQL Server may consume all available RAM')
     }
 }
 
@@ -349,7 +349,7 @@ foreach ($row in $dbSizes) {
     $freePct = 0.0
     if ([double]::TryParse($row.data_free_pct, [ref]$freePct) -and $freePct -lt 10) {
         Add-Finding 'WARNING' 'Disk Space' $row.database_name (
-            "Data files $freePct% free ($($row.data_free_mb) MB free of $($row.data_size_mb) MB) — autogrowth risk")
+            "Data files $freePct% free ($($row.data_free_mb) MB free of $($row.data_size_mb) MB) - autogrowth risk")
     }
 }
 
@@ -376,7 +376,7 @@ foreach ($row in $planCache) {
     if ($row.recommendation -like 'WARN*') {
         $pct = if ($row.single_use_pct) { "$($row.single_use_pct)% single-use" } else { '' }
         Add-Finding 'WARNING' 'Plan Cache' $row.plan_type (
-            "$($row.recommendation) — $pct ($($row.single_use_mb) MB wasted)")
+            "$($row.recommendation) - $pct ($($row.single_use_mb) MB wasted)")
     }
 }
 
@@ -389,11 +389,11 @@ foreach ($row in $linkedSec) {
     $seenLs[$key] = $true
     if ($row.risk_level -like 'HIGH*') {
         Add-Finding 'WARNING' 'Linked Server' $row.linked_server (
-            "Risk: $($row.risk_level) — $($row.security_context)")
+            "Risk: $($row.risk_level) - $($row.security_context)")
     }
     elseif ($row.risk_level -like 'MEDIUM*') {
         Add-Finding 'INFO' 'Linked Server' $row.linked_server (
-            "Risk: $($row.risk_level) — $($row.security_context)")
+            "Risk: $($row.risk_level) - $($row.security_context)")
     }
 }
 
@@ -408,7 +408,7 @@ foreach ($row in $vlfData) {
             "VLF count $($row.vlf_count) is high (>200). Shrink and resize the log file.")
     } elseif ($row.status -eq 'ELEVATED') {
         Add-Finding 'INFO' 'VLF Count' $row.database_name (
-            "VLF count $($row.vlf_count) is elevated (>50). Monitor — resize on next maintenance window.")
+            "VLF count $($row.vlf_count) is elevated (>50). Monitor - resize on next maintenance window.")
     }
 }
 
@@ -430,7 +430,7 @@ if (Test-Path -LiteralPath $maintJobsFile) {
                 "Last run FAILED. Check SQL Agent job history for details.")
         }
         if ($row.status -eq 'Disabled') {
-            Add-Finding 'WARNING' 'Maintenance Job' $row.job_name "Job is disabled — no scheduled maintenance running."
+            Add-Finding 'WARNING' 'Maintenance Job' $row.job_name "Job is disabled - no scheduled maintenance running."
         }
     }
 }
@@ -442,7 +442,7 @@ foreach ($row in $failedLogins) {
         Add-Finding 'CRITICAL' 'Failed Logins' $row.login_name 'Login is currently locked out'
     }
     if ($row.status -like 'CRITICAL*') {
-        Add-Finding 'CRITICAL' 'Failed Logins' $row.login_name "$($row.failure_count) failures in error log — likely brute-force or app misconfiguration"
+        Add-Finding 'CRITICAL' 'Failed Logins' $row.login_name "$($row.failure_count) failures in error log - likely brute-force or app misconfiguration"
     } elseif ($row.status -like 'WARN*') {
         Add-Finding 'WARNING' 'Failed Logins' $row.login_name "$($row.failure_count) repeated failures in error log"
     }
@@ -453,7 +453,7 @@ $qsStatus = Read-Csv-Safe 'query-store-status'
 foreach ($row in $qsStatus) {
     if ($row.qs_state -eq 'READ_ONLY' -and $row.qs_desired_state -in @('READ_WRITE','AUTO')) {
         $fp = if ($row.fill_pct -and $row.fill_pct -ne '') { " ($([Math]::Round([double]$row.fill_pct,1))% full)" } else { '' }
-        Add-Finding 'WARNING' 'Query Store' $row.database_name "QS switched to READ_ONLY$fp — storage full or error; plan history is paused"
+        Add-Finding 'WARNING' 'Query Store' $row.database_name "QS switched to READ_ONLY$fp - storage full or error; plan history is paused"
     }
 }
 
@@ -490,7 +490,7 @@ $growthRisk = Read-Csv-Safe 'growth-risk'
 foreach ($row in $growthRisk) {
     if ($row.growth_status -eq 'AT_LIMIT') {
         Add-Finding 'CRITICAL' 'Growth Risk' $row.database_name (
-            "Database is at its configured growth limit ($($row.total_mb) MB of $($row.growth_limit_mb) MB) — writes will fail when full")
+            "Database is at its configured growth limit ($($row.total_mb) MB of $($row.growth_limit_mb) MB) - writes will fail when full")
     } elseif ($row.growth_status -eq 'NEAR_LIMIT') {
         Add-Finding 'WARNING' 'Growth Risk' $row.database_name (
             "Database is near its configured growth limit ($($row.total_mb) MB of $($row.growth_limit_mb) MB)")
@@ -504,7 +504,7 @@ foreach ($row in $volumes) {
     if (-not [double]::TryParse($row.free_pct, [ref]$freePct)) { continue }
     if ($freePct -lt 5) {
         Add-Finding 'CRITICAL' 'Disk Space' $row.volume_mount_point (
-            "Volume has $freePct% free ($($row.free_gb) GB of $($row.total_gb) GB) — SQL files on this volume can run out of space")
+            "Volume has $freePct% free ($($row.free_gb) GB of $($row.total_gb) GB) - SQL files on this volume can run out of space")
     } elseif ($freePct -lt 10) {
         Add-Finding 'WARNING' 'Disk Space' $row.volume_mount_point (
             "Volume has $freePct% free ($($row.free_gb) GB of $($row.total_gb) GB)")
@@ -531,7 +531,7 @@ $orphans = Read-Csv-Safe 'orphaned-users'
 foreach ($row in $orphans) {
     if (-not $row.user_name) { continue }
     Add-Finding 'WARNING' 'Orphaned Users' "$($row.database_name) / $($row.user_name)" (
-        "Database user has no matching server login — remap or drop (see Fix-OrphanedUsers)")
+        "Database user has no matching server login - remap or drop (see Fix-OrphanedUsers)")
 }
 
 # ── security-surface-area ─────────────────────────────────────────────────────
@@ -539,7 +539,7 @@ $surface = Read-Csv-Safe 'security-surface-area'
 foreach ($row in $surface) {
     if ($row.name -eq 'xp_cmdshell' -and $row.running_value -in @('1','True')) {
         Add-Finding 'WARNING' 'Security' 'xp_cmdshell' (
-            'xp_cmdshell is enabled — OS command execution from T-SQL; disable unless a documented process depends on it')
+            'xp_cmdshell is enabled - OS command execution from T-SQL; disable unless a documented process depends on it')
     }
 }
 
@@ -579,7 +579,7 @@ foreach ($row in $mirrorEndpoints) {
     if (-not $row.PSObject.Properties['endpoint_state']) { break }
     if ($row.endpoint_state -and $row.endpoint_state -ne 'STARTED') {
         Add-Finding 'CRITICAL' 'Mirroring Endpoint' $row.endpoint_name (
-            "Endpoint state is $($row.endpoint_state) — mirroring/AG traffic cannot flow until it is STARTED")
+            "Endpoint state is $($row.endpoint_state) - mirroring/AG traffic cannot flow until it is STARTED")
     }
 }
 
@@ -602,7 +602,7 @@ $recentBlips = @($nodeBlips | Where-Object {
 })
 if ($recentBlips.Count -gt 0) {
     Add-Finding 'WARNING' 'Failover Cluster' 'Error log failover entries' (
-        "$($recentBlips.Count) failover-related error log entry/entries in the last 7 days — review last-node-blip.csv")
+        "$($recentBlips.Count) failover-related error log entry/entries in the last 7 days - review last-node-blip.csv")
 }
 
 # ── Output ───────────────────────────────────────────────────────────────────
@@ -665,7 +665,7 @@ if ($uiUp) {
     Write-Host "  Dashboard: $dashboardUrl" -ForegroundColor Cyan
 } else {
     Write-Host "  Dashboard: $dashboardUrl" -ForegroundColor DarkGray
-    Write-Host "             (web UI not running — start with: .\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
+    Write-Host "             (web UI not running - start with: .\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
 }
 Write-Host ('─' * 64) -ForegroundColor DarkCyan
 Write-Host ''

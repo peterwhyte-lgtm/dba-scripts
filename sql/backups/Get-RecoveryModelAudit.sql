@@ -56,7 +56,7 @@ SELECT
         WHEN DATEDIFF(DAY, fb.last_full_backup, GETDATE()) > @FullBackupStaleDays
             THEN 'WARNING: full backup is stale (>' + CAST(@FullBackupStaleDays AS VARCHAR(10)) + 'd)'
         WHEN d.recovery_model_desc = 'SIMPLE'
-            THEN 'INFO: SIMPLE — no point-in-time recovery between full/diff backups'
+            THEN 'INFO: SIMPLE - no point-in-time recovery between full/diff backups'
         ELSE 'OK'
     END AS finding
 FROM sys.databases AS d

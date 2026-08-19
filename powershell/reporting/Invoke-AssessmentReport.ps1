@@ -179,7 +179,7 @@ $lines.Add("---")
 $lines.Add("")
 $lines.Add("## Executive Summary")
 $lines.Add("")
-$lines.Add("### Instance Score: $instanceScore / 100 — $scoreLabel")
+$lines.Add("### Instance Score: $instanceScore / 100 - $scoreLabel")
 $lines.Add("")
 $lines.Add("| Severity | Count |")
 $lines.Add("|----------|-------|")
@@ -196,10 +196,10 @@ $lines.Add("")
 # Critical findings summary
 $criticalFindings = @($findings | Where-Object Severity -eq 'CRITICAL')
 if ($criticalFindings.Count -gt 0) {
-    $lines.Add("### Critical Issues — Resolve Before Handover")
+    $lines.Add("### Critical Issues - Resolve Before Handover")
     $lines.Add("")
     foreach ($f in $criticalFindings) {
-        $lines.Add("- **[$($f.Category)]** $($f.Subject) — $($f.Detail)")
+        $lines.Add("- **[$($f.Category)]** $($f.Subject) - $($f.Detail)")
     }
     $lines.Add("")
 }
@@ -210,7 +210,7 @@ if ($failItems.Count -gt 0) {
     $lines.Add("### Configuration Failures")
     $lines.Add("")
     foreach ($f in $failItems) {
-        $lines.Add("- **[$($f.weight)]** $($f.check_name) — $($f.finding)")
+        $lines.Add("- **[$($f.weight)]** $($f.check_name) - $($f.finding)")
     }
     $lines.Add("")
 }
@@ -312,7 +312,7 @@ if ($critRecs.Count -gt 0) {
     $n = 1
     foreach ($r in $critRecs) {
         $rec = $r.recommendation -replace '\|', '/' -replace "`r?`n", ' '
-        $lines.Add("$n. **$($r.check_name)** — $rec")
+        $lines.Add("$n. **$($r.check_name)** - $rec")
         $n++
     }
     $lines.Add("")
@@ -323,7 +323,7 @@ if ($warnRecs.Count -gt 0) {
     $n = 1
     foreach ($r in $warnRecs) {
         $rec = $r.recommendation -replace '\|', '/' -replace "`r?`n", ' '
-        $lines.Add("$n. **$($r.check_name)** — $rec")
+        $lines.Add("$n. **$($r.check_name)** - $rec")
         $n++
     }
     $lines.Add("")
@@ -334,7 +334,7 @@ if ($lowRecs.Count -gt 0) {
     $n = 1
     foreach ($r in $lowRecs) {
         $rec = $r.recommendation -replace '\|', '/' -replace "`r?`n", ' '
-        $lines.Add("$n. **$($r.check_name)** — $rec")
+        $lines.Add("$n. **$($r.check_name)** - $rec")
         $n++
     }
     $lines.Add("")
@@ -353,7 +353,7 @@ $lines -join "`n" | Set-Content -LiteralPath $reportPath -Encoding UTF8
 
 Write-Host ''
 Write-Host ('─' * 64) -ForegroundColor DarkCyan
-Write-Host "  Score   : $instanceScore/100 — $scoreLabel" -ForegroundColor $(if ($instanceScore -ge 80) { 'Green' } elseif ($instanceScore -ge 60) { 'Yellow' } else { 'Red' })
+Write-Host "  Score   : $instanceScore/100 - $scoreLabel" -ForegroundColor $(if ($instanceScore -ge 80) { 'Green' } elseif ($instanceScore -ge 60) { 'Yellow' } else { 'Red' })
 Write-Host "  CRITICAL: $critCount  |  WARNING: $warnCount  |  FAIL config: $failCount"
 Write-Host ''
 Write-Host "  Report  : $reportPath" -ForegroundColor Green

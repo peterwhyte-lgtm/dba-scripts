@@ -180,7 +180,7 @@ function Confirm-SAPassword {
     return $ok
 }
 
-Write-DbaLog "SQL Server install log — $ts" 'Cyan'
+Write-DbaLog "SQL Server install log - $ts" 'Cyan'
 Write-DbaLog "Log file: $logFile" 'DarkGray'
 
 # ── Interactive prompts for anything not supplied ─────────────────────────────
@@ -302,7 +302,7 @@ if ($AnswerFile) {
     [Runtime.InteropServices.Marshal]::SecureStringToBSTR($SAPassword)) | Out-Null
 
 if ($WhatIf) {
-    Write-DbaLog 'WhatIf — setup.exe command:' 'Yellow'
+    Write-DbaLog 'WhatIf - setup.exe command:' 'Yellow'
     Write-DbaLog "$SetupPath $($SetupArgs -join ' ')" 'DarkGray'
     # Mask password in WhatIf output
     Write-Host ($SetupArgs -join ' ') -replace '/SAPWD="[^"]*"', '/SAPWD="****"'
@@ -320,7 +320,7 @@ Write-DbaLog "setup.exe exit code: $exitCode"
 
 switch ($exitCode) {
     0    { Write-DbaLog 'Installation succeeded.' 'Green' }
-    3010 { Write-DbaLog 'Installation succeeded — reboot required.' 'Yellow' }
+    3010 { Write-DbaLog 'Installation succeeded - reboot required.' 'Yellow' }
     default {
         Write-DbaLog "Installation failed (exit code $exitCode). Check: $logFile.stderr" 'Red'
         exit $exitCode
@@ -343,7 +343,7 @@ if (-not $SkipPostConfig) {
     }
 
     if (-not $ready) {
-        Write-DbaLog 'WARNING: SQL Server not reachable after 60s — skipping post-install config.' 'Yellow'
+        Write-DbaLog 'WARNING: SQL Server not reachable after 60s - skipping post-install config.' 'Yellow'
     } else {
         $postSql = @"
 EXEC sys.sp_configure 'show advanced options', 1;
@@ -359,7 +359,7 @@ RECONFIGURE WITH OVERRIDE;
             Write-DbaLog "  MaxDOP       : $MaxDOP" 'Green'
             Write-DbaLog "  Cost threshold: 50" 'Green'
         } catch {
-            Write-DbaLog "WARNING: Post-install config failed — $($_.Exception.Message)" 'Yellow'
+            Write-DbaLog "WARNING: Post-install config failed - $($_.Exception.Message)" 'Yellow'
         }
     }
 }

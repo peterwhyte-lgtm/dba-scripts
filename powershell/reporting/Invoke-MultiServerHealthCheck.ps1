@@ -70,7 +70,7 @@ if ($serverList.Count -eq 0) {
 }
 
 Write-Host ''
-Write-Host "  Multi-server health check — $($serverList.Count) server(s)" -ForegroundColor Cyan
+Write-Host "  Multi-server health check - $($serverList.Count) server(s)" -ForegroundColor Cyan
 Write-Host ("  " + ("─" * 56)) -ForegroundColor DarkCyan
 Write-Host ''
 
@@ -108,7 +108,7 @@ if ($Parallel) {
             $collectionFolders[$r.Server] = $r.Folder
             Write-Host "  [OK]  $($r.Server) → $($r.Folder)" -ForegroundColor Green
         } else {
-            Write-Host "  [FAIL] $($r.Server) — collection failed or folder not found" -ForegroundColor Red
+            Write-Host "  [FAIL] $($r.Server) - collection failed or folder not found" -ForegroundColor Red
         }
     }
 } else {

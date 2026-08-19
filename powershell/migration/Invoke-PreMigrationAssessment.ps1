@@ -140,11 +140,11 @@ Write-Host ('─' * 64) -ForegroundColor DarkCyan
 Write-Host "  Output : $outFolder" -ForegroundColor Green
 Write-Host ''
 Write-Host '  Next steps:' -ForegroundColor DarkGray
-Write-Host '    1. risk-assessment.csv     — address all HIGH findings before proceeding' -ForegroundColor DarkGray
-Write-Host '    2. deprecated-features.csv — test application against target compat level' -ForegroundColor DarkGray
-Write-Host '    3. login-audit.csv         — run Generate-LoginScript.ps1 to script logins' -ForegroundColor DarkGray
-Write-Host '    4. compat-level-audit.csv  — plan compat level upgrade sequence' -ForegroundColor DarkGray
-Write-Host '    5. backup-coverage.csv     — confirm backup chain is complete' -ForegroundColor DarkGray
+Write-Host '    1. risk-assessment.csv     - address all HIGH findings before proceeding' -ForegroundColor DarkGray
+Write-Host '    2. deprecated-features.csv - test application against target compat level' -ForegroundColor DarkGray
+Write-Host '    3. login-audit.csv         - run Generate-LoginScript.ps1 to script logins' -ForegroundColor DarkGray
+Write-Host '    4. compat-level-audit.csv  - plan compat level upgrade sequence' -ForegroundColor DarkGray
+Write-Host '    5. backup-coverage.csv     - confirm backup chain is complete' -ForegroundColor DarkGray
 Write-Host ('─' * 64) -ForegroundColor DarkCyan
 Write-Host ''
 $env:DBASCRIPTS_BATCH = $null

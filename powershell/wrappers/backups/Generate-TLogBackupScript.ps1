@@ -89,7 +89,7 @@ if ($invokeSqlcmd) {
 }
 
 if (-not $ddlText -or $ddlText.Trim() -eq '') {
-    Write-Host '[generate] No output — no FULL/BULK_LOGGED databases found on this instance.' -ForegroundColor Yellow
+    Write-Host '[generate] No output - no FULL/BULK_LOGGED databases found on this instance.' -ForegroundColor Yellow
     return
 }
 
@@ -108,7 +108,7 @@ if ($OutputPath) {
 }
 
 $lineCount = ($ddlText -split "`n").Count
-Write-Host "[generate] Done — $lineCount lines  |  $($ddlText.Length) chars" -ForegroundColor Green
+Write-Host "[generate] Done - $lineCount lines  |  $($ddlText.Length) chars" -ForegroundColor Green
 Write-Host "[generate] .sql : $sqlOutPath" -ForegroundColor Green
 Write-Host ''
 Write-Host '  Open the .sql file above in SSMS to review and execute.' -ForegroundColor DarkGray

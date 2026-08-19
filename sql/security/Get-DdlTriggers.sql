@@ -28,10 +28,10 @@ SELECT
     m.definition AS trigger_definition,
     CASE
         WHEN t.is_disabled = 1
-            THEN 'INFO — trigger is disabled'
+            THEN 'INFO - trigger is disabled'
         WHEN m.definition LIKE '%ROLLBACK%'
-            THEN 'WARN — trigger may ROLLBACK transactions; could block DDL operations'
-        ELSE 'OK — review to confirm purpose and owner'
+            THEN 'WARN - trigger may ROLLBACK transactions; could block DDL operations'
+        ELSE 'OK - review to confirm purpose and owner'
     END AS status
 FROM sys.server_triggers AS t
 JOIN sys.server_sql_modules AS m ON m.object_id = t.object_id

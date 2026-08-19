@@ -44,9 +44,9 @@ SELECT * FROM (
         END AS description,
         (SELECT operator_count FROM operators) AS enabled_operators,
         CASE WHEN sa.severity IS NULL AND sp.sev >= 19
-             THEN 'CRITICAL — severity ' + CAST(sp.sev AS VARCHAR) + ' errors will not trigger an alert'
+             THEN 'CRITICAL - severity ' + CAST(sp.sev AS VARCHAR) + ' errors will not trigger an alert'
              WHEN sa.severity IS NULL
-             THEN 'WARN — no alert for severity ' + CAST(sp.sev AS VARCHAR)
+             THEN 'WARN - no alert for severity ' + CAST(sp.sev AS VARCHAR)
              ELSE 'OK'
         END AS status
     FROM severity_spine sp
@@ -65,11 +65,11 @@ SELECT * FROM (
          WHERE n.alert_id = a.id) AS enabled_operators,
         CASE
             WHEN a.enabled = 0
-                THEN 'INFO — alert is disabled'
+                THEN 'INFO - alert is disabled'
             WHEN NOT EXISTS (SELECT 1 FROM msdb.dbo.sysnotifications n
                              JOIN msdb.dbo.sysoperators op ON op.id = n.operator_id AND op.enabled = 1
                              WHERE n.alert_id = a.id)
-                THEN 'WARN — no enabled operator assigned; alert fires but nobody is notified'
+                THEN 'WARN - no enabled operator assigned; alert fires but nobody is notified'
             ELSE 'OK'
         END AS status
     FROM msdb.dbo.sysalerts AS a

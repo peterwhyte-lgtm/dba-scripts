@@ -32,7 +32,7 @@ ORDER BY collection_time DESC;
 
 IF @t1 IS NULL
 BEGIN
-    SELECT 'Only one snapshot available — run the storage-io collector at least twice.' AS status;
+    SELECT 'Only one snapshot available - run the storage-io collector at least twice.' AS status;
     RETURN;
 END
 
@@ -43,7 +43,7 @@ WHERE server_name = @ServerName AND collection_time = @t2;
 
 IF @start1 <> @start2
 BEGIN
-    SELECT 'SQL Server restarted between snapshots — counters reset, delta invalid.' AS status,
+    SELECT 'SQL Server restarted between snapshots - counters reset, delta invalid.' AS status,
            @t1 AS snapshot1, @t2 AS snapshot2;
     RETURN;
 END

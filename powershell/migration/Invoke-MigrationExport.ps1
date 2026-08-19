@@ -115,7 +115,7 @@ function Run-SqlExport {
 
 # ── Phase 0: Pre-migration assessment (CSVs) ─────────────────────────────────
 
-Write-Host '  Phase 0 — Pre-migration assessment' -ForegroundColor DarkCyan
+Write-Host '  Phase 0 - Pre-migration assessment' -ForegroundColor DarkCyan
 
 $assessFolder = Join-Path $outFolder '00-pre-migration-assessment'
 $assessScript = Join-Path $repoRoot 'powershell\migration\Invoke-PreMigrationAssessment.ps1'
@@ -138,7 +138,7 @@ Write-Host ''
 
 # ── Phase 1: DDL generation scripts ──────────────────────────────────────────
 
-Write-Host '  Phase 1 — Generate migration DDL' -ForegroundColor DarkCyan
+Write-Host '  Phase 1 - Generate migration DDL' -ForegroundColor DarkCyan
 
 # Determine the DDL output format the runner supports
 # For DDL-generating scripts (they return a single 'ddl' or 'script' column),
@@ -162,7 +162,7 @@ Write-Host ''
 
 # ── Phase 2: Validation baseline ─────────────────────────────────────────────
 
-Write-Host '  Phase 2 — Capture validation baseline' -ForegroundColor DarkCyan
+Write-Host '  Phase 2 - Capture validation baseline' -ForegroundColor DarkCyan
 Run-SqlExport -Label 'validation-baseline' -SqlRelPath 'sql\migration\Get-PostMigrationValidation.sql' -OutFile 'validation-baseline.csv' -Format 'Csv'
 
 Write-Host ''
@@ -172,16 +172,16 @@ Write-Host ''
 Write-Host ('─' * 64) -ForegroundColor DarkCyan
 Write-Host "  Export folder : $outFolder" -ForegroundColor Green
 Write-Host ''
-Write-Host '  Checklist — apply on TARGET in this order:' -ForegroundColor DarkGray
+Write-Host '  Checklist - apply on TARGET in this order:' -ForegroundColor DarkGray
 Write-Host '    1. Configure target: TempDB files, sp_configure, drive layout' -ForegroundColor DarkGray
-Write-Host '    2. Review full-backup.sql — set @BackupPath, run on SOURCE' -ForegroundColor DarkGray
+Write-Host '    2. Review full-backup.sql - set @BackupPath, run on SOURCE' -ForegroundColor DarkGray
 Write-Host '    3. Run logins.sql on TARGET' -ForegroundColor DarkGray
-Write-Host '    4. Review restore-with-move.sql — set @NewDataRoot/@NewLogRoot/@ts, run on TARGET' -ForegroundColor DarkGray
+Write-Host '    4. Review restore-with-move.sql - set @NewDataRoot/@NewLogRoot/@ts, run on TARGET' -ForegroundColor DarkGray
 Write-Host '    5. Run agent-jobs.sql on TARGET' -ForegroundColor DarkGray
 Write-Host '    6. Run linked-servers.sql on TARGET (fill ENTER_PASSWORD_HERE values)' -ForegroundColor DarkGray
 Write-Host '    7. Run user-mappings.sql on TARGET' -ForegroundColor DarkGray
-Write-Host '    8. Run Get-PostMigrationValidation.sql on TARGET — diff against validation-baseline.csv' -ForegroundColor DarkGray
-Write-Host '    9. DNS cutover — see RUNBOOK-Standalone.md Phase 7' -ForegroundColor DarkGray
+Write-Host '    8. Run Get-PostMigrationValidation.sql on TARGET - diff against validation-baseline.csv' -ForegroundColor DarkGray
+Write-Host '    9. DNS cutover - see RUNBOOK-Standalone.md Phase 7' -ForegroundColor DarkGray
 Write-Host ('─' * 64) -ForegroundColor DarkCyan
 Write-Host ''
 

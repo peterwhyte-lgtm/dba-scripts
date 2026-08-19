@@ -58,10 +58,10 @@ SET @upgradeNote =
         WHEN 14 THEN 'Direct upgrade supported to: SQL 2019, SQL 2022, SQL 2025.'
         WHEN 13 THEN 'Direct upgrade supported to: SQL 2019, SQL 2022, SQL 2025 (2025 requires 2016 SP3).'
         WHEN 12 THEN 'Direct upgrade supported to: SQL 2016, SQL 2017, SQL 2019, SQL 2022, SQL 2025 (2025 requires 2014 SP3).'
-        WHEN 11 THEN 'Direct upgrade supported to: SQL 2016, SQL 2017, SQL 2019, SQL 2022. Not supported to SQL 2025 — side-by-side for that target.'
-        WHEN 10 THEN 'Direct in-place upgrade supported to SQL 2016 or SQL 2017 only (requires 2008 SP4 / 2008 R2 SP3). Not supported to SQL 2019 or later — side-by-side migration for newer targets.'
-        WHEN 9 THEN 'Very old version — side-by-side migration strongly recommended. No direct in-place upgrade path to current versions.'
-        ELSE 'Newer than this script''s known version table — update Get-VersionUpgradeReadiness.sql with this release before trusting the compat-level and upgrade-path rows.'
+        WHEN 11 THEN 'Direct upgrade supported to: SQL 2016, SQL 2017, SQL 2019, SQL 2022. Not supported to SQL 2025 - side-by-side for that target.'
+        WHEN 10 THEN 'Direct in-place upgrade supported to SQL 2016 or SQL 2017 only (requires 2008 SP4 / 2008 R2 SP3). Not supported to SQL 2019 or later - side-by-side migration for newer targets.'
+        WHEN 9 THEN 'Very old version - side-by-side migration strongly recommended. No direct in-place upgrade path to current versions.'
+        ELSE 'Newer than this script''s known version table - update Get-VersionUpgradeReadiness.sql with this release before trusting the compat-level and upgrade-path rows.'
     END;
 
 -- ── 1. Instance summary ───────────────────────────────────────────────────────
@@ -93,10 +93,10 @@ FROM (
            + ' (gap ' + CAST(@nativeCompat - d.compatibility_level AS NVARCHAR(10)) + ')'
            + ', ' + d.recovery_model_desc + ', ' + d.state_desc,
            CASE
-               WHEN d.compatibility_level >= @nativeCompat THEN 'OK — at native level'
-               WHEN d.compatibility_level = @nativeCompat - 10 THEN 'INFO — 1 version behind'
-               WHEN d.compatibility_level = @nativeCompat - 20 THEN 'WARN — 2 versions behind'
-               ELSE 'HIGH — severely behind native level'
+               WHEN d.compatibility_level >= @nativeCompat THEN 'OK - at native level'
+               WHEN d.compatibility_level = @nativeCompat - 10 THEN 'INFO - 1 version behind'
+               WHEN d.compatibility_level = @nativeCompat - 20 THEN 'WARN - 2 versions behind'
+               ELSE 'HIGH - severely behind native level'
            END,
            100 + (@nativeCompat - d.compatibility_level)
     FROM sys.databases d
@@ -107,17 +107,17 @@ FROM (
     SELECT '3-config', name, CAST(CAST(value_in_use AS BIGINT) AS NVARCHAR(20)),
            CASE
                WHEN name = 'max server memory (MB)' AND value_in_use >= 2147483647
-                   THEN 'HIGH — Unconfigured. Set this before cutover to target to prevent memory pressure.'
+                   THEN 'HIGH - Unconfigured. Set this before cutover to target to prevent memory pressure.'
                WHEN name = 'max degree of parallelism' AND value_in_use = 0
-                   THEN 'INFO — MAXDOP = 0 (uses all CPUs). Set to min(8, CPU count / 2) unless validated.'
+                   THEN 'INFO - MAXDOP = 0 (uses all CPUs). Set to min(8, CPU count / 2) unless validated.'
                WHEN name = 'cost threshold for parallelism' AND value_in_use <= 5
-                   THEN 'INFO — Cost threshold = 5 (default). Consider 50+ on modern hardware to reduce parallelism noise.'
+                   THEN 'INFO - Cost threshold = 5 (default). Consider 50+ on modern hardware to reduce parallelism noise.'
                WHEN name = 'optimize for ad hoc workloads' AND value_in_use = 0
-                   THEN 'WARN — Disabled. Enable to reduce single-use plan cache bloat (sp_configure ''optimize for ad hoc workloads'', 1).'
+                   THEN 'WARN - Disabled. Enable to reduce single-use plan cache bloat (sp_configure ''optimize for ad hoc workloads'', 1).'
                WHEN name = 'backup checksum default' AND value_in_use = 0
-                   THEN 'INFO — Backup checksums off. Enable for stronger backup integrity checks.'
+                   THEN 'INFO - Backup checksums off. Enable for stronger backup integrity checks.'
                WHEN name = 'remote query timeout (s)' AND value_in_use = 600
-                   THEN 'INFO — Remote query timeout at default 600s. Review if linked servers are in use.'
+                   THEN 'INFO - Remote query timeout at default 600s. Review if linked servers are in use.'
                ELSE 'OK'
            END,
            200

@@ -61,7 +61,7 @@ if (-not (Test-Path -LiteralPath $sqlScript)) { throw "SQL script not found: $sq
 if (-not (Test-Path -LiteralPath $runner))    { throw "Runner not found: $runner" }
 
 if ($Database -eq 'master') {
-    Write-Warning "Running against 'master' — statistics analysis is most useful against user databases. Pass -Database <dbname> for meaningful results."
+    Write-Warning "Running against 'master' - statistics analysis is most useful against user databases. Pass -Database <dbname> for meaningful results."
 }
 
 Write-Host "Running statistics health check against [$Database]..." -ForegroundColor Cyan

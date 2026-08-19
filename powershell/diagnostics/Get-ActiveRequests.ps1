@@ -143,7 +143,7 @@ if (-not $env:DBASCRIPTS_BATCH) {
         Write-Host "  Review  : $url" -ForegroundColor Cyan
     } else {
         Write-Host "  Review  : $url" -ForegroundColor DarkGray
-        Write-Host "            (web UI not running — start with: .\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
+        Write-Host "            (web UI not running - start with: .\web-ui\Start-WebUi.ps1)" -ForegroundColor DarkGray
     }
     Write-Host ('─' * 64) -ForegroundColor DarkCyan
 }

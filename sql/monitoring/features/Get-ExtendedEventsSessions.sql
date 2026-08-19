@@ -34,17 +34,17 @@ SELECT
             SELECT 1 FROM sys.dm_xe_session_targets t
             WHERE t.event_session_address = s.address
               AND t.target_name IN ('asynchronous_file_target', 'ring_buffer')
-        ) THEN 'File/ring buffer — potential I/O or memory overhead'
+        ) THEN 'File/ring buffer - potential I/O or memory overhead'
         ELSE 'OK'
     END AS overhead_note,
     CASE s.name
-        WHEN 'system_health' THEN 'Built-in — monitors deadlocks, connectivity errors, scheduler health'
-        WHEN 'AlwaysOn_health' THEN 'Built-in — AG health events (present on AG instances)'
-        WHEN 'telemetry_xevents' THEN 'Built-in — SQL Server telemetry collection'
-        WHEN 'hkenginexesession' THEN 'Built-in — In-Memory OLTP (Hekaton) session'
+        WHEN 'system_health' THEN 'Built-in - monitors deadlocks, connectivity errors, scheduler health'
+        WHEN 'AlwaysOn_health' THEN 'Built-in - AG health events (present on AG instances)'
+        WHEN 'telemetry_xevents' THEN 'Built-in - SQL Server telemetry collection'
+        WHEN 'hkenginexesession' THEN 'Built-in - In-Memory OLTP (Hekaton) session'
         WHEN 'sp_server_diagnostics session'
-                                      THEN 'Built-in — WSFC diagnostics for AG/FCI'
-        ELSE 'Custom or third-party session — verify purpose and owner'
+                                      THEN 'Built-in - WSFC diagnostics for AG/FCI'
+        ELSE 'Custom or third-party session - verify purpose and owner'
     END AS session_note
 FROM sys.dm_xe_sessions AS s
 ORDER BY

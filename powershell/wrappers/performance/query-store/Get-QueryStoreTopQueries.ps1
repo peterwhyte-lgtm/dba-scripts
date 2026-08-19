@@ -58,7 +58,7 @@ if (-not (Test-Path -LiteralPath $sqlScript)) { throw "SQL script not found: $sq
 if (-not (Test-Path -LiteralPath $runner))    { throw "Runner not found: $runner" }
 
 if ($Database -eq 'master') {
-    Write-Warning "Running against 'master' — Query Store data lives in user databases. Pass -Database <dbname> for meaningful results."
+    Write-Warning "Running against 'master' - Query Store data lives in user databases. Pass -Database <dbname> for meaningful results."
 }
 
 Write-Host "Running Query Store top queries against [$Database]..." -ForegroundColor Cyan

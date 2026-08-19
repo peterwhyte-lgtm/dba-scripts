@@ -73,7 +73,7 @@ function Invoke-BlockingQuery([string]$server) {
         if ($credential) { $p.Username = $credential.UserName; $p.Password = $credential.GetNetworkCredential().Password }
         $rows = Invoke-Sqlcmd @p
         if ($rows) { foreach ($r in $rows) { $r | Select-Object *, @{n='Server'; e={ $server }} } }
-        else { [PSCustomObject]@{ Server = $server; session_id = '—'; blocking_session_id = '—'; wait_type = 'NO BLOCKING'; wait_sec = 0; current_statement = '' } }
+        else { [PSCustomObject]@{ Server = $server; session_id = '-'; blocking_session_id = '-'; wait_type = 'NO BLOCKING'; wait_sec = 0; current_statement = '' } }
     } catch {
         [PSCustomObject]@{ Server = $server; session_id = 'ERROR'; blocking_session_id = ''; wait_type = $_.Exception.Message; wait_sec = 0; current_statement = '' }
     }
@@ -91,7 +91,7 @@ if ($Parallel) {
             if ($cr) { $p.Username = $cr.UserName; $p.Password = $cr.GetNetworkCredential().Password }
             $rows = Invoke-Sqlcmd @p
             if ($rows) { foreach ($r in $rows) { $r | Select-Object *, @{n='Server'; e={ $srv }} } }
-            else { [PSCustomObject]@{ Server = $srv; session_id = '—'; blocking_session_id = '—'; wait_type = 'NO BLOCKING'; wait_sec = 0; current_statement = '' } }
+            else { [PSCustomObject]@{ Server = $srv; session_id = '-'; blocking_session_id = '-'; wait_type = 'NO BLOCKING'; wait_sec = 0; current_statement = '' } }
         } catch {
             [PSCustomObject]@{ Server = $srv; session_id = 'ERROR'; blocking_session_id = ''; wait_type = $_.Message; wait_sec = 0; current_statement = '' }
         }

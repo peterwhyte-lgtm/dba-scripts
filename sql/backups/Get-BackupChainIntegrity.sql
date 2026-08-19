@@ -106,21 +106,21 @@ combined AS (
         d.log_reuse_wait_desc,
         CASE
             WHEN fd.full_is_damaged = 1
-            THEN 'CRITICAL — last full backup is marked damaged in msdb'
+            THEN 'CRITICAL - last full backup is marked damaged in msdb'
             WHEN ISNULL(lg.chain_gaps, 0) > 0
-            THEN 'CRITICAL — ' + CAST(lg.chain_gaps AS VARCHAR) +
+            THEN 'CRITICAL - ' + CAST(lg.chain_gaps AS VARCHAR) +
                  ' gap(s) in log chain since last full; PITR impossible for those windows (gap starts ' +
                  CONVERT(VARCHAR(20), lg.first_gap_at, 120) + ')'
             WHEN d.recovery_model_desc = 'FULL' AND ll.last_log_backup_finish IS NULL
-            THEN 'WARN — FULL recovery model but no log backups since last full'
+            THEN 'WARN - FULL recovery model but no log backups since last full'
             WHEN d.recovery_model_desc = 'FULL'
                  AND DATEDIFF(MINUTE, ll.last_log_backup_finish, GETDATE()) > 60
-            THEN 'WARN — last log backup is ' +
+            THEN 'WARN - last log backup is ' +
                  CAST(DATEDIFF(MINUTE, ll.last_log_backup_finish, GETDATE()) AS VARCHAR) +
                  ' minutes old; RPO exposure growing'
             WHEN ISNULL(lg.damaged_log_backups, 0) > 0
-            THEN 'WARN — ' + CAST(lg.damaged_log_backups AS VARCHAR) + ' log backup(s) marked damaged'
-            ELSE 'OK — chain is intact'
+            THEN 'WARN - ' + CAST(lg.damaged_log_backups AS VARCHAR) + ' log backup(s) marked damaged'
+            ELSE 'OK - chain is intact'
         END AS chain_status,
         LEFT(fd.full_backup_file, 200) AS full_backup_file_path
     FROM full_details AS fd
@@ -134,7 +134,7 @@ combined AS (
         d.name, NULL, NULL, NULL, NULL, NULL, NULL,
         0, 0, 0, NULL, NULL, NULL,
         d.recovery_model_desc, d.log_reuse_wait_desc,
-        'CRITICAL — no full backup on record for this database',
+        'CRITICAL - no full backup on record for this database',
         NULL
     FROM sys.databases AS d
     WHERE d.database_id > 4

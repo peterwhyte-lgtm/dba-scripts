@@ -42,7 +42,7 @@ SET @ddl = @ddl
     + N'-- Target  : ' + @@SERVERNAME + @crlf
     + N'-- Generated: ' + CONVERT(nvarchar(30), GETDATE(), 120) + @crlf
     + N'-- Review before executing. Each line maps a database user to a login' + @crlf
-    + N'-- by name — verify the name match is correct first.' + @crlf
+    + N'-- by name - verify the name match is correct first.' + @crlf
     + N'-- ================================================================' + @crlf + @crlf;
 
 -- Temp table to collect orphans across all databases

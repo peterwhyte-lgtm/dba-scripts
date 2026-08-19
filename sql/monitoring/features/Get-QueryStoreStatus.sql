@@ -89,7 +89,7 @@ SELECT
     name,
     state_desc,
     'N/A',
-    'INFO — compat level ' + CAST(compatibility_level AS VARCHAR(5)) + ' (< 130); Query Store not supported'
+    'INFO - compat level ' + CAST(compatibility_level AS VARCHAR(5)) + ' (< 130); Query Store not supported'
 FROM sys.databases
 WHERE database_id > 4
   AND state = 0

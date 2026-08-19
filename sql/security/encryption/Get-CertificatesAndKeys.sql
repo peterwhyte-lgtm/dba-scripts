@@ -29,10 +29,10 @@ FROM (
         CASE
             WHEN EXISTS (SELECT 1 FROM sys.dm_database_encryption_keys ek
                          WHERE ek.encryptor_thumbprint = c.thumbprint)
-            THEN 'TDE — protects database encryption key'
+            THEN 'TDE - protects database encryption key'
             WHEN c.pvt_key_encryption_type_desc = 'NO_PRIVATE_KEY'
-            THEN 'Public cert only (no private key — cannot sign or decrypt)'
-            ELSE 'Unidentified — review usage manually'
+            THEN 'Public cert only (no private key - cannot sign or decrypt)'
+            ELSE 'Unidentified - review usage manually'
         END AS used_for,
         ISNULL(
             STUFF((
@@ -44,13 +44,13 @@ FROM (
             NULL) AS tde_databases,
         CASE
             WHEN c.expiry_date < GETDATE()
-            THEN 'CRITICAL — EXPIRED; TDE databases cannot be restored elsewhere with this cert'
+            THEN 'CRITICAL - EXPIRED; TDE databases cannot be restored elsewhere with this cert'
             WHEN DATEDIFF(DAY, GETDATE(), c.expiry_date) < 30
-            THEN 'CRITICAL — expires in ' + CAST(DATEDIFF(DAY, GETDATE(), c.expiry_date) AS VARCHAR) + ' days'
+            THEN 'CRITICAL - expires in ' + CAST(DATEDIFF(DAY, GETDATE(), c.expiry_date) AS VARCHAR) + ' days'
             WHEN DATEDIFF(DAY, GETDATE(), c.expiry_date) < 90
-            THEN 'WARN — expires in ' + CAST(DATEDIFF(DAY, GETDATE(), c.expiry_date) AS VARCHAR) + ' days'
+            THEN 'WARN - expires in ' + CAST(DATEDIFF(DAY, GETDATE(), c.expiry_date) AS VARCHAR) + ' days'
             WHEN c.pvt_key_encryption_type_desc = 'NO_PRIVATE_KEY'
-            THEN 'INFO — no private key; verify this is intentional'
+            THEN 'INFO - no private key; verify this is intentional'
             ELSE 'OK'
         END AS status
     FROM sys.certificates AS c
@@ -70,9 +70,9 @@ FROM (
         NULL,
         (ak.algorithm_desc COLLATE DATABASE_DEFAULT)
             + ' / ' + CAST(ak.key_length AS VARCHAR) + '-bit',
-        'Asymmetric key — check if used for column encryption or EKM',
+        'Asymmetric key - check if used for column encryption or EKM',
         NULL,
-        'INFO — verify usage and that the key is backed up'
+        'INFO - verify usage and that the key is backed up'
     FROM sys.asymmetric_keys AS ak
     WHERE ak.name NOT LIKE '##%'
 
@@ -92,8 +92,8 @@ FROM (
         'Symmetric key currently open in session',
         NULL,
         CASE WHEN ok.key_name LIKE '##%'
-             THEN 'INFO — internal system key'
-             ELSE 'WARN — symmetric key is open; verify it is required for current operation'
+             THEN 'INFO - internal system key'
+             ELSE 'WARN - symmetric key is open; verify it is required for current operation'
         END
     FROM sys.openkeys AS ok
 ) AS all_keys

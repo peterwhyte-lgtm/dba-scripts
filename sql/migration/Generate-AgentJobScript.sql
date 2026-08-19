@@ -17,7 +17,7 @@ SET @ddl = @ddl
     + N'-- SQL Agent Job Migration Script' + @crlf
     + N'-- Source  : ' + @@SERVERNAME + @crlf
     + N'-- Generated: ' + CONVERT(NVARCHAR(30), GETDATE(), 120) + @crlf
-    + N'-- Review owner_login_name values — map to valid logins on target.' + @crlf
+    + N'-- Review owner_login_name values - map to valid logins on target.' + @crlf
     + N'-- ================================================================' + @crlf + @crlf
     + N'USE msdb;' + @crlf + N'GO' + @crlf + @crlf;
 

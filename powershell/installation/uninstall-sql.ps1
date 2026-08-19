@@ -54,7 +54,7 @@ function Write-DbaLog {
     Add-Content -Path $logFile -Value $line
 }
 
-Write-DbaLog "SQL Server uninstall log — $ts" 'Cyan'
+Write-DbaLog "SQL Server uninstall log - $ts" 'Cyan'
 
 # ── Detect installed instances ────────────────────────────────────────────────
 $regPath   = 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL'
@@ -124,7 +124,7 @@ Write-DbaLog 'WARNING: This is IRREVERSIBLE. Ensure you have backups of all data
 Write-DbaLog ''
 
 if ($WhatIf) {
-    Write-DbaLog 'WhatIf — no changes made.' 'Yellow'; return
+    Write-DbaLog 'WhatIf - no changes made.' 'Yellow'; return
 }
 
 $confirm = Read-Host "Type the instance name '$InstanceName' to confirm uninstall"
@@ -146,7 +146,7 @@ Write-DbaLog "Exit code: $exitCode"
 
 switch ($exitCode) {
     0    { Write-DbaLog 'Uninstall succeeded.' 'Green' }
-    3010 { Write-DbaLog 'Uninstall succeeded — reboot required.' 'Yellow' }
+    3010 { Write-DbaLog 'Uninstall succeeded - reboot required.' 'Yellow' }
     default {
         Write-DbaLog "Uninstall may have failed (exit $exitCode). Review: $logFile.stderr" 'Red'
         exit $exitCode
@@ -163,7 +163,7 @@ if ($RemoveDataDirs -and $dataDirs.Count -gt 0) {
                 Remove-Item -Path $dir -Recurse -Force
                 Write-DbaLog "  Removed: $dir" 'Green'
             } catch {
-                Write-DbaLog "  Failed to remove $dir — $($_.Exception.Message)" 'Red'
+                Write-DbaLog "  Failed to remove $dir - $($_.Exception.Message)" 'Red'
             }
         }
     }

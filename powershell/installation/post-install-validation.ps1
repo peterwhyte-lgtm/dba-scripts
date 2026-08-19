@@ -47,7 +47,7 @@ function Add-Check {
 }
 
 Write-Host ""
-Write-Host "  Post-Install Validation — $ServerInstance" -ForegroundColor Cyan
+Write-Host "  Post-Install Validation - $ServerInstance" -ForegroundColor Cyan
 Write-Host ("  " + [string]::new('-', 62)) -ForegroundColor DarkCyan
 Write-Host ""
 
@@ -100,7 +100,7 @@ if ($ExpectedMaxMemoryGB -gt 0) {
 } else {
     Add-Check 'Config' 'Max server memory' `
         $(if ($maxMemMB -lt 2147483647) {'PASS'} else {'WARN'}) `
-        "$($maxMemMB)MB $(if ($maxMemMB -ge 2147483647) {'— not configured (SQL default = unlimited)'})"
+        "$($maxMemMB)MB $(if ($maxMemMB -ge 2147483647) {'- not configured (SQL default = unlimited)'})"
 }
 
 $maxdop = $cfg['max degree of parallelism']
@@ -111,21 +111,21 @@ if ($ExpectedMaxDOP -gt 0) {
 } else {
     Add-Check 'Config' 'MaxDOP' `
         $(if ($maxdop -gt 0) {'PASS'} else {'WARN'}) `
-        $(if ($maxdop -eq 0) {'0 — not configured (unlimited parallelism)'} else { $maxdop })
+        $(if ($maxdop -eq 0) {'0 - not configured (unlimited parallelism)'} else { $maxdop })
 }
 
 $ctp = $cfg['cost threshold for parallelism']
 Add-Check 'Config' 'Cost threshold for parallelism' `
     $(if ($ctp -ge 25) {'PASS'} elseif ($ctp -ge 5) {'WARN'} else {'WARN'}) `
-    "$ctp $(if ($ctp -le 5) {'— SQL default; 25-50 recommended'})"
+    "$ctp $(if ($ctp -le 5) {'- SQL default; 25-50 recommended'})"
 
 Add-Check 'Config' 'Backup compression' `
     $(if ($cfg['backup compression default'] -eq 1) {'PASS'} else {'WARN'}) `
-    $(if ($cfg['backup compression default'] -eq 1) {'Enabled'} else {'Disabled — enable for smaller backups'})
+    $(if ($cfg['backup compression default'] -eq 1) {'Enabled'} else {'Disabled - enable for smaller backups'})
 
 Add-Check 'Config' 'Optimize for ad hoc workloads' `
     $(if ($cfg['optimize for ad hoc workloads'] -eq 1) {'PASS'} else {'WARN'}) `
-    $(if ($cfg['optimize for ad hoc workloads'] -eq 1) {'Enabled'} else {'Disabled — enable to reduce plan cache bloat'})
+    $(if ($cfg['optimize for ad hoc workloads'] -eq 1) {'Enabled'} else {'Disabled - enable to reduce plan cache bloat'})
 
 # ── TempDB ────────────────────────────────────────────────────────────────────
 $tempdbFiles = Invoke-Sqlcmd -ServerInstance $ServerInstance `
@@ -154,7 +154,7 @@ $saRow = Invoke-Sqlcmd -ServerInstance $ServerInstance `
 if ($saRow) {
     Add-Check 'Security' 'SA account disabled' `
         $(if ($saRow.is_disabled -eq 1) {'PASS'} else {'WARN'}) `
-        $(if ($saRow.is_disabled -eq 1) {'SA is disabled'} else {'SA is ENABLED — disable if not needed'})
+        $(if ($saRow.is_disabled -eq 1) {'SA is disabled'} else {'SA is ENABLED - disable if not needed'})
 }
 
 $authMode = Invoke-Sqlcmd -ServerInstance $ServerInstance `
@@ -164,15 +164,15 @@ Add-Check 'Security' 'Authentication mode' 'PASS' `
     $(if ($authMode.WinOnly -eq 1) {'Windows auth only'} else {'Mixed mode (Windows + SQL)'})
 
 } else {
-    Write-Host "  Cannot connect — skipping configuration, TempDB, network, and security checks." -ForegroundColor Yellow
+    Write-Host "  Cannot connect - skipping configuration, TempDB, network, and security checks." -ForegroundColor Yellow
 }
 
 # ── Summary ───────────────────────────────────────────────────────────────────
 Write-Host ""
 Write-Host ("  " + [string]::new('=', 62)) -ForegroundColor DarkCyan
 $summaryColor = if ($fail -gt 0) {'Red'} elseif ($warn -gt 0) {'Yellow'} else {'Green'}
-$verdict = if ($fail -gt 0) {'ISSUES FOUND — review FAIL items'} `
-           elseif ($warn -gt 0) {'PASSED WITH WARNINGS — review WARN items'} `
+$verdict = if ($fail -gt 0) {'ISSUES FOUND - review FAIL items'} `
+           elseif ($warn -gt 0) {'PASSED WITH WARNINGS - review WARN items'} `
            else {'ALL CHECKS PASSED'}
 Write-Host "  $verdict" -ForegroundColor $summaryColor
 Write-Host "  PASS: $pass   WARN: $warn   FAIL: $fail" -ForegroundColor $summaryColor

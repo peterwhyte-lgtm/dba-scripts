@@ -76,7 +76,7 @@ SELECT
     CASE agg.error_code
         WHEN 18456 THEN 'Login failed (bad password or login does not exist)'
         WHEN 18452 THEN 'Login from untrusted domain or cannot use Windows auth'
-        WHEN 18451 THEN 'Login failed — only admin connections are allowed'
+        WHEN 18451 THEN 'Login failed - only admin connections are allowed'
         WHEN 18470 THEN 'Account is disabled'
         WHEN 18488 THEN 'Password must be changed'
         WHEN 4818 THEN 'Password does not meet complexity requirements'
@@ -97,10 +97,10 @@ SELECT
     END AS bad_password_count,
     CASE
         WHEN agg.failure_count >= 50
-        THEN 'CRITICAL — ' + CAST(agg.failure_count AS VARCHAR) +
+        THEN 'CRITICAL - ' + CAST(agg.failure_count AS VARCHAR) +
              ' failures in error log; likely brute-force or application misconfiguration'
         WHEN agg.failure_count >= 10
-        THEN 'WARN — repeated failures for login [' + ISNULL(agg.login_name, '(unknown)') + ']'
+        THEN 'WARN - repeated failures for login [' + ISNULL(agg.login_name, '(unknown)') + ']'
         ELSE 'INFO'
     END AS status
 FROM aggregated AS agg

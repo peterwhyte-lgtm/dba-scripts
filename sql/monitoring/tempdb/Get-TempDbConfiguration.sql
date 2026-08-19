@@ -59,12 +59,12 @@ SELECT
     f.max_size_mb,
     f.autogrowth_setting,
     CASE WHEN f.is_percent_growth = 1
-         THEN 'WARN — percent autogrowth; use fixed MB for TempDB'
+         THEN 'WARN - percent autogrowth; use fixed MB for TempDB'
          ELSE 'OK'
     END AS autogrowth_status,
     CASE WHEN s.min_size_mb = s.max_size_mb OR s.file_count = 1
-         THEN 'OK — equal sizing'
-         ELSE 'WARN — files are unequal (' + CAST(s.min_size_mb AS varchar) + '–' +
+         THEN 'OK - equal sizing'
+         ELSE 'WARN - files are unequal (' + CAST(s.min_size_mb AS varchar) + '-' +
               CAST(s.max_size_mb AS varchar) + ' MB); equal sizing prevents allocation contention'
     END AS sizing_status,
     s.file_count AS total_files_this_type,
@@ -73,9 +73,9 @@ SELECT
     (SELECT cpu_count FROM sys.dm_os_sys_info) AS logical_cpu_count,
     CASE
         WHEN f.file_type = 'ROWS' AND s.file_count < (SELECT CASE WHEN cpu_count > 8 THEN 8 ELSE cpu_count END FROM sys.dm_os_sys_info)
-            THEN 'WARN — ' + CAST(s.file_count AS varchar) + ' data file(s); recommend 1 per core up to 8'
+            THEN 'WARN - ' + CAST(s.file_count AS varchar) + ' data file(s); recommend 1 per core up to 8'
         WHEN f.file_type = 'ROWS' AND s.file_count > 8
-            THEN 'INFO — ' + CAST(s.file_count AS varchar) + ' data files; > 8 rarely helps'
+            THEN 'INFO - ' + CAST(s.file_count AS varchar) + ' data files; > 8 rarely helps'
         ELSE 'OK'
     END AS file_count_status
 FROM tempdb_files f

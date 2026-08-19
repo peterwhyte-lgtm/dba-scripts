@@ -77,7 +77,7 @@ foreach ($srv in $servers) {
         Write-Host "  OK  $srv ($(@($rows).Count) settings)" -ForegroundColor Green
     }
     catch {
-        Write-Warning "  FAIL $srv — $_"
+        Write-Warning "  FAIL $srv - $_"
         $allRows.Add([PSCustomObject]@{
             server_name      = $srv
             setting_name     = '(connection failed)'
