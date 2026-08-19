@@ -69,8 +69,18 @@ QUESTIONS = [
          tool='answer_question', mode='cites', expect=['sql-server-default-ports'],
          gap='The post is published and is not in the corpus. It carries no FAQ block, and '
              'the corpus is built from FAQ blocks - 74 published posts (15%) are unreachable '
-             'the same way. Design decision, not a patch: index post bodies, or author '
-             '"how do I <the main thing>" pairs on procedural posts.'),
+             'the same way.\n\n'
+             'TRIED AND REVERTED 2026-08-19, do not retry blind: a fallback tier indexing '
+             'every post by title + excerpt, consulted only when the FAQ tier declined or '
+             'answered from an unrelated post. It DID fix this question. It was reverted '
+             'because no threshold separates "this post covers your question" from "this '
+             'post shares words with your question":\n'
+             '    what is the best sql server book -> Kerberos vs NTLM        title match 0.58\n'
+             '    whats the default sql server ports -> SQL Server Default Ports        0.49\n'
+             'The false positive outscored the true one. Excerpt matching is no better - it '
+             'scores 0.00 on "how do i kill a spid" (correct) and 1.00 on "how do I set up '
+             'replication" (wrong). Off-domain honesty fell 22/30 -> 21/30 and R07 broke. '
+             'A different signal is needed, not a different threshold.'),
 
     dict(id='R03', asked='whats the latest version of sql for 2017',
          tool='check_build', mode='contains', expect=['2017', 'CU31', '14.0.3456.2'],

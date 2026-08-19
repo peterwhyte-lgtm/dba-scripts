@@ -730,10 +730,18 @@ def _overlap(query: str, text: str) -> float:
     q = set(data.tokens(query))
     if not q:
         return 0.0
-    total = sum(idx._idf.get(t, 0.0) for t in q)
+    # A term the corpus has never seen counts AGAINST the score, at the weight of the most
+    # informative term present. Scoring only the known terms made a question that is mostly
+    # foreign vocabulary look like a strong match on the little that was familiar: "what is
+    # the best sql server book" scored 1.0 against "SQL Server Kerberos vs NTLM", because
+    # `book` contributed nothing to the denominator and `sql`+`server` were all that was
+    # left. The unknown words are exactly what makes it a different question.
+    known = {t: idx._idf.get(t, 0.0) for t in q}
+    ceiling = max([v for v in known.values() if v] or [1.0])
+    total = sum(v if v else ceiling for v in known.values())
     if total <= 0:
         return 0.0
-    hit = sum(idx._idf.get(t, 0.0) for t in q & set(data.tokens(text or '')))
+    hit = sum(known[t] for t in q & set(data.tokens(text or '')) if known[t])
     return hit / total
 
 
@@ -774,6 +782,12 @@ def answer_question(question: str) -> str:
 
     # Coverage floor: a single shared term is not an answer. See Index.search.
     hits = data.faq_index().search(q, limit=4, min_coverage=0.5)
+
+    # A published post whose TITLE is a better match for the question than the best FAQ
+    # pair's post is a better answer, and the FAQ tier answering badly used to stop the
+    # fallback ever running: "whats the default sql server ports" was answered by "Does SQL
+    # Server alert on critical errors by default?" while sql-server-default-ports sat
+    # published and unindexed, so a fallback that only fired on a refusal never fired.
     if not hits:
         return ("Nothing in the published FAQ answers matches that.\n\n"
                 "This covers %d questions answered across sqldba.blog. For a specific "
