@@ -26,7 +26,7 @@ Six is a ceiling, not a target. Past roughly half a dozen, an agent starts picki
 and a wrong pick is worse than no server at all — so anything else this could expose is a Resource
 or a Prompt instead. A test enforces the cap.
 
-Covering **47 errors**, **232 wait types**, **7 SQL Server versions**, **230 scripts** (181 SQL,
+Covering **47 errors**, **232 wait types**, **7 SQL Server versions**, **232 scripts** (183 SQL,
 49 PowerShell) and **434 answered questions**.
 
 ### Also included
@@ -113,7 +113,7 @@ All six tools declare themselves **read-only, non-destructive and closed-world**
 annotations, so a client can auto-approve them instead of asking you to confirm a reference lookup
 six times. That is the same promise as the paragraph above, in the form a client can actually read.
 
-The scripts it hands you are a different matter, and it says so. **14 of the 230 change something**
+The scripts it hands you are a different matter, and it says so. **14 of the 232 change something**
 — they write data, create objects, install, patch or restart — and every one of those leads its
 answer with a warning naming the class, the impact and the reason, before the body. The other 216
 are read-only and stay uncluttered, because a warning on everything is a warning on nothing. A test
@@ -137,11 +137,11 @@ The boundary is deliberately asymmetric:
 
 Tests assert both directions, so a later refactor cannot quietly flip either one.
 
-## The 38 scripts with no link
+## The 40 scripts with no link
 
-`find_script` returns a write-up URL for 143 of the 181 SQL scripts. The other 38 come back
+`find_script` returns a write-up URL for 143 of the 183 SQL scripts. The other 40 come back
 with no link — and that is a **header** problem, not missing content. Checked against the live
-site: most of those 38 already have a published write-up. Their `Author :` line just reads
+site: most of those 40 already have a published write-up. Their `Author :` line just reads
 `https://sqldba.blog` instead of naming the post, so nothing can map the script to it.
 
 That is why script headers are treated as a product surface here rather than housekeeping.

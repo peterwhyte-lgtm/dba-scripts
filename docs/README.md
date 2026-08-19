@@ -89,7 +89,7 @@ The scripts live here. The write-ups live on [sqldba.blog](https://sqldba.blog).
 
 - **Repo → blog.** Where a script has a companion post, the post URL is recorded in the script's own
   header on the `Author` line, and [script-catalog.md](script-catalog.md) collects them all into one
-  **Post** column. 143 of the 181 SQL scripts have one today. A script with no post works exactly the
+  **Post** column. 143 of the 183 SQL scripts have one today. A script with no post works exactly the
   same way — it just has not been written up yet.
 - **Blog → repo.** <https://sqldba.blog/scripts/> is the project page for this repo; the posts that
   link here start from there. Landing from a post, the useful next stops are the

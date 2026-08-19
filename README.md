@@ -21,7 +21,7 @@ The core workflow is three steps. A health check collection runs 45 diagnostic s
 
 Underneath that sits everything else a production DBA needs, usable on its own:
 
-- **181 SQL scripts** you open and paste directly into SSMS — no parameters, no magic variables, no install
+- **183 SQL scripts** you open and paste directly into SSMS — no parameters, no magic variables, no install
 - **PowerShell wrappers** that run the same scripts from the terminal and export CSVs
 - **A local web UI** where collections are viewed, verified, and diagnosed — health scorecard, security drill-down, disk capacity, AI reports, live incident triage
 - **Runbooks, change orders, and a migration toolkit** for the planned work when there's time to do it right

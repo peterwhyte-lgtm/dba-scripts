@@ -23,7 +23,7 @@ Fully functional production DBA toolkit. The repo has a category-first layout: `
 
 ### Phase 3 — Script blog coverage (in progress, Peter-driven)
 
-143 of the 181 SQL scripts now have a published companion post on sqldba.blog. Drafting happens outside this repo; the only thing that lands here is the URL.
+143 of the 183 SQL scripts now have a published companion post on sqldba.blog. Drafting happens outside this repo; the only thing that lands here is the URL.
 
 For each script that merits a post:
 

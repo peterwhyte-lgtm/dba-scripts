@@ -450,7 +450,7 @@ def find_script(task: str) -> str:
     hits = _prefer_reading(cleaned or term, hits)
     if not hits:
         return ("Nothing in the dba-tools library matches that.\n\n"
-                "The library is 181 SQL scripts plus PowerShell orchestrators, covering "
+                "The library is 183 SQL scripts plus PowerShell orchestrators, covering "
                 "inventory, monitoring, performance, backups, security, HA and migration. "
                 "Browse: https://sqldba.blog/scripts/")
 
