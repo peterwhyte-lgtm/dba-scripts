@@ -310,6 +310,32 @@ def check_build(build: str) -> str:
              % (version.get('engine_version'), version.get('major_build'),
                 version.get('native_compat_level')), '']
 
+    # Name the build before judging it. "Are you patched" is only half the question a DBA
+    # holding an unfamiliar @@VERSION has; the other half is "what IS this", and that is
+    # the half a model will otherwise answer from memory.
+    exact = data.identify_build(version, parsed)
+    if exact:
+        lines.append('**This build is:** %s%s, released %s.'
+                     % (exact.get('name') or 'an update',
+                        ' (%s)' % exact['kb'] if exact.get('kb') else '',
+                        exact.get('date') or 'date not published'))
+        if exact.get('kb_url'):
+            lines.append('Details: %s' % exact['kb_url'])
+        lines.append('')
+    else:
+        below, above = data.bracket_build(version, parsed)
+        if below or above:
+            span = []
+            if below:
+                span.append('above %s (%s, %s)'
+                            % (below.get('name'), below['build'], below.get('date')))
+            if above:
+                span.append('below %s (%s, %s)'
+                            % (above.get('name'), above['build'], above.get('date')))
+            lines += ['**This build is not one Microsoft published publicly.** It sits %s '
+                      '- most likely an on-demand hotfix issued between them. Treat the '
+                      'lower one as your effective patch level.' % ' and '.join(span), '']
+
     label, train = _train_for(parsed, version)
     if train:
         latest = data.parse_build(train['build'])
@@ -333,6 +359,16 @@ def check_build(build: str) -> str:
         elif latest:
             lines.append('**Patch level:** BEHIND. Latest on this train is **%s** (%s, released %s).'
                          % (train.get('name'), train['build'], train.get('date')))
+            # How far behind, counted from the published ladder rather than described
+            # vaguely. Only when the build was identified exactly: counting from a build
+            # whose train is a guess would put a specific-sounding number on an assumption.
+            if exact and exact.get('train'):
+                missed = data.newer_on_train(version, parsed, exact['train'])
+                if missed:
+                    oldest = missed[-1]
+                    lines.append('That is **%d %s update(s) behind** on this train, the '
+                                 'earliest of which shipped %s.'
+                                 % (len(missed), exact['train'], oldest.get('date')))
             if train.get('kb_url'):
                 lines.append('Download: %s (%s)' % (train['kb_url'], train.get('kb')))
 

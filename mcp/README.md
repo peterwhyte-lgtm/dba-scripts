@@ -17,7 +17,7 @@ the date it was checked — and says so when that date gets old.
 |------|--------|---------|
 | `lookup_error` | "what is error 18456?" / "login failed" | Message text, what it actually means, severity, link |
 | `explain_wait` | "explain PAGEIOLATCH_SH", or paste a whole `sys.dm_os_wait_stats` result | One wait explained, or a triaged result set: worth chasing first, noise you can filter, and what is not covered |
-| `check_build` | "is 16.0.4165.4 current?" (or paste `@@VERSION`) | Version, patch level on its servicing train, support status, the KB to install |
+| `check_build` | "is 16.0.4165.4 current?" (or paste `@@VERSION`) | **What that build is** (CU number, KB, release date), patch level on its servicing train, how many updates behind, support status, the KB to install |
 | `find_script` | "find blocking chains", "check backup coverage" | Matching scripts with purpose, required permission, and **safety class** — anything not read-only leads with a warning |
 | `get_script` | "get Get-BlockingChains" | The complete verbatim script, header and safety annotations intact |
 | `answer_question` | "should I add a second data file?" | The published answer to that question, plus the post it came from |
@@ -26,8 +26,8 @@ Six is a ceiling, not a target. Past roughly half a dozen, an agent starts picki
 and a wrong pick is worse than no server at all — so anything else this could expose is a Resource
 or a Prompt instead. A test enforces the cap.
 
-Covering **47 errors**, **232 wait types**, **7 SQL Server versions**, **232 scripts** (183 SQL,
-49 PowerShell) and **434 answered questions**.
+Covering **47 errors**, **232 wait types**, **7 SQL Server versions** with all **472 published
+builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **446 answered questions**.
 
 ### Also included
 
@@ -125,6 +125,44 @@ something off-topic and it declines rather than returning the least-bad row — 
 nginx reverse proxy used to match a SQL Agent *proxy* answer, so queries now have to share enough
 vocabulary with a record before it counts as a hit.
 
+## Every build, not just the newest
+
+`check_build` used to answer half the question. It could tell you a build was behind; it
+could not tell you **what the build was**. A DBA pasting `13.0.5426.0` got "BEHIND, latest
+is 13.0.5888.11" and still had to go and look up what they were actually running.
+
+That half matters more than it sounds, because an unidentified build is precisely where a
+model stops looking things up and starts filling in from memory — and a confidently wrong
+CU number is worse than no answer.
+
+So each version now carries its **full servicing ladder**: all 472 published builds across
+2012–2025, every CU, GDR, Service Pack and RTM, with the KB and the release date, parsed
+from Microsoft's own build tables. The same question now answers itself:
+
+```
+**This build is:** CU8 (KB4505830), released 2019-07-31.
+**Patch level:** BEHIND. Latest on this train is SP2 CU17 (final CU) (13.0.5888.11).
+That is 8 CU update(s) behind on this train, the earliest of which shipped 2019-10-08.
+```
+
+A build Microsoft never published — an on-demand hotfix — is **bracketed rather than
+guessed at**: "it sits above CU25 (16.0.4255.1) and below CU25 + GDR (16.0.4262.2)". And
+the "N updates behind" count is only produced when the build was identified exactly, because
+on an unrecognised build the train is an assumption, and a specific number attached to an
+assumption reads as far more certain than it is.
+
+**The hand-verified summaries still win.** `latest_cu`, `latest_gdr`, `latest_sp` and `rtm`
+are checked by a DBA against Microsoft and are not overwritten by the harvest; the ladder is
+history added underneath them. All 29 of those verified builds reconcile against the ladder,
+and a test keeps it that way.
+
+That reconciliation earned its place immediately. The harvest first classified the **Azure
+Connect Pack** as a cumulative update — and on 2016 and 2017 it sits on a *higher* build
+number than the final CU, so it outranked SP2 CU17 as "the latest CU" for 2016. That would
+have told a DBA on the CU train they were 1100 builds behind on a train they are not on. It
+was caught by disagreeing with the hand-checked value, which is the entire argument for
+keeping a human-verified number next to a scraped one.
+
 ## What ships, and what stays on the blog
 
 The boundary is deliberately asymmetric:
@@ -148,17 +186,23 @@ That is why script headers are treated as a product surface here rather than hou
 `Author`, `Purpose`, `Requires`, `SAFE:` and `IMPACT:` are what your assistant shows you
 *before* you run something. The list is in [`scripts-missing-post-url.txt`](scripts-missing-post-url.txt).
 
-## The 22 errors with no link
+## The 17 errors with no link
 
 The same gap on the other surface, and worth stating plainly because the tools promise a source
-link with every answer: **25 of the 47 errors carry a write-up URL, and 22 do not.** Those 22 still
+link with every answer: **30 of the 47 errors carry a write-up URL, and 17 do not.** Those 17 still
 return the message text, what it means and the severity — all hand-written and verified — and the
-answer now *says* no article exists rather than quietly omitting the link, so an agent can quote
+answer *says* no article exists rather than quietly omitting the link, so an agent can quote
 them and knows it cannot cite them.
 
 Unlike the scripts above this is a genuine **content** gap, not a header one: those errors have no
-post yet. `102 Incorrect syntax near`, `208 Invalid object name`, `701 Insufficient system memory`
-and `823 I/O error` are on that list, which makes it a fair reading order for the Error Library.
+post yet. `102 Incorrect syntax near`, `701 Insufficient system memory`, `823 I/O error` and
+`824 Logical consistency-based I/O error` are on that list, which makes it a fair reading order
+for the Error Library. It was 22 as recently as this week — 208, 245, 547, 3154 and 5030 have
+since been written up.
+
+One of the 17 is different from the rest: **15138** has a post written and scheduled, not
+missing. A citation whose post is not live yet is deliberately shipped *without* the link and
+picked up at the next export, rather than blocking every other correction behind it.
 
 ## Corrections — one source, three surfaces
 
@@ -171,6 +215,12 @@ next export and, worse, silently disagrees with the post it cites. Corrections g
 | A wait type's verdict | the wait post |
 | A script's purpose or safety class | the `.sql` header in this repo |
 | A build, CU or support date | the builds data behind the lifecycle page |
+| An error that now has a write-up | the private error pool — publishing the post is not enough |
+
+That last row is the one that catches people. Errors are **not** derived from the blog: they
+come from a hand-curated pool, and the post URL is a field on the pool entry. Publishing an
+error write-up therefore does not connect it to anything by itself — the slug has to be added,
+and added *after* the post is live, or the export refuses the dead citation.
 
 Then re-export. There is one source of truth and three ways to reach it — the blog is where a
 human reads it, this repo is where a DBA runs it, and the MCP server is where an AI agent calls
@@ -191,7 +241,7 @@ Found something wrong? Open an issue. Corrections from working DBAs are the poin
 ## Development
 
 ```bash
-python -m unittest discover -s tests -v     # 116 tests, no test dependencies
+python -m unittest discover -s tests -v     # 129 tests, no test dependencies
 python tests/eval_faq.py                    # retrieval scorecard
 python tests/check_freshness.py             # dataset drift gate
 pytest                                      # also works

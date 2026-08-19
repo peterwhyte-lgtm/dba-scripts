@@ -33,6 +33,152 @@
     "date": "2026-07-14"
    },
    "latest_sp": null,
+   "updates": [
+    {
+     "name": "CU8",
+     "build": "17.0.4075.5",
+     "train": "CU",
+     "kb": "KB5104822",
+     "kb_url": "https://support.microsoft.com/help/5104822",
+     "date": "2026-08-13"
+    },
+    {
+     "name": "CU7",
+     "build": "17.0.4065.4",
+     "train": "CU",
+     "kb": "KB5096981",
+     "kb_url": "https://support.microsoft.com/help/5096981",
+     "date": "2026-07-16"
+    },
+    {
+     "name": "CU6 + GDR",
+     "build": "17.0.4060.2",
+     "train": "GDR",
+     "kb": "KB5101346",
+     "kb_url": "https://support.microsoft.com/help/5101346",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "CU6",
+     "build": "17.0.4055.5",
+     "train": "CU",
+     "kb": "KB5093421",
+     "kb_url": "https://support.microsoft.com/help/5093421",
+     "date": "2026-06-17"
+    },
+    {
+     "name": "CU5",
+     "build": "17.0.4045.5",
+     "train": "CU",
+     "kb": "KB5084896",
+     "kb_url": "https://support.microsoft.com/help/5084896",
+     "date": "2026-05-20"
+    },
+    {
+     "name": "CU4 + GDR",
+     "build": "17.0.4040.1",
+     "train": "GDR",
+     "kb": "KB5089899",
+     "kb_url": "https://support.microsoft.com/help/5089899",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "CU4",
+     "build": "17.0.4035.5",
+     "train": "CU",
+     "kb": "KB5081495",
+     "kb_url": "https://support.microsoft.com/help/5081495",
+     "date": "2026-04-16"
+    },
+    {
+     "name": "CU3 + GDR",
+     "build": "17.0.4030.1",
+     "train": "GDR",
+     "kb": "KB5083245",
+     "kb_url": "https://support.microsoft.com/help/5083245",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "CU3",
+     "build": "17.0.4025.3",
+     "train": "CU",
+     "kb": "KB5077896",
+     "kb_url": "https://support.microsoft.com/help/5077896",
+     "date": "2026-03-12"
+    },
+    {
+     "name": "CU2 + GDR",
+     "build": "17.0.4020.2",
+     "train": "GDR",
+     "kb": "KB5077466",
+     "kb_url": "https://support.microsoft.com/help/5077466",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "CU2",
+     "build": "17.0.4015.4",
+     "train": "CU",
+     "kb": "KB5075211",
+     "kb_url": "https://support.microsoft.com/help/5075211",
+     "date": "2026-02-12"
+    },
+    {
+     "name": "CU1",
+     "build": "17.0.4006.2",
+     "train": "CU",
+     "kb": "KB5078298",
+     "kb_url": "https://support.microsoft.com/help/5078298",
+     "date": "2026-01-29"
+    },
+    {
+     "name": "GDR",
+     "build": "17.0.1125.2",
+     "train": "GDR",
+     "kb": "KB5102333",
+     "kb_url": "https://support.microsoft.com/help/5102333",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "GDR",
+     "build": "17.0.1115.1",
+     "train": "GDR",
+     "kb": "KB5091223",
+     "kb_url": "https://support.microsoft.com/help/5091223",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "GDR",
+     "build": "17.0.1110.1",
+     "train": "GDR",
+     "kb": "KB5084814",
+     "kb_url": "https://support.microsoft.com/help/5084814",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "GDR",
+     "build": "17.0.1105.2",
+     "train": "GDR",
+     "kb": "KB5077468",
+     "kb_url": "https://support.microsoft.com/help/5077468",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "GDR",
+     "build": "17.0.1050.2",
+     "train": "GDR",
+     "kb": "KB5073177",
+     "kb_url": "https://support.microsoft.com/help/5073177",
+     "date": "2026-01-13"
+    },
+    {
+     "name": "None RTM",
+     "build": "17.0.1000.7",
+     "train": "RTM",
+     "kb": null,
+     "kb_url": null,
+     "date": "2025-11-18"
+    }
+   ],
    "support_status": "mainstream",
    "mainstream_end": "2031-01-06",
    "extended_end": "2036-01-06",
@@ -73,6 +219,488 @@
     "date": "2026-07-14"
    },
    "latest_sp": null,
+   "updates": [
+    {
+     "name": "CU26",
+     "build": "16.0.4265.3",
+     "train": "CU",
+     "kb": "KB5093420",
+     "kb_url": "https://support.microsoft.com/help/5093420",
+     "date": "2026-07-16"
+    },
+    {
+     "name": "CU25 + GDR",
+     "build": "16.0.4262.2",
+     "train": "GDR",
+     "kb": "KB5101347",
+     "kb_url": "https://support.microsoft.com/help/5101347",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "CU25",
+     "build": "16.0.4255.1",
+     "train": "CU",
+     "kb": "KB5081477",
+     "kb_url": "https://support.microsoft.com/help/5081477",
+     "date": "2026-05-20"
+    },
+    {
+     "name": "CU24 + GDR",
+     "build": "16.0.4252.3",
+     "train": "GDR",
+     "kb": "KB5089900",
+     "kb_url": "https://support.microsoft.com/help/5089900",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "CU24 + GDR",
+     "build": "16.0.4250.1",
+     "train": "GDR",
+     "kb": "KB5083252",
+     "kb_url": "https://support.microsoft.com/help/5083252",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "CU24",
+     "build": "16.0.4245.2",
+     "train": "CU",
+     "kb": "KB5080999",
+     "kb_url": "https://support.microsoft.com/help/5080999",
+     "date": "2026-03-12"
+    },
+    {
+     "name": "CU23 + GDR",
+     "build": "16.0.4240.4",
+     "train": "GDR",
+     "kb": "KB5077464",
+     "kb_url": "https://support.microsoft.com/help/5077464",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "CU23",
+     "build": "16.0.4236.2",
+     "train": "CU",
+     "kb": "KB5078297",
+     "kb_url": "https://support.microsoft.com/help/5078297",
+     "date": "2026-01-29"
+    },
+    {
+     "name": "CU22 + GDR",
+     "build": "16.0.4230.2",
+     "train": "GDR",
+     "kb": "KB5072936",
+     "kb_url": "https://support.microsoft.com/help/5072936",
+     "date": "2026-01-13"
+    },
+    {
+     "name": "CU22",
+     "build": "16.0.4225.2",
+     "train": "CU",
+     "kb": "KB5068450",
+     "kb_url": "https://support.microsoft.com/help/5068450",
+     "date": "2025-11-13"
+    },
+    {
+     "name": "CU21 + GDR",
+     "build": "16.0.4222.2",
+     "train": "GDR",
+     "kb": "KB5068406",
+     "kb_url": "https://support.microsoft.com/help/5068406",
+     "date": "2025-11-11"
+    },
+    {
+     "name": "CU21",
+     "build": "16.0.4215.2",
+     "train": "CU",
+     "kb": "KB5065865",
+     "kb_url": "https://support.microsoft.com/help/5065865",
+     "date": "2025-09-11"
+    },
+    {
+     "name": "CU20 + GDR",
+     "build": "16.0.4212.1",
+     "train": "GDR",
+     "kb": "KB5065220",
+     "kb_url": "https://support.microsoft.com/help/5065220",
+     "date": "2025-09-09"
+    },
+    {
+     "name": "CU20 + GDR",
+     "build": "16.0.4210.1",
+     "train": "GDR",
+     "kb": "KB5063814",
+     "kb_url": "https://support.microsoft.com/help/5063814",
+     "date": "2025-08-12"
+    },
+    {
+     "name": "CU20",
+     "build": "16.0.4205.1",
+     "train": "CU",
+     "kb": "KB5059390",
+     "kb_url": "https://support.microsoft.com/help/5059390",
+     "date": "2025-07-10"
+    },
+    {
+     "name": "CU19 + GDR",
+     "build": "16.0.4200.1",
+     "train": "GDR",
+     "kb": "KB5058721",
+     "kb_url": "https://support.microsoft.com/help/5058721",
+     "date": "2025-07-08"
+    },
+    {
+     "name": "CU19",
+     "build": "16.0.4195.2",
+     "train": "CU",
+     "kb": "KB5054531",
+     "kb_url": "https://support.microsoft.com/help/5054531",
+     "date": "2025-05-15"
+    },
+    {
+     "name": "CU18",
+     "build": "16.0.4185.3",
+     "train": "CU",
+     "kb": "KB5050771",
+     "kb_url": "https://support.microsoft.com/help/5050771",
+     "date": "2025-03-13"
+    },
+    {
+     "name": "CU17",
+     "build": "16.0.4175.1",
+     "train": "CU",
+     "kb": "KB5048038",
+     "kb_url": "https://support.microsoft.com/help/5048038",
+     "date": "2025-01-16"
+    },
+    {
+     "name": "CU16",
+     "build": "16.0.4165.4",
+     "train": "CU",
+     "kb": "KB5048033",
+     "kb_url": "https://support.microsoft.com/help/5048033",
+     "date": "2024-11-14"
+    },
+    {
+     "name": "CU15 + GDR",
+     "build": "16.0.4155.4",
+     "train": "GDR",
+     "kb": "KB5046862",
+     "kb_url": "https://support.microsoft.com/help/5046862",
+     "date": "2024-11-12"
+    },
+    {
+     "name": "CU15 + GDR",
+     "build": "16.0.4150.1",
+     "train": "GDR",
+     "kb": "KB5046059",
+     "kb_url": "https://support.microsoft.com/help/5046059",
+     "date": "2024-10-08"
+    },
+    {
+     "name": "CU15",
+     "build": "16.0.4145.4",
+     "train": "CU",
+     "kb": "KB5041321",
+     "kb_url": "https://support.microsoft.com/help/5041321",
+     "date": "2024-09-25"
+    },
+    {
+     "name": "CU14 + GDR",
+     "build": "16.0.4140.3",
+     "train": "GDR",
+     "kb": "KB5042578",
+     "kb_url": "https://support.microsoft.com/help/5042578",
+     "date": "2024-09-10"
+    },
+    {
+     "name": "CU14",
+     "build": "16.0.4135.4",
+     "train": "CU",
+     "kb": "KB5038325",
+     "kb_url": "https://support.microsoft.com/help/5038325",
+     "date": "2024-07-23"
+    },
+    {
+     "name": "CU13 + GDR",
+     "build": "16.0.4131.2",
+     "train": "GDR",
+     "kb": "KB5040939",
+     "kb_url": "https://support.microsoft.com/help/5040939",
+     "date": "2024-07-09"
+    },
+    {
+     "name": "CU13",
+     "build": "16.0.4125.3",
+     "train": "CU",
+     "kb": "KB5036432",
+     "kb_url": "https://support.microsoft.com/help/5036432",
+     "date": "2024-05-16"
+    },
+    {
+     "name": "CU12 + GDR",
+     "build": "16.0.4120.1",
+     "train": "GDR",
+     "kb": "KB5036343",
+     "kb_url": "https://support.microsoft.com/help/5036343",
+     "date": "2024-04-09"
+    },
+    {
+     "name": "CU12",
+     "build": "16.0.4115.5",
+     "train": "CU",
+     "kb": "KB5033663",
+     "kb_url": "https://support.microsoft.com/help/5033663",
+     "date": "2024-03-14"
+    },
+    {
+     "name": "CU11",
+     "build": "16.0.4105.2",
+     "train": "CU",
+     "kb": "KB5032679",
+     "kb_url": "https://support.microsoft.com/help/5032679",
+     "date": "2024-01-11"
+    },
+    {
+     "name": "CU10 + GDR",
+     "build": "16.0.4100.1",
+     "train": "GDR",
+     "kb": "KB5033592",
+     "kb_url": "https://support.microsoft.com/help/5033592",
+     "date": "2024-01-09"
+    },
+    {
+     "name": "CU10",
+     "build": "16.0.4095.4",
+     "train": "CU",
+     "kb": "KB5031778",
+     "kb_url": "https://support.microsoft.com/help/5031778",
+     "date": "2023-11-16"
+    },
+    {
+     "name": "CU9",
+     "build": "16.0.4085.2",
+     "train": "CU",
+     "kb": "KB5030731",
+     "kb_url": "https://support.microsoft.com/help/5030731",
+     "date": "2023-10-12"
+    },
+    {
+     "name": "CU8 + GDR",
+     "build": "16.0.4080.1",
+     "train": "GDR",
+     "kb": "KB5029503",
+     "kb_url": "https://support.microsoft.com/help/5029503",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "CU8",
+     "build": "16.0.4075.1",
+     "train": "CU",
+     "kb": "KB5029666",
+     "kb_url": "https://support.microsoft.com/help/5029666",
+     "date": "2023-09-14"
+    },
+    {
+     "name": "CU7",
+     "build": "16.0.4065.3",
+     "train": "CU",
+     "kb": "KB5028743",
+     "kb_url": "https://support.microsoft.com/help/5028743",
+     "date": "2023-08-10"
+    },
+    {
+     "name": "CU6",
+     "build": "16.0.4055.4",
+     "train": "CU",
+     "kb": "KB5027505",
+     "kb_url": "https://support.microsoft.com/help/5027505",
+     "date": "2023-07-13"
+    },
+    {
+     "name": "CU5",
+     "build": "16.0.4045.3",
+     "train": "CU",
+     "kb": "KB5026806",
+     "kb_url": "https://support.microsoft.com/help/5026806",
+     "date": "2023-06-15"
+    },
+    {
+     "name": "CU4",
+     "build": "16.0.4035.4",
+     "train": "CU",
+     "kb": "KB5026717",
+     "kb_url": "https://support.microsoft.com/help/5026717",
+     "date": "2023-05-11"
+    },
+    {
+     "name": "CU3",
+     "build": "16.0.4025.1",
+     "train": "CU",
+     "kb": "KB5024396",
+     "kb_url": "https://support.microsoft.com/help/5024396",
+     "date": "2023-04-13"
+    },
+    {
+     "name": "CU2",
+     "build": "16.0.4015.1",
+     "train": "CU",
+     "kb": "KB5023127",
+     "kb_url": "https://support.microsoft.com/help/5023127",
+     "date": "2023-03-15"
+    },
+    {
+     "name": "CU1",
+     "build": "16.0.4003.1",
+     "train": "CU",
+     "kb": "KB5022375",
+     "kb_url": "https://support.microsoft.com/help/5022375",
+     "date": "2023-02-16"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1190.2",
+     "train": "GDR",
+     "kb": "KB5102334",
+     "kb_url": "https://support.microsoft.com/help/5102334",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1180.1",
+     "train": "GDR",
+     "kb": "KB5091158",
+     "kb_url": "https://support.microsoft.com/help/5091158",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1175.1",
+     "train": "GDR",
+     "kb": "KB5084815",
+     "kb_url": "https://support.microsoft.com/help/5084815",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1170.5",
+     "train": "GDR",
+     "kb": "KB5077465",
+     "kb_url": "https://support.microsoft.com/help/5077465",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1165.1",
+     "train": "GDR",
+     "kb": "KB5073031",
+     "kb_url": "https://support.microsoft.com/help/5073031",
+     "date": "2026-01-13"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1160.1",
+     "train": "GDR",
+     "kb": "KB5068407",
+     "kb_url": "https://support.microsoft.com/help/5068407",
+     "date": "2025-11-11"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1150.1",
+     "train": "GDR",
+     "kb": "KB5065221",
+     "kb_url": "https://support.microsoft.com/help/5065221",
+     "date": "2025-09-09"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1145.1",
+     "train": "GDR",
+     "kb": "KB5063756",
+     "kb_url": "https://support.microsoft.com/help/5063756",
+     "date": "2025-08-12"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1140.6",
+     "train": "GDR",
+     "kb": "KB5058712",
+     "kb_url": "https://support.microsoft.com/help/5058712",
+     "date": "2025-07-08"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1135.2",
+     "train": "GDR",
+     "kb": "KB5046861",
+     "kb_url": "https://support.microsoft.com/help/5046861",
+     "date": "2024-11-12"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1130.5",
+     "train": "GDR",
+     "kb": "KB5046057",
+     "kb_url": "https://support.microsoft.com/help/5046057",
+     "date": "2024-10-08"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1125.1",
+     "train": "GDR",
+     "kb": "KB5042211",
+     "kb_url": "https://support.microsoft.com/help/5042211",
+     "date": "2024-09-10"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1121.4",
+     "train": "GDR",
+     "kb": "KB5040936",
+     "kb_url": "https://support.microsoft.com/help/5040936",
+     "date": "2024-07-09"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1115.1",
+     "train": "GDR",
+     "kb": "KB5035432",
+     "kb_url": "https://support.microsoft.com/help/5035432",
+     "date": "2024-04-09"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1110.1",
+     "train": "GDR",
+     "kb": "KB5032968",
+     "kb_url": "https://support.microsoft.com/help/5032968",
+     "date": "2024-01-09"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1105.1",
+     "train": "GDR",
+     "kb": "KB5029379",
+     "kb_url": "https://support.microsoft.com/help/5029379",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "GDR",
+     "build": "16.0.1050.5",
+     "train": "GDR",
+     "kb": "KB5021522",
+     "kb_url": "https://support.microsoft.com/help/5021522",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "RTM",
+     "build": "16.0.1000.6",
+     "train": "RTM",
+     "kb": null,
+     "kb_url": null,
+     "date": "2022-11-16"
+    }
+   ],
    "support_status": "mainstream",
    "mainstream_end": "2028-01-11",
    "extended_end": "2033-01-11",
@@ -113,6 +741,552 @@
     "date": "2026-07-14"
    },
    "latest_sp": null,
+   "updates": [
+    {
+     "name": "CU32 + GDR",
+     "build": "15.0.4480.2",
+     "train": "GDR",
+     "kb": "KB5102335",
+     "kb_url": "https://support.microsoft.com/help/5102335",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "CU32 + GDR",
+     "build": "15.0.4470.1",
+     "train": "GDR",
+     "kb": "KB5090407",
+     "kb_url": "https://support.microsoft.com/help/5090407",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "CU32 + GDR",
+     "build": "15.0.4465.1",
+     "train": "GDR",
+     "kb": "KB5084816",
+     "kb_url": "https://support.microsoft.com/help/5084816",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "CU32 + GDR",
+     "build": "15.0.4460.4",
+     "train": "GDR",
+     "kb": "KB5077469",
+     "kb_url": "https://support.microsoft.com/help/5077469",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "CU32 + GDR",
+     "build": "15.0.4455.2",
+     "train": "GDR",
+     "kb": "KB5068404",
+     "kb_url": "https://support.microsoft.com/help/5068404",
+     "date": "2025-11-11"
+    },
+    {
+     "name": "CU32 + GDR",
+     "build": "15.0.4445.1",
+     "train": "GDR",
+     "kb": "KB5065222",
+     "kb_url": "https://support.microsoft.com/help/5065222",
+     "date": "2025-09-09"
+    },
+    {
+     "name": "CU32 + GDR",
+     "build": "15.0.4440.1",
+     "train": "GDR",
+     "kb": "KB5063757",
+     "kb_url": "https://support.microsoft.com/help/5063757",
+     "date": "2025-08-12"
+    },
+    {
+     "name": "CU32 + GDR",
+     "build": "15.0.4435.7",
+     "train": "GDR",
+     "kb": "KB5058722",
+     "kb_url": "https://support.microsoft.com/help/5058722",
+     "date": "2025-07-08"
+    },
+    {
+     "name": "CU32",
+     "build": "15.0.4430.1",
+     "train": "CU",
+     "kb": "KB5054833",
+     "kb_url": "https://support.microsoft.com/help/5054833",
+     "date": "2025-02-27"
+    },
+    {
+     "name": "CU31",
+     "build": "15.0.4420.2",
+     "train": "CU",
+     "kb": "KB5049296",
+     "kb_url": "https://support.microsoft.com/help/5049296",
+     "date": "2025-02-13"
+    },
+    {
+     "name": "CU30",
+     "build": "15.0.4415.2",
+     "train": "CU",
+     "kb": "KB5049235",
+     "kb_url": "https://support.microsoft.com/help/5049235",
+     "date": "2024-12-12"
+    },
+    {
+     "name": "CU29 + GDR",
+     "build": "15.0.4410.1",
+     "train": "GDR",
+     "kb": "KB5046860",
+     "kb_url": "https://support.microsoft.com/help/5046860",
+     "date": "2024-11-12"
+    },
+    {
+     "name": "CU29",
+     "build": "15.0.4405.4",
+     "train": "CU",
+     "kb": "KB5046365",
+     "kb_url": "https://support.microsoft.com/help/5046365",
+     "date": "2024-10-31"
+    },
+    {
+     "name": "CU28 + GDR",
+     "build": "15.0.4395.2",
+     "train": "GDR",
+     "kb": "KB5046060",
+     "kb_url": "https://support.microsoft.com/help/5046060",
+     "date": "2024-10-08"
+    },
+    {
+     "name": "CU28 + GDR",
+     "build": "15.0.4390.2",
+     "train": "GDR",
+     "kb": "KB5042749",
+     "kb_url": "https://support.microsoft.com/help/5042749",
+     "date": "2024-09-10"
+    },
+    {
+     "name": "CU28",
+     "build": "15.0.4385.2",
+     "train": "CU",
+     "kb": "KB5039747",
+     "kb_url": "https://support.microsoft.com/help/5039747",
+     "date": "2024-08-01"
+    },
+    {
+     "name": "CU27 + GDR",
+     "build": "15.0.4382.1",
+     "train": "GDR",
+     "kb": "KB5040948",
+     "kb_url": "https://support.microsoft.com/help/5040948",
+     "date": "2024-07-09"
+    },
+    {
+     "name": "CU27",
+     "build": "15.0.4375.4",
+     "train": "CU",
+     "kb": "KB5037331",
+     "kb_url": "https://support.microsoft.com/help/5037331",
+     "date": "2024-06-13"
+    },
+    {
+     "name": "CU26",
+     "build": "15.0.4365.2",
+     "train": "CU",
+     "kb": "KB5035123",
+     "kb_url": "https://support.microsoft.com/help/5035123",
+     "date": "2024-04-11"
+    },
+    {
+     "name": "CU25 + GDR",
+     "build": "15.0.4360.2",
+     "train": "GDR",
+     "kb": "KB5036335",
+     "kb_url": "https://support.microsoft.com/help/5036335",
+     "date": "2024-04-09"
+    },
+    {
+     "name": "CU25",
+     "build": "15.0.4355.3",
+     "train": "CU",
+     "kb": "KB5033688",
+     "kb_url": "https://support.microsoft.com/help/5033688",
+     "date": "2024-02-15"
+    },
+    {
+     "name": "CU24",
+     "build": "15.0.4345.5",
+     "train": "CU",
+     "kb": "KB5031908",
+     "kb_url": "https://support.microsoft.com/help/5031908",
+     "date": "2023-12-14"
+    },
+    {
+     "name": "CU23",
+     "build": "15.0.4335.1",
+     "train": "CU",
+     "kb": "KB5030333",
+     "kb_url": "https://support.microsoft.com/help/5030333",
+     "date": "2023-10-12"
+    },
+    {
+     "name": "CU22 + GDR",
+     "build": "15.0.4326.1",
+     "train": "GDR",
+     "kb": "KB5029378",
+     "kb_url": "https://support.microsoft.com/help/5029378",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "CU22",
+     "build": "15.0.4322.2",
+     "train": "CU",
+     "kb": "KB5027702",
+     "kb_url": "https://support.microsoft.com/help/5027702",
+     "date": "2023-08-14"
+    },
+    {
+     "name": "CU21",
+     "build": "15.0.4316.3",
+     "train": "CU",
+     "kb": "KB5025808",
+     "kb_url": "https://support.microsoft.com/help/5025808",
+     "date": "2023-06-15"
+    },
+    {
+     "name": "CU20",
+     "build": "15.0.4312.2",
+     "train": "CU",
+     "kb": "KB5024276",
+     "kb_url": "https://support.microsoft.com/help/5024276",
+     "date": "2023-04-13"
+    },
+    {
+     "name": "CU19",
+     "build": "15.0.4298.1",
+     "train": "CU",
+     "kb": "KB5023049",
+     "kb_url": "https://support.microsoft.com/help/5023049",
+     "date": "2023-02-16"
+    },
+    {
+     "name": "CU18 + GDR",
+     "build": "15.0.4280.7",
+     "train": "GDR",
+     "kb": "KB5021124",
+     "kb_url": "https://support.microsoft.com/help/5021124",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "CU18",
+     "build": "15.0.4261.1",
+     "train": "CU",
+     "kb": "KB5017593",
+     "kb_url": "https://support.microsoft.com/help/5017593",
+     "date": "2022-09-28"
+    },
+    {
+     "name": "CU17",
+     "build": "15.0.4249.2",
+     "train": "CU",
+     "kb": "KB5016394",
+     "kb_url": "https://support.microsoft.com/help/5016394",
+     "date": "2022-08-11"
+    },
+    {
+     "name": "CU16 + GDR",
+     "build": "15.0.4236.7",
+     "train": "GDR",
+     "kb": "KB5014353",
+     "kb_url": "https://support.microsoft.com/help/5014353",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "CU16",
+     "build": "15.0.4223.1",
+     "train": "CU",
+     "kb": "KB5011644",
+     "kb_url": "https://support.microsoft.com/help/5011644",
+     "date": "2022-04-18"
+    },
+    {
+     "name": "CU15",
+     "build": "15.0.4198.2",
+     "train": "CU",
+     "kb": "KB5008996",
+     "kb_url": "https://support.microsoft.com/help/5008996",
+     "date": "2022-01-27"
+    },
+    {
+     "name": "CU14",
+     "build": "15.0.4188.2",
+     "train": "CU",
+     "kb": "KB5007182",
+     "kb_url": "https://support.microsoft.com/help/5007182",
+     "date": "2021-11-22"
+    },
+    {
+     "name": "CU13",
+     "build": "15.0.4178.1",
+     "train": "CU",
+     "kb": "KB5005679",
+     "kb_url": "https://support.microsoft.com/help/5005679",
+     "date": "2021-10-05"
+    },
+    {
+     "name": "CU12",
+     "build": "15.0.4153.1",
+     "train": "CU",
+     "kb": "KB5004524",
+     "kb_url": "https://support.microsoft.com/help/5004524",
+     "date": "2021-08-04"
+    },
+    {
+     "name": "CU11",
+     "build": "15.0.4138.2",
+     "train": "CU",
+     "kb": "KB5003249",
+     "kb_url": "https://support.microsoft.com/help/5003249",
+     "date": "2021-06-10"
+    },
+    {
+     "name": "CU10",
+     "build": "15.0.4123.1",
+     "train": "CU",
+     "kb": "KB5001090",
+     "kb_url": "https://support.microsoft.com/help/5001090",
+     "date": "2021-04-06"
+    },
+    {
+     "name": "CU9",
+     "build": "15.0.4102.2",
+     "train": "CU",
+     "kb": "KB5000642",
+     "kb_url": "https://support.microsoft.com/help/5000642",
+     "date": "2021-02-11"
+    },
+    {
+     "name": "CU8 + GDR",
+     "build": "15.0.4083.2",
+     "train": "GDR",
+     "kb": "KB4583459",
+     "kb_url": "https://support.microsoft.com/help/4583459",
+     "date": "2021-01-12"
+    },
+    {
+     "name": "CU8",
+     "build": "15.0.4073.23",
+     "train": "CU",
+     "kb": "KB4577194",
+     "kb_url": "https://support.microsoft.com/help/4577194",
+     "date": "2020-10-01"
+    },
+    {
+     "name": "CU7 (Removed)",
+     "build": "15.0.4063.15",
+     "train": "CU",
+     "kb": "KB4570012",
+     "kb_url": "https://support.microsoft.com/help/4570012",
+     "date": "2020-09-02"
+    },
+    {
+     "name": "CU6",
+     "build": "15.0.4053.23",
+     "train": "CU",
+     "kb": "KB4563110",
+     "kb_url": "https://support.microsoft.com/help/4563110",
+     "date": "2020-08-04"
+    },
+    {
+     "name": "CU5",
+     "build": "15.0.4043.16",
+     "train": "CU",
+     "kb": "KB4552255",
+     "kb_url": "https://support.microsoft.com/help/4552255",
+     "date": "2020-06-22"
+    },
+    {
+     "name": "CU4",
+     "build": "15.0.4033.1",
+     "train": "CU",
+     "kb": "KB4548597",
+     "kb_url": "https://support.microsoft.com/help/4548597",
+     "date": "2020-03-31"
+    },
+    {
+     "name": "CU3",
+     "build": "15.0.4023.6",
+     "train": "CU",
+     "kb": "KB4538853",
+     "kb_url": "https://support.microsoft.com/help/4538853",
+     "date": "2020-03-12"
+    },
+    {
+     "name": "CU2",
+     "build": "15.0.4013.40",
+     "train": "CU",
+     "kb": "KB4536075",
+     "kb_url": "https://support.microsoft.com/help/4536075",
+     "date": "2020-02-13"
+    },
+    {
+     "name": "CU1",
+     "build": "15.0.4003.23",
+     "train": "CU",
+     "kb": "KB4527376",
+     "kb_url": "https://support.microsoft.com/help/4527376",
+     "date": "2020-01-07"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2180.2",
+     "train": "GDR",
+     "kb": "KB5102336",
+     "kb_url": "https://support.microsoft.com/help/5102336",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2170.1",
+     "train": "GDR",
+     "kb": "KB5090408",
+     "kb_url": "https://support.microsoft.com/help/5090408",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2165.1",
+     "train": "GDR",
+     "kb": "KB5084817",
+     "kb_url": "https://support.microsoft.com/help/5084817",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2160.4",
+     "train": "GDR",
+     "kb": "KB5077470",
+     "kb_url": "https://support.microsoft.com/help/5077470",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2155.2",
+     "train": "GDR",
+     "kb": "KB5068405",
+     "kb_url": "https://support.microsoft.com/help/5068405",
+     "date": "2025-11-11"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2145.1",
+     "train": "GDR",
+     "kb": "KB5065223",
+     "kb_url": "https://support.microsoft.com/help/5065223",
+     "date": "2025-09-09"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2140.1",
+     "train": "GDR",
+     "kb": "KB5063758",
+     "kb_url": "https://support.microsoft.com/help/5063758",
+     "date": "2025-08-12"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2135.5",
+     "train": "GDR",
+     "kb": "KB5058713",
+     "kb_url": "https://support.microsoft.com/help/5058713",
+     "date": "2025-07-08"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2130.3",
+     "train": "GDR",
+     "kb": "KB5046859",
+     "kb_url": "https://support.microsoft.com/help/5046859",
+     "date": "2024-11-12"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2125.1",
+     "train": "GDR",
+     "kb": "KB5046056",
+     "kb_url": "https://support.microsoft.com/help/5046056",
+     "date": "2024-10-08"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2120.1",
+     "train": "GDR",
+     "kb": "KB5042214",
+     "kb_url": "https://support.microsoft.com/help/5042214",
+     "date": "2024-09-10"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2116.2",
+     "train": "GDR",
+     "kb": "KB5040986",
+     "kb_url": "https://support.microsoft.com/help/5040986",
+     "date": "2024-07-09"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2110.4",
+     "train": "GDR",
+     "kb": "KB5035434",
+     "kb_url": "https://support.microsoft.com/help/5035434",
+     "date": "2024-04-09"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2104.1",
+     "train": "GDR",
+     "kb": "KB5029377",
+     "kb_url": "https://support.microsoft.com/help/5029377",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2101.7",
+     "train": "GDR",
+     "kb": "KB5021125",
+     "kb_url": "https://support.microsoft.com/help/5021125",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2095.3",
+     "train": "GDR",
+     "kb": "KB5014356",
+     "kb_url": "https://support.microsoft.com/help/5014356",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "GDR",
+     "build": "15.0.2080.9",
+     "train": "GDR",
+     "kb": "KB4583458",
+     "kb_url": "https://support.microsoft.com/help/4583458",
+     "date": "2021-01-12"
+    },
+    {
+     "name": "Servicing Update (GDR1)",
+     "build": "15.0.2070.41",
+     "train": "GDR",
+     "kb": "KB4517790",
+     "kb_url": "https://support.microsoft.com/help/4517790",
+     "date": "2019-11-04"
+    },
+    {
+     "name": "RTM",
+     "build": "15.0.2000.5",
+     "train": "RTM",
+     "kb": null,
+     "kb_url": null,
+     "date": "2019-11-04"
+    }
+   ],
    "support_status": "extended",
    "mainstream_end": "2025-02-28",
    "extended_end": "2030-01-08",
@@ -153,6 +1327,584 @@
     "date": "2026-07-14"
    },
    "latest_sp": null,
+   "updates": [
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3540.1",
+     "train": "GDR",
+     "kb": "KB5102337",
+     "kb_url": "https://support.microsoft.com/help/5102337",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3530.2",
+     "train": "GDR",
+     "kb": "KB5090354",
+     "kb_url": "https://support.microsoft.com/help/5090354",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3525.1",
+     "train": "GDR",
+     "kb": "KB5084818",
+     "kb_url": "https://support.microsoft.com/help/5084818",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3520.4",
+     "train": "GDR",
+     "kb": "KB5077471",
+     "kb_url": "https://support.microsoft.com/help/5077471",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3515.1",
+     "train": "GDR",
+     "kb": "KB5068402",
+     "kb_url": "https://support.microsoft.com/help/5068402",
+     "date": "2025-11-11"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3505.1",
+     "train": "GDR",
+     "kb": "KB5065225",
+     "kb_url": "https://support.microsoft.com/help/5065225",
+     "date": "2025-09-09"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3500.1",
+     "train": "GDR",
+     "kb": "KB5063759",
+     "kb_url": "https://support.microsoft.com/help/5063759",
+     "date": "2025-08-12"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3495.9",
+     "train": "GDR",
+     "kb": "KB5058714",
+     "kb_url": "https://support.microsoft.com/help/5058714",
+     "date": "2025-07-08"
+    },
+    {
+     "name": "Azure Connect Pack",
+     "build": "14.0.3490.10",
+     "train": "ACP",
+     "kb": "KB5050533",
+     "kb_url": "https://support.microsoft.com/help/5050533",
+     "date": "2025-03-06"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3485.1",
+     "train": "GDR",
+     "kb": "KB5046858",
+     "kb_url": "https://support.microsoft.com/help/5046858",
+     "date": "2024-11-12"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3480.1",
+     "train": "GDR",
+     "kb": "KB5046061",
+     "kb_url": "https://support.microsoft.com/help/5046061",
+     "date": "2024-10-08"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3475.1",
+     "train": "GDR",
+     "kb": "KB5042215",
+     "kb_url": "https://support.microsoft.com/help/5042215",
+     "date": "2024-09-10"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3471.2",
+     "train": "GDR",
+     "kb": "KB5040940",
+     "kb_url": "https://support.microsoft.com/help/5040940",
+     "date": "2024-07-09"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3465.1",
+     "train": "GDR",
+     "kb": "KB5029376",
+     "kb_url": "https://support.microsoft.com/help/5029376",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "CU31 + GDR",
+     "build": "14.0.3460.9",
+     "train": "GDR",
+     "kb": "KB5021126",
+     "kb_url": "https://support.microsoft.com/help/5021126",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "CU31",
+     "build": "14.0.3456.2",
+     "train": "CU",
+     "kb": "KB5016884",
+     "kb_url": "https://support.microsoft.com/help/5016884",
+     "date": "2022-09-20"
+    },
+    {
+     "name": "CU30",
+     "build": "14.0.3451.2",
+     "train": "CU",
+     "kb": "KB5013756",
+     "kb_url": "https://support.microsoft.com/help/5013756",
+     "date": "2022-07-13"
+    },
+    {
+     "name": "CU29 + GDR",
+     "build": "14.0.3445.2",
+     "train": "GDR",
+     "kb": "KB5014553",
+     "kb_url": "https://support.microsoft.com/help/5014553",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "CU29",
+     "build": "14.0.3436.1",
+     "train": "CU",
+     "kb": "KB5010786",
+     "kb_url": "https://support.microsoft.com/help/5010786",
+     "date": "2022-03-30"
+    },
+    {
+     "name": "CU28",
+     "build": "14.0.3430.2",
+     "train": "CU",
+     "kb": "KB5008084",
+     "kb_url": "https://support.microsoft.com/help/5008084",
+     "date": "2022-01-13"
+    },
+    {
+     "name": "CU27",
+     "build": "14.0.3421.10",
+     "train": "CU",
+     "kb": "KB5006944",
+     "kb_url": "https://support.microsoft.com/help/5006944",
+     "date": "2021-10-27"
+    },
+    {
+     "name": "CU26",
+     "build": "14.0.3411.3",
+     "train": "CU",
+     "kb": "KB5005226",
+     "kb_url": "https://support.microsoft.com/help/5005226",
+     "date": "2021-09-14"
+    },
+    {
+     "name": "CU25",
+     "build": "14.0.3401.7",
+     "train": "CU",
+     "kb": "KB5003830",
+     "kb_url": "https://support.microsoft.com/help/5003830",
+     "date": "2021-07-12"
+    },
+    {
+     "name": "CU24",
+     "build": "14.0.3391.2",
+     "train": "CU",
+     "kb": "KB5001228",
+     "kb_url": "https://support.microsoft.com/help/5001228",
+     "date": "2021-05-10"
+    },
+    {
+     "name": "CU23",
+     "build": "14.0.3381.3",
+     "train": "CU",
+     "kb": "KB5000685",
+     "kb_url": "https://support.microsoft.com/help/5000685",
+     "date": "2021-02-24"
+    },
+    {
+     "name": "CU22 + GDR",
+     "build": "14.0.3370.1",
+     "train": "GDR",
+     "kb": "KB4583457",
+     "kb_url": "https://support.microsoft.com/help/4583457",
+     "date": "2021-01-21"
+    },
+    {
+     "name": "CU22",
+     "build": "14.0.3356.20",
+     "train": "CU",
+     "kb": "KB4577467",
+     "kb_url": "https://support.microsoft.com/help/4577467",
+     "date": "2020-09-10"
+    },
+    {
+     "name": "CU21",
+     "build": "14.0.3335.7",
+     "train": "CU",
+     "kb": "KB4557397",
+     "kb_url": "https://support.microsoft.com/help/4557397",
+     "date": "2020-07-01"
+    },
+    {
+     "name": "CU20",
+     "build": "14.0.3294.2",
+     "train": "CU",
+     "kb": "KB4541283",
+     "kb_url": "https://support.microsoft.com/help/4541283",
+     "date": "2020-04-07"
+    },
+    {
+     "name": "CU19",
+     "build": "14.0.3281.6",
+     "train": "CU",
+     "kb": "KB4535007",
+     "kb_url": "https://support.microsoft.com/help/4535007",
+     "date": "2020-02-05"
+    },
+    {
+     "name": "CU18",
+     "build": "14.0.3257.3",
+     "train": "CU",
+     "kb": "KB4527377",
+     "kb_url": "https://support.microsoft.com/help/4527377",
+     "date": "2019-12-09"
+    },
+    {
+     "name": "CU17",
+     "build": "14.0.3238.1",
+     "train": "CU",
+     "kb": "KB4515579",
+     "kb_url": "https://support.microsoft.com/help/4515579",
+     "date": "2019-10-08"
+    },
+    {
+     "name": "CU16",
+     "build": "14.0.3223.3",
+     "train": "CU",
+     "kb": "KB4508218",
+     "kb_url": "https://support.microsoft.com/help/4508218",
+     "date": "2019-08-01"
+    },
+    {
+     "name": "CU15 + GDR",
+     "build": "14.0.3192.2",
+     "train": "GDR",
+     "kb": "KB4505225",
+     "kb_url": "https://support.microsoft.com/help/4505225",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "CU15",
+     "build": "14.0.3162.1",
+     "train": "CU",
+     "kb": "KB4498951",
+     "kb_url": "https://support.microsoft.com/help/4498951",
+     "date": "2019-05-23"
+    },
+    {
+     "name": "CU14 + GDR",
+     "build": "14.0.3103.1",
+     "train": "GDR",
+     "kb": "KB4494352",
+     "kb_url": "https://support.microsoft.com/help/4494352",
+     "date": "2019-05-14"
+    },
+    {
+     "name": "CU14",
+     "build": "14.0.3076.1",
+     "train": "CU",
+     "kb": "KB4484710",
+     "kb_url": "https://support.microsoft.com/help/4484710",
+     "date": "2019-03-25"
+    },
+    {
+     "name": "CU13",
+     "build": "14.0.3048.4",
+     "train": "CU",
+     "kb": "KB4466404",
+     "kb_url": "https://support.microsoft.com/help/4466404",
+     "date": "2018-12-18"
+    },
+    {
+     "name": "CU12",
+     "build": "14.0.3045.24",
+     "train": "CU",
+     "kb": "KB4464082",
+     "kb_url": "https://support.microsoft.com/help/4464082",
+     "date": "2018-10-24"
+    },
+    {
+     "name": "CU11",
+     "build": "14.0.3038.14",
+     "train": "CU",
+     "kb": "KB4462262",
+     "kb_url": "https://support.microsoft.com/help/4462262",
+     "date": "2018-09-20"
+    },
+    {
+     "name": "CU10",
+     "build": "14.0.3037.1",
+     "train": "CU",
+     "kb": "KB4342123",
+     "kb_url": "https://support.microsoft.com/help/4342123",
+     "date": "2018-08-27"
+    },
+    {
+     "name": "CU9 + GDR",
+     "build": "14.0.3035.2",
+     "train": "GDR",
+     "kb": "KB4293805",
+     "kb_url": "https://support.microsoft.com/help/4293805",
+     "date": "2018-08-14"
+    },
+    {
+     "name": "CU9",
+     "build": "14.0.3030.27",
+     "train": "CU",
+     "kb": "KB4341265",
+     "kb_url": "https://support.microsoft.com/help/4341265",
+     "date": "2018-07-18"
+    },
+    {
+     "name": "CU8",
+     "build": "14.0.3029.16",
+     "train": "CU",
+     "kb": "KB4338363",
+     "kb_url": "https://support.microsoft.com/help/4338363",
+     "date": "2018-06-21"
+    },
+    {
+     "name": "CU7",
+     "build": "14.0.3026.27",
+     "train": "CU",
+     "kb": "KB4229789",
+     "kb_url": "https://support.microsoft.com/help/4229789",
+     "date": "2018-05-23"
+    },
+    {
+     "name": "CU6",
+     "build": "14.0.3025.34",
+     "train": "CU",
+     "kb": "KB4101464",
+     "kb_url": "https://support.microsoft.com/help/4101464",
+     "date": "2018-04-17"
+    },
+    {
+     "name": "CU5",
+     "build": "14.0.3023.8",
+     "train": "CU",
+     "kb": "KB4092643",
+     "kb_url": "https://support.microsoft.com/help/4092643",
+     "date": "2018-03-20"
+    },
+    {
+     "name": "CU4",
+     "build": "14.0.3022.28",
+     "train": "CU",
+     "kb": "KB4056498",
+     "kb_url": "https://support.microsoft.com/help/4056498",
+     "date": "2018-02-20"
+    },
+    {
+     "name": "CU3",
+     "build": "14.0.3015.40",
+     "train": "CU",
+     "kb": "KB4052987",
+     "kb_url": "https://support.microsoft.com/help/4052987",
+     "date": "2018-01-04"
+    },
+    {
+     "name": "CU2",
+     "build": "14.0.3008.27",
+     "train": "CU",
+     "kb": "KB4052574",
+     "kb_url": "https://support.microsoft.com/help/4052574",
+     "date": "2017-11-28"
+    },
+    {
+     "name": "CU1",
+     "build": "14.0.3006.16",
+     "train": "CU",
+     "kb": "KB4038634",
+     "kb_url": "https://support.microsoft.com/help/4038634",
+     "date": "2017-10-24"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2120.1",
+     "train": "GDR",
+     "kb": "KB5102338",
+     "kb_url": "https://support.microsoft.com/help/5102338",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2110.2",
+     "train": "GDR",
+     "kb": "KB5090347",
+     "kb_url": "https://support.microsoft.com/help/5090347",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2105.1",
+     "train": "GDR",
+     "kb": "KB5084819",
+     "kb_url": "https://support.microsoft.com/help/5084819",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2100.4",
+     "train": "GDR",
+     "kb": "KB5077472",
+     "kb_url": "https://support.microsoft.com/help/5077472",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2095.1",
+     "train": "GDR",
+     "kb": "KB5068403",
+     "kb_url": "https://support.microsoft.com/help/5068403",
+     "date": "2025-11-11"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2085.1",
+     "train": "GDR",
+     "kb": "KB5065224",
+     "kb_url": "https://support.microsoft.com/help/5065224",
+     "date": "2025-09-09"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2080.1",
+     "train": "GDR",
+     "kb": "KB5063760",
+     "kb_url": "https://support.microsoft.com/help/5063760",
+     "date": "2025-08-12"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2075.8",
+     "train": "GDR",
+     "kb": "KB5058716",
+     "kb_url": "https://support.microsoft.com/help/5058716",
+     "date": "2025-07-08"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2070.1",
+     "train": "GDR",
+     "kb": "KB5046857",
+     "kb_url": "https://support.microsoft.com/help/5046857",
+     "date": "2024-11-12"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2065.1",
+     "train": "GDR",
+     "kb": "KB5046058",
+     "kb_url": "https://support.microsoft.com/help/5046058",
+     "date": "2024-10-08"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2060.1",
+     "train": "GDR",
+     "kb": "KB5042217",
+     "kb_url": "https://support.microsoft.com/help/5042217",
+     "date": "2024-09-10"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2056.2",
+     "train": "GDR",
+     "kb": "KB5040942",
+     "kb_url": "https://support.microsoft.com/help/5040942",
+     "date": "2024-07-09"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2052.1",
+     "train": "GDR",
+     "kb": "KB5029375",
+     "kb_url": "https://support.microsoft.com/help/5029375",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2047.8",
+     "train": "GDR",
+     "kb": "KB5021127",
+     "kb_url": "https://support.microsoft.com/help/5021127",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2042.3",
+     "train": "GDR",
+     "kb": "KB5014354",
+     "kb_url": "https://support.microsoft.com/help/5014354",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2037.2",
+     "train": "GDR",
+     "kb": "KB4583456",
+     "kb_url": "https://support.microsoft.com/help/4583456",
+     "date": "2021-01-21"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2027.2",
+     "train": "GDR",
+     "kb": "KB4505224",
+     "kb_url": "https://support.microsoft.com/help/4505224",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2014.14",
+     "train": "GDR",
+     "kb": "KB4494351",
+     "kb_url": "https://support.microsoft.com/help/4494351",
+     "date": "2019-05-14"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2002.14",
+     "train": "GDR",
+     "kb": "KB4293803",
+     "kb_url": "https://support.microsoft.com/help/4293803",
+     "date": "2018-08-14"
+    },
+    {
+     "name": "GDR",
+     "build": "14.0.2000.63",
+     "train": "GDR",
+     "kb": "KB4057122",
+     "kb_url": "https://support.microsoft.com/help/4057122",
+     "date": "2018-01-03"
+    },
+    {
+     "name": "RTM",
+     "build": "14.0.1000.169",
+     "train": "RTM",
+     "kb": null,
+     "kb_url": null,
+     "date": "2017-09-29"
+    }
+   ],
    "support_status": "extended",
    "mainstream_end": "2022-10-11",
    "extended_end": "2027-10-12",
@@ -193,6 +1945,800 @@
     "kb_url": "https://support.microsoft.com/help/5003279",
     "date": "2021-09-15"
    },
+   "updates": [
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7095.1",
+     "train": "GDR",
+     "kb": "KB5102339",
+     "kb_url": "https://support.microsoft.com/help/5102339",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7085.1",
+     "train": "GDR",
+     "kb": "KB5089270",
+     "kb_url": "https://support.microsoft.com/help/5089270",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7080.1",
+     "train": "GDR",
+     "kb": "KB5084820",
+     "kb_url": "https://support.microsoft.com/help/5084820",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7075.5",
+     "train": "GDR",
+     "kb": "KB5077473",
+     "kb_url": "https://support.microsoft.com/help/5077473",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7070.1",
+     "train": "GDR",
+     "kb": "KB5068400",
+     "kb_url": "https://support.microsoft.com/help/5068400",
+     "date": "2025-11-11"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7065.1",
+     "train": "GDR",
+     "kb": "KB5065227",
+     "kb_url": "https://support.microsoft.com/help/5065227",
+     "date": "2025-09-09"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7060.1",
+     "train": "GDR",
+     "kb": "KB5063761",
+     "kb_url": "https://support.microsoft.com/help/5063761",
+     "date": "2025-08-12"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7055.9",
+     "train": "GDR",
+     "kb": "KB5058717",
+     "kb_url": "https://support.microsoft.com/help/5058717",
+     "date": "2025-07-08"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7050.2",
+     "train": "GDR",
+     "kb": "KB5046856",
+     "kb_url": "https://support.microsoft.com/help/5046856",
+     "date": "2024-11-12"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7045.2",
+     "train": "GDR",
+     "kb": "KB5046062",
+     "kb_url": "https://support.microsoft.com/help/5046062",
+     "date": "2024-10-08"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7040.1",
+     "train": "GDR",
+     "kb": "KB5042209",
+     "kb_url": "https://support.microsoft.com/help/5042209",
+     "date": "2024-09-10"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7037.1",
+     "train": "GDR",
+     "kb": "KB5040944",
+     "kb_url": "https://support.microsoft.com/help/5040944",
+     "date": "2024-07-09"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7029.3",
+     "train": "GDR",
+     "kb": "KB5029187",
+     "kb_url": "https://support.microsoft.com/help/5029187",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7024.30",
+     "train": "GDR",
+     "kb": "KB5021128",
+     "kb_url": "https://support.microsoft.com/help/5021128",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "Azure Connect Pack + GDR",
+     "build": "13.0.7016.1",
+     "train": "GDR",
+     "kb": "KB5015371",
+     "kb_url": "https://support.microsoft.com/help/5015371",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "Azure Connect Pack",
+     "build": "13.0.7000.253",
+     "train": "ACP",
+     "kb": "KB5014242",
+     "kb_url": "https://support.microsoft.com/help/5014242",
+     "date": "2022-05-19"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6500.1",
+     "train": "GDR",
+     "kb": "KB5102340",
+     "kb_url": "https://support.microsoft.com/help/5102340",
+     "date": "2026-07-14"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6490.1",
+     "train": "GDR",
+     "kb": "KB5089271",
+     "kb_url": "https://support.microsoft.com/help/5089271",
+     "date": "2026-05-12"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6485.1",
+     "train": "GDR",
+     "kb": "KB5084821",
+     "kb_url": "https://support.microsoft.com/help/5084821",
+     "date": "2026-04-14"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6480.4",
+     "train": "GDR",
+     "kb": "KB5077474",
+     "kb_url": "https://support.microsoft.com/help/5077474",
+     "date": "2026-03-10"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6475.1",
+     "train": "GDR",
+     "kb": "KB5068401",
+     "kb_url": "https://support.microsoft.com/help/5068401",
+     "date": "2025-11-11"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6470.1",
+     "train": "GDR",
+     "kb": "KB5065226",
+     "kb_url": "https://support.microsoft.com/help/5065226",
+     "date": "2025-09-09"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6465.1",
+     "train": "GDR",
+     "kb": "KB5063762",
+     "kb_url": "https://support.microsoft.com/help/5063762",
+     "date": "2025-08-12"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6460.7",
+     "train": "GDR",
+     "kb": "KB5058718",
+     "kb_url": "https://support.microsoft.com/help/5058718",
+     "date": "2025-07-08"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6455.2",
+     "train": "GDR",
+     "kb": "KB5046855",
+     "kb_url": "https://support.microsoft.com/help/5046855",
+     "date": "2024-11-12"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6450.1",
+     "train": "GDR",
+     "kb": "KB5046063",
+     "kb_url": "https://support.microsoft.com/help/5046063",
+     "date": "2024-10-08"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6445.1",
+     "train": "GDR",
+     "kb": "KB5042207",
+     "kb_url": "https://support.microsoft.com/help/5042207",
+     "date": "2024-09-10"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6441.1",
+     "train": "GDR",
+     "kb": "KB5040946",
+     "kb_url": "https://support.microsoft.com/help/5040946",
+     "date": "2024-07-09"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6435.1",
+     "train": "GDR",
+     "kb": "KB5029186",
+     "kb_url": "https://support.microsoft.com/help/5029186",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6430.49",
+     "train": "GDR",
+     "kb": "KB5021129",
+     "kb_url": "https://support.microsoft.com/help/5021129",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "SP3 + GDR",
+     "build": "13.0.6419.1",
+     "train": "GDR",
+     "kb": "KB5014355",
+     "kb_url": "https://support.microsoft.com/help/5014355",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "SP3",
+     "build": "13.0.6300.2",
+     "train": "SP",
+     "kb": "KB5003279",
+     "kb_url": "https://support.microsoft.com/help/5003279",
+     "date": "2021-09-15"
+    },
+    {
+     "name": "CU17 + GDR",
+     "build": "13.0.5893.48",
+     "train": "GDR",
+     "kb": "KB5014351",
+     "kb_url": "https://support.microsoft.com/help/5014351",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "CU17",
+     "build": "13.0.5888.11",
+     "train": "CU",
+     "kb": "KB5001092",
+     "kb_url": "https://support.microsoft.com/help/5001092",
+     "date": "2021-03-29"
+    },
+    {
+     "name": "CU16",
+     "build": "13.0.5882.1",
+     "train": "CU",
+     "kb": "KB5000645",
+     "kb_url": "https://support.microsoft.com/help/5000645",
+     "date": "2021-02-11"
+    },
+    {
+     "name": "CU15 + GDR",
+     "build": "13.0.5865.1",
+     "train": "GDR",
+     "kb": "KB4583461",
+     "kb_url": "https://support.microsoft.com/help/4583461",
+     "date": "2021-01-12"
+    },
+    {
+     "name": "CU15",
+     "build": "13.0.5850.14",
+     "train": "CU",
+     "kb": "KB4577775",
+     "kb_url": "https://support.microsoft.com/help/4577775",
+     "date": "2020-09-28"
+    },
+    {
+     "name": "CU14",
+     "build": "13.0.5830.85",
+     "train": "CU",
+     "kb": "KB4564903",
+     "kb_url": "https://support.microsoft.com/help/4564903",
+     "date": "2020-08-06"
+    },
+    {
+     "name": "CU13",
+     "build": "13.0.5820.21",
+     "train": "CU",
+     "kb": "KB4549825",
+     "kb_url": "https://support.microsoft.com/help/4549825",
+     "date": "2020-05-28"
+    },
+    {
+     "name": "CU12",
+     "build": "13.0.5698.0",
+     "train": "CU",
+     "kb": "KB4536648",
+     "kb_url": "https://support.microsoft.com/help/4536648",
+     "date": "2020-02-25"
+    },
+    {
+     "name": "CU11 + GDR",
+     "build": "13.0.5622.0",
+     "train": "GDR",
+     "kb": "KB4535706",
+     "kb_url": "https://support.microsoft.com/help/4535706",
+     "date": "2020-02-11"
+    },
+    {
+     "name": "CU11",
+     "build": "13.0.5598.27",
+     "train": "CU",
+     "kb": "KB4527378",
+     "kb_url": "https://support.microsoft.com/help/4527378",
+     "date": "2019-12-09"
+    },
+    {
+     "name": "CU10",
+     "build": "13.0.5492.2",
+     "train": "CU",
+     "kb": "KB4524334",
+     "kb_url": "https://support.microsoft.com/help/4524334",
+     "date": "2019-10-08"
+    },
+    {
+     "name": "CU8",
+     "build": "13.0.5426.0",
+     "train": "CU",
+     "kb": "KB4505830",
+     "kb_url": "https://support.microsoft.com/help/4505830",
+     "date": "2019-07-31"
+    },
+    {
+     "name": "CU7 + GDR",
+     "build": "13.0.5366.0",
+     "train": "GDR",
+     "kb": "KB4505222",
+     "kb_url": "https://support.microsoft.com/help/4505222",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "CU7",
+     "build": "13.0.5337.0",
+     "train": "CU",
+     "kb": "KB4495256",
+     "kb_url": "https://support.microsoft.com/help/4495256",
+     "date": "2019-05-22"
+    },
+    {
+     "name": "CU6",
+     "build": "13.0.5292.0",
+     "train": "CU",
+     "kb": "KB4488536",
+     "kb_url": "https://support.microsoft.com/help/4488536",
+     "date": "2019-03-19"
+    },
+    {
+     "name": "CU5",
+     "build": "13.0.5264.1",
+     "train": "CU",
+     "kb": "KB4475776",
+     "kb_url": "https://support.microsoft.com/help/4475776",
+     "date": "2019-01-23"
+    },
+    {
+     "name": "CU4",
+     "build": "13.0.5233.0",
+     "train": "CU",
+     "kb": "KB4464106",
+     "kb_url": "https://support.microsoft.com/help/4464106",
+     "date": "2018-11-13"
+    },
+    {
+     "name": "CU3",
+     "build": "13.0.5216.0",
+     "train": "CU",
+     "kb": "KB4458871",
+     "kb_url": "https://support.microsoft.com/help/4458871",
+     "date": "2018-09-20"
+    },
+    {
+     "name": "CU2 + GDR",
+     "build": "13.0.5201.2",
+     "train": "GDR",
+     "kb": "KB4458621",
+     "kb_url": "https://support.microsoft.com/help/4458621",
+     "date": "2018-08-21"
+    },
+    {
+     "name": "SP2 CU2 + GDR",
+     "build": "13.0.5161.0",
+     "train": "GDR",
+     "kb": "KB4458621",
+     "kb_url": "https://support.microsoft.com/help/4458621",
+     "date": "2018-08-21"
+    },
+    {
+     "name": "CU2",
+     "build": "13.0.5153.0",
+     "train": "CU",
+     "kb": "KB4340355",
+     "kb_url": "https://support.microsoft.com/help/4340355",
+     "date": "2018-07-16"
+    },
+    {
+     "name": "CU1",
+     "build": "13.0.5149.0",
+     "train": "CU",
+     "kb": "KB4135048",
+     "kb_url": "https://support.microsoft.com/help/4135048",
+     "date": "2018-05-30"
+    },
+    {
+     "name": "SP2 + GDR",
+     "build": "13.0.5108.50",
+     "train": "GDR",
+     "kb": "KB5014365",
+     "kb_url": "https://support.microsoft.com/help/5014365",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.5103.6",
+     "train": "GDR",
+     "kb": "KB4583460",
+     "kb_url": "https://support.microsoft.com/help/4583460",
+     "date": "2021-01-12"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.5102.14",
+     "train": "GDR",
+     "kb": "KB4532097",
+     "kb_url": "https://support.microsoft.com/help/4532097",
+     "date": "2020-02-11"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.5101.9",
+     "train": "GDR",
+     "kb": "KB4505220",
+     "kb_url": "https://support.microsoft.com/help/4505220",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.5081.1",
+     "train": "GDR",
+     "kb": "KB4293802",
+     "kb_url": "https://support.microsoft.com/help/4293802",
+     "date": "2018-08-04"
+    },
+    {
+     "name": "SP2",
+     "build": "13.0.5026.0",
+     "train": "SP",
+     "kb": "KB4052908",
+     "kb_url": "https://support.microsoft.com/help/4052908",
+     "date": "2018-04-24"
+    },
+    {
+     "name": "CU15 + GDR",
+     "build": "13.0.4604.0",
+     "train": "GDR",
+     "kb": "KB4505221",
+     "kb_url": "https://support.microsoft.com/help/4505221",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "CU15",
+     "build": "13.0.4574.0",
+     "train": "CU",
+     "kb": "KB4495257",
+     "kb_url": "https://support.microsoft.com/help/4495257",
+     "date": "2019-05-16"
+    },
+    {
+     "name": "CU14",
+     "build": "13.0.4560.0",
+     "train": "CU",
+     "kb": "KB4488535",
+     "kb_url": "https://support.microsoft.com/help/4488535",
+     "date": "2019-03-19"
+    },
+    {
+     "name": "CU13",
+     "build": "13.0.4550.1",
+     "train": "CU",
+     "kb": "KB4475775",
+     "kb_url": "https://support.microsoft.com/help/4475775",
+     "date": "2019-01-23"
+    },
+    {
+     "name": "CU12",
+     "build": "13.0.4541.0",
+     "train": "CU",
+     "kb": "KB4464343",
+     "kb_url": "https://support.microsoft.com/help/4464343",
+     "date": "2018-11-13"
+    },
+    {
+     "name": "CU11",
+     "build": "13.0.4528.0",
+     "train": "CU",
+     "kb": "KB4459676",
+     "kb_url": "https://support.microsoft.com/help/4459676",
+     "date": "2018-09-17"
+    },
+    {
+     "name": "CU10 + GDR",
+     "build": "13.0.4522.0",
+     "train": "GDR",
+     "kb": "KB4293808",
+     "kb_url": "https://support.microsoft.com/help/4293808",
+     "date": "2018-08-14"
+    },
+    {
+     "name": "CU10",
+     "build": "13.0.4514.0",
+     "train": "CU",
+     "kb": "KB4341569",
+     "kb_url": "https://support.microsoft.com/help/4341569",
+     "date": "2018-07-16"
+    },
+    {
+     "name": "CU9",
+     "build": "13.0.4502.0",
+     "train": "CU",
+     "kb": "KB4100997",
+     "kb_url": "https://support.microsoft.com/help/4100997",
+     "date": "2018-05-30"
+    },
+    {
+     "name": "CU8",
+     "build": "13.0.4474.0",
+     "train": "CU",
+     "kb": "KB4077064",
+     "kb_url": "https://support.microsoft.com/help/4077064",
+     "date": "2018-03-19"
+    },
+    {
+     "name": "CU7",
+     "build": "13.0.4466.4",
+     "train": "CU",
+     "kb": "KB4057119",
+     "kb_url": "https://support.microsoft.com/help/4057119",
+     "date": "2018-01-04"
+    },
+    {
+     "name": "CU6",
+     "build": "13.0.4457.0",
+     "train": "CU",
+     "kb": "KB4037354",
+     "kb_url": "https://support.microsoft.com/help/4037354",
+     "date": "2017-11-21"
+    },
+    {
+     "name": "CU5",
+     "build": "13.0.4451.0",
+     "train": "CU",
+     "kb": "KB4040714",
+     "kb_url": "https://support.microsoft.com/help/4040714",
+     "date": "2017-09-18"
+    },
+    {
+     "name": "CU4",
+     "build": "13.0.4446.0",
+     "train": "CU",
+     "kb": "KB4024305",
+     "kb_url": "https://support.microsoft.com/help/4024305",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "CU3",
+     "build": "13.0.4435.0",
+     "train": "CU",
+     "kb": "KB4019916",
+     "kb_url": "https://support.microsoft.com/help/4019916",
+     "date": "2017-05-15"
+    },
+    {
+     "name": "CU2",
+     "build": "13.0.4422.0",
+     "train": "CU",
+     "kb": "KB4013106",
+     "kb_url": "https://support.microsoft.com/help/4013106",
+     "date": "2017-03-20"
+    },
+    {
+     "name": "CU1",
+     "build": "13.0.4411.0",
+     "train": "CU",
+     "kb": "KB3208177",
+     "kb_url": "https://support.microsoft.com/help/3208177",
+     "date": "2017-01-18"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.4259.0",
+     "train": "GDR",
+     "kb": "KB4505219",
+     "kb_url": "https://support.microsoft.com/help/4505219",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.4224.16",
+     "train": "GDR",
+     "kb": "KB4458842",
+     "kb_url": "https://support.microsoft.com/help/4458842",
+     "date": "2018-08-22"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.4210.6",
+     "train": "GDR",
+     "kb": "KB4057118",
+     "kb_url": "https://support.microsoft.com/help/4057118",
+     "date": "2018-01-03"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.4206.0",
+     "train": "GDR",
+     "kb": "KB4019089",
+     "kb_url": "https://support.microsoft.com/help/4019089",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.4202.2",
+     "train": "GDR",
+     "kb": "KB3210089",
+     "kb_url": "https://support.microsoft.com/help/3210089",
+     "date": "2016-12-16"
+    },
+    {
+     "name": "SP1",
+     "build": "13.0.4001.0",
+     "train": "SP",
+     "kb": "KB3182545",
+     "kb_url": "https://support.microsoft.com/help/3182545",
+     "date": "2016-11-16"
+    },
+    {
+     "name": "CU9 + GDR",
+     "build": "13.0.2218.0",
+     "train": "GDR",
+     "kb": "KB4058559",
+     "kb_url": "https://support.microsoft.com/help/4058559",
+     "date": "2018-01-06"
+    },
+    {
+     "name": "CU9",
+     "build": "13.0.2216.0",
+     "train": "CU",
+     "kb": "KB4037357",
+     "kb_url": "https://support.microsoft.com/help/4037357",
+     "date": "2017-11-21"
+    },
+    {
+     "name": "CU8",
+     "build": "13.0.2213.0",
+     "train": "CU",
+     "kb": "KB4040713",
+     "kb_url": "https://support.microsoft.com/help/4040713",
+     "date": "2017-09-18"
+    },
+    {
+     "name": "CU7",
+     "build": "13.0.2210.0",
+     "train": "CU",
+     "kb": "KB4024304",
+     "kb_url": "https://support.microsoft.com/help/4024304",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "CU6",
+     "build": "13.0.2204.0",
+     "train": "CU",
+     "kb": "KB4019914",
+     "kb_url": "https://support.microsoft.com/help/4019914",
+     "date": "2017-05-15"
+    },
+    {
+     "name": "CU5",
+     "build": "13.0.2197.0",
+     "train": "CU",
+     "kb": "KB4013105",
+     "kb_url": "https://support.microsoft.com/help/4013105",
+     "date": "2017-03-20"
+    },
+    {
+     "name": "CU4",
+     "build": "13.0.2193.0",
+     "train": "CU",
+     "kb": "KB3205052",
+     "kb_url": "https://support.microsoft.com/help/3205052",
+     "date": "2017-01-18"
+    },
+    {
+     "name": "CU3",
+     "build": "13.0.2186.6",
+     "train": "CU",
+     "kb": "KB3205413",
+     "kb_url": "https://support.microsoft.com/help/3205413",
+     "date": "2016-11-16"
+    },
+    {
+     "name": "CU2",
+     "build": "13.0.2164.0",
+     "train": "CU",
+     "kb": "KB3182270",
+     "kb_url": "https://support.microsoft.com/help/3182270",
+     "date": "2016-09-22"
+    },
+    {
+     "name": "CU1",
+     "build": "13.0.2149.0",
+     "train": "CU",
+     "kb": "KB3164674",
+     "kb_url": "https://support.microsoft.com/help/3164674",
+     "date": "2016-07-25"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.1745.2",
+     "train": "GDR",
+     "kb": "KB4058560",
+     "kb_url": "https://support.microsoft.com/help/4058560",
+     "date": "2018-01-06"
+    },
+    {
+     "name": "RTM GDR",
+     "build": "13.0.1742.0",
+     "train": "GDR",
+     "kb": "KB3164398",
+     "kb_url": "https://support.microsoft.com/help/3164398",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "CU3 + GDR",
+     "build": "13.0.1728.2",
+     "train": "GDR",
+     "kb": "KB3210111",
+     "kb_url": "https://support.microsoft.com/help/3210111",
+     "date": "2016-12-16"
+    },
+    {
+     "name": "GDR",
+     "build": "13.0.1722.0",
+     "train": "GDR",
+     "kb": "KB3194716",
+     "kb_url": "https://support.microsoft.com/help/3194716",
+     "date": "2016-11-08"
+    },
+    {
+     "name": "RTM GDR",
+     "build": "13.0.1708.0",
+     "train": "GDR",
+     "kb": "KB3164398",
+     "kb_url": "https://support.microsoft.com/help/3164398",
+     "date": "2016-06-03"
+    },
+    {
+     "name": "RTM RTM",
+     "build": "13.0.1601.5",
+     "train": "RTM",
+     "kb": null,
+     "kb_url": null,
+     "date": "2016-06-01"
+    }
+   ],
    "support_status": "out_of_support",
    "mainstream_end": "2021-07-13",
    "extended_end": "2026-07-14",
@@ -243,6 +2789,672 @@
     "kb_url": "https://support.microsoft.com/help/4022619",
     "date": "2018-10-30"
    },
+   "updates": [
+    {
+     "name": "SQL Server 2014 SP3 CU4 + GDR",
+     "build": "12.0.6449.1",
+     "train": "GDR",
+     "kb": "KB5029185",
+     "kb_url": "https://support.microsoft.com/help/5029185",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "SQL Server 2014 SP3 CU4 + GDR",
+     "build": "12.0.6444.4",
+     "train": "GDR",
+     "kb": "KB5021045",
+     "kb_url": "https://support.microsoft.com/help/5021045",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "SQL Server 2014 SP3 CU4 + GDR",
+     "build": "12.0.6439.10",
+     "train": "GDR",
+     "kb": "KB5014164",
+     "kb_url": "https://support.microsoft.com/help/5014164",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "SQL Server 2014 SP3 CU4 + GDR",
+     "build": "12.0.6433.1",
+     "train": "GDR",
+     "kb": "KB4583462",
+     "kb_url": "https://support.microsoft.com/help/4583462",
+     "date": "2021-01-12"
+    },
+    {
+     "name": "SQL Server 2014 SP3 CU4 + GDR",
+     "build": "12.0.6372.1",
+     "train": "GDR",
+     "kb": "KB4535288",
+     "kb_url": "https://support.microsoft.com/help/4535288",
+     "date": "2020-02-11"
+    },
+    {
+     "name": "SQL Server 2014 SP3 CU4",
+     "build": "12.0.6329.1",
+     "train": "CU",
+     "kb": "KB4500181",
+     "kb_url": "https://support.microsoft.com/help/4500181",
+     "date": "2019-07-29"
+    },
+    {
+     "name": "SQL Server 2014 SP3 CU3 + GDR",
+     "build": "12.0.6293.0",
+     "train": "GDR",
+     "kb": "KB4505422",
+     "kb_url": "https://support.microsoft.com/help/4505422",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "SQL Server 2014 SP3 CU3",
+     "build": "12.0.6259.0",
+     "train": "CU",
+     "kb": "KB4491539",
+     "kb_url": "https://support.microsoft.com/help/4491539",
+     "date": "2019-04-16"
+    },
+    {
+     "name": "SQL Server 2014 SP3 CU2",
+     "build": "12.0.6214.1",
+     "train": "CU",
+     "kb": "KB4482960",
+     "kb_url": "https://support.microsoft.com/help/4482960",
+     "date": "2019-02-19"
+    },
+    {
+     "name": "SQL Server 2014 SP3 CU1",
+     "build": "12.0.6205.1",
+     "train": "CU",
+     "kb": "KB4470220",
+     "kb_url": "https://support.microsoft.com/help/4470220",
+     "date": "2018-12-12"
+    },
+    {
+     "name": "SQL Server 2014 SP3 GDR",
+     "build": "12.0.6179.1",
+     "train": "GDR",
+     "kb": "KB5029184",
+     "kb_url": "https://support.microsoft.com/help/5029184",
+     "date": "2023-10-10"
+    },
+    {
+     "name": "SQL Server 2014 SP3 GDR",
+     "build": "12.0.6174.8",
+     "train": "GDR",
+     "kb": "KB5021037",
+     "kb_url": "https://support.microsoft.com/help/5021037",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "SQL Server 2014 SP3 GDR",
+     "build": "12.0.6169.19",
+     "train": "GDR",
+     "kb": "KB5014165",
+     "kb_url": "https://support.microsoft.com/help/5014165",
+     "date": "2022-06-14"
+    },
+    {
+     "name": "SQL Server 2014 SP3 GDR",
+     "build": "12.0.6164.21",
+     "train": "GDR",
+     "kb": "KB4583463",
+     "kb_url": "https://support.microsoft.com/help/4583463",
+     "date": "2021-01-12"
+    },
+    {
+     "name": "SQL Server 2014 SP3 GDR",
+     "build": "12.0.6118.4",
+     "train": "GDR",
+     "kb": "KB4532095",
+     "kb_url": "https://support.microsoft.com/help/4532095",
+     "date": "2020-02-11"
+    },
+    {
+     "name": "SQL Server 2014 SP3 GDR",
+     "build": "12.0.6108.1",
+     "train": "GDR",
+     "kb": "KB4505218",
+     "kb_url": "https://support.microsoft.com/help/4505218",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "SQL Server 2014 SP3",
+     "build": "12.0.6024.0",
+     "train": "SP",
+     "kb": "KB4022619",
+     "kb_url": "https://support.microsoft.com/help/4022619",
+     "date": "2018-10-30"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU18",
+     "build": "12.0.5687.1",
+     "train": "CU",
+     "kb": "KB4500180",
+     "kb_url": "https://support.microsoft.com/help/4500180",
+     "date": "2019-07-29"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU17 + GDR",
+     "build": "12.0.5659.1",
+     "train": "GDR",
+     "kb": "KB4505419",
+     "kb_url": "https://support.microsoft.com/help/4505419",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU17",
+     "build": "12.0.5632.1",
+     "train": "CU",
+     "kb": "KB4491540",
+     "kb_url": "https://support.microsoft.com/help/4491540",
+     "date": "2019-04-16"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU16",
+     "build": "12.0.5626.1",
+     "train": "CU",
+     "kb": "KB4482967",
+     "kb_url": "https://support.microsoft.com/help/4482967",
+     "date": "2019-02-19"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU15",
+     "build": "12.0.5605.1",
+     "train": "CU",
+     "kb": "KB4469137",
+     "kb_url": "https://support.microsoft.com/help/4469137",
+     "date": "2018-12-12"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU14",
+     "build": "12.0.5600.1",
+     "train": "CU",
+     "kb": "KB4459860",
+     "kb_url": "https://support.microsoft.com/help/4459860",
+     "date": "2018-10-15"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU13",
+     "build": "12.0.5590.1",
+     "train": "CU",
+     "kb": "KB4456287",
+     "kb_url": "https://support.microsoft.com/help/4456287",
+     "date": "2018-08-27"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU12",
+     "build": "12.0.5589.7",
+     "train": "CU",
+     "kb": "KB4130489",
+     "kb_url": "https://support.microsoft.com/help/4130489",
+     "date": "2018-06-18"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU11",
+     "build": "12.0.5579.0",
+     "train": "CU",
+     "kb": "KB4077063",
+     "kb_url": "https://support.microsoft.com/help/4077063",
+     "date": "2018-03-19"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU10",
+     "build": "12.0.5571.0",
+     "train": "CU",
+     "kb": "KB4052725",
+     "kb_url": "https://support.microsoft.com/help/4052725",
+     "date": "2018-01-16"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU9",
+     "build": "12.0.5563.0",
+     "train": "CU",
+     "kb": "KB4055557",
+     "kb_url": "https://support.microsoft.com/help/4055557",
+     "date": "2017-12-18"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU8",
+     "build": "12.0.5557.0",
+     "train": "CU",
+     "kb": "KB4037356",
+     "kb_url": "https://support.microsoft.com/help/4037356",
+     "date": "2017-10-16"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU7",
+     "build": "12.0.5556.0",
+     "train": "CU",
+     "kb": "KB4032541",
+     "kb_url": "https://support.microsoft.com/help/4032541",
+     "date": "2017-08-28"
+    },
+    {
+     "name": "SP2 CU6",
+     "build": "12.0.5553.0",
+     "train": "CU",
+     "kb": "KB4019094",
+     "kb_url": "https://support.microsoft.com/help/4019094",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU6",
+     "build": "12.0.5552.0",
+     "train": "CU",
+     "kb": "KB4019094",
+     "kb_url": "https://support.microsoft.com/help/4019094",
+     "date": "2017-07-17"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU5",
+     "build": "12.0.5546.0",
+     "train": "CU",
+     "kb": "KB4013098",
+     "kb_url": "https://support.microsoft.com/help/4013098",
+     "date": "2017-04-17"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU4",
+     "build": "12.0.5540.0",
+     "train": "CU",
+     "kb": "KB4010394",
+     "kb_url": "https://support.microsoft.com/help/4010394",
+     "date": "2017-02-21"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU3",
+     "build": "12.0.5538.0",
+     "train": "CU",
+     "kb": "KB3204388",
+     "kb_url": "https://support.microsoft.com/help/3204388",
+     "date": "2016-12-19"
+    },
+    {
+     "name": "SQL Server 2014 SP2 GDR",
+     "build": "12.0.5532.0",
+     "train": "GDR",
+     "kb": "KB3194718",
+     "kb_url": "https://support.microsoft.com/help/3194718",
+     "date": "2016-11-08"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU2",
+     "build": "12.0.5522.0",
+     "train": "CU",
+     "kb": "KB3188778",
+     "kb_url": "https://support.microsoft.com/help/3188778",
+     "date": "2016-10-17"
+    },
+    {
+     "name": "SQL Server 2014 SP2 CU1",
+     "build": "12.0.5511.0",
+     "train": "CU",
+     "kb": "KB3178925",
+     "kb_url": "https://support.microsoft.com/help/3178925",
+     "date": "2016-08-25"
+    },
+    {
+     "name": "SQL Server 2014 SP2 GDR",
+     "build": "12.0.5223.6",
+     "train": "GDR",
+     "kb": "KB4505217",
+     "kb_url": "https://support.microsoft.com/help/4505217",
+     "date": "2019-07-09"
+    },
+    {
+     "name": "SQL Server 2014 SP2 GDR",
+     "build": "12.0.5214.6",
+     "train": "GDR",
+     "kb": "KB4057120",
+     "kb_url": "https://support.microsoft.com/help/4057120",
+     "date": "2018-01-16"
+    },
+    {
+     "name": "SQL Server 2014 SP2 GDR",
+     "build": "12.0.5207.0",
+     "train": "GDR",
+     "kb": "KB4019093",
+     "kb_url": "https://support.microsoft.com/help/4019093",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "SQL Server 2014 SP2 GDR",
+     "build": "12.0.5203.0",
+     "train": "GDR",
+     "kb": "KB3194714",
+     "kb_url": "https://support.microsoft.com/help/3194714",
+     "date": "2016-11-08"
+    },
+    {
+     "name": "SQL Server 2014 SP2",
+     "build": "12.0.5000.0",
+     "train": "SP",
+     "kb": "KB3171021",
+     "kb_url": "https://support.microsoft.com/help/3171021",
+     "date": "2016-07-11"
+    },
+    {
+     "name": "SP1 CU13",
+     "build": "12.0.4522.0",
+     "train": "CU",
+     "kb": "KB4019099",
+     "kb_url": "https://support.microsoft.com/help/4019099",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU13",
+     "build": "12.0.4520.0",
+     "train": "CU",
+     "kb": "KB4019099",
+     "kb_url": "https://support.microsoft.com/help/4019099",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU12",
+     "build": "12.0.4511.0",
+     "train": "CU",
+     "kb": "KB4017793",
+     "kb_url": "https://support.microsoft.com/help/4017793",
+     "date": "2017-04-17"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU11",
+     "build": "12.0.4502.0",
+     "train": "CU",
+     "kb": "KB4010392",
+     "kb_url": "https://support.microsoft.com/help/4010392",
+     "date": "2017-02-21"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU10",
+     "build": "12.0.4491.0",
+     "train": "CU",
+     "kb": "KB3204399",
+     "kb_url": "https://support.microsoft.com/help/3204399",
+     "date": "2016-12-19"
+    },
+    {
+     "name": "SQL Server 2014 SP1 GDR",
+     "build": "12.0.4487.0",
+     "train": "GDR",
+     "kb": "KB3194722",
+     "kb_url": "https://support.microsoft.com/help/3194722",
+     "date": "2016-11-08"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU9",
+     "build": "12.0.4474.0",
+     "train": "CU",
+     "kb": "KB3186964",
+     "kb_url": "https://support.microsoft.com/help/3186964",
+     "date": "2016-10-17"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU8",
+     "build": "12.0.4468.0",
+     "train": "CU",
+     "kb": "KB3174038",
+     "kb_url": "https://support.microsoft.com/help/3174038",
+     "date": "2016-08-15"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU7",
+     "build": "12.0.4459.0",
+     "train": "CU",
+     "kb": "KB3162659",
+     "kb_url": "https://support.microsoft.com/help/3162659",
+     "date": "2016-06-20"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU6",
+     "build": "12.0.4457.0",
+     "train": "CU",
+     "kb": "KB3167392",
+     "kb_url": "https://support.microsoft.com/help/3167392",
+     "date": "2016-05-30"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU6 (Deprecated)",
+     "build": "12.0.4449.0",
+     "train": "CU",
+     "kb": "KB3144524",
+     "kb_url": "https://support.microsoft.com/help/3144524",
+     "date": "2016-04-18"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU5",
+     "build": "12.0.4439.1",
+     "train": "CU",
+     "kb": "KB3130926",
+     "kb_url": "https://support.microsoft.com/help/3130926",
+     "date": "2016-02-22"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU4",
+     "build": "12.0.4436.0",
+     "train": "CU",
+     "kb": "KB3106660",
+     "kb_url": "https://support.microsoft.com/help/3106660",
+     "date": "2015-12-21"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU3",
+     "build": "12.0.4427.24",
+     "train": "CU",
+     "kb": "KB3094221",
+     "kb_url": "https://support.microsoft.com/help/3094221",
+     "date": "2015-10-19"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU2",
+     "build": "12.0.4422.0",
+     "train": "CU",
+     "kb": "KB3075950",
+     "kb_url": "https://support.microsoft.com/help/3075950",
+     "date": "2015-08-17"
+    },
+    {
+     "name": "SQL Server 2014 SP1 CU1",
+     "build": "12.0.4416.1",
+     "train": "CU",
+     "kb": "KB3067839",
+     "kb_url": "https://support.microsoft.com/help/3067839",
+     "date": "2015-06-19"
+    },
+    {
+     "name": "SP1 CU1",
+     "build": "12.0.4416.0",
+     "train": "CU",
+     "kb": "KB3067839",
+     "kb_url": "https://support.microsoft.com/help/3067839",
+     "date": "2015-06-19"
+    },
+    {
+     "name": "SQL Server 2014 SP1 GDR",
+     "build": "12.0.4237.0",
+     "train": "GDR",
+     "kb": "KB4019091",
+     "kb_url": "https://support.microsoft.com/help/4019091",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "SQL Server 2014 SP1 GDR",
+     "build": "12.0.4232.0",
+     "train": "GDR",
+     "kb": "KB3194720",
+     "kb_url": "https://support.microsoft.com/help/3194720",
+     "date": "2016-11-08"
+    },
+    {
+     "name": "MS15-058: GDR Security Update",
+     "build": "12.0.4213.0",
+     "train": "GDR",
+     "kb": "KB3070446",
+     "kb_url": "https://support.microsoft.com/help/3070446",
+     "date": "2015-07-14"
+    },
+    {
+     "name": "SQL Server 2014 SP1",
+     "build": "12.0.4100.1",
+     "train": "SP",
+     "kb": "KB3058865",
+     "kb_url": "https://support.microsoft.com/help/3058865",
+     "date": "2015-05-04"
+    },
+    {
+     "name": "CU14",
+     "build": "12.0.2569.0",
+     "train": "CU",
+     "kb": "KB3158271",
+     "kb_url": "https://support.microsoft.com/help/3158271",
+     "date": "2016-06-20"
+    },
+    {
+     "name": "CU13",
+     "build": "12.0.2568.0",
+     "train": "CU",
+     "kb": "KB3144517",
+     "kb_url": "https://support.microsoft.com/help/3144517",
+     "date": "2016-04-18"
+    },
+    {
+     "name": "CU12",
+     "build": "12.0.2564.0",
+     "train": "CU",
+     "kb": "KB3130923",
+     "kb_url": "https://support.microsoft.com/help/3130923",
+     "date": "2016-02-22"
+    },
+    {
+     "name": "CU11",
+     "build": "12.0.2560.0",
+     "train": "CU",
+     "kb": "KB3106659",
+     "kb_url": "https://support.microsoft.com/help/3106659",
+     "date": "2015-12-21"
+    },
+    {
+     "name": "CU10",
+     "build": "12.0.2556.4",
+     "train": "CU",
+     "kb": "KB3094220",
+     "kb_url": "https://support.microsoft.com/help/3094220",
+     "date": "2015-10-19"
+    },
+    {
+     "name": "CU9",
+     "build": "12.0.2553.0",
+     "train": "CU",
+     "kb": "KB3075949",
+     "kb_url": "https://support.microsoft.com/help/3075949",
+     "date": "2015-08-17"
+    },
+    {
+     "name": "MS15-058: QFE Security Update",
+     "build": "12.0.2548.0",
+     "train": "GDR",
+     "kb": "KB3045323",
+     "kb_url": "https://support.microsoft.com/help/3045323",
+     "date": "2015-07-14"
+    },
+    {
+     "name": "CU8",
+     "build": "12.0.2546.0",
+     "train": "CU",
+     "kb": "KB3067836",
+     "kb_url": "https://support.microsoft.com/help/3067836",
+     "date": "2015-06-19"
+    },
+    {
+     "name": "CU7",
+     "build": "12.0.2495.0",
+     "train": "CU",
+     "kb": "KB3046038",
+     "kb_url": "https://support.microsoft.com/help/3046038",
+     "date": "2015-04-20"
+    },
+    {
+     "name": "CU6",
+     "build": "12.0.2480.0",
+     "train": "CU",
+     "kb": "KB3031047",
+     "kb_url": "https://support.microsoft.com/help/3031047",
+     "date": "2015-02-16"
+    },
+    {
+     "name": "CU5",
+     "build": "12.0.2456.0",
+     "train": "CU",
+     "kb": "KB3011055",
+     "kb_url": "https://support.microsoft.com/help/3011055",
+     "date": "2014-12-17"
+    },
+    {
+     "name": "CU4",
+     "build": "12.0.2430.0",
+     "train": "CU",
+     "kb": "KB2999197",
+     "kb_url": "https://support.microsoft.com/help/2999197",
+     "date": "2014-10-21"
+    },
+    {
+     "name": "CU3",
+     "build": "12.0.2402.0",
+     "train": "CU",
+     "kb": "KB2984923",
+     "kb_url": "https://support.microsoft.com/help/2984923",
+     "date": "2014-08-18"
+    },
+    {
+     "name": "MS14-044: QFE Security Update",
+     "build": "12.0.2381.0",
+     "train": "GDR",
+     "kb": "KB2977316",
+     "kb_url": "https://support.microsoft.com/help/2977316",
+     "date": "2014-08-12"
+    },
+    {
+     "name": "CU2",
+     "build": "12.0.2370.0",
+     "train": "CU",
+     "kb": "KB2967546",
+     "kb_url": "https://support.microsoft.com/help/2967546",
+     "date": "2014-06-27"
+    },
+    {
+     "name": "CU1",
+     "build": "12.0.2342.0",
+     "train": "CU",
+     "kb": "KB2931693",
+     "kb_url": "https://support.microsoft.com/help/2931693",
+     "date": "2014-04-21"
+    },
+    {
+     "name": "MS15-058: GDR Security Update",
+     "build": "12.0.2269.0",
+     "train": "GDR",
+     "kb": "KB3045324",
+     "kb_url": "https://support.microsoft.com/help/3045324",
+     "date": "2015-07-14"
+    },
+    {
+     "name": "MS14-044: GDR Security Update",
+     "build": "12.0.2254.0",
+     "train": "GDR",
+     "kb": "KB2977315",
+     "kb_url": "https://support.microsoft.com/help/2977315",
+     "date": "2014-08-12"
+    },
+    {
+     "name": "RTM",
+     "build": "12.0.2000.8",
+     "train": "RTM",
+     "kb": null,
+     "kb_url": null,
+     "date": "2014-04-01"
+    }
+   ],
    "support_status": "out_of_support",
    "mainstream_end": "2019-07-09",
    "extended_end": "2024-07-09",
@@ -287,6 +3499,584 @@
     "kb_url": "https://support.microsoft.com/help/4018073",
     "date": "2017-10-04"
    },
+   "updates": [
+    {
+     "name": "SP4 GDR for Service Pack",
+     "build": "11.0.7512.11",
+     "train": "GDR",
+     "kb": "KB5021123",
+     "kb_url": "https://support.microsoft.com/help/5021123",
+     "date": "2023-02-14"
+    },
+    {
+     "name": "SP4 GDR for Service Pack",
+     "build": "11.0.7507.2",
+     "train": "GDR",
+     "kb": "KB4583465",
+     "kb_url": "https://support.microsoft.com/help/4583465",
+     "date": "2021-01-12"
+    },
+    {
+     "name": "SP4 GDR for Service Pack",
+     "build": "11.0.7493.4",
+     "train": "GDR",
+     "kb": "KB4532098",
+     "kb_url": "https://support.microsoft.com/help/4532098",
+     "date": "2020-02-11"
+    },
+    {
+     "name": "SP4 ADV180002: GDR Security Update",
+     "build": "11.0.7462.6",
+     "train": "GDR",
+     "kb": "KB4057116",
+     "kb_url": "https://support.microsoft.com/help/4057116",
+     "date": "2018-01-16"
+    },
+    {
+     "name": "SP4 Service Pack",
+     "build": "11.0.7001.0",
+     "train": "SP",
+     "kb": "KB4018073",
+     "kb_url": "https://support.microsoft.com/help/4018073",
+     "date": "2017-10-04"
+    },
+    {
+     "name": "SP3 ADV180002: GDR Security Update",
+     "build": "11.0.6614.2",
+     "train": "GDR",
+     "kb": "KB4057121",
+     "kb_url": "https://support.microsoft.com/help/4057121",
+     "date": "2018-01-16"
+    },
+    {
+     "name": "SP3 CU10",
+     "build": "11.0.6607.3",
+     "train": "CU",
+     "kb": "KB4025925",
+     "kb_url": "https://support.microsoft.com/help/4025925",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "SP3 CU9",
+     "build": "11.0.6598.0",
+     "train": "CU",
+     "kb": "KB4016762",
+     "kb_url": "https://support.microsoft.com/help/4016762",
+     "date": "2017-05-16"
+    },
+    {
+     "name": "SP3 CU8",
+     "build": "11.0.6594.0",
+     "train": "CU",
+     "kb": "KB4013104",
+     "kb_url": "https://support.microsoft.com/help/4013104",
+     "date": "2017-03-21"
+    },
+    {
+     "name": "SP3 CU7",
+     "build": "11.0.6579.0",
+     "train": "CU",
+     "kb": "KB3205051",
+     "kb_url": "https://support.microsoft.com/help/3205051",
+     "date": "2017-01-18"
+    },
+    {
+     "name": "SP3 CU6",
+     "build": "11.0.6567.0",
+     "train": "CU",
+     "kb": "KB3194992",
+     "kb_url": "https://support.microsoft.com/help/3194992",
+     "date": "2016-11-17"
+    },
+    {
+     "name": "SP3 CU5",
+     "build": "11.0.6544.0",
+     "train": "CU",
+     "kb": "KB3180915",
+     "kb_url": "https://support.microsoft.com/help/3180915",
+     "date": "2016-09-21"
+    },
+    {
+     "name": "SP3 CU4",
+     "build": "11.0.6540.0",
+     "train": "CU",
+     "kb": "KB3165264",
+     "kb_url": "https://support.microsoft.com/help/3165264",
+     "date": "2016-07-18"
+    },
+    {
+     "name": "SP3 CU3",
+     "build": "11.0.6537.0",
+     "train": "CU",
+     "kb": "KB3152635",
+     "kb_url": "https://support.microsoft.com/help/3152635",
+     "date": "2016-05-16"
+    },
+    {
+     "name": "SP3 CU2",
+     "build": "11.0.6523.0",
+     "train": "CU",
+     "kb": "KB3137746",
+     "kb_url": "https://support.microsoft.com/help/3137746",
+     "date": "2016-03-21"
+    },
+    {
+     "name": "SP3 CU1",
+     "build": "11.0.6518.0",
+     "train": "CU",
+     "kb": "KB3123299",
+     "kb_url": "https://support.microsoft.com/help/3123299",
+     "date": "2016-01-20"
+    },
+    {
+     "name": "SP3 ADV180002: GDR Security Update",
+     "build": "11.0.6260.1",
+     "train": "GDR",
+     "kb": "KB4057115",
+     "kb_url": "https://support.microsoft.com/help/4057115",
+     "date": "2018-01-16"
+    },
+    {
+     "name": "SP3 GDR Security Update",
+     "build": "11.0.6251.0",
+     "train": "GDR",
+     "kb": "KB4019092",
+     "kb_url": "https://support.microsoft.com/help/4019092",
+     "date": "2017-08-08"
+    },
+    {
+     "name": "SP3 MS16-136: GDR Security Update",
+     "build": "11.0.6248.0",
+     "train": "GDR",
+     "kb": "KB3194721",
+     "kb_url": "https://support.microsoft.com/help/3194721",
+     "date": "2016-11-08"
+    },
+    {
+     "name": "SP3 Service Pack",
+     "build": "11.0.6020.0",
+     "train": "SP",
+     "kb": "KB3072779",
+     "kb_url": "https://support.microsoft.com/help/3072779",
+     "date": "2015-11-20"
+    },
+    {
+     "name": "SP2 CU16",
+     "build": "11.0.5678.0",
+     "train": "CU",
+     "kb": "KB3205054",
+     "kb_url": "https://support.microsoft.com/help/3205054",
+     "date": "2017-01-18"
+    },
+    {
+     "name": "SP2 CU15",
+     "build": "11.0.5676.0",
+     "train": "CU",
+     "kb": "KB3205416",
+     "kb_url": "https://support.microsoft.com/help/3205416",
+     "date": "2016-11-17"
+    },
+    {
+     "name": "SP2 CU14",
+     "build": "11.0.5657.0",
+     "train": "CU",
+     "kb": "KB3180914",
+     "kb_url": "https://support.microsoft.com/help/3180914",
+     "date": "2016-09-20"
+    },
+    {
+     "name": "SP2 CU13",
+     "build": "11.0.5655.0",
+     "train": "CU",
+     "kb": "KB3165266",
+     "kb_url": "https://support.microsoft.com/help/3165266",
+     "date": "2016-07-18"
+    },
+    {
+     "name": "SP2 CU12",
+     "build": "11.0.5649.0",
+     "train": "CU",
+     "kb": "KB3152637",
+     "kb_url": "https://support.microsoft.com/help/3152637",
+     "date": "2016-05-16"
+    },
+    {
+     "name": "SP2 CU11",
+     "build": "11.0.5646.0",
+     "train": "CU",
+     "kb": "KB3137745",
+     "kb_url": "https://support.microsoft.com/help/3137745",
+     "date": "2016-03-21"
+    },
+    {
+     "name": "SP2 CU10",
+     "build": "11.0.5644.2",
+     "train": "CU",
+     "kb": "KB3120313",
+     "kb_url": "https://support.microsoft.com/help/3120313",
+     "date": "2016-01-20"
+    },
+    {
+     "name": "SP2 CU9",
+     "build": "11.0.5641.0",
+     "train": "CU",
+     "kb": "KB3098512",
+     "kb_url": "https://support.microsoft.com/help/3098512",
+     "date": "2015-11-16"
+    },
+    {
+     "name": "SP2 CU8",
+     "build": "11.0.5634.1",
+     "train": "CU",
+     "kb": "KB3082561",
+     "kb_url": "https://support.microsoft.com/help/3082561",
+     "date": "2015-09-21"
+    },
+    {
+     "name": "SP2 CU7",
+     "build": "11.0.5623.0",
+     "train": "CU",
+     "kb": "KB3072100",
+     "kb_url": "https://support.microsoft.com/help/3072100",
+     "date": "2015-07-20"
+    },
+    {
+     "name": "SP2 MS15-058: QFE Security Update",
+     "build": "11.0.5613.0",
+     "train": "GDR",
+     "kb": "KB3045319",
+     "kb_url": "https://support.microsoft.com/help/3045319",
+     "date": "2015-07-14"
+    },
+    {
+     "name": "SP2 CU6",
+     "build": "11.0.5592.0",
+     "train": "CU",
+     "kb": "KB3052468",
+     "kb_url": "https://support.microsoft.com/help/3052468",
+     "date": "2015-05-08"
+    },
+    {
+     "name": "SP2 CU5",
+     "build": "11.0.5582.0",
+     "train": "CU",
+     "kb": "KB3037255",
+     "kb_url": "https://support.microsoft.com/help/3037255",
+     "date": "2015-03-16"
+    },
+    {
+     "name": "SP2 CU4",
+     "build": "11.0.5569.0",
+     "train": "CU",
+     "kb": "KB3007556",
+     "kb_url": "https://support.microsoft.com/help/3007556",
+     "date": "2015-01-19"
+    },
+    {
+     "name": "SP2 CU3",
+     "build": "11.0.5556.0",
+     "train": "CU",
+     "kb": "KB3002049",
+     "kb_url": "https://support.microsoft.com/help/3002049",
+     "date": "2014-11-17"
+    },
+    {
+     "name": "SP2 CU2",
+     "build": "11.0.5548.0",
+     "train": "CU",
+     "kb": "KB2983175",
+     "kb_url": "https://support.microsoft.com/help/2983175",
+     "date": "2014-09-15"
+    },
+    {
+     "name": "SP2 CU1",
+     "build": "11.0.5532.0",
+     "train": "CU",
+     "kb": "KB2976982",
+     "kb_url": "https://support.microsoft.com/help/2976982",
+     "date": "2014-07-23"
+    },
+    {
+     "name": "SP2 MS16-136: GDR Security Update",
+     "build": "11.0.5388.0",
+     "train": "GDR",
+     "kb": "KB3194719",
+     "kb_url": "https://support.microsoft.com/help/3194719",
+     "date": "2016-11-08"
+    },
+    {
+     "name": "SP2 MS15-058: GDR Security Update",
+     "build": "11.0.5343.0",
+     "train": "GDR",
+     "kb": "KB3045321",
+     "kb_url": "https://support.microsoft.com/help/3045321",
+     "date": "2015-07-14"
+    },
+    {
+     "name": "SP2 Service Pack",
+     "build": "11.0.5058.0",
+     "train": "SP",
+     "kb": "KB2958429",
+     "kb_url": "https://support.microsoft.com/help/2958429",
+     "date": "2015-06-10"
+    },
+    {
+     "name": "SP1 MS15-058: QFE Security Update",
+     "build": "11.0.3513.0",
+     "train": "GDR",
+     "kb": "KB3045317",
+     "kb_url": "https://support.microsoft.com/help/3045317",
+     "date": "2015-07-14"
+    },
+    {
+     "name": "SP1 CU13",
+     "build": "11.0.3482.00",
+     "train": "CU",
+     "kb": "KB3002044",
+     "kb_url": "https://support.microsoft.com/help/3002044",
+     "date": "2014-11-17"
+    },
+    {
+     "name": "SP1 CU12",
+     "build": "11.0.3470.00",
+     "train": "CU",
+     "kb": "KB2991533",
+     "kb_url": "https://support.microsoft.com/help/2991533",
+     "date": "2014-09-15"
+    },
+    {
+     "name": "SP1 MS14-044: QFE Security Update",
+     "build": "11.0.3460.0",
+     "train": "GDR",
+     "kb": "KB2977325",
+     "kb_url": "https://support.microsoft.com/help/2977325",
+     "date": "2014-08-12"
+    },
+    {
+     "name": "SP1 CU11",
+     "build": "11.0.3449.00",
+     "train": "CU",
+     "kb": "KB2975396",
+     "kb_url": "https://support.microsoft.com/help/2975396",
+     "date": "2014-07-21"
+    },
+    {
+     "name": "SP1 CU10",
+     "build": "11.0.3431.00",
+     "train": "CU",
+     "kb": "KB2954099",
+     "kb_url": "https://support.microsoft.com/help/2954099",
+     "date": "2014-05-19"
+    },
+    {
+     "name": "SP1 CU9",
+     "build": "11.0.3412.00",
+     "train": "CU",
+     "kb": "KB2931078",
+     "kb_url": "https://support.microsoft.com/help/2931078",
+     "date": "2014-03-17"
+    },
+    {
+     "name": "SP1 CU8",
+     "build": "11.0.3401.00",
+     "train": "CU",
+     "kb": "KB2917531",
+     "kb_url": "https://support.microsoft.com/help/2917531",
+     "date": "2014-01-20"
+    },
+    {
+     "name": "SP1 CU7",
+     "build": "11.0.3393.00",
+     "train": "CU",
+     "kb": "KB2894115",
+     "kb_url": "https://support.microsoft.com/help/2894115",
+     "date": "2013-11-18"
+    },
+    {
+     "name": "SP1 CU6",
+     "build": "11.0.3381.00",
+     "train": "CU",
+     "kb": "KB2874879",
+     "kb_url": "https://support.microsoft.com/help/2874879",
+     "date": "2013-09-16"
+    },
+    {
+     "name": "SP1 CU5",
+     "build": "11.0.3373.00",
+     "train": "CU",
+     "kb": "KB2861107",
+     "kb_url": "https://support.microsoft.com/help/2861107",
+     "date": "2013-07-15"
+    },
+    {
+     "name": "SP1 CU4",
+     "build": "11.0.3368.00",
+     "train": "CU",
+     "kb": "KB2833645",
+     "kb_url": "https://support.microsoft.com/help/2833645",
+     "date": "2013-05-30"
+    },
+    {
+     "name": "SP1 CU3",
+     "build": "11.0.3349.00",
+     "train": "CU",
+     "kb": "KB2812412",
+     "kb_url": "https://support.microsoft.com/help/2812412",
+     "date": "2013-03-18"
+    },
+    {
+     "name": "SP1 CU2",
+     "build": "11.0.3339.00",
+     "train": "CU",
+     "kb": "KB2790947",
+     "kb_url": "https://support.microsoft.com/help/2790947",
+     "date": "2013-01-21"
+    },
+    {
+     "name": "SP1 CU1",
+     "build": "11.0.3321.00",
+     "train": "CU",
+     "kb": "KB2765331",
+     "kb_url": "https://support.microsoft.com/help/2765331",
+     "date": "2012-11-20"
+    },
+    {
+     "name": "SP1 MS15-058: GDR Security Update",
+     "build": "11.0.3156.00",
+     "train": "GDR",
+     "kb": "KB3045318",
+     "kb_url": "https://support.microsoft.com/help/3045318",
+     "date": "2015-07-14"
+    },
+    {
+     "name": "SP1 MS14-044: GDR Security Update",
+     "build": "11.0.3153.00",
+     "train": "GDR",
+     "kb": "KB2977326",
+     "kb_url": "https://support.microsoft.com/help/2977326",
+     "date": "2014-08-12"
+    },
+    {
+     "name": "SP1 Service Pack",
+     "build": "11.0.3000.00",
+     "train": "SP",
+     "kb": "KB2674319",
+     "kb_url": "https://support.microsoft.com/help/2674319",
+     "date": "2012-11-07"
+    },
+    {
+     "name": "RTM CU11",
+     "build": "11.0.2424.00",
+     "train": "CU",
+     "kb": "KB2908007",
+     "kb_url": "https://support.microsoft.com/help/2908007",
+     "date": "2013-12-16"
+    },
+    {
+     "name": "RTM CU10",
+     "build": "11.0.2420.00",
+     "train": "CU",
+     "kb": "KB2891666",
+     "kb_url": "https://support.microsoft.com/help/2891666",
+     "date": "2013-10-21"
+    },
+    {
+     "name": "RTM CU9",
+     "build": "11.0.2419.00",
+     "train": "CU",
+     "kb": "KB2867319",
+     "kb_url": "https://support.microsoft.com/help/2867319",
+     "date": "2013-08-20"
+    },
+    {
+     "name": "RTM CU8",
+     "build": "11.0.2410.00",
+     "train": "CU",
+     "kb": "KB2844205",
+     "kb_url": "https://support.microsoft.com/help/2844205",
+     "date": "2013-06-17"
+    },
+    {
+     "name": "RTM CU7",
+     "build": "11.0.2405.00",
+     "train": "CU",
+     "kb": "KB2823247",
+     "kb_url": "https://support.microsoft.com/help/2823247",
+     "date": "2013-04-15"
+    },
+    {
+     "name": "RTM CU6",
+     "build": "11.0.2401.00",
+     "train": "CU",
+     "kb": "KB2728897",
+     "kb_url": "https://support.microsoft.com/help/2728897",
+     "date": "2013-02-18"
+    },
+    {
+     "name": "RTM CU5",
+     "build": "11.0.2395.00",
+     "train": "CU",
+     "kb": "KB2777772",
+     "kb_url": "https://support.microsoft.com/help/2777772",
+     "date": "2012-12-17"
+    },
+    {
+     "name": "RTM CU4",
+     "build": "11.0.2383.00",
+     "train": "CU",
+     "kb": "KB2758687",
+     "kb_url": "https://support.microsoft.com/help/2758687",
+     "date": "2012-10-15"
+    },
+    {
+     "name": "RTM MS12-070: GDR Security Update",
+     "build": "11.0.2376.00",
+     "train": "GDR",
+     "kb": "KB2716441",
+     "kb_url": "https://support.microsoft.com/help/2716441",
+     "date": "2012-10-09"
+    },
+    {
+     "name": "RTM CU3",
+     "build": "11.0.2332.00",
+     "train": "CU",
+     "kb": "KB2723749",
+     "kb_url": "https://support.microsoft.com/help/2723749",
+     "date": "2012-08-31"
+    },
+    {
+     "name": "RTM CU2",
+     "build": "11.0.2325.00",
+     "train": "CU",
+     "kb": "KB2703275",
+     "kb_url": "https://support.microsoft.com/help/2703275",
+     "date": "2012-06-18"
+    },
+    {
+     "name": "RTM CU1",
+     "build": "11.0.2316.00",
+     "train": "CU",
+     "kb": "KB2679368",
+     "kb_url": "https://support.microsoft.com/help/2679368",
+     "date": "2012-04-12"
+    },
+    {
+     "name": "RTM MS12-070: GDR Security Update",
+     "build": "11.0.2218.00",
+     "train": "GDR",
+     "kb": "KB2716442",
+     "kb_url": "https://support.microsoft.com/help/2716442",
+     "date": "2012-10-09"
+    },
+    {
+     "name": "RTM RTM",
+     "build": "11.0.2100.60",
+     "train": "RTM",
+     "kb": null,
+     "kb_url": null,
+     "date": "2012-03-06"
+    }
+   ],
    "support_status": "out_of_support",
    "mainstream_end": "2017-07-11",
    "extended_end": "2022-07-12",

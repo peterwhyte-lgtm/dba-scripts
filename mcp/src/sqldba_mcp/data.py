@@ -507,3 +507,54 @@ def version_for_engine(engine: int) -> dict | None:
         if v.get('engine_version') == engine:
             return v
     return None
+
+
+# --- the servicing ladder -----------------------------------------------------------------
+# Each version carries `updates`: every CU, GDR, SP and RTM build Microsoft has published
+# for it, newest first. The latest_* summaries answer "am I current"; this answers "what am
+# I actually running", which is the question a DBA looking at an unfamiliar build has. An
+# unidentified build is where a model starts filling in from memory, and a confidently
+# wrong CU number is worse than "not in the library".
+
+def ladder(version: dict) -> list[dict]:
+    return version.get('updates') or []
+
+
+def identify_build(version: dict, build: tuple[int, ...]) -> dict | None:
+    """The exact ladder entry for this build, or None if Microsoft never shipped it."""
+    for u in ladder(version):
+        if parse_build(u.get('build') or '') == build:
+            return u
+    return None
+
+
+def bracket_build(version: dict, build: tuple[int, ...]) -> tuple[dict | None, dict | None]:
+    """The published builds immediately below and above an unrecognised one.
+
+    A build that matches nothing is usually a hotfix or an on-demand fix between two
+    public updates, not a typo, so saying "it sits between CU11 and CU12" is far more
+    useful than "not found" - and it is still a statement about published data rather
+    than a guess about what the build is.
+    """
+    below = above = None
+    for u in ladder(version):
+        p = parse_build(u.get('build') or '')
+        if not p:
+            continue
+        if p < build and (below is None or p > parse_build(below['build'])):
+            below = u
+        if p > build and (above is None or p < parse_build(above['build'])):
+            above = u
+    return below, above
+
+
+def newer_on_train(version: dict, build: tuple[int, ...], train: str | None) -> list[dict]:
+    """Published updates on the same train that are higher than this build, newest first."""
+    out = []
+    for u in ladder(version):
+        if train and u.get('train') != train:
+            continue
+        p = parse_build(u.get('build') or '')
+        if p and p > build:
+            out.append(u)
+    return out
