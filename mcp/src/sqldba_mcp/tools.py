@@ -299,12 +299,70 @@ def _higher_in_series(build: tuple[int, ...], version: dict) -> tuple[str, dict]
     return candidates[0][1], candidates[0][2]
 
 
+def _fmt_version_only(version: dict) -> str:
+    """Answer a question that named a PRODUCT but gave no build.
+
+    Deliberately does not judge patch level: no build was supplied, so there is nothing to
+    compare and "you are N behind" would be invented. It answers what was actually asked -
+    what the latest update is, and how long the version is supported - and says plainly
+    what it would need to go further.
+    """
+    lines = ['## %s' % version['name'], '',
+             '**Engine:** %s (%s)   **Default compatibility level:** %s'
+             % (version.get('engine_version'), version.get('major_build'),
+                version.get('native_compat_level')), '']
+
+    for key, label in (('latest_cu', 'Latest cumulative update'),
+                       ('latest_cu_gdr', 'Latest CU + GDR (security on top of the final CU)'),
+                       ('latest_gdr', 'Latest GDR (RTM security train)'),
+                       ('latest_sp', 'Latest service pack')):
+        u = version.get(key)
+        if not u:
+            continue
+        lines.append('**%s:** %s - build **%s**%s%s'
+                     % (label, u.get('name') or 'update', u.get('build'),
+                        ', %s' % u['kb'] if u.get('kb') else '',
+                        ', released %s' % u['date'] if u.get('date') else ''))
+        if u.get('kb_url'):
+            lines.append('Download: %s' % u['kb_url'])
+    lines.append('')
+
+    status = (version.get('support_status') or '').lower()
+    if status == 'out of support':
+        lines.append('**Support: OUT OF SUPPORT.** Extended support ended %s. No security '
+                     'updates without ESU.' % version.get('extended_end'))
+    else:
+        lines.append('**Support:** %s. Mainstream ends %s, extended ends %s.'
+                     % (version.get('support_status'), version.get('mainstream_end'),
+                        version.get('extended_end')))
+    if version.get('notes'):
+        lines += ['', version['notes']]
+    if version.get('servicing'):
+        lines += ['', '**Servicing:** %s' % version['servicing']]
+
+    lines += ['',
+              '_No build number was given, so this does not say how far behind any '
+              'particular server is. Paste `SELECT @@VERSION` or a build like %s for that._'
+              % ((version.get('latest_cu') or {}).get('build') or '16.0.4265.3'),
+              '',
+              'Full version and lifecycle table: %s' % version.get('url')]
+    return '\n'.join(lines)
+
+
 def check_build(build: str) -> str:
     """Identify a SQL Server build number and say whether it is current and still supported."""
     parsed = data.parse_build(build)
     if not parsed:
-        return ("I could not find a build number in that. Paste the output of "
-                "`SELECT @@VERSION` or just the number, e.g. 16.0.4265.3.")
+        # No four-part build, but the question may still name a product. "we are on sql
+        # 2016, when do we lose support" and "whats the latest version of sql for 2017"
+        # were both refused while builds.json held every part of the answer, and the
+        # refusal was circular: the build being asked for was the price of asking.
+        named = data.version_for_name(build)
+        if named:
+            return _fmt_version_only(named)
+        return ("I could not find a build number or a SQL Server version in that. Paste "
+                "the output of `SELECT @@VERSION`, a build like 16.0.4265.3, or just the "
+                "version, e.g. 'SQL Server 2019'.")
 
     version = data.version_for_engine(parsed[0])
     if not version:
@@ -598,6 +656,64 @@ def pathlib_stem(p: str) -> str:
 
 # --- FAQ ------------------------------------------------------------------------------
 
+# A question that asks for a PROCEDURE. The FAQ corpus is 4.7% "how do I" and 61%
+# why/what/does/is, so a procedural question almost never has a pair written for it and
+# lands on the nearest explanatory one instead - which is how "how do i update ssms"
+# came back "Do I need administrator rights?". Kept deliberately tight: "what do I do"
+# and "what should I look at first" are advisory, not procedural, and their pairs ARE
+# the answer.
+_PROCEDURAL = re.compile(r'^\s*(how do i|how to|how can i|how would i|how does one)', re.I)
+
+# A pair that answers a procedure itself. If the pair is procedural too, it is the answer.
+_PAIR_PROCEDURAL = re.compile(r'^\s*(how do i|how to|how can i|how would i)', re.I)
+
+
+def _overlap(query: str, text: str) -> float:
+    """Share of the QUESTION's information that `text` carries, idf-weighted.
+
+    Weighted, because "sql" and "server" appear in half the corpus and matching them
+    means nothing, while "ssms" or "sid" is the whole question.
+    """
+    idx = data.faq_index()
+    q = set(data.tokens(query))
+    if not q:
+        return 0.0
+    total = sum(idx._idf.get(t, 0.0) for t in q)
+    if total <= 0:
+        return 0.0
+    hit = sum(idx._idf.get(t, 0.0) for t in q & set(data.tokens(text or '')))
+    return hit / total
+
+
+def _lead_with_post(question: str, pair: dict) -> bool:
+    """Should the reply name the POST, rather than quote this pair as the answer?
+
+    Two independent triggers, both measured against the four questions that exposed this
+    (update SSMS / 2022 Standard compression / get a login SID / check free space) and
+    against four controls where the pair genuinely IS the answer and must not change
+    ("is shrinking a database ever OK", "should I add a second data file to TempDB").
+
+      1. The post title carries MORE of the question than the pair does. The ranker
+         already found the right post; the pair it picked is simply not what was asked.
+      2. The question asks for a procedure and the pair does not answer one, while the
+         post is still on topic. This is the 4.7%-vs-61% mismatch.
+
+    This never suppresses a pair - the pair is still shown, labelled as a related note -
+    and it never lowers the bar for what counts as an answer: min_coverage is untouched,
+    so a question with no good match still gets "nothing matches".
+    """
+    post_title = pair.get('post_title') or ''
+    if not post_title:
+        return False
+    post_cov = _overlap(question, post_title)
+    pair_cov = _overlap(question, pair['question'])
+    if post_cov > pair_cov:
+        return True
+    return (post_cov >= 0.25
+            and _PROCEDURAL.match(question or '')
+            and not _PAIR_PROCEDURAL.match(pair['question'] or ''))
+
+
 def answer_question(question: str) -> str:
     """Answer a how/why/should-I question from Peter's published FAQ answers."""
     q = (question or '').strip()
@@ -614,6 +730,20 @@ def answer_question(question: str) -> str:
                 "`find_script`." % len(data.faqs()))
 
     best = hits[0][0]
+    if _lead_with_post(q, best):
+        lines = ['This is covered in **%s**' % (best.get('post_title') or best['url']),
+                 best['url'], '',
+                 'Related note from that post: **%s**' % best['question'], '',
+                 best['answer']]
+        others = [h for h, _ in hits[1:3]]
+        if others:
+            lines += ['', 'Also answered on this topic:']
+            for o in others:
+                title = o.get('post_title')
+                lines.append('- %s%s  %s'
+                             % (o['question'], ' (in: %s)' % title if title else '', o['url']))
+        return '\n'.join(lines)
+
     # Name the article the answer came from, above the answer itself.
     #
     # Many of these questions are only meaningful inside their own post. "How long before

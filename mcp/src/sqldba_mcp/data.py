@@ -113,6 +113,11 @@ _STOP = {
     # adding 'all', 'out', 'over', 'now' and friends cost the FAQ suite 0.5pp, because in
     # DBA prose they are content - "out of space", "over 80% full", "all user databases".
     'am',
+    # 'need' and 'were' likewise carry nothing in DBA prose, unlike the 'all'/'out'/'over'
+    # sweep above. "i need to check when my databases were last backed up" spent 2 of its
+    # 7 tokens on them, which pushed the coverage floor out of reach for Get-BackupAge and
+    # left the question answered by the LSN-continuity script instead.
+    'need', 'were',
 }
 
 
@@ -257,6 +262,40 @@ def _idf(corpus_tokens: list[list[str]]) -> dict[str, float]:
 # See Index._recognises: how far a prefix match may stretch before it is a different
 # word rather than a word ending. "corrupt"/"corruption" = 3 (allowed);
 # "post"/"postgres" = 4 (blocked).
+# Query-side vocabulary. Same class of fix as the plural fold: the corpus is written in
+# one register and typed in another, and a word the index has never seen scores nothing.
+#
+# Earned by "i need to check when my databases were last backed up", which returned a
+# single script - the LSN-continuity one, whose own description says "coverage scripts
+# only check recency, not continuity". The corpus contains "backup" 27 times and
+# "backed up" zero times, so the most important word in that question was worth nothing
+# and generic words decided the ranking.
+#
+# EXPANSION, not replacement. "last" has to keep matching Get-LastDatabaseBackupTimes
+# while also reaching Get-BackupAge, which says "most recent". Replacing would just move
+# the blind spot. Kept small and DBA-specific on purpose - this is a vocabulary bridge,
+# not a thesaurus, and every entry below is a word form a DBA types that the library
+# happens not to use.
+_SYNONYMS = {
+    'backed':    ('backup',),
+    'backups':   ('backup',),
+    'last':      ('recent', 'latest'),
+    'latest':    ('recent', 'last'),
+    'recent':    ('last', 'latest'),
+    'when':      ('age', 'date'),
+    'restored':  ('restore',),
+    'shrunk':    ('shrink',),
+    'shrinking': ('shrink',),
+    'growing':   ('growth', 'grow'),
+    'grew':      ('growth',),
+    'failing':   ('failure', 'failed'),
+    'failed':    ('failure',),
+    'running':   ('active', 'running'),
+    'eating':    ('usage', 'consuming'),
+    'usage':     ('used',),
+}
+
+
 _STEM_SLACK = 3
 
 
@@ -424,10 +463,28 @@ class Index:
         # question is ranked normally rather than declined. Requiring a match on a term
         # that is not in the index would refuse it, which test_red_team calls the single
         # worst false negative this library can produce. It is right.
-        asked = {t for t in q if t not in self._ubiquitous and self._recognises(t)}
+        # Build the match groups FIRST, because a term that only reaches the corpus through
+        # a synonym is still a real term. "backed" is not in the index and is not a prefix
+        # of "backup", so it counted as neither asked nor informative - which meant
+        # Get-BackupAge, matching the question only on "backed"->backup and
+        # "last"->recent, failed the informative gate and vanished from a backup question.
+        groups = {}
+        for t in q:
+            forms = {t}
+            for alt in _SYNONYMS.get(t, ()):
+                if alt in self._idf:
+                    forms.add(alt)
+            groups[t] = forms
+
+        def _scoreable(t):
+            return any(f in self._idf and f not in self._ubiquitous for f in groups[t])
+
+        informative = {t for t in q if _scoreable(t)}
+        asked = {t for t in q
+                 if t in informative or (t not in self._ubiquitous and self._recognises(t))}
         if min_coverage and self._decline_when_vague and not asked:
             return []
-        informative = {t for t in asked if t in self._idf}
+
         k1, b = 1.5, 0.75
         scored = []
         for i, record in enumerate(self.records):
@@ -437,13 +494,18 @@ class Index:
             matched = 0
             matched_terms = set()
             for term in q:
-                idf = self._idf.get(term)
-                if not idf:
-                    continue
                 tf = 0.0
-                for f, w in self.fields.items():
-                    tf += w * per_field[f].count(term)
-                if not tf:
+                idf = 0.0
+                for form in groups[term]:
+                    f_idf = self._idf.get(form)
+                    if not f_idf:
+                        continue
+                    f_tf = 0.0
+                    for f, w in self.fields.items():
+                        f_tf += w * per_field[f].count(form)
+                    if f_tf > tf:
+                        tf, idf = f_tf, f_idf
+                if not tf or not idf:
                     continue
                 matched += 1
                 matched_terms.add(term)
@@ -602,6 +664,31 @@ def version_for_engine(engine: int) -> dict | None:
     for v in builds()['versions']:
         if v.get('engine_version') == engine:
             return v
+    return None
+
+
+def version_for_name(text: str) -> dict | None:
+    """Resolve "2017", "sql 2016", "13.0" or a pasted @@VERSION banner to a version record.
+
+    A DBA asking "what is the latest version for 2017" does not have a four-part build -
+    that build IS what they are asking for, so demanding it first is circular. The
+    lifecycle and latest-update data to answer them is already in builds.json and was
+    being withheld for want of a parser.
+
+    Deliberately conservative. A bare number resolves only when it matches a version this
+    library actually ships, so an error number like 17806 and a port like 1433 resolve to
+    nothing and the caller still refuses rather than inventing a product.
+    """
+    t = (text or '').strip()
+    if not t:
+        return None
+    for v in builds()['versions']:                      # "SQL Server 2019", "sql 2016", "2017"
+        year = (v.get('name') or '').split()[-1]
+        if year.isdigit() and re.search(r'(?<!\d)' + year + r'(?!\d)', t):
+            return v
+    m = re.search(r'(?<![\d.])(\d{2})\s*\.\s*(?:0|x)(?![\d.])', t, re.I)
+    if m:                                               # "13.0", "13.x"
+        return version_for_engine(int(m.group(1)))
     return None
 
 
