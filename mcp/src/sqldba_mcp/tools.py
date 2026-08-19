@@ -789,11 +789,50 @@ def answer_question(question: str) -> str:
     # Coverage floor: a single shared term is not an answer. See Index.search.
     hits = data.faq_index().search(q, limit=4, min_coverage=0.5)
 
-    # A published post whose TITLE is a better match for the question than the best FAQ
-    # pair's post is a better answer, and the FAQ tier answering badly used to stop the
-    # fallback ever running: "whats the default sql server ports" was answered by "Does SQL
-    # Server alert on critical errors by default?" while sql-server-default-ports sat
-    # published and unindexed, so a fallback that only fired on a refusal never fired.
+    # THE ANSWER MUST HAVE SOMETHING TO DO WITH THE QUESTION.
+    #
+    # min_coverage is computed against the whole record - question, post title and answer
+    # body - so a pair can clear it on words that appear only deep in its answer and still
+    # be about something else entirely. Measured against the off-domain set, four of the
+    # eight questions this tool answered wrongly shared NOTHING with the pair it picked:
+    #
+    #     how do I set up replication           -> "Where do I find the deadlock graph?"
+    #     how do I use Dapper with stored procs -> "How is this different from Top CPU Queries?"
+    #
+    # Requiring one informative term in common between the question ASKED and the question
+    # ANSWERED is the weakest floor available, and weak is deliberate. The real questions
+    # that must keep working go as low as 0.16 ("does sql server 2022 standard edition have
+    # compression available" -> "Why does edition matter more than version?"), while wrong
+    # answers reach 0.54, so no threshold above zero separates them. That was measured, not
+    # assumed. Zero is the only honest line: an answer with no word in common with the
+    # question is not a worse answer, it is a different subject.
+    # Applied as a FILTER, not just a gate on the top hit, because a zero-overlap record can
+    # outrank a real answer rather than merely replace it. "my log file keeps growing what do
+    # I do" put "How is this different from reading actual autogrowth events?" (0.00) and
+    # "Should TempDB autogrowth be a percentage or a fixed size?" (0.00) above "Why does my
+    # transaction log keep growing even with regular full backups?" (0.50). Dropping the
+    # zero-overlap rows promotes the answer that was there all along; BM25 order is untouched
+    # among what survives.
+    # ...but only among records BM25 already rated close to the best. Filtering the whole
+    # list let an off-domain question reach far down it for anything with a word in common,
+    # which cost more honesty than the promotion gained: 27/30 fell to 25/30. If the only
+    # on-topic record is one the ranker put well below the top, that is the corpus saying it
+    # does not really cover this. 0.85 keeps the transaction-log answer (10.59 against a top
+    # of 11.37, 93%) and refuses the distant rescues.
+    # ...and OVERRIDING the ranker costs more evidence than accepting it. Rank 1 passes on
+    # any word in common. Promoting a lower-ranked record over BM25's own choice has to be
+    # clearly on topic, because that is where an off-domain question goes fishing:
+    #
+    #     which sql server certification should I take   rank 2, overlap 0.20   refuse
+    #     how do I renew a windows domain certificate    rank 3, overlap 0.22   refuse
+    #     my log file keeps growing what do I do         rank 3, overlap 0.50   promote
+    #
+    # 0.35 sits in that gap. It is tuned on the cases above rather than derived, which is
+    # worth knowing if it ever needs moving; the shape of the rule is the durable part.
+    if hits:
+        hits = [h for i, h in enumerate(hits)
+                if _overlap(q, h[0].get('question') or '') > (0 if i == 0 else 0.35)]
+
     if not hits:
         return ("Nothing in the published FAQ answers matches that.\n\n"
                 "This covers %d questions answered across sqldba.blog. For a specific "

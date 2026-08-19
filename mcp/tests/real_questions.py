@@ -137,6 +137,15 @@ QUESTIONS = [
          note='Returned 8 scripts including uninstall-sql ("removes a SQL Server instance '
               'and can delete its data directories").'),
 
+    dict(id='R13', asked='my log file keeps growing what do I do',
+         tool='answer_question', mode='cites', expect=['dba-scripts-get-database-health'],
+         note='REGRESSED SILENTLY AND WAS NOT IN THIS FILE. It answered correctly early on '
+              '2026-08-19, then the stopword and synonym changes reordered the ranking and '
+              'it started returning "How is this different from reading actual autogrowth '
+              'events?" - a pair sharing NO word with the question, ranked above the right '
+              'answer. Nothing caught it because it was a Layer B probe, not one of these. '
+              'It is here now so the next reordering has to trip over it.'),
+
     dict(id='R12', asked='the server is slow',
          tool='find_script', mode='readonly_only',
          note='Returned linked-server scripts and a TCP port test. Any answer is fine so '
@@ -296,8 +305,10 @@ class TestRealQuestions(unittest.TestCase):
     def test_off_domain_honesty(self):
         _, off = run_all()
         answered = [(t, q) for t, q, refused, _ in off if not refused]
-        # 8 of 30 are answered today (73.3% honest). The gate sits one ABOVE that, so a
-        # real regression fails the build while the current state passes.
+        # 4 of 30 are answered today (86.7% honest, up from 73.3% once answer_question
+        # started requiring the answer to share a word with the question). The gate sits
+        # one ABOVE that, so a real regression fails the build while the current state
+        # passes.
         #
         # It was first written as `<= 6`, copying the house habit of setting a gate BELOW
         # the measured score - which inverts for a count of FAILURES and made the gate red
@@ -307,7 +318,7 @@ class TestRealQuestions(unittest.TestCase):
         # entire purpose is to run.
         #
         # LOWER THIS as the rate improves. Do not raise it to make a red build green.
-        self.assertLessEqual(len(answered), 9,
+        self.assertLessEqual(len(answered), 5,
                              'off-domain questions answered from recall: %s' % answered)
 
 
