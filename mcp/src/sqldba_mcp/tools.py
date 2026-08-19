@@ -189,6 +189,14 @@ def explain_wait(wait_type: str) -> str:
     if not name:
         return "Give me a wait type, e.g. PAGEIOLATCH_SH or CXPACKET."
 
+    # One recognised type inside a sentence is still a question about that type. The
+    # triage branch above only fires on two or more, so `explain PAGEIOLATCH_SH` used to
+    # normalise the WHOLE string to EXPLAINPAGEIOLATCH_SH, match nothing, and refuse -
+    # while pasting two waits worked perfectly. Only ever consulted when the raw string
+    # failed to resolve, so nothing that already worked can change.
+    if len(known) == 1 and name not in data.waits_by_type():
+        name = data.normalise_wait(known[0])
+
     hit = data.waits_by_type().get(name)
     if not hit:
         near = data.search_waits(name)

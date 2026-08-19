@@ -254,6 +254,12 @@ def _idf(corpus_tokens: list[list[str]]) -> dict[str, float]:
     return {t: math.log(1 + n / (1 + c)) for t, c in df.items()}
 
 
+# See Index._recognises: how far a prefix match may stretch before it is a different
+# word rather than a word ending. "corrupt"/"corruption" = 3 (allowed);
+# "post"/"postgres" = 4 (blocked).
+_STEM_SLACK = 3
+
+
 class Index:
     """A small BM25-style ranker.
 
@@ -264,7 +270,8 @@ class Index:
 
     def __init__(self, records: list[dict], fields: dict[str, float],
                  guard_fields: tuple[str, ...] | None = None,
-                 expand: bool = False):
+                 expand: bool = False,
+                 decline_when_vague: bool = False):
         self.records = records
         self.fields = fields
         # Which fields decide whether a question is even ON TOPIC, as opposed to which
@@ -303,6 +310,40 @@ class Index:
                              for f in self._guard_fields
                              for t in per_field.get(f, ())}
 
+        # Terms so common in this corpus that matching one says nothing. "sql" and
+        # "server" are in most script names; a query made only of those is not a search,
+        # it is a shrug - and answering it anyway is how "is my sql server ok" returned
+        # `uninstall-sql`. Consumed by search().
+        n = max(len(records), 1)
+        df = {}
+        for doc in self._doc_tokens:
+            for t in set(doc):
+                df[t] = df.get(t, 0) + 1
+        self._ubiquitous = {t for t, c in df.items() if c / n > 0.25}
+
+        # Only the script index declines a vague question. The pathology is specific to
+        # it - "is my sql server ok" ranked `uninstall-sql` to the top - and so is the
+        # consequence, because find_script is the one tool whose answer a DBA then RUNS.
+        # Switched on globally it costs the error suite a real hit: "cannot database" is
+        # a degraded but legitimate query, and in a 47-record corpus both of its words
+        # are already "ubiquitous", so the question would be refused. Scope the rule to
+        # the evidence.
+        self._decline_when_vague = decline_when_vague
+
+    def _query_terms(self, query: str) -> list[str]:
+        """Tokens as this index will score them, singulars folded in.
+
+        A trailing "s" used to be fatal. The tokeniser keeps words whole, so "vlfs" never
+        reached `vlf` and "how big are my tables" never reached `table` - both returned
+        NOTHING from a library holding Get-VlfCount and Get-TableSizes. Only applied when
+        the typed word is absent from the corpus and its singular is present, so no term
+        that already matched can change. Used by the off-domain guard as well as by
+        search, because folding after the guard let "tables" be counted as foreign
+        vocabulary and refuse the question before scoring ever ran.
+        """
+        return [t[:-1] if (t.endswith('s') and t not in self._idf and t[:-1] in self._idf)
+                else t for t in tokens(query)]
+
     def off_domain(self, query: str, max_unknown: float = 0.4) -> bool:
         """True when too much of the query is vocabulary this corpus has never seen.
 
@@ -312,7 +353,7 @@ class Index:
         answer is the whole promise of this server, so the refusal needs a mechanism and
         not just good intentions.
         """
-        q = tokens(query)
+        q = self._query_terms(query)
         if not q:
             return True
         unknown = sum(1 for t in q if not self._recognises(t))
@@ -331,13 +372,28 @@ class Index:
         A prefix match either way is enough to say "this vocabulary is not foreign",
         which is all this guard decides. Ranking is untouched: nothing here changes
         which record wins, only whether the question is answered at all.
+
+        HOW FAR APART a prefix match may be before it stops being a word ending and
+        starts being a different word. "corrupt"/"corruption" differ by 3 and must
+        match. "post"/"postgres" differ by 4 and must NOT: that leniency was letting
+        every off-domain question whose first syllable happened to be a corpus word
+        straight through the guard, which is how "how do I install postgres" got
+        answered with a SQL Server pre-install FAQ, and "best way to move a database to
+        Azure" got answered with "What replaced Azure Data Studio?".
+
+        The 4-character floor also went to 3, because it was excluding the corpus side
+        of real short identifiers: "vlfs" could not reach "vlf", so `find_script("vlfs")`
+        refused a library that holds Get-VlfCount.
+
+        Measured, not guessed - see MCP-SELF-TEST-2026-08-19.md.
         """
         if term in self._guard_vocab:
             return True
-        if len(term) < 4:
+        if len(term) < 3:
             return False
-        return any(known.startswith(term) or term.startswith(known)
-                   for known in self._guard_vocab if len(known) >= 4)
+        return any((known.startswith(term) or term.startswith(known))
+                   and abs(len(known) - len(term)) <= _STEM_SLACK
+                   for known in self._guard_vocab if len(known) >= 3)
 
     def search(self, query: str, limit: int = 8,
                min_coverage: float = 0.0) -> list[tuple[dict, float]]:
@@ -348,11 +404,30 @@ class Index:
         term; coverage is what separates "this is the answer" from "this is the least
         bad row in the table".
         """
-        q = tokens(query)
+        q = self._query_terms(query)
         if not q:
             return []
         if min_coverage and self.off_domain(query):
             return []
+
+        # TWO different notions of "informative", and conflating them refuses the one
+        # question this library must never refuse.
+        #
+        # `asked` is what the QUESTION carries: a word the corpus recognises that is not
+        # already in most records. If a question has none of those it is not a search -
+        # "is my sql server ok" is sql + server + ok, and ranking it returned
+        # `uninstall-sql`. Decline instead of guessing.
+        #
+        # `indexed` is the subset that can actually be scored. "is my database corrupt"
+        # carries `corrupt`, which the guard recognises through `corruption` but which no
+        # record contains literally - so it is `asked` but not `indexed`, and the
+        # question is ranked normally rather than declined. Requiring a match on a term
+        # that is not in the index would refuse it, which test_red_team calls the single
+        # worst false negative this library can produce. It is right.
+        asked = {t for t in q if t not in self._ubiquitous and self._recognises(t)}
+        if min_coverage and self._decline_when_vague and not asked:
+            return []
+        informative = {t for t in asked if t in self._idf}
         k1, b = 1.5, 0.75
         scored = []
         for i, record in enumerate(self.records):
@@ -360,6 +435,7 @@ class Index:
             length = len(self._doc_tokens[i]) or 1
             score = 0.0
             matched = 0
+            matched_terms = set()
             for term in q:
                 idf = self._idf.get(term)
                 if not idf:
@@ -370,10 +446,17 @@ class Index:
                 if not tf:
                     continue
                 matched += 1
+                matched_terms.add(term)
                 score += idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * length / self._avg_len))
             if score <= 0:
                 continue
-            if min_coverage and (matched / len(q)) < min_coverage:
+            # Tolerance, because this floor is a ratio compared against a decimal:
+            # min_coverage=0.34 was written to mean "at least one word in three" and
+            # 1/3 is 0.3333, so a three-word question whose one real term matched was
+            # rejected by 0.0067. "is replication falling behind" returned nothing.
+            if min_coverage and (matched / len(q)) < min_coverage - 1e-6:
+                continue
+            if min_coverage and informative and not (informative & matched_terms):
                 continue
             scored.append((record, score))
         scored.sort(key=lambda t: -t[1])
@@ -397,7 +480,8 @@ def script_index() -> Index:
     Trading a published refusal promise for recall is Peter's call, not this file's.
     """
     return Index(scripts(), {'name': 3.0, 'purpose': 2.0, 'category': 1.2, 'path': 1.0},
-                 guard_fields=('name', 'purpose', 'category'), expand=True)
+                 guard_fields=('name', 'purpose', 'category'), expand=True,
+                 decline_when_vague=True)
 
 
 @lru_cache(maxsize=1)
@@ -450,7 +534,19 @@ def parse_error_number(term: str) -> int | None:
     if bare.isdigit():
         return int(bare)
     m = _ERR_NUM.search(t)
-    return int(m.group(1)) if m else None
+    if m:
+        return int(m.group(1))
+
+    # No keyword in front of it. "what does 18456 mean" and "is 823 something I need to
+    # panic about" are how the question actually gets typed, and both used to return
+    # "not in the library" for errors covered since day one. A bare number is only
+    # accepted when the library actually holds it, so this can invent nothing: a year in
+    # "we are on sql 2016" matches no error and still falls through to the phrase search.
+    # Dotted numbers are skipped so a build like 16.0.4165.4 is never read as an error.
+    for candidate in re.findall(r'(?<![\d.])(\d{3,5})(?![\d.])', t):
+        if int(candidate) in errors_by_number():
+            return int(candidate)
+    return None
 
 
 def normalise_wait(name: str) -> str:
