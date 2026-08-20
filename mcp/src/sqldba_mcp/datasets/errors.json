@@ -80,6 +80,16 @@
   "ms_docs": null
  },
  {
+  "error_number": 468,
+  "severity": 16,
+  "title": "Cannot resolve the collation conflict",
+  "message": "Cannot resolve the collation conflict between 'X' and 'Y' in the equal to operation.",
+  "meaning": "Two sides of a comparison carry different collations. It surfaces when a query joins or compares across databases, or against tempdb, and the fix is COLLATE DATABASE_DEFAULT on the comparison rather than changing a column.",
+  "category": "Query and data errors",
+  "url": null,
+  "ms_docs": null
+ },
+ {
   "error_number": 547,
   "severity": 16,
   "title": "Conflict with a FOREIGN KEY constraint",
