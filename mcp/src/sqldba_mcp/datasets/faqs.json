@@ -2184,6 +2184,42 @@
   "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/"
  },
  {
+  "question": "Can I just copy master.mdf from another server?",
+  "answer": "No. Master holds the instance's own identity, logins, and configuration, and is tied to the build. A master from a different server or a different patch level will not start, and may leave you worse off than the damaged one you still had.",
+  "post_title": "Cannot Recover the Master Database (Error 3417) and What the Log Actually Says",
+  "url": "https://sqldba.blog/sql-server-cannot-recover-master-3417/"
+ },
+ {
+  "question": "Does an 824 on database ID 1 mean the whole instance is lost?",
+  "answer": "It means master is damaged, which stops the instance from starting, but it does not mean your user databases are affected. They are separate files and are usually intact. Recovering master gets the instance back and the user databases come with it.",
+  "post_title": "Cannot Recover the Master Database (Error 3417) and What the Log Actually Says",
+  "url": "https://sqldba.blog/sql-server-cannot-recover-master-3417/"
+ },
+ {
+  "question": "How do I practise this safely?",
+  "answer": "A container. Everything on this page was reproduced in a throwaway SQL Server 2022 container: damage the file, start it, read the log, put a good copy back, watch it come up. That last step is the one worth rehearsing, because it is the one you will be doing under pressure.",
+  "post_title": "Cannot Recover the Master Database (Error 3417) and What the Log Actually Says",
+  "url": "https://sqldba.blog/sql-server-cannot-recover-master-3417/"
+ },
+ {
+  "question": "I searched 3417 and found nothing useful. Why?",
+  "answer": "Because 3417 tells you the outcome, not the cause. Across four different kinds of deliberate master damage it did not appear at all, and a more specific error did every time: 5172 for a destroyed header, 824 for page or log corruption, 5120 for a permissions problem. Search the error above it in the log.",
+  "post_title": "Cannot Recover the Master Database (Error 3417) and What the Log Actually Says",
+  "url": "https://sqldba.blog/sql-server-cannot-recover-master-3417/"
+ },
+ {
+  "question": "Should I be backing up master?",
+  "answer": "Yes, and it is cheap. Master is a few megabytes and changes only when logins, jobs or server settings change. Without a backup, your recovery options reduce to file-level copies or a rebuild that discards every login and job on the instance.",
+  "post_title": "Cannot Recover the Master Database (Error 3417) and What the Log Actually Says",
+  "url": "https://sqldba.blog/sql-server-cannot-recover-master-3417/"
+ },
+ {
+  "question": "The instance will not start after we moved the data files. Is it corruption?",
+  "answer": "Almost certainly not. Look for FCB::Open failed and operating system error 5 in the log, which is a permissions problem on the file or the folder. Reproduced here by accident, because copying files back into place as the wrong user is exactly how it happens for real.",
+  "post_title": "Cannot Recover the Master Database (Error 3417) and What the Log Actually Says",
+  "url": "https://sqldba.blog/sql-server-cannot-recover-master-3417/"
+ },
+ {
   "question": "Is ISNUMERIC good enough for the check?",
   "answer": "No. ISNUMERIC returns 1 for 1e5, 1.5, $10 and 1,000, none of which convert to int. It answers a different question from the one you have.",
   "post_title": "Conversion Failed When Converting the varchar Value to Data Type int (Error 245)",
@@ -2340,6 +2376,36 @@
   "url": "https://sqldba.blog/sql-server-foreign-key-conflict-547/"
  },
  {
+  "question": "Does error 102 appear in the SQL Server error log?",
+  "answer": "No. sys.messages shows is_event_logged = 0 for 102, 156 and 105 alike. There is no server-side record to go back for, so whatever the application captured at the time is all the evidence there will be.",
+  "post_title": "Incorrect Syntax Near in SQL Server (Error 102)",
+  "url": "https://sqldba.blog/sql-server-incorrect-syntax-near-102/"
+ },
+ {
+  "question": "How do I know whether it is a real typo or a compatibility problem?",
+  "answer": "Run the identical statement under SET PARSEONLY ON in a database at the current level, such as master. If it parses there and not in yours, the text is fine and the level is the difference. If it fails in both, it is a typo, and the quoted token tells you roughly where to look.",
+  "post_title": "Incorrect Syntax Near in SQL Server (Error 102)",
+  "url": "https://sqldba.blog/sql-server-incorrect-syntax-near-102/"
+ },
+ {
+  "question": "Is Msg 102 the same as Msg 156?",
+  "answer": "No. 156 fires when the token is a reserved word, which is a narrower and more useful signal: either you used a keyword as a name, or a clause is in the wrong order. Both are severity 15. A trailing comma before FROM returns 156, not 102, which surprises people who have filed every syntax error under 102.",
+  "post_title": "Incorrect Syntax Near in SQL Server (Error 102)",
+  "url": "https://sqldba.blog/sql-server-incorrect-syntax-near-102/"
+ },
+ {
+  "question": "Why does the error point at something that is obviously correct?",
+  "answer": "Because the quoted token is where the parser stopped, not where the statement went wrong. In the measured TRIM(LEADING '0' FROM '007') case it blamed '0', a perfectly valid literal, when the unrecognised keyword was LEADING just before it. Read leftwards from the token, not at it.",
+  "post_title": "Incorrect Syntax Near in SQL Server (Error 102)",
+  "url": "https://sqldba.blog/sql-server-incorrect-syntax-near-102/"
+ },
+ {
+  "question": "Will raising the compatibility level break anything?",
+  "answer": "It can. The level drives optimizer behaviour as well as the grammar, so execution plans on unrelated statements can change. Raise it deliberately, with Query Store on so you can see what moved and revert a regressed plan, rather than as a quick fix for one parse error.",
+  "post_title": "Incorrect Syntax Near in SQL Server (Error 102)",
+  "url": "https://sqldba.blog/sql-server-incorrect-syntax-near-102/"
+ },
+ {
   "question": "Could this be a permissions problem instead?",
   "answer": "Not directly. Referencing an object you have no rights on returns Msg 229, naming the object and the permission, and a cross-database reference with no user account in the target returns Msg 916. Both were measured rather than assumed. Permissions do reach you through the back door though: you cannot see an object you have no rights on, so OBJECT_ID() returns NULL and any tool that probes with it will tell you the object does not exist. Use HAS_PERMS_BY_NAME to tell \"absent\" apart from \"not for you\".",
   "post_title": "Invalid Object Name in SQL Server (Error 208)",
@@ -2356,6 +2422,42 @@
   "answer": "Because 208 happens at compile time, when the batch is bound, and a batch that will not compile never runs, including its CATCH. Move the reference into sp_executesql so binding happens at execution time, and the outer CATCH will see it.",
   "post_title": "Invalid Object Name in SQL Server (Error 208)",
   "url": "https://sqldba.blog/sql-server-invalid-object-name-208/"
+ },
+ {
+  "question": "Can I just restore the single bad page?",
+  "answer": "Page-level restore exists and is genuinely useful for a small number of pages, in full recovery model with an unbroken log chain. It is a real option once CHECKDB has told you the extent. It is not a way to skip finding out the extent, and it does not address why the page went bad.",
+  "post_title": "Logical Consistency-Based I/O Error in SQL Server (Errors 823 and 824)",
+  "url": "https://sqldba.blog/sql-server-io-errors-823-824/"
+ },
+ {
+  "question": "Does a clean DBCC CHECKDB mean the hardware is fine?",
+  "answer": "It means the pages CHECKDB read were consistent at that moment. It says nothing about the drive that returned an error an hour ago. An 823 in particular is a storage-layer event that a later clean CHECKDB does not retract, so the hardware investigation runs regardless of the CHECKDB result.",
+  "post_title": "Logical Consistency-Based I/O Error in SQL Server (Errors 823 and 824)",
+  "url": "https://sqldba.blog/sql-server-io-errors-823-824/"
+ },
+ {
+  "question": "I got one 824 and everything seems fine now. Can I move on?",
+  "answer": "No. The page is recorded in msdb.dbo.suspect_pages and the underlying cause has not changed. A single 824 with no other symptom is the best possible time to deal with this, because you still have a choice about when. Run CHECKDB, find the extent, and get the hardware looked at.",
+  "post_title": "Logical Consistency-Based I/O Error in SQL Server (Errors 823 and 824)",
+  "url": "https://sqldba.blog/sql-server-io-errors-823-824/"
+ },
+ {
+  "question": "Is 824 worse than 823?",
+  "answer": "Neither is worse, they are different failures. 823 means the I/O request failed and the storage said so. 824 means the request succeeded and the data was wrong, which is more insidious because nothing below SQL Server flagged it. In practice 824 makes the storage team's job harder, because their monitoring will show a healthy path.",
+  "post_title": "Logical Consistency-Based I/O Error in SQL Server (Errors 823 and 824)",
+  "url": "https://sqldba.blog/sql-server-io-errors-823-824/"
+ },
+ {
+  "question": "What is error 605, and is it the same problem?",
+  "answer": "Related but distinct. 605 is severity 21 and means a page was fetched that belongs to a different object than the allocation structures expect. That is allocation-level corruption rather than a failed read, and it goes straight to the restore conversation rather than the hardware one.",
+  "post_title": "Logical Consistency-Based I/O Error in SQL Server (Errors 823 and 824)",
+  "url": "https://sqldba.blog/sql-server-io-errors-823-824/"
+ },
+ {
+  "question": "Why did nothing alert me?",
+  "answer": "Because SQL Server ships with no alerts at all, so severity 24 reaches the error log and the Windows event log and stops there. Checked on a real instance: zero alerts configured for 823, 824 or 825. Adding them is the single highest-value ten minutes available here.",
+  "post_title": "Logical Consistency-Based I/O Error in SQL Server (Errors 823 and 824)",
+  "url": "https://sqldba.blog/sql-server-io-errors-823-824/"
  },
  {
   "question": "Is this a deadlock?",
@@ -2458,6 +2560,42 @@
   "answer": "Almost always the certificate chain trust error, current SSMS versions default to encrypting the connection and validating the server\u2019s certificate, which older instances running a self-signed cert weren\u2019t set up to satisfy. See Fix the Certificate Chain Trust Error above for the actual cause and fix.",
   "post_title": "SQL Server Management Studio (SSMS): The Complete Guide",
   "url": "https://sqldba.blog/sql-server-management-studio-complete-guide/"
+ },
+ {
+  "question": "How do I find the query that caused it after the fact?",
+  "answer": "Query Store, if the database has it enabled, because it keeps memory grant figures per query with timestamps. Without it the live DMVs are gone the moment the grant is released, and the error log gives you the time of the 8645 but not the query that was holding the memory.",
+  "post_title": "Insufficient System Memory and Memory Grant Timeouts (Errors 701 and 8645)",
+  "url": "https://sqldba.blog/sql-server-memory-errors-701-8645/"
+ },
+ {
+  "question": "Is error 8623 the same problem?",
+  "answer": "No. 8623 is severity 16 and means the query processor could not produce a plan because the statement was too complex, typically a generated query or a very large IN list. It is a compilation limit, not memory pressure, and it is fixed in the application rather than on the server.",
+  "post_title": "Insufficient System Memory and Memory Grant Timeouts (Errors 701 and 8645)",
+  "url": "https://sqldba.blog/sql-server-memory-errors-701-8645/"
+ },
+ {
+  "question": "My RESOURCE_SEMAPHORE waits look enormous. Is that the cause?",
+  "answer": "Check the total against instance uptime before concluding anything. Measured while writing this post: 216 waits totalling over 18 hours on an instance up for 24 hours, with a single wait recorded at 8 hours. Both numbers were artifacts of parallel accumulation and a host that had been suspended. Take a delta over a window you choose, or read the live DMVs instead.",
+  "post_title": "Insufficient System Memory and Memory Grant Timeouts (Errors 701 and 8645)",
+  "url": "https://sqldba.blog/sql-server-memory-errors-701-8645/"
+ },
+ {
+  "question": "What is a normal reading for sys.dm_exec_query_memory_grants?",
+  "answer": "Empty. On an instance with nothing queued it returns no rows, and waiter_count on the semaphore is 0. That is worth confirming on your own servers while they are healthy, so that rows appearing during an incident are immediately meaningful rather than something you have to interpret from scratch.",
+  "post_title": "Insufficient System Memory and Memory Grant Timeouts (Errors 701 and 8645)",
+  "url": "https://sqldba.blog/sql-server-memory-errors-701-8645/"
+ },
+ {
+  "question": "Which is worse, 701 or 8645?",
+  "answer": "701 is severity 19 and 8645 is severity 17, and that ordering reflects it. 701 means an allocation could not be satisfied, which is an instance-wide condition. 8645 is a timeout on a queue, and SQL Server's own message text tells you to rerun the query. Repeated 8645s still matter, they are just a different investigation.",
+  "post_title": "Insufficient System Memory and Memory Grant Timeouts (Errors 701 and 8645)",
+  "url": "https://sqldba.blog/sql-server-memory-errors-701-8645/"
+ },
+ {
+  "question": "Will more RAM fix error 8645?",
+  "answer": "Usually not on its own. 8645 means the memory was already committed to other queries, so the question is which query took it and whether it deserved it. Adding RAM without raising max server memory changes nothing at all, and adding both still leaves an oversized grant taking an oversized share.",
+  "post_title": "Insufficient System Memory and Memory Grant Timeouts (Errors 701 and 8645)",
+  "url": "https://sqldba.blog/sql-server-memory-errors-701-8645/"
  },
  {
   "question": "Can I add replicas running a newer SQL Server version?",
@@ -2578,6 +2716,42 @@
   "answer": "Severity 10 is informational, so no default alert fires, no job fails and the application sees nothing. Setting an Agent alert on message 825 is the single most valuable thing in this post.",
   "post_title": "A Read of the File Succeeded After Failing (Error 825, the Read-Retry Warning)",
   "url": "https://sqldba.blog/sql-server-read-retry-825/"
+ },
+ {
+  "question": "Can I check a backup without restoring it?",
+  "answer": "Yes, and you should. RESTORE VERIFYONLY reads and checks the whole backup, RESTORE HEADERONLY tells you what is in it, and RESTORE FILELISTONLY gives the logical file names for WITH MOVE. All three are read-only and none need the target database to exist.",
+  "post_title": "RESTORE Is Terminating Abnormally (Errors 3013 and 3241)",
+  "url": "https://sqldba.blog/sql-server-restore-terminating-abnormally-3013-3241/"
+ },
+ {
+  "question": "Does 3241 always mean the backup is corrupt?",
+  "answer": "Not necessarily. It means SQL Server cannot read the file as a backup, which also covers the wrong file entirely, a copy that never finished, a third-party format, and a backup from a newer version of SQL Server being restored to an older one. That last case is a common surprise and there is nothing wrong with the file.",
+  "post_title": "RESTORE Is Terminating Abnormally (Errors 3013 and 3241)",
+  "url": "https://sqldba.blog/sql-server-restore-terminating-abnormally-3013-3241/"
+ },
+ {
+  "question": "How do I fix error 3013?",
+  "answer": "You do not, directly. 3013 reports that the restore stopped, and it is the same message whatever went wrong. Find the error printed immediately before it: across five reproduced failures that was 3241, 3287, 3634 with 3156, 3102 or 3154, each with a completely different fix.",
+  "post_title": "RESTORE Is Terminating Abnormally (Errors 3013 and 3241)",
+  "url": "https://sqldba.blog/sql-server-restore-terminating-abnormally-3013-3241/"
+ },
+ {
+  "question": "My tool only shows 3013. Now what?",
+  "answer": "Rerun the restore by hand in SSMS or sqlcmd and read the whole output, or open the SQL Server error log, which records the real error even when the client showed only the closing line. Agent job history in particular truncates the useful part.",
+  "post_title": "RESTORE Is Terminating Abnormally (Errors 3013 and 3241)",
+  "url": "https://sqldba.blog/sql-server-restore-terminating-abnormally-3013-3241/"
+ },
+ {
+  "question": "What is the difference between 3241 and 3287?",
+  "answer": "3241 is \"this is not a backup media family I can process\". 3287 is \"this is a backup, and the file ID inside it cannot be read\", which in testing came from a backup that had been truncated. 3287 points more strongly at an interrupted copy, so compare the file size against the source first.",
+  "post_title": "RESTORE Is Terminating Abnormally (Errors 3013 and 3241)",
+  "url": "https://sqldba.blog/sql-server-restore-terminating-abnormally-3013-3241/"
+ },
+ {
+  "question": "Why did I get four errors before the 3013?",
+  "answer": "Because a restore validates every file. In the reproduced bad-path case, each of the data file and the log file produced a 3634 and a 3156, then a line reading \"Problems were identified while planning for the RESTORE statement. Previous messages provide details\", then 3013. SQL Server is explicitly pointing you upwards.",
+  "post_title": "RESTORE Is Terminating Abnormally (Errors 3013 and 3241)",
+  "url": "https://sqldba.blog/sql-server-restore-terminating-abnormally-3013-3241/"
  },
  {
   "question": "Should I just add db_datareader?",

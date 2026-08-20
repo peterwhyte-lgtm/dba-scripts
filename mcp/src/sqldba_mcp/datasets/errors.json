@@ -16,7 +16,7 @@
   "message": "Incorrect syntax near 'X'.",
   "meaning": "Often a compatibility level or version issue rather than a real typo, when the same code works elsewhere.",
   "category": "Query and data errors",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-incorrect-syntax-near-102/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-102-database-engine-error"
  },
  {
@@ -106,7 +106,7 @@
   "message": "There is insufficient system memory in resource pool 'default' to run this query.",
   "meaning": "Real memory pressure, or a single query asking for far more than it should.",
   "category": "Blocking, deadlocks and memory",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-memory-errors-701-8645/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-701-database-engine-error"
  },
  {
@@ -116,7 +116,7 @@
   "message": "The operating system returned error 21 to SQL Server during a read at offset 0x... in file 'X'.",
   "meaning": "The storage layer failed the request. This is hardware or driver, not SQL Server.",
   "category": "Corruption and hardware",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-io-errors-823-824/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-823-database-engine-error"
  },
  {
@@ -126,7 +126,7 @@
   "message": "SQL Server detected a logical consistency-based I/O error: incorrect checksum.",
   "meaning": "The read succeeded and the page was wrong. Check the backups before anything else.",
   "category": "Corruption and hardware",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-io-errors-823-824/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-824-database-engine-error"
  },
  {
@@ -236,7 +236,7 @@
   "message": "RESTORE DATABASE is terminating abnormally.",
   "meaning": "The companion message, never the cause. The error immediately above it is the real one.",
   "category": "Backup and restore",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-restore-terminating-abnormally-3013-3241/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-3013-database-engine-error"
  },
  {
@@ -266,7 +266,7 @@
   "message": "The media family on device 'X' is incorrectly formed. SQL Server cannot process this media family.",
   "meaning": "Wrong file, truncated copy, or a backup from a newer version being restored to an older one.",
   "category": "Backup and restore",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-restore-terminating-abnormally-3013-3241/",
   "ms_docs": null
  },
  {
@@ -276,7 +276,7 @@
   "message": "Cannot recover the master database. SQL Server is unable to run.",
   "meaning": "The instance will not start. Master is damaged, moved, or its permissions changed.",
   "category": "Corruption and hardware",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-cannot-recover-master-3417/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-3417-database-engine-error"
  },
  {
@@ -356,7 +356,7 @@
   "message": "A timeout occurred while waiting for memory resources to execute the query.",
   "meaning": "RESOURCE_SEMAPHORE waits. Query memory grants are the thing to look at.",
   "category": "Blocking, deadlocks and memory",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-memory-errors-701-8645/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-8645-database-engine-error"
  },
  {

@@ -990,6 +990,11 @@
   "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/"
  },
  {
+  "title": "Cannot Recover the Master Database (Error 3417) and What the Log Actually Says",
+  "lead": "3417 is the summary, not the diagnosis. Four kinds of master damage reproduced in a throwaway container, and 3417 appeared in none of them. Here is what each one actually logs.",
+  "url": "https://sqldba.blog/sql-server-cannot-recover-master-3417/"
+ },
+ {
   "title": "SQL Server Collation: Case Sensitivity and the Cross-Database Trap",
   "lead": "Get Collation Conflicts and Cross-Database Dependencies finds real collation mismatches, but assumes you already know what collation actually controls.",
   "url": "https://sqldba.blog/sql-server-collation-case-sensitivity-and-the-cross-database-trap/"
@@ -1055,9 +1060,19 @@
   "url": "https://sqldba.blog/sql-server-foreign-key-conflict-547/"
  },
  {
+  "title": "Incorrect Syntax Near in SQL Server (Error 102)",
+  "lead": "Msg 102 usually is not a typo. If the same statement runs on one database and fails on another, the parser grammar is chosen by compatibility level, not by the version of the instance.",
+  "url": "https://sqldba.blog/sql-server-incorrect-syntax-near-102/"
+ },
+ {
   "title": "Invalid Object Name in SQL Server (Error 208)",
   "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
   "url": "https://sqldba.blog/sql-server-invalid-object-name-208/"
+ },
+ {
+  "title": "Logical Consistency-Based I/O Error in SQL Server (Errors 823 and 824)",
+  "lead": "823 means the storage failed the read and said so. 824 means it succeeded and the data was wrong. Which one you have changes who you escalate to, and what you protect first.",
+  "url": "https://sqldba.blog/sql-server-io-errors-823-824/"
  },
  {
   "title": "SQL Server Isolation Levels (and When to Reach for RCSI)",
@@ -1093,6 +1108,11 @@
   "title": "SQL Server Management Studio (SSMS): The Complete Guide",
   "lead": "SQL Server Management Studio is still the tool most production DBAs live in day to day, and it has changed more in the last couple of years than the previous decade.",
   "url": "https://sqldba.blog/sql-server-management-studio-complete-guide/"
+ },
+ {
+  "title": "Insufficient System Memory and Memory Grant Timeouts (Errors 701 and 8645)",
+  "lead": "701 is the server unable to find memory at all. 8645 is the memory existing and being held by someone else. Neither one means buy more RAM, and cumulative wait stats will mislead you about both.",
+  "url": "https://sqldba.blog/sql-server-memory-errors-701-8645/"
  },
  {
   "title": "SQL Server Migration Runbook: Availability Groups and Failover Clusters",
@@ -1158,6 +1178,11 @@
   "title": "Troubleshoot RESOURCE_SEMAPHORE Waits in SQL Server (Memory Grant Pressure)",
   "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
   "url": "https://sqldba.blog/sql-server-resource-semaphore-wait-troubleshooting/"
+ },
+ {
+  "title": "RESTORE Is Terminating Abnormally (Errors 3013 and 3241)",
+  "lead": "3013 is never the cause, it is the last line of a failed restore. Five restore failures reproduced in a container, five different real errors above it, and three of them had nothing wrong with the backup file.",
+  "url": "https://sqldba.blog/sql-server-restore-terminating-abnormally-3013-3241/"
  },
  {
   "title": "The SELECT Permission Was Denied on the Object (Error 229)",
