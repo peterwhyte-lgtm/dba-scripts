@@ -20,9 +20,11 @@ DECLARE @Top            int           = 40;
 
 DECLARE @t1 datetime2, @t2 datetime2;
 
--- MAX() rather than TOP 1 ... ORDER BY: identical result, but the ORDER BY forces a
--- sort of every row for this server (no index on collection_time) and dominated the
--- whole script's runtime - 62s of a 63s run, measured on a 76k-row table.
+-- MAX() rather than TOP 1 ... ORDER BY: identical result, one ordered scan instead of a
+-- parallel scan into a sort worktable (9 scans / 1495 logical reads -> 1 scan / 1420 on a
+-- 77k-row table). Warm, both forms are single-digit milliseconds; the difference only shows
+-- on a cold cache, where the sort form measured 11.9s against MAX()'s 14ms. There is no
+-- index on collection_time, so both read the whole table for this server.
 SELECT @t2 = MAX(collection_time)
 FROM [DBAMonitor].[collector].[Perfmon]
 WHERE server_name = @ServerName;
