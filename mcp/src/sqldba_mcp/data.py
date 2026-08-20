@@ -195,7 +195,20 @@ _ASK_FRAME = re.compile(
 # contains the word.
 _ASK_NOISE = {'script', 'scripts', 'query', 'queries', 'show', 'showing', 'shows', 'give',
               'need', 'want', 'find', 'see', 'run', 'please', 'me', 'us', 'useful',
-              'anything', 'something', 'thing', 'stuff', 'help'}
+              'anything', 'something', 'thing', 'stuff', 'help',
+              # Conversational filler, added 2026-08-20, and the reason is measurable:
+              # IDF rates a word by how rare it is IN THIS CORPUS, and these are rare here
+              # precisely because they are not SQL Server words. So they scored as strong
+              # signals and crowded out the real term:
+              #   "who are the sysadmins on this box"  who 4.36, box 5.45, sysadmins 4.76
+              #        -> coverage 0.33, floor 0.34. Missed the right answer by 0.01.
+              #   "whats blocking everything"          whats and everything both unknown
+              #        -> 2 of 3 tokens foreign, the off-domain guard fired, refused outright
+              # Script-path only (normalise_script_query), so the FAQ corpus is untouched -
+              # the general-English stopword sweep tried on THAT side cost 0.5pp and was
+              # correctly reverted. This list is not that: it is the ask, not the subject.
+              'who', 'whats', 'what', 'whose', 'box', 'server', 'instance', 'everything',
+              'about', 'nobody', 'anyone', 'someone', 'currently', 'right', 'now'}
 
 # A request for a curated SET, not a match. The package carries no popularity signal, so
 # "the top 10 scripts" cannot be ranked honestly - and returning whatever scored highest is
@@ -299,6 +312,24 @@ _SYNONYMS = {
     'running':   ('active', 'running'),
     'eating':    ('usage', 'consuming'),
     'usage':     ('used',),
+    # Added 2026-08-20 from the find_script misses. Each one is a word a DBA types that
+    # the corpus only holds in another form, so the query scored nothing at all:
+    #   "is anything corrupt"   -> cleaned to the single token `corrupt`, which no record
+    #                              contains literally. The guard recognises it via
+    #                              `corruption`; scoring did not, so the reply was
+    #                              "nothing matches" from a library holding
+    #                              Get-LastDbccCheckdb and Get-SuspectPages.
+    #   "certs about to expire" -> reached Get-CertificatesAndKeys but not
+    #                              Get-CertificateExpiryWarnings, because `expire` is not
+    #                              `expiry` and `certs` is not `certificate`.
+    #   "which db is eating the most space" -> `db` never reached `database`.
+    'corrupt':   ('corruption', 'corrupted'),
+    'certs':     ('certificate', 'certificates'),
+    'cert':      ('certificate',),
+    'expire':    ('expiry', 'expiring', 'expiration'),
+    'expires':   ('expiry', 'expiring'),
+    'db':        ('database',),
+    'dbs':       ('database', 'databases'),
 }
 
 
