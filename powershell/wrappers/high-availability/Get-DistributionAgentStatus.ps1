@@ -10,7 +10,7 @@ RiskLevel    : SAFE
 
 param(
     [string]$ServerInstance = '.',
-    [string]$Database = 'distribution',
+    [string]$Database = 'master',
     [ValidateSet('Table', 'Csv')]
     [string]$OutputFormat = 'Table',
     [string]$OutputPath
