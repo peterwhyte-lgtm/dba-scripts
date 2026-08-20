@@ -344,6 +344,14 @@ class Index:
             self._doc_tokens.append(flat)
             self._weighted.append(per_field)
         self._idf = _idf(self._doc_tokens)
+        # What IDF would give a word appearing in ZERO records: log(1 + n/1). Not an
+        # invented constant and not the maximum observed - the same formula, evaluated at
+        # df=0. It has to be strictly above every real term, because "python" and "oracle"
+        # are more telling than the rarest word the corpus does hold, and the max observed
+        # (df=1) sat only fractionally above ordinary English like "write" and "list".
+        # At that spacing a foreign word could not outweigh three incidental matches.
+        import math as _math
+        self._unseen_idf = _math.log(1 + (len(records) or 1))
         self._avg_len = (sum(len(d) for d in self._doc_tokens) / len(records)) if records else 1
         self._guard_vocab = {t for per_field in self._weighted
                              for f in self._guard_fields
@@ -440,6 +448,47 @@ class Index:
                    and abs(len(known) - len(term)) <= _STEM_SLACK
                    for known in self._guard_vocab if len(known) >= 3)
 
+    def _coverage_weights(self, q, groups):
+        """How much each query term is worth when judging coverage.
+
+        Plain `matched / len(q)` treats every word as equally telling, and that is the
+        whole of this defect. Measured 2026-08-20 against eight off-domain questions the
+        tuning set had never seen, four were answered confidently, and every one of them
+        matched on a single ordinary word:
+
+            is oracle BETTER than sql server      -> "Can I get the BETTER message ...?"
+            what certifications are WORTH doing   -> "Should I be verifying backups ...
+                                                      it is WORTH doing"
+            who should I report a SECURITY breach -> "Is xp_cmdshell always a SECURITY
+                                                      risk?"
+
+        `better` is not ubiquitous, so it counted as a full informative match, exactly as
+        `PAGEIOLATCH` would. Weighting by IDF makes a common word worth little and a rare
+        one worth a lot, so a match has to be on something that actually distinguishes.
+
+        Three kinds of term, and the middle one is the reason this is not a one-liner:
+
+        indexed     a form of it is in the corpus -> its own IDF.
+        recognised  the corpus knows it under another name but holds no literal token
+                    ("corrupt" via "corruption"). EXCLUDED from both sides: it is neither
+                    evidence for a record nor against it, and counting it against would
+                    refuse "is my database corrupt", which test_red_team calls the worst
+                    false negative this library can produce.
+        foreign     the corpus has never seen it in any form ("oracle", "salary",
+                    "laptop") -> the IDF of a df=0 term, strictly above every real one,
+                    and unmatchable by definition, so it drags coverage down. The point.
+        """
+        weights = {}
+        for t in q:
+            indexed = [self._idf[f] for f in groups[t] if f in self._idf]
+            if indexed:
+                weights[t] = max(indexed)
+            elif self._recognises(t):
+                continue                      # familiar but unindexed: not evidence either way
+            else:
+                weights[t] = self._unseen_idf  # never seen: unmatched, and it should hurt
+        return weights
+
     def search(self, query: str, limit: int = 8,
                min_coverage: float = 0.0) -> list[tuple[dict, float]]:
         """Ranked hits.
@@ -491,6 +540,9 @@ class Index:
         if min_coverage and self._decline_when_vague and not asked:
             return []
 
+        cov_weights = self._coverage_weights(q, groups) if min_coverage else {}
+        cov_total = sum(cov_weights.values())
+
         k1, b = 1.5, 0.75
         scored = []
         for i, record in enumerate(self.records):
@@ -524,6 +576,18 @@ class Index:
             # rejected by 0.0067. "is replication falling behind" returned nothing.
             if min_coverage and (matched / len(q)) < min_coverage - 1e-6:
                 continue
+            # ...and the same floor again, weighted by IDF. BOTH must hold, deliberately:
+            # this is an EXTRA filter, never a replacement. The unweighted floors were
+            # calibrated against a count ("at least one word in three"), so letting the
+            # weighted figure stand alone silently re-tunes every caller. It did: weighting
+            # lifted `chain` in "find blocking chains" from 0.333 to 0.373 and handed a
+            # find_script question to lookup_error, via the certificate-chain error.
+            # Requiring both can only ever remove a match, so nothing that was declined
+            # before can start being answered because of this.
+            if min_coverage and cov_total > 0:
+                covered = sum(w for t, w in cov_weights.items() if t in matched_terms)
+                if (covered / cov_total) < min_coverage - 1e-6:
+                    continue
             if min_coverage and informative and not (informative & matched_terms):
                 continue
             scored.append((record, score))
