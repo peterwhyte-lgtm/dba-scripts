@@ -160,6 +160,25 @@ QUESTIONS = [
 # =========================================================================================
 
 OFF_DOMAIN = [
+    # --- held out on 2026-08-20, and they earned their place ------------------------
+    # The eight below were written by a session that had NOT seen this file, precisely
+    # because the number here had stopped being a measurement: 86.7% was reported after
+    # tuning against these same probes. Run cold against the tuned build, four of the
+    # eight were answered confidently, and every one matched on a single ordinary word
+    # ("better", "worth", "security"). That produced the IDF-weighted coverage floor.
+    #
+    # They are regression cases now, not a held-out set: the moment they are in here,
+    # anyone can tune against them. THE NEXT PERSON TO QUOTE A NUMBER OFF THIS FILE
+    # OWES IT A FRESH SET THAT NOBODY HAS SEEN.
+    ('answer_question', 'what salary should a sql server dba expect'),
+    ('answer_question', 'which laptop is best for database work'),
+    ('answer_question', 'is oracle better than sql server'),
+    ('answer_question', 'how do I back up my laptop before a holiday'),
+    ('answer_question', 'what certifications are worth doing for a dba career'),
+    ('answer_question', 'how much RAM should I buy for my gaming pc'),
+    ('answer_question', 'how do I get better at technical interviews'),
+    ('answer_question', 'who should I report a security breach to'),
+    # ---------------------------------------------------------------------------------
     ('answer_question', 'how do I install postgres'),
     ('answer_question', 'whats the connection string format for EF Core'),
     ('answer_question', 'best way to move a database to Azure'),
