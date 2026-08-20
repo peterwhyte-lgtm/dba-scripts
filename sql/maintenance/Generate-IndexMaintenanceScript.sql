@@ -6,7 +6,8 @@ Purpose     : Generates ALTER INDEX REBUILD / REORGANIZE statements for fragment
               maintenance_statement column in a maintenance window.
               Does not execute any maintenance — read-only.
 Author      : Peter Whyte (https://sqldba.blog)
-Requires    : VIEW SERVER STATE
+Requires    : VIEW ANY DATABASE, plus access to each user database it inspects
+              (db_datareader or VIEW DATABASE STATE); it opens every online user database
 Notes       : REBUILD threshold >= 30 pct, REORGANIZE 10-29 pct.
               Indexes under 1000 pages excluded — fragmentation is not meaningful below this.
               ONLINE = ON requires Enterprise or Developer edition.

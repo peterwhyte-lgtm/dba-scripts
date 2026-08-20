@@ -8,7 +8,7 @@ Purpose     : Returns SQL Server error log entries that mention failover, alongs
               archive; use the PowerShell Get-WinEvent approach to query the Windows Failover
               Clustering Operational log directly (see blog post).
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-last-node-blip/)
-Requires    : VIEW SERVER STATE
+Requires    : VIEW SERVER STATE, EXECUTE on xp_readerrorlog (sysadmin or securityadmin in practice)
 HealthCheck : Yes
 */
 -- SAFE:ReadOnly
