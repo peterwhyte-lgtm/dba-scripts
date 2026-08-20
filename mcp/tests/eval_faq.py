@@ -49,7 +49,10 @@ MIN_FAQ_TOP3 = 0.70
 MIN_ERROR = 0.90
 MIN_ERR_PHRASE = 0.80
 MIN_WAIT = 0.90
-MIN_SCRIPT_RECALL = 0.60
+# Raised from 0.60 with the harness fix above: the old figure was set against a
+# number produced by not calling the tool. 0.75 sits below today's 84.1% with
+# room to move, and above the 65.9% the broken harness reported.
+MIN_SCRIPT_RECALL = 0.75
 
 
 def _ascii(s: str) -> str:
@@ -190,12 +193,25 @@ def eval_scripts() -> dict:
     See tests/script_questions.py for the set and why it is scored on recall@8.
     """
     from script_questions import QUESTIONS
-    index = data.script_index()
+    from sqldba_mcp import tools
     total = top1 = top8 = 0
     misses = []
     for question, expected in QUESTIONS:
         total += 1
-        hits = [h['name'] for h, _ in index.search(question, limit=8, min_coverage=0.34)]
+        # THROUGH THE TOOL, not the raw index. This called index.search() directly until
+        # 2026-08-20, which skipped the ask-frame cleaning find_script applies to every
+        # real query - so it scored the phrasing a DBA uses against a code path no DBA
+        # reaches. "show me who has sysadmin" was recorded as "(nothing)" while the tool
+        # returned Get-SysadminMembers at rank 1.
+        #
+        # It made this the worst suite here by a distance and sent two sessions looking
+        # for a ranker defect that was mostly a harness one: 38.6/65.9 measured on the
+        # index, 47.7/84.1 measured on the tool, and genuine misses 15 -> 7.
+        #
+        # Measure the thing that ships.
+        hits = [line[4:].strip()
+                for line in tools.find_script(question).splitlines()
+                if line.startswith('### ')]
         if hits[:1] and hits[0] in expected:
             top1 += 1
         if any(h in expected for h in hits):
