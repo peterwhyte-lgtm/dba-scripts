@@ -1000,6 +1000,11 @@
   "url": "https://sqldba.blog/sql-server-collation-case-sensitivity-and-the-cross-database-trap/"
  },
  {
+  "title": "Cannot Resolve the Collation Conflict (Error 468)",
+  "lead": "Nothing is broken when you see 468. Two sides of a comparison store text under different rules, and SQL Server will not guess which should win. The fix is one line, and it does not belong on the column.",
+  "url": "https://sqldba.blog/sql-server-collation-conflict-468/"
+ },
+ {
   "title": "Compatibility Levels: What Actually Changes When You Bump It",
   "lead": "\"Bump the compatibility level after a migration\" is standard advice, and Version Upgrade Readiness already tells you which databases are behind.",
   "url": "https://sqldba.blog/sql-server-compatibility-level-what-actually-changes/"

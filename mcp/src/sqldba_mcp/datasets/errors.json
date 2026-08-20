@@ -86,7 +86,7 @@
   "message": "Cannot resolve the collation conflict between 'X' and 'Y' in the equal to operation.",
   "meaning": "Two sides of a comparison carry different collations. It surfaces when a query joins or compares across databases, or against tempdb, and the fix is COLLATE DATABASE_DEFAULT on the comparison rather than changing a column.",
   "category": "Query and data errors",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-collation-conflict-468/",
   "ms_docs": null
  },
  {

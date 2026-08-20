@@ -2220,6 +2220,42 @@
   "url": "https://sqldba.blog/sql-server-cannot-recover-master-3417/"
  },
  {
+  "question": "Does COLLATE DATABASE_DEFAULT change how my data is stored?",
+  "answer": "No. It affects only the evaluation of that expression, for that statement. Nothing is written, no column definition changes, and the plan is the only thing that differs.",
+  "post_title": "Cannot Resolve the Collation Conflict (Error 468)",
+  "url": "https://sqldba.blog/sql-server-collation-conflict-468/"
+ },
+ {
+  "question": "Is 468 a sign something is corrupt or misconfigured?",
+  "answer": "No. Every object involved is valid. Two of them store text under different rules, which is a design consequence of how the databases were created or restored, not a fault. The instance is healthy and the error is doing its job.",
+  "post_title": "Cannot Resolve the Collation Conflict (Error 468)",
+  "url": "https://sqldba.blog/sql-server-collation-conflict-468/"
+ },
+ {
+  "question": "Should I just standardise every database on one collation?",
+  "answer": "It is the real fix if you own the estate and can afford it, and it is a migration rather than an afternoon: the database collation and every existing character column both have to change, and code that relied on case sensitivity has to be retested. Until that is scheduled, COLLATE DATABASE_DEFAULT at the comparison is the correct answer rather than a workaround.",
+  "post_title": "Cannot Resolve the Collation Conflict (Error 468)",
+  "url": "https://sqldba.blog/sql-server-collation-conflict-468/"
+ },
+ {
+  "question": "Why does a query that only touches one database still raise it?",
+  "answer": "A temp table. #temp columns take tempdb's collation, which follows the instance, so joining a temp table back to a user database with a different collation compares two collations without ever naming a second database. Declaring the column COLLATE DATABASE_DEFAULT in the CREATE TABLE removes it.",
+  "post_title": "Cannot Resolve the Collation Conflict (Error 468)",
+  "url": "https://sqldba.blog/sql-server-collation-conflict-468/"
+ },
+ {
+  "question": "Why does the same query work in one environment and fail in another?",
+  "answer": "Because collation follows the database, and a database keeps the collation it was created or restored with. Dev, test and production frequently differ for no better reason than which server default applied on the day each was built. That is also why 468 tends to appear first in whichever environment was restored most recently.",
+  "post_title": "Cannot Resolve the Collation Conflict (Error 468)",
+  "url": "https://sqldba.blog/sql-server-collation-conflict-468/"
+ },
+ {
+  "question": "Will this slow the query down?",
+  "answer": "It can, if you collate the indexed column, because applying it to a column makes the predicate non-sargable and costs the seek. Put COLLATE on the other side of the comparison where you have a choice. Collating a temp table column at declaration avoids the question entirely.",
+  "post_title": "Cannot Resolve the Collation Conflict (Error 468)",
+  "url": "https://sqldba.blog/sql-server-collation-conflict-468/"
+ },
+ {
   "question": "Is ISNUMERIC good enough for the check?",
   "answer": "No. ISNUMERIC returns 1 for 1e5, 1.5, $10 and 1,000, none of which convert to int. It answers a different question from the one you have.",
   "post_title": "Conversion Failed When Converting the varchar Value to Data Type int (Error 245)",
