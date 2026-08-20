@@ -75,8 +75,14 @@ SELECT TOP (@Top)
          END                                                        AS avg_wait_ms,
     CAST(d.delta_signal_ms * 100.0 / NULLIF(d.delta_wait_ms,0) AS decimal(5,1))
                                                                     AS signal_pct,
+    -- Percent of the total WAIT accumulated in the window (totals.total_ms is
+    -- SUM(delta_wait_ms)), NOT percent of the wall-clock interval. It was called
+    -- pct_of_interval until 2026-08-20 and that name said the wrong thing: a single task
+    -- can accumulate more wait than the interval is long, so the published sample output
+    -- showed QDS_ASYNC_QUEUE at 43,912,480 ms with delta_tasks = 1 over four minutes.
+    -- Read it as "which wait dominated", never as "how busy the window was".
     CAST(d.delta_wait_ms * 100.0 / NULLIF(t.total_ms,0) AS decimal(5,1))
-                                                                    AS pct_of_interval,
+                                                                    AS pct_of_total_wait,
     d.max_wait_ms,
     @t1                                                             AS snapshot1,
     @t2                                                             AS snapshot2
