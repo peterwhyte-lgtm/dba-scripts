@@ -1,0 +1,2442 @@
+[
+ {
+  "title": "Applying Data Retention Safely in SQL Server",
+  "lead": "Data retention in SQL Server usually means deleting old data in a controlled and repeatable way.",
+  "url": "https://sqldba.blog/applying-data-retention-safely-in-sql-server/"
+ },
+ {
+  "title": "Backing Up a SQL Server Database with Encryption",
+  "lead": "Encrypted backups are no longer optional in most environments.",
+  "url": "https://sqldba.blog/backing-up-a-sql-server-database-with-encryption/"
+ },
+ {
+  "title": "Blog",
+  "lead": "",
+  "url": "https://sqldba.blog/blog/"
+ },
+ {
+  "title": "Check SQL Server Connection Encryption and Protocol",
+  "lead": "Modern SQL Server environments often use encrypted connections by default, but that does not always mean what people think it means.",
+  "url": "https://sqldba.blog/check-sql-server-connection-encryption-and-protocol/"
+ },
+ {
+  "title": "Check When SQL Server Was Last Restarted",
+  "lead": "Knowing when SQL Server last restarted is one of the simplest checks a DBA can perform, and one of the most useful.",
+  "url": "https://sqldba.blog/check-when-sql-server-was-last-restarted/"
+ },
+ {
+  "title": "Creating SQL Logins on an Availability Group (AG) Environment",
+  "lead": "In an Availability Group, the databases fail over.",
+  "url": "https://sqldba.blog/creating-sql-logins-on-an-availability-group-ag-environment/"
+ },
+ {
+  "title": "Database Cannot Be Opened \u2013 It Is in the Middle of a Restore",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/database-cannot-be-opened-it-is-in-the-middle-of-a-restore/"
+ },
+ {
+  "title": "DBA Scripts: Backups and Recovery",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-backups-and-recovery/"
+ },
+ {
+  "title": "DBA Scripts: Blocking and Locking",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-blocking-and-locking/"
+ },
+ {
+  "title": "DBA Scripts: SQL Server Change Management",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-change-management/"
+ },
+ {
+  "title": "DBA Scripts: Check AG Replica Role and Synchronization State",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-check-ag-replica-role-and-synchronization-state/"
+ },
+ {
+  "title": "DBA Scripts: Check Always On Availability Group Latency",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-check-always-on-availability-group-latency/"
+ },
+ {
+  "title": "DBA Scripts: Collect Blocking and Deadlock Events",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-collect-blocking-and-deadlock-events/"
+ },
+ {
+  "title": "DBA Scripts: Collect Capacity and Temp DB Baselines",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-collect-capacity-and-temp-db-baselines/"
+ },
+ {
+  "title": "DBA Scripts: Collect Health and Configuration Baselines",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-collect-health-and-configuration-baselines/"
+ },
+ {
+  "title": "DBA Scripts: Collect Performance Baselines (Wait Stats, Perfmon, Storage I/O)",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-collect-performance-baselines/"
+ },
+ {
+  "title": "DBA Scripts: Collectors and Baseline Infrastructure",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-collectors-and-baseline-infrastructure/"
+ },
+ {
+  "title": "DBA Scripts: The Complete Guide",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-complete-guide/"
+ },
+ {
+  "title": "DBA Scripts: Create Decommission Audit Session",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-create-decommission-audit-session/"
+ },
+ {
+  "title": "DBA Scripts: Create Login Activity Session",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-create-login-activity-session/"
+ },
+ {
+  "title": "DBA Scripts: Create SP Execution Session",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-create-sp-execution-session/"
+ },
+ {
+  "title": "DBA Scripts: Extended Events Tracing",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-extended-events-tracing/"
+ },
+ {
+  "title": "DBA Scripts: Fix Orphaned Users",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-fix-orphaned-users/"
+ },
+ {
+  "title": "DBA Scripts: Generate Agent Job Script",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-agent-job-script/"
+ },
+ {
+  "title": "DBA Scripts: Generate Backup and Restore Scripts",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-backup-and-restore-scripts/"
+ },
+ {
+  "title": "DBA Scripts: Generate Backup Jobs",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-backup-jobs/"
+ },
+ {
+  "title": "DBA Scripts: Generate Collector Alerts",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-collector-alerts/"
+ },
+ {
+  "title": "DBA Scripts: Generate Database Integrity and Housekeeping Jobs",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-database-integrity-and-housekeeping-jobs/"
+ },
+ {
+  "title": "DBA Scripts: Generate Index Maintenance Jobs",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-index-maintenance-jobs/"
+ },
+ {
+  "title": "DBA Scripts: Generate Linked Server Script",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-linked-server-script/"
+ },
+ {
+  "title": "DBA Scripts: Generate Login Script",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
+ },
+ {
+  "title": "DBA Scripts: Generate Restore With Move Script",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-restore-with-move-script/"
+ },
+ {
+  "title": "DBA Scripts: Generate Test Databases",
+  "lead": "Related Pillar Post: Backups and Recovery When you're validating migrations, failover, or automation at scale, you need realistic volume: hundreds or thousands of databases to stress-test backups, restores, log shipping, and copy operations.",
+  "url": "https://sqldba.blog/dba-scripts-generate-test-databases/"
+ },
+ {
+  "title": "DBA Scripts: Generate User Mapping Script",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-generate-user-mapping-script/"
+ },
+ {
+  "title": "DBA Scripts: Get Active Connections by Database",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-active-connections-by-database/"
+ },
+ {
+  "title": "DBA Scripts: Get Active Sessions and Requests",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/"
+ },
+ {
+  "title": "DBA Scripts: Get Active XE Sessions",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-active-xe-sessions/"
+ },
+ {
+  "title": "DBA Scripts: Get AG Failover Readiness and Readable Secondary Usage",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/"
+ },
+ {
+  "title": "DBA Scripts: Get Agent Alerts and Operators",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-agent-alerts-and-operators/"
+ },
+ {
+  "title": "DBA Scripts: Get Audit Specifications, DDL Triggers, and Proxy Credentials",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/"
+ },
+ {
+  "title": "DBA Scripts: Get Autogrowth History",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-autogrowth-history/"
+ },
+ {
+  "title": "DBA Scripts: Get Backup Chain Integrity",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-backup-chain-integrity/"
+ },
+ {
+  "title": "DBA Scripts: Get Backup Coverage",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-backup-coverage/"
+ },
+ {
+  "title": "DBA Scripts: Get Backup Encryption Status",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-backup-encryption-status/"
+ },
+ {
+  "title": "DBA Scripts: Get Backup Restore Duration Estimate",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-backup-restore-duration-estimate/"
+ },
+ {
+  "title": "DBA Scripts: Get Backup Restore Progress",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-backup-restore-progress/"
+ },
+ {
+  "title": "DBA Scripts: Get Backup Size Trend",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-backup-size-trend/"
+ },
+ {
+  "title": "DBA Scripts: Get Blocking Chains",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-blocking-chains/"
+ },
+ {
+  "title": "DBA Scripts: Get Blocking Sessions",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-blocking-sessions/"
+ },
+ {
+  "title": "DBA Scripts: Get CDC and Change Tracking",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-cdc-and-change-tracking/"
+ },
+ {
+  "title": "DBA Scripts: Get Certificates, Keys, and TDE Status",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-certificates-keys-and-tde-status/"
+ },
+ {
+  "title": "DBA Scripts: Get Collation Conflicts and Cross-Database Dependencies",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-collation-conflicts-and-cross-database-dependencies/"
+ },
+ {
+  "title": "DBA Scripts: Get Compression Candidates",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-compression-candidates/"
+ },
+ {
+  "title": "DBA Scripts: Get CPU Topology and OS Configuration Checks",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-cpu-topology-and-os-config/"
+ },
+ {
+  "title": "DBA Scripts: Get Database Backup History",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-backup-history/"
+ },
+ {
+  "title": "DBA Scripts: Get Database Free Space Summary",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-free-space-summary/"
+ },
+ {
+  "title": "DBA Scripts: Get Database Growth Risk and Forecast",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-growth-risk-and-forecast/"
+ },
+ {
+  "title": "DBA Scripts: Get Database Health",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-health/"
+ },
+ {
+  "title": "DBA Scripts: Get Database Inventory",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-inventory/"
+ },
+ {
+  "title": "DBA Scripts: Get Database IO Usage",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-io-usage/"
+ },
+ {
+  "title": "DBA Scripts: Get Database Mail and xp_cmdshell Configuration",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-mail-and-xp-cmd-shell/"
+ },
+ {
+  "title": "DBA Scripts: Get Database Sizes and Free Space",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-sizes-and-free-space/"
+ },
+ {
+  "title": "DBA Scripts: Get Database Snapshot Inventory",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-snapshot-inventory/"
+ },
+ {
+  "title": "DBA Scripts: Get Database Summary",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-database-summary/"
+ },
+ {
+  "title": "DBA Scripts: Get Deadlock Summary",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-deadlock-summary/"
+ },
+ {
+  "title": "DBA Scripts: Get Disk Space on SQL Server",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-disk-space/"
+ },
+ {
+  "title": "DBA Scripts: Get Duplicate Indexes",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-duplicate-indexes/"
+ },
+ {
+  "title": "DBA Scripts: Get Edition Feature Usage",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-edition-feature-usage/"
+ },
+ {
+  "title": "DBA Scripts: Get Error Log Patterns",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-error-log-patterns/"
+ },
+ {
+  "title": "DBA Scripts: Get Extended Events Sessions",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-extended-events-sessions/"
+ },
+ {
+  "title": "DBA Scripts: Get Filegroup Space",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-filegroup-space/"
+ },
+ {
+  "title": "DBA Scripts: Get Heaps",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-heaps/"
+ },
+ {
+  "title": "DBA Scripts: Get Implicit Conversions",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-implicit-conversions/"
+ },
+ {
+  "title": "DBA Scripts: Get Index Design Issues",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-index-design-issues/"
+ },
+ {
+  "title": "DBA Scripts: Get Index Fragmentation Across Databases",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-index-fragmentation-across-databases/"
+ },
+ {
+  "title": "DBA Scripts: Get Index Fragmentation",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-index-fragmentation/"
+ },
+ {
+  "title": "DBA Scripts: Get Index Usage Stats",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-index-usage-stats/"
+ },
+ {
+  "title": "DBA Scripts: Get Instance Configuration Score",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-instance-configuration-score/"
+ },
+ {
+  "title": "DBA Scripts: Get Instance Configuration Snapshot",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-instance-configuration-snapshot/"
+ },
+ {
+  "title": "DBA Scripts: Get Job Schedules and Duration Trends",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-job-schedules-and-duration-trends/"
+ },
+ {
+  "title": "DBA Scripts: Get Last DBCC CHECKDB",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-last-dbcc-checkdb/"
+ },
+ {
+  "title": "DBA Scripts: Get Last Node Blip",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-last-node-blip/"
+ },
+ {
+  "title": "DBA Scripts: Get Last Restore History",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-last-restore-history/"
+ },
+ {
+  "title": "DBA Scripts: Get Linked Servers",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-linked-servers/"
+ },
+ {
+  "title": "DBA Scripts: Get Lock Escalation, Contention Analysis, and Blocking Chains with Plan",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-lock-contention-and-blocking-plans/"
+ },
+ {
+  "title": "DBA Scripts: Get Log Reuse Waits",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-log-reuse-waits/"
+ },
+ {
+  "title": "DBA Scripts: Get Login and Job Inventory",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-login-and-job-inventory/"
+ },
+ {
+  "title": "DBA Scripts: Get Login Security Audit",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-login-security-audit/"
+ },
+ {
+  "title": "DBA Scripts: Get Long-Running Queries",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-long-running-queries/"
+ },
+ {
+  "title": "DBA Scripts: Get Maintenance Job Status",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-maintenance-job-status/"
+ },
+ {
+  "title": "DBA Scripts: Get MAXDOP Configuration",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-maxdop-configuration/"
+ },
+ {
+  "title": "DBA Scripts: Get Memory Configuration and Usage",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-memory-configuration-and-usage/"
+ },
+ {
+  "title": "DBA Scripts: Get Migration Login Audit and Post-Migration Validation",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-migration-login-audit-and-post-migration-validation/"
+ },
+ {
+  "title": "DBA Scripts: Get Migration Risk Assessment",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-migration-risk-assessment/"
+ },
+ {
+  "title": "DBA Scripts: Get Mirroring Endpoint Health and Status",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-mirroring-endpoint-health-and-status/"
+ },
+ {
+  "title": "DBA Scripts: Get Missing Indexes",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-missing-indexes/"
+ },
+ {
+  "title": "DBA Scripts: Get Open Transactions",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-open-transactions/"
+ },
+ {
+  "title": "DBA Scripts: Get Orphaned Users",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-orphaned-users/"
+ },
+ {
+  "title": "DBA Scripts: Get OS and Hardware Info",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-os-and-hardware-info/"
+ },
+ {
+  "title": "DBA Scripts: Get Patch Level",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-patch-level/"
+ },
+ {
+  "title": "DBA Scripts: Get Permissions and Role Membership",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-permissions-and-role-membership/"
+ },
+ {
+  "title": "DBA Scripts: Get Query Performance Deep-Dive",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-query-performance-deep-dive/"
+ },
+ {
+  "title": "DBA Scripts: Get Query Store Regressions and Forced Plans",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-query-store-regressions-and-forced-plans/"
+ },
+ {
+  "title": "DBA Scripts: Get Query Store Status",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-query-store-status/"
+ },
+ {
+  "title": "DBA Scripts: Get Query Store Top Queries",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-query-store-top-queries/"
+ },
+ {
+  "title": "DBA Scripts: Get Recent Error Log Entries",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-recent-error-log-entries/"
+ },
+ {
+  "title": "DBA Scripts: Get Recovery Model Audit",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-recovery-model-audit/"
+ },
+ {
+  "title": "DBA Scripts: Get Replication Agent Status",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-replication-agent-status/"
+ },
+ {
+  "title": "DBA Scripts: Get Replication Status",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-replication-status/"
+ },
+ {
+  "title": "DBA Scripts: Get Schema Change History",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-schema-change-history/"
+ },
+ {
+  "title": "DBA Scripts: Get Service Broker Health and Database Mail Queue",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-service-broker-health-and-database-mail-queue/"
+ },
+ {
+  "title": "DBA Scripts: Get Services Information",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-services-information/"
+ },
+ {
+  "title": "DBA Scripts: Get SQL Agent Job Failure Summary",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-sql-agent-job-failure-summary/"
+ },
+ {
+  "title": "DBA Scripts: Get SQL Agent Job Overview",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-sql-agent-job-overview/"
+ },
+ {
+  "title": "DBA Scripts: Get SQL Server Database File Details",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-sql-server-database-file-details/"
+ },
+ {
+  "title": "DBA Scripts: Get Statistics Health",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-statistics-health/"
+ },
+ {
+  "title": "DBA Scripts: Get Suspect Pages and Integrity Checks",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-suspect-pages-and-integrity-checks/"
+ },
+ {
+  "title": "DBA Scripts: Get Sysadmin Members",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-sysadmin-members/"
+ },
+ {
+  "title": "DBA Scripts: Get Table Sizes",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-table-sizes/"
+ },
+ {
+  "title": "DBA Scripts: Get TempDB Configuration",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-temp-db-configuration/"
+ },
+ {
+  "title": "DBA Scripts: Get Temp DB Hotspots",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-temp-db-hotspots/"
+ },
+ {
+  "title": "DBA Scripts: Get TempDB Usage and File Balance",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-temp-db-usage-and-file-balance/"
+ },
+ {
+  "title": "DBA Scripts: Get Top CPU Queries",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-top-cpu-queries/"
+ },
+ {
+  "title": "DBA Scripts: Get Trace Flags and Resource Governor Configuration",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-trace-flags-and-resource-governor/"
+ },
+ {
+  "title": "DBA Scripts: Get Transaction Log Size and Usage",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-transaction-log-size-and-usage/"
+ },
+ {
+  "title": "DBA Scripts: Get Unused Indexes",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-unused-indexes/"
+ },
+ {
+  "title": "DBA Scripts: Get User Permissions Audit",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-user-permissions-audit/"
+ },
+ {
+  "title": "DBA Scripts: Get Version and Edition",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-version-and-edition/"
+ },
+ {
+  "title": "DBA Scripts: Get Version Upgrade Readiness",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-version-upgrade-readiness/"
+ },
+ {
+  "title": "DBA Scripts: Get VLF Counts",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-vlf-counts/"
+ },
+ {
+  "title": "DBA Scripts: Get Wait Statistics",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-wait-statistics/"
+ },
+ {
+  "title": "DBA Scripts: Get Worker Threads and Active Sessions",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-worker-threads-and-active-sessions/"
+ },
+ {
+  "title": "DBA Scripts: Get XE Session Activity",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-get-xe-session-activity/"
+ },
+ {
+  "title": "DBA Scripts: High Availability",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-high-availability/"
+ },
+ {
+  "title": "DBA Scripts: Index Maintenance",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-index-maintenance/"
+ },
+ {
+  "title": "DBA Scripts: Install and Configure SQL Server",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-install-and-configure-sql-server/"
+ },
+ {
+  "title": "DBA Scripts: Install and Update SSMS via PowerShell",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/dba-scripts-install-and-update-ssms-via-powershell/"
+ },
+ {
+  "title": "DBA Scripts: SQL Server Installation and Patching",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-installation-and-patching/"
+ },
+ {
+  "title": "DBA Scripts: Maintenance and Automation",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-maintenance-and-automation/"
+ },
+ {
+  "title": "DBA Scripts: SQL Server Maintenance Job Framework",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-maintenance-job-framework/"
+ },
+ {
+  "title": "DBA Scripts: Migration and Deployment",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-migration-and-deployment/"
+ },
+ {
+  "title": "DBA Scripts: SQL Server Migration Script Generators",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-migration-script-generators/"
+ },
+ {
+  "title": "DBA Scripts: Patch SQL Server and Check Status",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-patch-sql-server/"
+ },
+ {
+  "title": "DBA Scripts: Performance and Troubleshooting",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-performance-and-troubleshooting/"
+ },
+ {
+  "title": "DBA Scripts: Pre-Install and Post-Install Checks for SQL Server",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-pre-install-and-post-install-checks/"
+ },
+ {
+  "title": "DBA Scripts: Query and Performance Tuning",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-query-and-performance-tuning/"
+ },
+ {
+  "title": "DBA Scripts: Remove XE Session",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-remove-xe-session/"
+ },
+ {
+  "title": "DBA Scripts: Run a Full SQL Server Health Check",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-run-a-full-sql-server-health-check/"
+ },
+ {
+  "title": "DBA Scripts: Security",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-security/"
+ },
+ {
+  "title": "DBA Scripts: Server and Configuration",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-server-and-configuration/"
+ },
+ {
+  "title": "DBA Scripts: Server Inventory",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-server-inventory/"
+ },
+ {
+  "title": "DBA Scripts: SQL Agent and Jobs",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-sql-agent-and-jobs/"
+ },
+ {
+  "title": "DBA Scripts: Storage and Capacity",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-storage-and-capacity/"
+ },
+ {
+  "title": "DBA Scripts: Uninstall SQL Server",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/dba-scripts-uninstall-sql-server/"
+ },
+ {
+  "title": "DBA Scripts: Uninstall SSMS via PowerShell",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/dba-scripts-uninstall-ssms-via-powershell/"
+ },
+ {
+  "title": "Deleting Rows in Batches in SQL Server",
+  "lead": "Deleting large volumes of data from a SQL Server table looks simple, but it can cause real problems if done carelessly.",
+  "url": "https://sqldba.blog/deleting-rows-in-batches-in-sql-server/"
+ },
+ {
+  "title": "Difference Between DELETE and TRUNCATE in SQL Server",
+  "lead": "When someone asks: \u201cWhat\u2019s the difference between DELETE and TRUNCATE?\u201d Most answers stop at: DELETE is fully logged TRUNCATE is minimally logged TRUNCATE resets identity That is technically correct.",
+  "url": "https://sqldba.blog/difference-between-delete-and-truncate-in-sql-server/"
+ },
+ {
+  "title": "Disable Change Data Capture in SQL Server",
+  "lead": "Disabling Change Data Capture (CDC) is straightforward, but it has to happen in the right order: every tracked table first, then the database.",
+  "url": "https://sqldba.blog/disable-change-data-capture-in-sql-server/"
+ },
+ {
+  "title": "Enabling TCP Connections in SQL Server",
+  "lead": "TCP/IP must be enabled in SQL Server for remote connections to work.",
+  "url": "https://sqldba.blog/enabling-tcp-connections-in-sql-server/"
+ },
+ {
+  "title": "Forcing Encrypted Connections in SQL Server Using Certificates",
+  "lead": "In the previous post, we looked at how to verify what protocol and encryption SQL Server is actually using at runtime.",
+  "url": "https://sqldba.blog/forcing-encrypted-connections-in-sql-server-using-certificates/"
+ },
+ {
+  "title": "Get Current Date & Time in SQL Server",
+  "lead": "Getting the current date and time in SQL Server is straightforward.",
+  "url": "https://sqldba.blog/get-current-date-time-in-sql-server/"
+ },
+ {
+  "title": "Get Database File Names and Paths in SQL Server",
+  "lead": "As a DBA, you regularly need to know where your database files live, how big they are, and how they\u2019re configured to grow.",
+  "url": "https://sqldba.blog/get-database-file-names-and-paths-in-sql-server/"
+ },
+ {
+  "title": "DBA Scripts: Get Last Database Backup Times",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/get-last-database-backup-times-in-sql-server/"
+ },
+ {
+  "title": "Get Last Database Restore Date and Time in SQL Server",
+  "lead": "Knowing when a database was last restored is useful during incident response, audits, and general environment validation.",
+  "url": "https://sqldba.blog/get-last-database-restore-date-and-time-in-sql-server/"
+ },
+ {
+  "title": "Grant VIEW SERVER STATE in SQL Server",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/grant-view-server-state-in-sql-server/"
+ },
+ {
+  "title": "Hidden Log Performance Problem",
+  "lead": "VLF count is one of those checks that doesn't appear in most performance reviews, doesn't generate an alert, and doesn't slow down any single query you can point to.",
+  "url": "https://sqldba.blog/hidden-log-performance-problem/"
+ },
+ {
+  "title": "SQL DBA Blog \u2013 Homepage",
+  "lead": "sqldba.blog by Peter Whyte SQL Server DBA Guides, Scripts, and AI Health Checks Production-first SQL Server content from a working DBA: troubleshooting guides, copy-paste scripts, and a health check workflow where dba-tools collects the evidence and AI helps surface the blindspots.",
+  "url": "https://sqldba.blog/home/"
+ },
+ {
+  "title": "How to Add Columns to Tables in SQL Server",
+  "lead": "Adding columns to tables in SQL Server is a routine task, but it is not always a harmless one.",
+  "url": "https://sqldba.blog/how-to-add-columns-to-tables-in-sql-server/"
+ },
+ {
+  "title": "How to Check Blocking SPIDs in SQL Server",
+  "lead": "Blocking is one of the most common causes of performance issues in SQL Server.",
+  "url": "https://sqldba.blog/how-to-check-blocking-spids-in-sql-server/"
+ },
+ {
+  "title": "How to Check if Query Store Is Enabled in SQL Server",
+  "lead": "Query Store is one of the most useful features for troubleshooting query performance in SQL Server, but it is not always enabled or usable in the way people expect.",
+  "url": "https://sqldba.blog/how-to-check-if-query-store-is-enabled-in-sql-server/"
+ },
+ {
+  "title": "How to Check Listening Ports on Windows",
+  "lead": "When troubleshooting connectivity issues, it\u2019s often not enough to test whether a remote port is reachable.",
+  "url": "https://sqldba.blog/how-to-check-listening-ports-on-windows/"
+ },
+ {
+  "title": "How to Check SQL Server Version",
+  "lead": "Knowing exactly which SQL Server version and build is running is foundational DBA work.",
+  "url": "https://sqldba.blog/how-to-check-sql-server-version/"
+ },
+ {
+  "title": "How to Delete Duplicate Rows in SQL Server",
+  "lead": "Every DBA hits this one eventually.",
+  "url": "https://sqldba.blog/how-to-delete-duplicate-rows-in-sql-server/"
+ },
+ {
+  "title": "How to Enable Change Data Capture (CDC) in SQL Server",
+  "lead": "Change Data Capture (CDC) allows SQL Server to track inserts, updates, and deletes on selected tables by reading the transaction log and storing changes in system tables.",
+  "url": "https://sqldba.blog/how-to-enable-change-data-capture-cdc-in-sql-server/"
+ },
+ {
+  "title": "How to Get the SQL Server IP Address",
+  "lead": "When troubleshooting connectivity, firewall rules, or unexpected routing, you often need one simple answer: which IP address and port did my session actually connect to?",
+  "url": "https://sqldba.blog/how-to-get-the-sql-server-ip-address/"
+ },
+ {
+  "title": "How to Increase Maximum Characters Displayed in SSMS",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/how-to-increase-maximum-characters-displayed-in-ssms/"
+ },
+ {
+  "title": "How to Kill a SPID in SQL Server",
+  "lead": "In SQL Server, every connection to the database engine is assigned a Session Process ID, commonly known as a SPID.",
+  "url": "https://sqldba.blog/how-to-kill-a-spid-in-sql-server/"
+ },
+ {
+  "title": "How to Open PowerShell as Administrator on Windows",
+  "lead": "Running PowerShell as Administrator is required for many system-level tasks such as configuring Windows, installing software, or running administrative scripts.",
+  "url": "https://sqldba.blog/how-to-open-powershell-as-administrator-on-windows/"
+ },
+ {
+  "title": "How to Restore a Database in SQL Server",
+  "lead": "Restoring a database in SQL Server is a core DBA task.",
+  "url": "https://sqldba.blog/how-to-restore-a-database-in-sql-server/"
+ },
+ {
+  "title": "How to Right-Size SQL Server Database Files",
+  "lead": "Auto-growth is not the problem.",
+  "url": "https://sqldba.blog/how-to-right-size-sql-server-database-files/"
+ },
+ {
+  "title": "How to Show Line Numbers in SSMS",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/how-to-show-line-numbers-in-ssms/"
+ },
+ {
+  "title": "Install and Update SQL Server Management Studio (SSMS)",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/install-and-update-sql-server-management-studio-ssms/"
+ },
+ {
+  "title": "Installing Windows Terminal on Windows",
+  "lead": "Windows Terminal is the modern command-line application for Windows and supports PowerShell, Command Prompt, and WSL in a single interface.",
+  "url": "https://sqldba.blog/installing-windows-terminal-on-windows/"
+ },
+ {
+  "title": "Instant File Initialization: What It Actually Does and How to Enable It",
+  "lead": "Instant File Initialization is one of the few SQL Server settings that's genuinely free performance, no license cost, no downside for the overwhelming majority of installs, and it's still routinely left unconfigured on real production servers because it's a Windows privilege grant, not a SQL Server...",
+  "url": "https://sqldba.blog/instant-file-initialization-what-it-does-and-how-to-enable-it/"
+ },
+ {
+  "title": "JSON in SQL Server: OPENJSON, FOR JSON, and the Native JSON Type",
+  "lead": "SQL Server has had JSON functions since 2016, and SQL Server 2025 added a native JSON data type on top of them.",
+  "url": "https://sqldba.blog/json-in-sql-server-openjson-for-json-and-the-native-json-type/"
+ },
+ {
+  "title": "Kill All User Sessions on a Database in SQL Server",
+  "lead": "When you need to drop, restore, or change database settings, active user sessions often get in the way.",
+  "url": "https://sqldba.blog/kill-all-user-sessions-on-a-database-in-sql-server/"
+ },
+ {
+  "title": "Open SSMS as a Different Domain User",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/open-ssms-as-a-different-domain-user/"
+ },
+ {
+  "title": "RAND() vs NEWID() in SQL Server",
+  "lead": "Most people searching for \u201crandom numbers in SQL Server\u201d want one of two things: A random value they can use for test data Rows to come back in a random order SQL Server gives you two common tools for this: RAND() and NEWID().",
+  "url": "https://sqldba.blog/rand-vs-newid-in-sql-server/"
+ },
+ {
+  "title": "MSSQL Scripts",
+  "lead": "SQL Server DBA Scripts & Tools dba-tools is the toolkit I use as a working SQL Server DBA, free and open on GitHub.",
+  "url": "https://sqldba.blog/scripts/"
+ },
+ {
+  "title": "Services",
+  "lead": "",
+  "url": "https://sqldba.blog/services/"
+ },
+ {
+  "title": "How to Shrink SQL Server Database Files in Chunks",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/shrink-database-files-in-chunks/"
+ },
+ {
+  "title": "SQL Server: Ad hoc Update to System Catalogs is Not Supported (Fix)",
+  "lead": "While enabling show advanced options using sp_configure, I encountered an unexpected failure when executing RECONFIGURE: Msg 5808, Level 16, State 1 Ad hoc update to system catalogs is not supported.",
+  "url": "https://sqldba.blog/sql-server-ad-hoc-update-system-catalogs-not-supported/"
+ },
+ {
+  "title": "SQL Server: ALTER DATABASE SET ENABLE_BROKER Taking a Long Time (Fix)",
+  "lead": "After a recent Availability Group failover, Database Mail stopped sending emails.",
+  "url": "https://sqldba.blog/sql-server-alter-database-set-enable-broker-hanging/"
+ },
+ {
+  "title": "The Backup Set Holds a Backup of a Database Other Than the Existing Database (Error 3154)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-backup-set-different-database-3154/"
+ },
+ {
+  "title": "Troubleshoot SQL Server Blocking, Step by Step",
+  "lead": "Blocking isn't a bug, it's SQL Server enforcing correctness: one session holds a lock, another wants a conflicting one, and it has to wait.",
+  "url": "https://sqldba.blog/sql-server-blocking-troubleshooting/"
+ },
+ {
+  "title": "SQL Server Builds: Complete Version List and Support Lifecycle",
+  "lead": "\ud83d\udd16 Living reference. Every build number, KB and support date on this page comes from Microsoft\u2019s official build and lifecycle pages, and the page is regenerated after each patch release.",
+  "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/"
+ },
+ {
+  "title": "Cannot Open Backup Device: Operating System Error 5 (Access Is Denied)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-cannot-open-backup-device/"
+ },
+ {
+  "title": "Cannot Open Database Requested by the Login (Errors 4060 and 4064)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-cannot-open-database-4060/"
+ },
+ {
+  "title": "SQL Server Collation: Case Sensitivity and the Cross-Database Trap",
+  "lead": "Get Collation Conflicts and Cross-Database Dependencies finds real collation mismatches, but assumes you already know what collation actually controls.",
+  "url": "https://sqldba.blog/sql-server-collation-case-sensitivity-and-the-cross-database-trap/"
+ },
+ {
+  "title": "Compatibility Levels: What Actually Changes When You Bump It",
+  "lead": "\"Bump the compatibility level after a migration\" is standard advice, and Version Upgrade Readiness already tells you which databases are behind.",
+  "url": "https://sqldba.blog/sql-server-compatibility-level-what-actually-changes/"
+ },
+ {
+  "title": "Conversion Failed When Converting the varchar Value to Data Type int (Error 245)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-conversion-failed-245/"
+ },
+ {
+  "title": "The Database Could Not Be Exclusively Locked to Perform the Operation (Error 5030)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-database-could-not-be-exclusively-locked-5030/"
+ },
+ {
+  "title": "DBCC CHECKDB Found Corruption: What to Actually Do Next",
+  "lead": "DBCC CHECKDB reporting consistency errors is one of the few moments in this job that deserves to feel urgent.",
+  "url": "https://sqldba.blog/sql-server-dbcc-checkdb-corruption-found/"
+ },
+ {
+  "title": "Reading and Fixing a SQL Server Deadlock",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-deadlock-troubleshooting/"
+ },
+ {
+  "title": "SQL Server Default Ports",
+  "lead": "SQL Server listens on TCP 1433 by default, and on a box running a single default instance that is usually the end of it.",
+  "url": "https://sqldba.blog/sql-server-default-ports/"
+ },
+ {
+  "title": "Violation of PRIMARY KEY Constraint and Cannot Insert Duplicate Key (Errors 2627 and 2601)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-duplicate-key-errors-2627-2601/"
+ },
+ {
+  "title": "SQL Server Edition Change Runbook: Upgrade and Downgrade",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/sql-server-edition-change-runbook/"
+ },
+ {
+  "title": "SQL Server Error Severities Explained",
+  "lead": "\ud83d\udd0d Looking for a specific error?",
+  "url": "https://sqldba.blog/sql-server-error-severities-explained/"
+ },
+ {
+  "title": "SQL Server Errors: The Complete Guide",
+  "lead": "Every entry here is a message somebody pasted into a search box while something was broken.",
+  "url": "https://sqldba.blog/sql-server-errors/"
+ },
+ {
+  "title": "Could Not Allocate Space Because the Filegroup Is Full (Error 1105)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-filegroup-is-full-1105/"
+ },
+ {
+  "title": "The DELETE Statement Conflicted With a FOREIGN KEY Constraint (Error 547)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-foreign-key-conflict-547/"
+ },
+ {
+  "title": "Invalid Object Name in SQL Server (Error 208)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-invalid-object-name-208/"
+ },
+ {
+  "title": "SQL Server Isolation Levels (and When to Reach for RCSI)",
+  "lead": "Reading and Fixing a SQL Server Deadlock and Troubleshoot SQL Server Blocking both point at isolation level as part of the fix without covering what the levels actually are.",
+  "url": "https://sqldba.blog/sql-server-isolation-levels-and-read-committed-snapshot-isolation/"
+ },
+ {
+  "title": "Kerberos vs NTLM in SQL Server: Best Practices",
+  "lead": "Every Windows-authenticated connection to SQL Server uses one of two schemes, and most teams could not say which without looking.",
+  "url": "https://sqldba.blog/sql-server-kerberos-vs-ntlm/"
+ },
+ {
+  "title": "Lock Request Time Out Period Exceeded (Error 1222)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-lock-request-timeout-1222/"
+ },
+ {
+  "title": "Login Failed: The Account Is Disabled (Error 18470)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-login-disabled-18470/"
+ },
+ {
+  "title": "Troubleshoot \u201cLogin Failed for User\u201d (Error 18456) in SQL Server",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-login-failed-error-18456/"
+ },
+ {
+  "title": "Login Failed: The Login Is From an Untrusted Domain (Error 18452)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-login-untrusted-domain-18452/"
+ },
+ {
+  "title": "SQL Server Management Studio (SSMS): The Complete Guide",
+  "lead": "SQL Server Management Studio is still the tool most production DBAs live in day to day, and it has changed more in the last couple of years than the previous decade.",
+  "url": "https://sqldba.blog/sql-server-management-studio-complete-guide/"
+ },
+ {
+  "title": "SQL Server Migration Runbook: Availability Groups and Failover Clusters",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/sql-server-migration-runbook-availability-groups-and-clusters/"
+ },
+ {
+  "title": "SQL Server Migration Runbook: Standalone Instance",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/sql-server-migration-runbook-standalone/"
+ },
+ {
+  "title": "Fix \u201cMsg 207: Invalid Column Name\u201d in SQL Server",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-msg-207-invalid-column-name/"
+ },
+ {
+  "title": "Could Not Open a Connection to SQL Server: Error 53 and Named Pipes Error 40",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-network-path-not-found-error-53/"
+ },
+ {
+  "title": "The Server Principal Is Not Able to Access the Database (Error 916)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-not-able-to-access-database-916/"
+ },
+ {
+  "title": "User, Group or Role Already Exists in the Current Database (Error 15023)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-orphaned-users-15023/"
+ },
+ {
+  "title": "Parameter Sniffing in SQL Server: A Measured Example, Not Just the Theory",
+  "lead": "Parameter sniffing is SQL Server doing exactly what it's supposed to do: compiling a query plan based on the actual parameter value passed in the first time it runs, then reusing that plan for later calls.",
+  "url": "https://sqldba.blog/sql-server-parameter-sniffing/"
+ },
+ {
+  "title": "A Connection Was Successfully Established, But Then an Error Occurred During Login",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-pre-login-handshake-error/"
+ },
+ {
+  "title": "The Database Principal Owns a Schema in the Database and Cannot Be Dropped (Error 15138)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-principal-owns-schema-15138/"
+ },
+ {
+  "title": "A Read of the File Succeeded After Failing (Error 825, the Read-Retry Warning)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-read-retry-825/"
+ },
+ {
+  "title": "SQL Server Recovery Models Explained",
+  "lead": "Understanding SQL Server Recovery Models is fundamental to backup strategy, restore capability, and transaction log management.",
+  "url": "https://sqldba.blog/sql-server-recovery-models-explained/"
+ },
+ {
+  "title": "SQL Server Replication Monitoring Scripts",
+  "lead": "This is the set I reach for when replication starts acting up.",
+  "url": "https://sqldba.blog/sql-server-replication-monitoring-scripts/"
+ },
+ {
+  "title": "Troubleshoot RESOURCE_SEMAPHORE Waits in SQL Server (Memory Grant Pressure)",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-resource-semaphore-wait-troubleshooting/"
+ },
+ {
+  "title": "The SELECT Permission Was Denied on the Object (Error 229)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-select-permission-denied-229/"
+ },
+ {
+  "title": "Shrinking a SQL Server Database Causes Fragmentation: Measured, Not Just Stated",
+  "lead": "How to Shrink SQL Server Database Files in Chunks already says it plainly in its common pitfalls: shrinking causes index fragmentation, every time.",
+  "url": "https://sqldba.blog/sql-server-shrink-fragmentation-measured/"
+ },
+ {
+  "title": "SSPI Handshake Failed in SQL Server (Error 17806)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-sspi-handshake-failed/"
+ },
+ {
+  "title": "Diagnose SQL Server\u2019s \u2018String or Binary Data Would Be Truncated\u2019 Error",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-string-or-binary-data-truncated/"
+ },
+ {
+  "title": "Table Variables vs Temp Tables in SQL Server: What the Optimizer Actually Sees",
+  "lead": "The usual line on table variables vs temp tables is \"table variables don't have statistics, so the optimizer assumes 1 row.\" That was true once.",
+  "url": "https://sqldba.blog/sql-server-table-variable-vs-temp-table/"
+ },
+ {
+  "title": "SQL Server: The Database Is in Single User Mode (Fix)",
+  "lead": "You try to connect to a database and get: The database is in single user mode.",
+  "url": "https://sqldba.blog/sql-server-the-database-is-in-single-user-mode-fix/"
+ },
+ {
+  "title": "SQL Server Transaction Log Full",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-transaction-log-full/"
+ },
+ {
+  "title": "SQL Server Version Upgrade Runbook: Side-by-Side and In-Place",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/sql-server-version-upgrade-runbook/"
+ },
+ {
+  "title": "AM_INDBUILD_ALLOCATION and AM_SCHEMAMGR_UNSHARED_CACHE Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-am-waits/"
+ },
+ {
+  "title": "ASYNC_DISKPOOL_LOCK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-async-diskpool-lock/"
+ },
+ {
+  "title": "ASYNC_IO_COMPLETION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-async-io-completion/"
+ },
+ {
+  "title": "BACKUP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-backup/"
+ },
+ {
+  "title": "BACKUPTHREAD Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-backupthread/"
+ },
+ {
+  "title": "BAD_PAGE_PROCESS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-bad-page-process/"
+ },
+ {
+  "title": "BMPALLOCATION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-bmpallocation/"
+ },
+ {
+  "title": "BPSORT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-bpsort/"
+ },
+ {
+  "title": "BROKER_EVENTHANDLER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-eventhandler/"
+ },
+ {
+  "title": "BROKER_INIT and Service Broker Startup Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-internal-waits/"
+ },
+ {
+  "title": "BROKER_RECEIVE_WAITFOR Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-receive-waitfor/"
+ },
+ {
+  "title": "BROKER_TASK_STOP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-task-stop/"
+ },
+ {
+  "title": "BROKER_TO_FLUSH Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-to-flush/"
+ },
+ {
+  "title": "BROKER_TRANSMISSION_TABLE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-transmission-table/"
+ },
+ {
+  "title": "BROKER_TRANSMISSION_WORK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-transmission-work/"
+ },
+ {
+  "title": "BROKER_TRANSMITTER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-broker-transmitter/"
+ },
+ {
+  "title": "CHECK_TABLES_INITIALIZATION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-check-tables-initialization/"
+ },
+ {
+  "title": "CHECK_TABLES_THREAD_BARRIER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-check-tables-thread-barrier/"
+ },
+ {
+  "title": "CHECKPOINT_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-checkpoint-queue/"
+ },
+ {
+  "title": "CHKPT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-chkpt/"
+ },
+ {
+  "title": "ASSEMBLY_LOAD and CLR Assembly Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-clr-assembly-waits/"
+ },
+ {
+  "title": "CLR_AUTO_EVENT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-clr-auto-event/"
+ },
+ {
+  "title": "CLR_MANUAL_EVENT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-clr-manual-event/"
+ },
+ {
+  "title": "CLR_SEMAPHORE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-clr-semaphore/"
+ },
+ {
+  "title": "CMEMPARTITIONED Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-cmempartitioned/"
+ },
+ {
+  "title": "CMEMTHREAD Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-cmemthread/"
+ },
+ {
+  "title": "COLUMNSTORE_BUILD_THROTTLE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-columnstore-build-throttle/"
+ },
+ {
+  "title": "COMMIT_TABLE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-commit-table/"
+ },
+ {
+  "title": "CXROWSET_SYNC Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-cxrowset-sync/"
+ },
+ {
+  "title": "CXSYNC_CONSUMER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-cxsync-consumer/"
+ },
+ {
+  "title": "CXSYNC_PORT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-cxsync-port/"
+ },
+ {
+  "title": "DAC_INIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dac-init/"
+ },
+ {
+  "title": "DBMIRROR_DBM_MUTEX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirror-dbm-mutex/"
+ },
+ {
+  "title": "DBMIRROR_EVENTS_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirror-events-queue/"
+ },
+ {
+  "title": "DBMIRROR_SEND Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirror-send/"
+ },
+ {
+  "title": "DBMIRROR_WORKER_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirror-worker-queue/"
+ },
+ {
+  "title": "DBMIRRORING_CMD Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dbmirroring-cmd/"
+ },
+ {
+  "title": "DEADLOCK_ENUM_MUTEX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-deadlock-enum-mutex/"
+ },
+ {
+  "title": "DIRTY_PAGE_POLL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dirty-page-poll/"
+ },
+ {
+  "title": "DIRTY_PAGE_TABLE_LOCK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dirty-page-table-lock/"
+ },
+ {
+  "title": "DISKIO_SUSPEND Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-diskio-suspend/"
+ },
+ {
+  "title": "DISPATCHER_QUEUE_SEMAPHORE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dispatcher-queue-semaphore/"
+ },
+ {
+  "title": "DPT_ENTRY_LOCK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dpt-entry-lock/"
+ },
+ {
+  "title": "DROPTEMP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-droptemp/"
+ },
+ {
+  "title": "DUMP_LOG_COORDINATOR Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-dump-log-coordinator/"
+ },
+ {
+  "title": "EC Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-ec/"
+ },
+ {
+  "title": "EE_PMOLOCK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-ee-pmolock/"
+ },
+ {
+  "title": "EXCHANGE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-exchange/"
+ },
+ {
+  "title": "EXECSYNC Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-execsync/"
+ },
+ {
+  "title": "FCB_REPLICA_READ and FCB_REPLICA_WRITE Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-fcb-replica-waits/"
+ },
+ {
+  "title": "FGCB_ADD_REMOVE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-fgcb-add-remove/"
+ },
+ {
+  "title": "FFT_NSO_DB_LIST and FFT_RECOVERY Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-filetable-waits/"
+ },
+ {
+  "title": "FT_IFTS_SCHEDULER_IDLE_WAIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-ft-ifts-scheduler-idle-wait/"
+ },
+ {
+  "title": "FT_IFTSHC_MUTEX and FT_IFTS_RWLOCK Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-ft-internal-waits/"
+ },
+ {
+  "title": "FT_MASTER_MERGE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-ft-master-merge/"
+ },
+ {
+  "title": "HADR_AG_MUTEX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-ag-mutex/"
+ },
+ {
+  "title": "HADR_CLUSAPI_CALL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-clusapi-call/"
+ },
+ {
+  "title": "HADR_DATABASE_FLOW_CONTROL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-database-flow-control/"
+ },
+ {
+  "title": "HADR_FILESTREAM_IOMGR_IOCOMPLETION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-filestream-iomgr-iocompletion/"
+ },
+ {
+  "title": "HADR_GROUP_COMMIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-group-commit/"
+ },
+ {
+  "title": "HADR_ARCONTROLLER and HADR_FILESTREAM_IOMGR Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-internal-waits/"
+ },
+ {
+  "title": "HADR_LOGCAPTURE_WAIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-logcapture-wait/"
+ },
+ {
+  "title": "HADR_LOGPROGRESS_SYNC Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-logprogress-sync/"
+ },
+ {
+  "title": "HADR_NOTIFICATION_DEQUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-notification-dequeue/"
+ },
+ {
+  "title": "HADR_SEEDING_LIMIT_BACKUPS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-seeding-limit-backups/"
+ },
+ {
+  "title": "HADR_TIMER_TASK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-timer-task/"
+ },
+ {
+  "title": "HADR_WORK_POOL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-work-pool/"
+ },
+ {
+  "title": "HADR_WORK_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hadr-work-queue/"
+ },
+ {
+  "title": "HP_SPOOL_BARRIER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-hp-spool-barrier/"
+ },
+ {
+  "title": "HTBUILD Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-htbuild/"
+ },
+ {
+  "title": "HTDELETE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-htdelete/"
+ },
+ {
+  "title": "HTMEMO Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-htmemo/"
+ },
+ {
+  "title": "HTREINIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-htreinit/"
+ },
+ {
+  "title": "HTREPARTITION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-htrepartition/"
+ },
+ {
+  "title": "IMPPROV_IOWAIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-impprov-iowait/"
+ },
+ {
+  "title": "IO_QUEUE_LIMIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-io-queue-limit/"
+ },
+ {
+  "title": "KSOURCE_WAKEUP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-ksource-wakeup/"
+ },
+ {
+  "title": "LATCH_DT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-dt/"
+ },
+ {
+  "title": "LATCH_EX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-ex/"
+ },
+ {
+  "title": "LATCH_KP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-kp/"
+ },
+ {
+  "title": "LATCH_NL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-nl/"
+ },
+ {
+  "title": "LATCH_SH Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-sh/"
+ },
+ {
+  "title": "LATCH_UP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-latch-up/"
+ },
+ {
+  "title": "LAZYWRITER_SLEEP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lazywriter-sleep/"
+ },
+ {
+  "title": "LCK_M_IS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-is/"
+ },
+ {
+  "title": "LCK_M_IX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-ix/"
+ },
+ {
+  "title": "LCK_M LOW_PRIORITY and ABORT_BLOCKERS Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-low-priority-abort-blockers/"
+ },
+ {
+  "title": "LCK_M_RIn_NL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-rin-nl/"
+ },
+ {
+  "title": "LCK_M_RS_S Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-rs-s/"
+ },
+ {
+  "title": "LCK_M_RS_U Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-rs-u/"
+ },
+ {
+  "title": "LCK_M_RX_X Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-rx-x/"
+ },
+ {
+  "title": "LCK_M_SCH_M Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-sch-m/"
+ },
+ {
+  "title": "LCK_M_SCH_S Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-sch-s/"
+ },
+ {
+  "title": "LCK_M_SIX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-lck-m-six/"
+ },
+ {
+  "title": "LOGBUFFER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-logbuffer/"
+ },
+ {
+  "title": "LOGMGR_FLUSH Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-logmgr-flush/"
+ },
+ {
+  "title": "LOGMGR_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-logmgr-queue/"
+ },
+ {
+  "title": "LOGMGR_RESERVE_APPEND Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-logmgr-reserve-append/"
+ },
+ {
+  "title": "LOGMGR Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-logmgr/"
+ },
+ {
+  "title": "LOGPOOL Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-logpool-waits/"
+ },
+ {
+  "title": "MEMORY_ALLOCATION_EXT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-memory-allocation-ext/"
+ },
+ {
+  "title": "METADATA_LAZYCACHE_RWLOCK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-metadata-lazycache-rwlock/"
+ },
+ {
+  "title": "MSQL_DQ Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-msql-dq/"
+ },
+ {
+  "title": "MSQL_XP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-msql-xp/"
+ },
+ {
+  "title": "OLEDB Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-oledb/"
+ },
+ {
+  "title": "ONDEMAND_TASK_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-ondemand-task-queue/"
+ },
+ {
+  "title": "PAGEIOLATCH_DT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pageiolatch-dt/"
+ },
+ {
+  "title": "PAGEIOLATCH_KP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pageiolatch-kp/"
+ },
+ {
+  "title": "PAGEIOLATCH_NL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pageiolatch-nl/"
+ },
+ {
+  "title": "PAGEIOLATCH_UP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pageiolatch-up/"
+ },
+ {
+  "title": "PAGELATCH_DT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-dt/"
+ },
+ {
+  "title": "PAGELATCH_KP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-kp/"
+ },
+ {
+  "title": "PAGELATCH_NL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-nl/"
+ },
+ {
+  "title": "PAGELATCH_SH Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-sh/"
+ },
+ {
+  "title": "PAGELATCH_UP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pagelatch-up/"
+ },
+ {
+  "title": "PARALLEL_BACKUP_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-backup-queue/"
+ },
+ {
+  "title": "PARALLEL_REDO_DRAIN_WORKER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-drain-worker/"
+ },
+ {
+  "title": "PARALLEL_REDO_FLOW_CONTROL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-flow-control/"
+ },
+ {
+  "title": "PARALLEL_REDO_LOG_CACHE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-log-cache/"
+ },
+ {
+  "title": "PARALLEL_REDO_TRAN_LIST Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-tran-list/"
+ },
+ {
+  "title": "PARALLEL_REDO_TRAN_TURN Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-tran-turn/"
+ },
+ {
+  "title": "PARALLEL_REDO_WORKER_SYNC Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-worker-sync/"
+ },
+ {
+  "title": "PARALLEL_REDO_WORKER_WAIT_WORK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-parallel-redo-worker-wait-work/"
+ },
+ {
+  "title": "PERFORMANCE_COUNTERS_RWLOCK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-performance-counters-rwlock/"
+ },
+ {
+  "title": "PREEMPTIVE_COM Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-com-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_DTC Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-dtc-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_HADR_LEASE_MECHANISM Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-hadr-lease-mechanism/"
+ },
+ {
+  "title": "PREEMPTIVE_OLEDBOPS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-oledbops/"
+ },
+ {
+  "title": "PREEMPTIVE_OS Group Lookup Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-ad-lookup-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_AUTHENTICATIONOPS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-authenticationops/"
+ },
+ {
+  "title": "PREEMPTIVE_OS Cluster Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-cluster-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_CREATEFILE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-createfile/"
+ },
+ {
+  "title": "PREEMPTIVE_OS Crypto Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-crypto-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_DSGETDCNAME Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-dsgetdcname/"
+ },
+ {
+  "title": "PREEMPTIVE_OS File Operation Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-file-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_FILEOPS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-fileops/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_FLUSHFILEBUFFERS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-flushfilebuffers/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_GETDISKFREESPACE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-getdiskfreespace/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_GETPROCADDRESS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-getprocaddress/"
+ },
+ {
+  "title": "PREEMPTIVE_OS Library Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-library-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_LOGONUSER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-logonuser/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_LOOKUPACCOUNTSID Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-lookupaccountsid/"
+ },
+ {
+  "title": "Miscellaneous PREEMPTIVE_OS Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-misc-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_OS Network Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-network-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_PIPEOPS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-pipeops/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_QUERYREGISTRY Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-queryregistry/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_REPORTEVENT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-reportevent/"
+ },
+ {
+  "title": "PREEMPTIVE_OS Security Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-security-waits/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_WAITFORSINGLEOBJECT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-waitforsingleobject/"
+ },
+ {
+  "title": "PREEMPTIVE_OS_WRITEFILEGATHER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-os-writefilegather/"
+ },
+ {
+  "title": "PREEMPTIVE_SB_STOPENDPOINT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-sb-stopendpoint/"
+ },
+ {
+  "title": "PREEMPTIVE_SP_SERVER_DIAGNOSTICS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-sp-server-diagnostics/"
+ },
+ {
+  "title": "PREEMPTIVE_XE Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-preemptive-xe-waits/"
+ },
+ {
+  "title": "PRINT_ROLLBACK_PROGRESS Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-print-rollback-progress/"
+ },
+ {
+  "title": "PVS_PREALLOCATE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pvs-preallocate/"
+ },
+ {
+  "title": "PWAIT_ALL_COMPONENTS_INITIALIZED Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pwait-all-components-initialized/"
+ },
+ {
+  "title": "PWAIT_DIRECTLOGCONSUMER_GETNEXT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pwait-directlogconsumer-getnext/"
+ },
+ {
+  "title": "PWAIT_EXTENSIBILITY_CLEANUP_TASK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pwait-extensibility-cleanup-task/"
+ },
+ {
+  "title": "PWAIT_HADR_WORKITEM_COMPLETED Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-pwait-hadr-workitem-completed/"
+ },
+ {
+  "title": "QDS_ASYNC_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-async-queue/"
+ },
+ {
+  "title": "QDS_CLEANUP_STALE_QUERIES_TASK_MAIN_LOOP_SLEEP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-cleanup-stale-queries-task-main-loop-sleep/"
+ },
+ {
+  "title": "QDS_DYN_VECTOR Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-dyn-vector/"
+ },
+ {
+  "title": "QDS_LOADDB Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-loaddb/"
+ },
+ {
+  "title": "QDS_PERSIST_TASK_MAIN_LOOP_SLEEP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-persist-task-main-loop-sleep/"
+ },
+ {
+  "title": "QDS_SHUTDOWN_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-shutdown-queue/"
+ },
+ {
+  "title": "QDS_STMT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-qds-stmt/"
+ },
+ {
+  "title": "QRY_PROFILE_LIST_MUTEX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-qry-profile-list-mutex/"
+ },
+ {
+  "title": "QUERY_EXECUTION_INDEX_SORT_EVENT_OPEN Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-query-execution-index-sort-event-open/"
+ },
+ {
+  "title": "QUERY_TASK_ENQUEUE_MUTEX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-query-task-enqueue-mutex/"
+ },
+ {
+  "title": "REDO_THREAD_PENDING_WORK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-redo-thread-pending-work/"
+ },
+ {
+  "title": "REPLICA_WRITES Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-replica-writes/"
+ },
+ {
+  "title": "REQUEST_DISPENSER_PAUSE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-request-dispenser-pause/"
+ },
+ {
+  "title": "REQUEST_FOR_DEADLOCK_SEARCH Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-request-for-deadlock-search/"
+ },
+ {
+  "title": "RESERVED_MEMORY_ALLOCATION_EXT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-reserved-memory-allocation-ext/"
+ },
+ {
+  "title": "RESOURCE_GOVERNOR_IDLE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-resource-governor-idle/"
+ },
+ {
+  "title": "RESOURCE_SEMAPHORE_MUTEX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-resource-semaphore-mutex/"
+ },
+ {
+  "title": "RESOURCE_SEMAPHORE_QUERY_COMPILE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-resource-semaphore-query-compile/"
+ },
+ {
+  "title": "RESOURCE_SEMAPHORE_SMALL_QUERY Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-resource-semaphore-small-query/"
+ },
+ {
+  "title": "RESTORE_MSDA_THREAD_BARRIER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-restore-msda-thread-barrier/"
+ },
+ {
+  "title": "RTDATA_LIST Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-rtdata-list/"
+ },
+ {
+  "title": "SESSION_WAIT_STATS_CHILDREN Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-session-wait-stats-children/"
+ },
+ {
+  "title": "SHUTDOWN Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-shutdown/"
+ },
+ {
+  "title": "SLEEP_BPOOL_FLUSH Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sleep-bpool-flush/"
+ },
+ {
+  "title": "SLEEP_BPOOL_STEAL and Buffer Pool Memory Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sleep-bpool-memory-waits/"
+ },
+ {
+  "title": "SLEEP_DBSTARTUP and Startup Sleep Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sleep-startup-waits/"
+ },
+ {
+  "title": "SLEEP_TASK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sleep-task/"
+ },
+ {
+  "title": "SNI_CRITICAL_SECTION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sni-critical-section/"
+ },
+ {
+  "title": "SNI_TASK_COMPLETION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sni-task-completion/"
+ },
+ {
+  "title": "SOS_DISPATCHER_MUTEX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-dispatcher-mutex/"
+ },
+ {
+  "title": "SOS_MEMORY_TOPLEVELBLOCKALLOCATOR Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-memory-toplevelblockallocator/"
+ },
+ {
+  "title": "SOS_PHYS_PAGE_CACHE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-phys-page-cache/"
+ },
+ {
+  "title": "SOS_SYNC_TASK_ENQUEUE_EVENT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-sync-task-enqueue-event/"
+ },
+ {
+  "title": "SOS_WORK_DISPATCHER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-work-dispatcher/"
+ },
+ {
+  "title": "SOS_WORKER_MIGRATION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sos-worker-migration/"
+ },
+ {
+  "title": "SP_SERVER_DIAGNOSTICS_SLEEP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sp-server-diagnostics-sleep/"
+ },
+ {
+  "title": "SQLCLR_APPDOMAIN Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sqlclr-appdomain/"
+ },
+ {
+  "title": "SQLCLR_ASSEMBLY Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sqlclr-assembly/"
+ },
+ {
+  "title": "SQLTRACE File Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sqltrace-file-waits/"
+ },
+ {
+  "title": "SQLTRACE_INCREMENTAL_FLUSH_SLEEP Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-sqltrace-incremental-flush-sleep/"
+ },
+ {
+  "title": "ASYNC_NETWORK_IO Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-async-network-io/"
+ },
+ {
+  "title": "BACKUPIO and BACKUPBUFFER Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-backupio/"
+ },
+ {
+  "title": "CXPACKET and CXCONSUMER Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-cxpacket-cxconsumer/"
+ },
+ {
+  "title": "HADR_SYNC_COMMIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-hadr-sync-commit/"
+ },
+ {
+  "title": "IO_COMPLETION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-io-completion/"
+ },
+ {
+  "title": "LCK_M_X, LCK_M_S, and LCK_M_U Wait Types in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-lock-waits/"
+ },
+ {
+  "title": "PAGEIOLATCH_EX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-pageiolatch-ex/"
+ },
+ {
+  "title": "PAGEIOLATCH_SH Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-pageiolatch-sh/"
+ },
+ {
+  "title": "PAGELATCH_EX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-pagelatch-ex-temp-db-contention/"
+ },
+ {
+  "title": "RESOURCE_SEMAPHORE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-resource-semaphore/"
+ },
+ {
+  "title": "SOS_SCHEDULER_YIELD Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-sos-scheduler-yield/"
+ },
+ {
+  "title": "THREADPOOL Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-threadpool/"
+ },
+ {
+  "title": "WRITELOG Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics-writelog/"
+ },
+ {
+  "title": "SQL Server Wait Types Library",
+  "lead": "Wait statistics are the single best first step in any SQL Server performance investigation.",
+  "url": "https://sqldba.blog/sql-server-wait-statistics/"
+ },
+ {
+  "title": "TERMINATE_LISTENER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-terminate-listener/"
+ },
+ {
+  "title": "TRACE_EVTNOTIF Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-trace-evtnotif/"
+ },
+ {
+  "title": "TRACEWRITE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-tracewrite/"
+ },
+ {
+  "title": "UCS_SESSION_REGISTRATION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-ucs-session-registration/"
+ },
+ {
+  "title": "VDI_CLIENT_OTHER Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-vdi-client-other/"
+ },
+ {
+  "title": "WAIT_ON_SYNC_STATISTICS_REFRESH Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-on-sync-statistics-refresh/"
+ },
+ {
+  "title": "WAIT_XTP_CKPT_CLOSE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-ckpt-close/"
+ },
+ {
+  "title": "WAIT_XTP_HOST_WAIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-host-wait/"
+ },
+ {
+  "title": "WAIT_XTP_OFFLINE_CKPT_LOG_IO Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-offline-ckpt-log-io/"
+ },
+ {
+  "title": "WAIT_XTP_OFFLINE_CKPT_NEW_LOG Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-offline-ckpt-new-log/"
+ },
+ {
+  "title": "WAIT_XTP_RECOVERY Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-recovery/"
+ },
+ {
+  "title": "WAIT_XTP_TASK_SHUTDOWN Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-wait-xtp-task-shutdown/"
+ },
+ {
+  "title": "WAITFOR_PER_QUEUE Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-waitfor-per-queue/"
+ },
+ {
+  "title": "WAITFOR Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-waitfor/"
+ },
+ {
+  "title": "WRITE_COMPLETION Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-write-completion/"
+ },
+ {
+  "title": "XE_BUFFERMGR_ALLPROCESSED_EVENT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-buffermgr-allprocessed-event/"
+ },
+ {
+  "title": "XE_DISPATCHER_WAIT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-dispatcher-wait/"
+ },
+ {
+  "title": "XE_FILE_TARGET_TVF Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-file-target-tvf/"
+ },
+ {
+  "title": "XE_LIVE_TARGET_TVF Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-live-target-tvf/"
+ },
+ {
+  "title": "XE_TIMER_EVENT Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-timer-event/"
+ },
+ {
+  "title": "XE_TIMER_MUTEX Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-xe-timer-mutex/"
+ },
+ {
+  "title": "XTP_PREEMPTIVE_TASK Wait Type in SQL Server",
+  "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
+  "url": "https://sqldba.blog/sql-server-wait-xtp-preemptive-task/"
+ },
+ {
+  "title": "sqlcmd Examples for SQL Server",
+  "lead": "sqlcmd is a command line utility for connecting to SQL Server and executing Transact-SQL without a GUI.",
+  "url": "https://sqldba.blog/sqlcmd-examples-for-sql-server/"
+ },
+ {
+  "title": "SSMS Certificate Chain Not Trusted Error (Trust Server Certificate Fix)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/ssms-certificate-chain-not-trusted-error-trust-server-certificate-fix/"
+ },
+ {
+  "title": "Testing Remote Server Port Connectivity with PowerShell",
+  "lead": "Testing connectivity to remote server ports is a basic skill every DBA should have.",
+  "url": "https://sqldba.blog/testing-remote-server-port-connectivity-with-powershell/"
+ },
+ {
+  "title": "Troubleshooting Database Mirroring Issues in SQL Server",
+  "lead": "Database Mirroring is deprecated, but you will still see it in many production environments.",
+  "url": "https://sqldba.blog/troubleshooting-database-mirroring-issues-in-sql-server/"
+ },
+ {
+  "title": "Understanding SQL Server AG Latency (AAG Latency Explained)",
+  "lead": "As a production SQL Server DBA, one of the fastest health checks I run on an Always On Availability Group is a latency check.",
+  "url": "https://sqldba.blog/understanding-sql-server-ag-latency-aag-latency-explained/"
+ },
+ {
+  "title": "Understanding WHERE 1=1 and WHERE 1=2 in SQL Queries",
+  "lead": "In SQL, you will often see queries written using WHERE 1=1 or WHERE 1=2.",
+  "url": "https://sqldba.blog/understanding-where-1-1-and-where-1-2-in-sql/"
+ },
+ {
+  "title": "Using PowerShell to Get Last SQL Failover Time",
+  "lead": "When reviewing availability events on SQL Server, one of the first questions is often: Did the cluster move, and when?",
+  "url": "https://sqldba.blog/using-powershell-to-get-last-sql-failover-time/"
+ },
+ {
+  "title": "What the USE Command Does in SQL Server",
+  "lead": "The USE command changes the database context for the current session.",
+  "url": "https://sqldba.blog/what-the-use-command-does-in-sql-server/"
+ },
+ {
+  "title": "What WITH (NOLOCK) Actually Does in SQL Server",
+  "lead": "Almost every SQL Server developer has copied WITH (NOLOCK) onto the end of a query at some point, usually because someone said it \"makes queries faster\" or \"avoids blocking.\" Both of those things are technically true.",
+  "url": "https://sqldba.blog/what-with-nolock-actually-does-in-sql-server/"
+ },
+ {
+  "title": "When Shrinking Temp DB Just Won\u2019t Shrink",
+  "lead": "This is broken. You run DBCC SHRINKFILE on the Temp DB data files, maybe throw in a CHECKPOINT for good measure, and nothing moves.",
+  "url": "https://sqldba.blog/when-shrinking-temp-db-just-wont-shrink/"
+ },
+ {
+  "title": "Why Is the Database in \u201cIn Recovery\u201d Mode?",
+  "lead": "Seeing a database stuck in Recovery mode usually happens at the worst possible time.",
+  "url": "https://sqldba.blog/why-is-the-database-in-in-recovery-mode/"
+ },
+ {
+  "title": "Windows Server OS Upgrade Runbook for SQL Server",
+  "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
+  "url": "https://sqldba.blog/windows-server-os-upgrade-runbook-for-sql-server/"
+ },
+ {
+  "title": "Working with SQL Server Database Master Keys",
+  "lead": "SQL Server uses an encryption hierarchy to protect secrets such as credentials, asymmetric keys and certificates.",
+  "url": "https://sqldba.blog/working-with-sql-server-database-master-keys/"
+ }
+]

@@ -43,7 +43,8 @@ from sqldba_mcp import tools  # noqa: E402
 REFUSALS = (
     'is not in the library yet',
     'Nothing in the dba-tools library matches',
-    'Nothing in the published FAQ answers matches',
+    'Nothing in the published FAQ answers matches',   # pre-2026-08-20 wording
+    'Nothing on sqldba.blog matches',                 # now means: no FAQ pair AND no post
     'Not in the sqldba.blog library yet',
     'could not find a build number',
 )
@@ -67,20 +68,8 @@ QUESTIONS = [
 
     dict(id='R02', asked='whats the default sql server ports',
          tool='answer_question', mode='cites', expect=['sql-server-default-ports'],
-         gap='The post is published and is not in the corpus. It carries no FAQ block, and '
-             'the corpus is built from FAQ blocks - 74 published posts (15%) are unreachable '
-             'the same way.\n\n'
-             'TRIED AND REVERTED 2026-08-19, do not retry blind: a fallback tier indexing '
-             'every post by title + excerpt, consulted only when the FAQ tier declined or '
-             'answered from an unrelated post. It DID fix this question. It was reverted '
-             'because no threshold separates "this post covers your question" from "this '
-             'post shares words with your question":\n'
-             '    what is the best sql server book -> Kerberos vs NTLM        title match 0.58\n'
-             '    whats the default sql server ports -> SQL Server Default Ports        0.49\n'
-             'The false positive outscored the true one. Excerpt matching is no better - it '
-             'scores 0.00 on "how do i kill a spid" (correct) and 1.00 on "how do I set up '
-             'replication" (wrong). Off-domain honesty fell 22/30 -> 21/30 and R07 broke. '
-             'A different signal is needed, not a different threshold.'),
+         note='CLOSED 2026-08-20 by the post index. The 08-19 revert note is kept below, because why it now works is the useful part.',
+         history='TRIED AND REVERTED 2026-08-19: a tier indexing every post by title and excerpt, consulted only when the FAQ tier declined. It fixed this question and was still reverted, because no threshold separated "this post covers your question" from "this post shares words with it" - coverage counted every term as worth 1, so:  book -> Kerberos vs NTLM scored 0.58 (answered), ports -> Default Ports scored 0.49 (refused). The false positive outscored the true one and the tier was correctly abandoned.  WHAT CHANGED IS NOT THE THRESHOLD. Coverage is now weighted by IDF, and the same two cases invert: book -> Kerberos 0.51, declined, because "book" is foreign vocabulary carrying weight 6.19 that can never be matched; ports -> Default Ports 0.65, answered, because "ports" is a real corpus term.  THE LESSON, not the number: this tier was unworkable before the floor was weighted and workable after. A tier reverted for a reason may be retried once that reason is gone - but only by naming it and re-measuring the same cases.'),
 
     dict(id='R03', asked='whats the latest version of sql for 2017',
          tool='check_build', mode='contains', expect=['2017', 'CU31', '14.0.3456.2'],

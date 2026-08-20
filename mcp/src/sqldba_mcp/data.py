@@ -52,6 +52,12 @@ def faqs() -> list[dict]:
 
 
 @lru_cache(maxsize=1)
+def posts() -> list[dict]:
+    """One record per published post: title, lead, URL. The reachability floor."""
+    return _load('posts')
+
+
+@lru_cache(maxsize=1)
 def scripts() -> list[dict]:
     return _load('scripts')
 
@@ -598,6 +604,20 @@ class Index:
 @lru_cache(maxsize=1)
 def faq_index() -> Index:
     return Index(faqs(), {'question': 3.0, 'post_title': 1.5, 'answer': 1.0})
+
+
+@lru_cache(maxsize=1)
+def post_index() -> Index:
+    """Every published post, searchable by what it is ABOUT.
+
+    The title carries almost all the weight on purpose. A title is the one place a post
+    states its own subject in the words a reader would use, and that is exactly what the
+    FAQ corpus cannot do: an accordion answers a post's leftover questions, so "how do I
+    update SSMS" reached "Do I need administrator rights?" and never the post called
+    Install and Update SSMS. The lead is scored far lower - it disambiguates between two
+    posts whose titles are close, and should not let a passing mention outrank a title.
+    """
+    return Index(posts(), {'title': 4.0, 'lead': 0.75})
 
 
 @lru_cache(maxsize=1)

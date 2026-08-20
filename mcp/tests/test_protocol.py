@@ -113,7 +113,9 @@ class TestOverTheWire(unittest.TestCase):
         self.assertIn('NOT the highest build on this series', self.result['build_text'])
 
     def test_a_refusal_comes_back_as_a_refusal(self):
-        self.assertIn('nothing in the published faq', self.result['unknown_text'].lower())
+        # Wording changed with the post-index fallback: a refusal now means no Q&A pair
+        # matched AND no post covers it. Asserting the promise, not the sentence.
+        self.assertIn('nothing on sqldba.blog', self.result['unknown_text'].lower())
 
     def test_resources_are_listed_and_readable(self):
         self.assertEqual(len(self.result['resources']), 9)

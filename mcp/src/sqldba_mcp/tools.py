@@ -788,6 +788,7 @@ def answer_question(question: str) -> str:
 
     # Coverage floor: a single shared term is not an answer. See Index.search.
     hits = data.faq_index().search(q, limit=4, min_coverage=0.5)
+    cleared_floor = {id(h[0]) for h in hits}   # survived the COVERAGE floor
 
     # THE ANSWER MUST HAVE SOMETHING TO DO WITH THE QUESTION.
     #
@@ -833,12 +834,108 @@ def answer_question(question: str) -> str:
         hits = [h for i, h in enumerate(hits)
                 if _overlap(q, h[0].get('question') or '') > (0 if i == 0 else 0.35)]
 
+    # WHEN THE FLOOR REMOVES THE BEST ANSWER, NAME ITS POST - do not serve the runner-up
+    # from somewhere else.
+    #
+    # "how do i update ssms to latest version" ranked "Do I need administrator rights to
+    # install or update SSMS?" first at 12.22, from the post Install and Update SSMS. The
+    # coverage floor dropped it at 0.47, because "latest" is a real corpus term that pair
+    # does not contain, and what survived was a pair at 10.25 from a post about the error
+    # log. The tool had the right article and answered from the wrong one.
+    #
+    # Scoped to records the COVERAGE FLOOR removed, not ones the overlap filter
+    # removed below - that filter drops zero-overlap records on purpose, and
+    # rescuing those undid the transaction-log promotion it exists to make.
+    # This CANNOT cost honesty, by construction: it only runs when `hits` is already
+    # non-empty, so the tool was going to answer regardless. It changes which post gets
+    # named, never whether one does.
+    unfiltered = data.faq_index().search(q, limit=1)
+    if hits and unfiltered and id(unfiltered[0][0]) not in cleared_floor:
+        top_pair = unfiltered[0][0]
+        if top_pair.get('url') != hits[0][0].get('url'):
+            out = ['This is covered in **%s**'
+                   % (top_pair.get('post_title') or top_pair['url']), top_pair['url'], '',
+                   'The closest question-and-answer pair here answers a detail of it '
+                   'rather than the question you asked:', '',
+                   '- **%s**  %s' % (top_pair['question'], top_pair['url'])]
+            return '\n'.join(out)
+
+    # The post index runs regardless, not only as a fallback, because it answers a
+    # different question from the FAQ tier: "which post is this ABOUT", not "which pair
+    # shares words with the wording used". Consulted for both uses below.
+    covering = data.post_index().search(q, limit=3, min_coverage=0.6)
+
+    # A TITLE MATCH BEATS A PAIR FROM AN UNRELATED POST.
+    #
+    # "how do i update ssms to latest version" ranked "Do I need administrator rights to
+    # install or update SSMS?" top at 12.22 - right post, wrong entry - and the coverage
+    # floor then dropped it at 0.47, because "latest" is a real corpus term that pair does
+    # not contain. What survived was "How do I read the SQL Server error log without
+    # SSMS?" at 10.25, from a post about the error log. Loosening the floor to rescue the
+    # first would let much worse through, so the floor is not the thing to change.
+    #
+    # A Q&A pair is scored on words; a title states a subject. When the post index is
+    # confident - its own higher floor - and names a DIFFERENT post from the one the
+    # surviving pair belongs to, the pair is the weaker evidence: it survived on
+    # vocabulary borrowed from an article about something else.
+    # ...but ONLY when the pair is not already being presented AS its post. If
+    # _lead_with_post is true the tool is about to say "this is covered in <post>"
+    # using the pair's own article, which is the same answer by a different route -
+    # overriding that swapped a correct citation on "how do i get the sid of a sql
+    # login" for a different post entirely.
+    if (hits and covering and not _lead_with_post(q, hits[0][0])
+            and covering[0][0]['url'] != hits[0][0].get('url')):
+        top = covering[0][0]
+        out = ['This is covered in **%s**' % top['title'], top['url']]
+        if top.get('lead'):
+            out += ['', top['lead']]
+        pair = hits[0][0]
+        out += ['', 'The closest question-and-answer pair here is from a different post, '
+                    'so it is a related note rather than the answer:', '',
+                '- **%s**%s  %s' % (pair['question'],
+                                    ' (in: %s)' % pair['post_title']
+                                    if pair.get('post_title') else '', pair['url'])]
+        return '\n'.join(out)
+
+
     if not hits:
-        return ("Nothing in the published FAQ answers matches that.\n\n"
-                "This covers %d questions answered across sqldba.blog. For a specific "
-                "error number use `lookup_error`, for a wait type use `explain_wait`, "
-                "for a build number use `check_build`, and to find a script use "
-                "`find_script`." % len(data.faqs()))
+        # NOTHING MATCHED A Q&A PAIR. That is not the same as "the site does not cover
+        # this", and until 2026-08-20 it was treated as if it were.
+        #
+        # The FAQ corpus is built from `<details>` accordions, and an accordion is an
+        # addendum: it answers a post's leftover questions, never its main subject.
+        # Measured against live: 319 of 489 published posts carry no accordion at all,
+        # and 74 had no record of any kind in this server. Asking "how do I update SSMS"
+        # could not reach the post titled *Install and Update SSMS* - not because it
+        # ranked badly, but because the post was not in the index.
+        #
+        # A title IS the post stating its own subject. So before refusing, ask the post
+        # index. The floor is the FAQ's own, not a lower one: this widens WHAT can be
+        # found, and must not widen what counts as a match. If it still finds nothing,
+        # the refusal below is now worth something, because it means both.
+        # 0.6, ABOVE the FAQ tier's 0.5, and the gap is the point: this path overturns a
+        # refusal, and overturning one has to cost more evidence than accepting a match -
+        # the same rule already applied to promoting a lower-ranked FAQ pair. Measured
+        # 0.55/0.60/0.65/0.70 and they behave identically on the suite, so this is the
+        # middle of a plateau rather than a value tuned to the probes.
+        if covering:
+            top = covering[0][0]
+            lines = ['This is covered in **%s**' % top['title'], top['url']]
+            if top.get('lead'):
+                lines += ['', top['lead']]
+            lines += ['', '_No question-and-answer pair on this site matches your wording, '
+                          'so that is the post rather than a quoted answer._']
+            rest = [c for c, _ in covering[1:]]
+            if rest:
+                lines += ['', 'Also on this topic:']
+                lines += ['- %s  %s' % (c['title'], c['url']) for c in rest]
+            return '\n'.join(lines)
+
+        return ("Nothing on sqldba.blog matches that.\n\n"
+                "This covers %d questions answered across %d published posts. For a "
+                "specific error number use `lookup_error`, for a wait type use "
+                "`explain_wait`, for a build number use `check_build`, and to find a "
+                "script use `find_script`." % (len(data.faqs()), len(data.posts())))
 
     best = hits[0][0]
     if _lead_with_post(q, best):

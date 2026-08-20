@@ -24,9 +24,14 @@ from sqldba_mcp import data, tools
 # The phrases the tools use to decline. If a refusal is ever reworded, this list is the
 # single place it has to change - and a reword that forgets to update it fails loudly
 # rather than silently turning every refusal assertion into a pass.
-REFUSALS = ('not in the', 'nothing in the', 'could not find', 'does not match',
-            'no script is named', 'no script called', 'give me a', 'ask a question',
-            'describe the task')
+REFUSALS = ('not in the', 'nothing in the', 'nothing on sqldba.blog', 'could not find',
+            'does not match', 'no script is named', 'no script called', 'give me a',
+            'ask a question', 'describe the task')
+# 'nothing on sqldba.blog' replaced 'nothing in the published FAQ' when answer_question
+# gained the post-index fallback: the refusal now means BOTH that no Q&A pair matched
+# and that no post covers it, so the narrower wording had become a lie by omission.
+# Deliberately NOT adding 'this is covered in' - that string is an ANSWER, and a marker
+# matching it would make every one of these tests pass by accident.
 
 
 def declined(answer: str) -> bool:
