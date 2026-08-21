@@ -129,6 +129,39 @@ Runs on `localhost:8787` only. The server itself has no external dependencies; t
 
 ---
 
+## The MCP Server — This Reference, As Tools Your AI Can Call
+
+Everything above assumes you are the one asking. `mcp/` ships the same reference as an
+[MCP](https://modelcontextprotocol.io/) server, so an AI assistant can look things up here instead
+of answering from memory — which is where confident, wrong SQL Server answers come from.
+
+```powershell
+pip install "sqldba-mcp @ git+https://github.com/peterwhyte-lgtm/dba-tools.git#subdirectory=mcp"
+```
+
+Six tools, and the ceiling is deliberate — a test fails the build if a seventh appears:
+
+| Tool | Answers |
+|---|---|
+| `lookup_error` | an error number, or a phrase from the message |
+| `explain_wait` | a wait type, and whether it is worth chasing |
+| `check_build` | a build number, version year or pasted `@@VERSION` → CU, KB, support dates |
+| `find_script` | "which script does X", with the safety class attached |
+| `get_script` | the script body, verbatim from this repo |
+| `answer_question` | an operational how/why question, from published write-ups |
+
+- **It never connects to your SQL Server.** No connection string, no driver, no `run_script` tool.
+  The datasets ship inside the package, so it works on an air-gapped box.
+- **Every answer carries its source URL**, so anything it tells you can be checked.
+- **It refuses rather than guessing.** Asked something outside SQL Server, it says so. That refusal
+  is the product, and it is measured rather than claimed — see `mcp/tests/real_questions.py`, which
+  asks from outside the corpus rather than rewording the corpus back at itself.
+
+Full write-up, including what the numbers do and do not prove:
+[The sqldba MCP Server](https://sqldba.blog/sqldba-mcp-server/).
+
+---
+
 ## SQL Scripts — Open, Copy, Paste, Run
 
 Browse `sql/` and copy directly into SSMS. No parameters, no magic variables, no install. Every script is a single result set.

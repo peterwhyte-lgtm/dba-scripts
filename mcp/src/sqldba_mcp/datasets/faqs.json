@@ -2862,6 +2862,60 @@
   "url": "https://sqldba.blog/sql-server-version-upgrade-runbook/"
  },
  {
+  "question": "Can it run scripts against my instance for me?",
+  "answer": "No, and that is deliberate. It has no database driver and no connection string, so it cannot reach a server even if something asked it to. You run the scripts. It tells your assistant which one fits and what the output means.",
+  "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
+  "question": "Do I need to be running Claude to use this?",
+  "answer": "No. MCP is an open protocol and this server has nothing Claude specific in it. Any client that speaks MCP over stdio will work. Claude Code and Claude Desktop are simply the two I have tested it against most.",
+  "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
+  "question": "Does it send my data anywhere?",
+  "answer": "No. It makes no network calls at all. The data ships inside the package, and your questions are answered locally by the server running on your own machine. Whatever your AI client does with the conversation is a separate question, and one worth asking of the client rather than of this server.",
+  "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
+  "question": "How do I get something corrected?",
+  "answer": "Open an issue on the repo. Corrections from working DBAs are the point of publishing it. The fix goes into the source, the post or the script header, not into the shipped data, so it lands on the blog and in the server at the same time.",
+  "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
+  "question": "How do I know whether the assistant actually used it?",
+  "answer": "Look for the tool call in the transcript, not just the answer. Every MCP client shows when a tool was invoked and what it returned. If you get a confident answer with no tool call, the model answered from memory, which is exactly the situation the server exists to replace. In Claude Code, /mcp shows which servers are registered and whether they started cleanly.",
+  "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
+  "question": "Is an MCP server the same thing as a plugin?",
+  "answer": "Close enough to start with, and the difference matters later. A plugin is usually written for one application. An MCP server is written once against an open protocol, so the same server works in whatever client you move to next. That portability is most of the reason the standard exists.",
+  "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
+  "question": "Is it safe to install on a work machine?",
+  "answer": "It is a small Python package with one dependency, the MCP SDK. The source is public under the MIT licence and the datasets ship as plain readable JSON, so you or your security team can see exactly what is in it before installing. It opens no ports, stores nothing, and makes no outbound connections.",
+  "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
+  "question": "What happens when it does not know something?",
+  "answer": "It says so. It tells you the topic is not in the library rather than filling the gap, and it points you at the index so you can check for yourself. Of the 47 errors it carries, 39 have a full write-up to link to and 8 do not. Those 16 still return the message text, meaning and severity, and the answer says no article exists yet, so an assistant can quote them and knows it cannot cite them.",
+  "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
+  "question": "Will adding more MCP servers make my assistant better?",
+  "answer": "Up to a point, then it makes it worse. Every server adds tools, and every tool is another option the model has to choose between. Past a couple of dozen across all your servers, selection accuracy starts to slide and you get wrong-tool answers on questions that used to work. Add them one at a time, and remove the ones you stopped using.",
+  "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
   "question": "Is TrustServerCertificate=True safe?",
   "answer": "On a laptop talking to a local development instance, yes. Across a network you do not control, no. The connection stays encrypted either way, but the client stops checking that the server is who it claims to be, so you lose protection against an active man-in-the-middle.",
   "post_title": "SSMS Certificate Chain Not Trusted Error (Trust Server Certificate Fix)",

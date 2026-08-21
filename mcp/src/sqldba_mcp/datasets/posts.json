@@ -2410,6 +2410,11 @@
   "url": "https://sqldba.blog/sqlcmd-examples-for-sql-server/"
  },
  {
+  "title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
+  "lead": "The reference behind this site, as six tools an AI assistant can call: error numbers, wait types, patch levels and scripts, hand-verified rather than scraped. It never connects to your SQL Server, and it refuses rather than guessing.",
+  "url": "https://sqldba.blog/sqldba-mcp-server/"
+ },
+ {
   "title": "SSMS Certificate Chain Not Trusted Error (Trust Server Certificate Fix)",
   "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
   "url": "https://sqldba.blog/ssms-certificate-chain-not-trusted-error-trust-server-certificate-fix/"
