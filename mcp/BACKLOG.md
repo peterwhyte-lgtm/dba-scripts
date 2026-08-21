@@ -78,7 +78,12 @@ entirely and is worth doing before any demo.
 
 ---
 
-### A stale install is invisible at runtime
+### ~~A stale install is invisible at runtime~~ — CLOSED in 0.3.1 (2026-08-21)
+
+Every answer now ends with `_sqldba-mcp <version> - datasets generated <date>_`, refusals
+included, so the running install names itself on the one surface a user always sees.
+Asserted at the function layer and over the wire. The README reinstall documentation
+(`--no-cache-dir` / explicit `@<commit>`) is still worth doing. Original entry kept below.
 
 **Observed 2026-08-19**, and the reason the three entries above are all suspect.
 
@@ -101,6 +106,36 @@ at install time and never again. The agent calling `find_script` forty times nev
 reinstall properly in the README: pip caches
 the git clone, so `--force-reinstall` on its own can still land on a stale commit, and
 `--no-cache-dir` or an explicit `@<commit>` is what makes it deterministic.
+
+---
+
+### check_build's version-only answer is a secret
+
+**Observed 2026-08-21**, first layer-2 tool-selection run (13 human questions, isolated
+gagged session, model sonnet, 11/13 first-call accuracy).
+
+Asked *"can you give me a link for downloading the latest 2025 cu"*, the agent called no
+tool and said the library "doesn't serve download URLs" — while `check_build` given just a
+product name returns the latest CU **with its KB download link** (`_fmt_version_only`,
+`Download:` line). The capability exists and the description never mentions it: it talks
+entirely in build numbers. **Possible fix:** one sentence in the description saying a
+product name alone ("SQL Server 2025") returns the latest CU, its KB and the KB link.
+**Held for Peter:** it is a description change judged against a probe that found it, and
+tuning descriptions to the probe set is the eval-gaming this repo's own docs warn about.
+
+---
+
+### find_script loses to the model's own T-SQL on security asks
+
+**Observed 2026-08-21**, same layer-2 run.
+
+*"show me who has sysadmin"* got hand-written `IS_SRVROLEMEMBER` T-SQL from model memory,
+no tool call — the exact failure the server exists to prevent, against a library that
+ships `Get-SysadminMembers`. The agent even offered to "wrap it as one of your sqldba
+library snippets", so it knew the library existed and still did not search it. The
+description's examples ("find blocking chains", "check backup coverage", "missing
+indexes") are all performance/maintenance-flavoured; security asks may simply not
+pattern-match. **Held for Peter** for the same tuning-judgment reason as above.
 
 ---
 
