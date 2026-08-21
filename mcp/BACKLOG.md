@@ -139,6 +139,29 @@ pattern-match. **Held for Peter** for the same tuning-judgment reason as above.
 
 ---
 
+### ~~explain_wait silently truncates the "What to do" section mid-sentence~~ — CLOSED same day (2026-08-21)
+
+**Observed 2026-08-21** against 0.3.1, asking about PAGEIOLATCH_SH: "What to do" cut off
+mid-parenthetical at *"...Windows Performance Monitor (..."*, with nothing marking it as
+an elision.
+
+**Root cause, verified — the original entry's presumption was backwards.** The formatter
+was innocent: `tools.py` renders `what_to_do` verbatim. The *dataset* was truncated at
+export: the exporter passed the section through `first_sentence(limit=240)`, and the
+sections that matter most are bulleted lists with no early full stop, so it word-trimmed
+at 240 chars and appended `...` right after the open parenthesis of
+`(PhysicalDisk\Current Disk Queue Length)`. Exactly **6 records** were affected —
+ASYNC_NETWORK_IO, BACKUPIO, CXPACKET, HADR_SYNC_COMMIT, PAGEIOLATCH_SH, WRITELOG — the
+six most-asked waits, because they carry the longest step lists.
+
+**Fix shipped:** Peter ruled the full step list crosses the index-not-corpus boundary for
+this one field. The exporter now ships `what_to_do` whole (capped at ~1500 with an explicit
+`[trimmed for size - the full steps are in the write-up linked below]` marker — today only
+BACKUPIO at 1502 chars trips it), the boundary test documents the exception at 1600, and
+the datasets are re-exported. PAGEIOLATCH_SH now ships all 883 chars of its steps.
+
+---
+
 ## Noted, not yet an entry
 
 - The MCP has no section in `docs/roadmap.md` at all, despite shipping at 0.2.2. The roadmap

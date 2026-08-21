@@ -33,6 +33,15 @@ Every answer now says which install produced it, and the prose can no longer dri
 
 ### Fixed
 
+- **`explain_wait` shipped a silently truncated "What to do" on the six most-asked waits**
+  (PAGEIOLATCH_SH, CXPACKET, WRITELOG, ASYNC_NETWORK_IO, BACKUPIO, HADR_SYNC_COMMIT —
+  same-day re-export, found by a second agent session minutes after 0.3.1 shipped). The
+  exporter passed the section through a 240-char first-sentence trim; step lists have no
+  early full stop, so it cut mid-parenthetical and the appended `...` read like sloppy
+  source text. Ruled by Peter: the step list is the payload of a WORTH INVESTIGATING
+  verdict and now ships whole (~1500 cap with an explicit trim marker), a documented
+  exception to the index-not-corpus boundary. The article body still never crosses.
+
 - **README error-section counts were stale in three places** (47 errors, "17 with no
   link" over a body saying 16, "31 of 47 carry a URL"). The real figures: 48 errors, 40
   with a write-up URL, 8 without. The four errors the old text named as the flagship gaps

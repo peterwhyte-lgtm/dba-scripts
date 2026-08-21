@@ -8,7 +8,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Use WAIT_AT_LOW_PRIORITY on production online rebuilds and partition switches; it is the polite default for busy systems.",
+  "what_to_do": "Use WAIT_AT_LOW_PRIORITY on production online rebuilds and partition switches; it is the polite default for busy systems. Choose the ABORT_AFTER_WAIT action consciously: NONE (revert to normal waiting), SELF (give up), or BLOCKERS (kill who is in the way). If low-priority waits never get their window, find the long-running sessions holding the object and schedule around them.",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-low-priority-abort-blockers/"
  },
  {
@@ -21,7 +21,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter both in routine analysis.",
+  "what_to_do": "Filter both in routine analysis. For slow index builds, work the standard levers: build MAXDOP, sort memory and tempdb health, off-peak scheduling, and SORT_IN_TEMPDB placement.",
   "url": "https://sqldba.blog/sql-server-wait-am-waits/"
  },
  {
@@ -33,7 +33,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "For load bursts, check appdomain stability first (error log unload/reload pairs, memory pressure).",
+  "what_to_do": "For load bursts, check appdomain stability first (error log unload/reload pairs, memory pressure). For CLR_CRST growth on custom assemblies, review the.NET code's locking; keep external calls out of held critical sections. Filter the family in routine analysis otherwise.",
   "url": "https://sqldba.blog/sql-server-wait-clr-assembly-waits/"
  },
  {
@@ -45,7 +45,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Map its spikes to the file operations in flight at the time.",
+  "what_to_do": "Map its spikes to the file operations in flight at the time. Apply the standard accelerators: instant file initialization for data files, pre-sized files so growth is rare, TDE scans scheduled off-peak. Measure the storage under the operation; long file work on slow volumes is the whole story.",
   "url": "https://sqldba.blog/sql-server-wait-async-diskpool-lock/"
  },
  {
@@ -57,7 +57,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Correlate the wait with your job schedule first.",
+  "what_to_do": "Correlate the wait with your job schedule first. If it maps cleanly onto backup and maintenance windows, judge those operations by their duration trends rather than the wait total. Measure the storage path: sys.dm_io_virtual_file_stats stalls on the data files, plus throughput on the backup target. Move heavy maintenance off peak hours, and consider backup compression, which cuts the bytes written at the cost of CPU. If checkpoint is the driver, indirect checkpoints ( TARGET_RECOVERY_TIME ) smooth write bursts into a steadier stream.",
   "url": "https://sqldba.blog/sql-server-wait-async-io-completion/"
  },
  {
@@ -69,7 +69,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "SSMS result grid, SSMS displays results incrementally as they arrive.",
-  "what_to_do": "If queries return too many rows: Add WHERE clauses to filter earlier Add TOP or pagination (OFFSET/FETCH) to return only what's needed Move aggregation into SQL (GROUP BY, SUM, COUNT) rather than returning raw rows to the application If...",
+  "what_to_do": "If queries return too many rows: Add WHERE clauses to filter earlier Add TOP or pagination (OFFSET/FETCH) to return only what's needed Move aggregation into SQL (GROUP BY, SUM, COUNT) rather than returning raw rows to the application If it's cursor-style row-by-row processing: Refactor the application to process results in batches Consider server-side cursor alternatives (but usually set-based is better) Can the processing move into SQL Server (stored procedure, table-valued function)? If it's a reporting tool pulling large data sets: Review whether the report actually needs all those rows Add indexes to make the queries faster so the fetch time is reduced Consider pre-aggregating into summary tables for common report patterns If network latency is genuinely high: Move application closer to SQL Server (same data centre) Check network infrastructure, QoS, routing, VPN encryption overhead Consider reducing the size of result sets to minimise round trips",
   "url": "https://sqldba.blog/sql-server-wait-statistics-async-network-io/"
  },
  {
@@ -81,7 +81,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Track durations from msdb.dbo.backupset; trends are the real signal.",
+  "what_to_do": "Track durations from msdb.dbo.backupset; trends are the real signal. When durations degrade, split the diagnosis: BACKUPIO up means the destination; BACKUPBUFFER up means buffer starvation (consider BUFFERCOUNT ); source disk latency means the reading side. Apply the standard levers: compression, striping to multiple files, and off-peak scheduling.",
   "url": "https://sqldba.blog/sql-server-wait-backup/"
  },
  {
@@ -94,7 +94,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Enable backup compression, the single highest-impact change you can make to improve backup performance: -- For a single backup: BACKUP DATABASE [YourDatabase] TO DISK = 'D:\\Backups\\YourDatabase.bak' WITH COMPRESSION, STATS = 10; -- Set as...",
+  "what_to_do": "Enable backup compression, the single highest-impact change you can make to improve backup performance: -- For a single backup: BACKUP DATABASE [YourDatabase] TO DISK = 'D:\\Backups\\YourDatabase.bak' WITH COMPRESSION, STATS = 10; -- Set as default for all future backups: EXEC sp_configure 'backup compression default', 1; RECONFIGURE; Compression typically reduces backup size by 60\u201380% on mixed data, cutting both write I/O and network transfer time proportionally. Stripe across multiple backup files, write to multiple destinations simultaneously: BACKUP DATABASE [YourDatabase] TO DISK = '\\\\backup1\\share\\YourDatabase_1.bak', DISK = '\\\\backup2\\share\\YourDatabase_2.bak', DISK = 'D:\\LocalBackup\\YourDatabase_3.bak' WITH COMPRESSION, STATS = 5; This spreads I/O across destinations and can multiply effective throughput. Move backups to faster or dedicated backup storage, a dedicated backup LUN or a local fast disk for landing backups, followed by a secondary copy job, is faster than writing directly to a shared NAS over the network. Tune BUFFERCOUNT and MAXTRANSFERSIZE, for large databases, increasing these can improve backup throughput: BACKUP DATABASE [YourDatabase] TO DISK = 'D:\\Backups\\YourDatabase.bak' WITH COMPRESSION, MAXTRANSFERSIZE = 4194304, BUFFERCOUNT = 50; MAXTRANSFERSIZE = 4194304 (4 MB) is common for large databases. Increasing BUFFERCOUNT uses more memory but can improve throughput on fast destinations. [trimmed for size - the full steps are in the write-up linked below]",
   "url": "https://sqldba.blog/sql-server-wait-statistics-backupio/"
  },
  {
@@ -106,7 +106,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Track backup duration trends from msdb.dbo.backupset.",
+  "what_to_do": "Track backup duration trends from msdb.dbo.backupset. Growing durations are the actionable signal, not this wait. If backups drag, find the slow side: BACKUPIO waits point at the device, disk latency during the window points at the source volumes. Tune the pipeline where needed: backup compression (usually a large win), striping to multiple files, and BUFFERCOUNT / MAXTRANSFERSIZE for special cases. Move backup windows off peak hours if they visibly compete with users.",
   "url": "https://sqldba.blog/sql-server-wait-backupthread/"
  },
  {
@@ -118,7 +118,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check msdb.dbo.suspect_pages immediately (our Get-SuspectPages script and the health check both surface this) and the error log for the 823/824 details.",
+  "what_to_do": "Check msdb.dbo.suspect_pages immediately (our Get-SuspectPages script and the health check both surface this) and the error log for the 823/824 details. Run DBCC CHECKDB on the affected databases to scope the damage. Repair from backups where possible: page-level restore for isolated pages, full restore for widespread damage. Do not reach for REPAIR_ALLOW_DATA_LOSS before exhausting restore options. Involve the storage team in parallel; corruption that keeps recurring will not stop until the hardware cause does.",
   "url": "https://sqldba.blog/sql-server-wait-bad-page-process/"
  },
  {
@@ -130,7 +130,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Find the big parallel queries running when the wait appears: sys.dm_exec_query_stats for high-elapsed-time parallel plans, or catch them live with sys.dm_exec_requests.",
+  "what_to_do": "Find the big parallel queries running when the wait appears: sys.dm_exec_query_stats for high-elapsed-time parallel plans, or catch them live with sys.dm_exec_requests. Check those plans for huge hash joins that should have been something smaller: missing indexes and stale statistics are the usual reasons a join goes massive. Review parallelism settings ( cost threshold for parallelism, MAXDOP) if trivial queries are going parallel. Do not chase this wait in isolation; it will shrink as a side effect of fixing the queries.",
   "url": "https://sqldba.blog/sql-server-wait-bmpallocation/"
  },
  {
@@ -142,7 +142,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "For a stuck query showing batch sort behaviour: capture the plan, check build currency, and test trace flag 9358 (or a query-level workaround that avoids the batch sort) to confirm the diagnosis.",
+  "what_to_do": "For a stuck query showing batch sort behaviour: capture the plan, check build currency, and test trace flag 9358 (or a query-level workaround that avoids the batch sort) to confirm the diagnosis. For routine heaviness, treat it like other big-sort problems: grant sizing via fresh statistics, and indexes that provide order where feasible. Keep current on CUs; batch-mode execution has been steadily fixed and improved since 2016.",
   "url": "https://sqldba.blog/sql-server-wait-bpsort/"
  },
  {
@@ -154,7 +154,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. Use uptime-equality as a sanity check if you ever wonder whether a wait is a permanent background timer; this one is the textbook example. Investigate Broker through its queues and DMVs when needed, never through this wait.",
   "url": "https://sqldba.blog/sql-server-wait-broker-eventhandler/"
  },
  {
@@ -166,7 +166,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter them out of wait analysis; they are event markers, not performance signals.",
+  "what_to_do": "Filter them out of wait analysis; they are event markers, not performance signals. For real Service Broker troubleshooting, the productive places remain sys.transmission_queue (delivery), the error log (activation and endpoint errors), and sys.conversation_endpoints (conversation hygiene). If an endpoint state change hangs (rare), the cluster of these waits plus a stuck ALTER ENDPOINT identifies it; look at what holds the endpoint busy.",
   "url": "https://sqldba.blog/sql-server-wait-broker-internal-waits/"
  },
  {
@@ -178,7 +178,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script does by default.",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script does by default. For actual Broker health: check sys.transmission_queue for stuck messages, activation procedure errors in the error log, and conversation counts for leaks. Leave the readers blocking; polling instead of blocking would be strictly worse.",
   "url": "https://sqldba.blog/sql-server-wait-broker-receive-waitfor/"
  },
  {
@@ -190,7 +190,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Nothing else; the handler pool manages itself.",
   "url": "https://sqldba.blog/sql-server-wait-broker-task-stop/"
  },
  {
@@ -202,7 +202,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default. If a checklist or tool flags it, correct the tool's benign list. For real Service Broker investigation, start at sys.transmission_queue and the error log, not here.",
   "url": "https://sqldba.blog/sql-server-wait-broker-to-flush/"
  },
  {
@@ -214,7 +214,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it from wait analysis.",
+  "what_to_do": "Filter it from wait analysis. Audit conversation hygiene on real Broker workloads: sys.conversation_endpoints counts, and make sure application code ends conversations on both sides. Nothing to tune in the flusher itself.",
   "url": "https://sqldba.blog/sql-server-wait-broker-transmission-table/"
  },
  {
@@ -226,7 +226,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Route genuine delivery questions through sys.transmission_queue and endpoint/routing configuration.",
   "url": "https://sqldba.blog/sql-server-wait-broker-transmission-work/"
  },
  {
@@ -238,7 +238,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. For message delivery problems, query sys.transmission_queue per database; its transmission_status text is the actual diagnostic. Nothing to tune at the transmitter level.",
   "url": "https://sqldba.blog/sql-server-wait-broker-transmitter/"
  },
  {
@@ -250,7 +250,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis; there is nothing to tune through it.",
+  "what_to_do": "Filter it out of wait analysis; there is nothing to tune through it. For checkpoint performance questions, measure write bursts and latency during checkpoints instead, and consider indirect checkpoints for smoother I/O.",
   "url": "https://sqldba.blog/sql-server-wait-checkpoint-queue/"
  },
  {
@@ -262,7 +262,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it from wait analysis; it is DBCC housekeeping.",
+  "what_to_do": "Filter it from wait analysis; it is DBCC housekeeping. For slow integrity checks, tune the real levers: run off-peak, use PHYSICAL_ONLY where the trade-off fits, or offload checks to a restored copy. Nothing else; there is no knob behind this wait.",
   "url": "https://sqldba.blog/sql-server-wait-check-tables-initialization/"
  },
  {
@@ -274,7 +274,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Ignore routine amounts; they track your DBCC schedule.",
+  "what_to_do": "Ignore routine amounts; they track your DBCC schedule. For a suspected hang: compare against the check's normal duration, look for an error in the error log around when progress stopped, and check whether the session's wait time just grows forever. A wedged check needs the session killed and the check re-run; if it reproduces, capture details and check for fixes in your build's CU history.",
   "url": "https://sqldba.blog/sql-server-wait-check-tables-thread-barrier/"
  },
  {
@@ -286,7 +286,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default. Nothing else. There is no configuration, workload, or tuning connected to it.",
   "url": "https://sqldba.blog/sql-server-wait-chkpt/"
  },
  {
@@ -298,7 +298,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. If you maintain unsafe CLR assemblies and this wait tracks their behaviour, review the assembly's threading rather than the server. Change no server settings on account of this wait.",
   "url": "https://sqldba.blog/sql-server-wait-clr-auto-event/"
  },
  {
@@ -310,7 +310,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. If you own unsafe assemblies whose behaviour maps to this wait, review their threading design, not the server. No server-side action exists or is needed.",
   "url": "https://sqldba.blog/sql-server-wait-clr-manual-event/"
  },
  {
@@ -322,7 +322,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script excludes it by default. If it grows on an instance with substantial custom CLR, profile the assemblies: what the semaphores guard and how long holders keep them. Keep long-running external work out of gated CLR sections; the same hygiene as any lock-holding code.",
   "url": "https://sqldba.blog/sql-server-wait-clr-semaphore/"
  },
  {
@@ -334,7 +334,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Confirm it is really this wait and not CMEMTHREAD; the unpartitioned sibling is the common one and has known trace-flag mitigations (like TF 8048 historically, now default behaviour).",
+  "what_to_do": "Confirm it is really this wait and not CMEMTHREAD; the unpartitioned sibling is the common one and has known trace-flag mitigations (like TF 8048 historically, now default behaviour). Reduce the allocation churn at the source: parameterise ad hoc queries to calm plan cache turnover, and look for hot code paths compiling or allocating per call. Check sys.dm_os_memory_objects for the partitioned objects with the most activity if you need the specific structure.",
   "url": "https://sqldba.blog/sql-server-wait-cmempartitioned/"
  },
  {
@@ -346,7 +346,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Confirm whether compile pressure is present, then reduce ad hoc churn where possible.",
+  "what_to_do": "Confirm whether compile pressure is present, then reduce ad hoc churn where possible. Check plan reuse patterns and stabilise frequently executed statements. Reduce peak concurrency on the hot path if practical, for example with queueing or workload shaping. Re-test after each change, and verify wait-share reduction rather than relying on one snapshot.",
   "url": "https://sqldba.blog/sql-server-wait-cmemthread/"
  },
  {
@@ -358,7 +358,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Accept the baseline; the calibration exists to prevent worse problems (mis-sized grants spilling later).",
+  "what_to_do": "Accept the baseline; the calibration exists to prevent worse problems (mis-sized grants spilling later). For chronically slow builds, test a bounded MAXDOP on the build statement; fewer threads waiting shrinks the booked wait without necessarily slowing the wall clock much. Schedule big columnstore maintenance in windows with memory headroom.",
   "url": "https://sqldba.blog/sql-server-wait-columnstore-build-throttle/"
  },
  {
@@ -370,7 +370,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Inventory the scope: sys.change_tracking_tables shows what is tracked; ask which tables genuinely need it.",
+  "what_to_do": "Inventory the scope: sys.change_tracking_tables shows what is tracked; ask which tables genuinely need it. Check cleanup health: retention settings per database, and sys.dm_tran_commit_table size trends; a forever-growing commit table means cleanup is losing. Reduce the transaction churn where possible (batch small updates) or narrow tracking to the tables consumers actually read. If Change Tracking is load-bearing at scale, evaluate whether the consumers could move to a design with less per-commit overhead.",
   "url": "https://sqldba.blog/sql-server-wait-commit-table/"
  },
  {
@@ -383,7 +383,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "Analytics and reporting workloads, parallel queries are beneficial for large aggregations, sorts, and scans.",
-  "what_to_do": "Raise cost threshold for parallelism, this is almost always the first fix: EXEC sp_configure 'cost threshold for parallelism', 50; RECONFIGURE; A value of 25\u201350 eliminates most unnecessary parallelism on OLTP workloads without affecting...",
+  "what_to_do": "Raise cost threshold for parallelism, this is almost always the first fix: EXEC sp_configure 'cost threshold for parallelism', 50; RECONFIGURE; A value of 25\u201350 eliminates most unnecessary parallelism on OLTP workloads without affecting large analytical queries. The exact value depends on your workload, start at 25 and monitor. Set MAXDOP appropriately: EXEC sp_configure 'max degree of parallelism', 4; RECONFIGURE; For mixed OLTP/reporting workloads, MAXDOP 4\u20138 is a common starting point. For a NUMA system, set MAXDOP to the number of logical cores per NUMA node. For Resource Governor (SQL Server Enterprise): Set different MAX_DOP per workload group, restrict OLTP queries to lower DOP while allowing reports to use more For a specific bad query while you investigate: SELECT... FROM... WHERE... OPTION (MAXDOP 1); Address skewed parallelism: Update statistics on the tables involved Add missing indexes to avoid large scans Review data distribution, very skewed distributions may need filtered indexes",
   "url": "https://sqldba.blog/sql-server-wait-statistics-cxpacket-cxconsumer/"
  },
  {
@@ -395,7 +395,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Nothing for the wait itself.",
+  "what_to_do": "Nothing for the wait itself. If it is visible, look at the workload pattern around it. If parallel scans are unwanted, raise cost threshold for parallelism and set MAXDOP appropriately for the hardware. If the scans themselves are the issue, find the queries driving them and index the predicates so they seek instead. Confirm the bigger picture with the full wait profile; CXROWSET_SYNC alone should never drive a change.",
   "url": "https://sqldba.blog/sql-server-wait-cxrowset-sync/"
  },
  {
@@ -407,7 +407,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the parallel queries involved ( sys.dm_exec_query_stats filtered to parallel plans, ordered by elapsed time).",
+  "what_to_do": "Identify the parallel queries involved ( sys.dm_exec_query_stats filtered to parallel plans, ordered by elapsed time). Raise cost threshold for parallelism to 25-50 so only genuinely expensive queries go parallel. Fix skew at the source: update statistics, index the scan-driving predicates. Tune MAXDOP per workload if needed, but as a considered setting, not a reaction to this wait existing.",
   "url": "https://sqldba.blog/sql-server-wait-cxsync-consumer/"
  },
  {
@@ -419,7 +419,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Capture the plans behind the wait and look for the blocking operator feeding an exchange; that operator's input is the real tuning target.",
+  "what_to_do": "Capture the plans behind the wait and look for the blocking operator feeding an exchange; that operator's input is the real tuning target. Reduce the sorted or hashed volume: indexes that provide order, tighter predicates, fresh statistics for accurate memory grants. Keep parallelism settings sensible ( cost threshold for parallelism 25-50, deliberate MAXDOP), as with the whole CX family.",
   "url": "https://sqldba.blog/sql-server-wait-cxsync-port/"
  },
  {
@@ -431,7 +431,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter the wait; act on the feature instead.",
+  "what_to_do": "Filter the wait; act on the feature instead. Enable remote DAC on production instances: sp_configure 'remote admin connections', 1; RECONFIGURE;. Test it once calmly: sqlcmd -S admin:<server> -E, so the path is proven before an incident needs it.",
   "url": "https://sqldba.blog/sql-server-wait-dac-init/"
  },
  {
@@ -443,7 +443,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it in routine analysis.",
+  "what_to_do": "Filter it in routine analysis. If mirroring is slow and this wait is prominent, measure log write latency on the mirror server ( sys.dm_io_virtual_file_stats there); upgrade that path if it is the laggard. As with the whole mirroring family: the durable fix for mirroring pain is the migration to Availability Groups.",
   "url": "https://sqldba.blog/sql-server-wait-dbmirroring-cmd/"
  },
  {
@@ -455,7 +455,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Check the redo queue on the mirror via the mirroring performance counters (SQL Server:Database Mirroring, Redo Queue KB and Redo Bytes/sec).",
+  "what_to_do": "Check the redo queue on the mirror via the mirroring performance counters (SQL Server:Database Mirroring, Redo Queue KB and Redo Bytes/sec). A stable, small queue means all is well. If redo lags, look at the mirror's hardware: log disk latency and CPU headroom, since redo competes with whatever else the server runs. Do not chase the mutex wait itself; there is no knob for it. Fix redo throughput and it fades into the background. If you are still sizing mirrors casually, remember the failover cost: a mirror that keeps up fails over in seconds.",
   "url": "https://sqldba.blog/sql-server-wait-dbmirror-dbm-mutex/"
  },
  {
@@ -467,7 +467,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; it carries no signal.",
+  "what_to_do": "Filter it out; it carries no signal. For mirroring health, watch the SQL Server:Database Mirroring performance counters and DBMIRROR_SEND. Longer term, plan the migration to Availability Groups; mirroring has been deprecated for years.",
   "url": "https://sqldba.blog/sql-server-wait-dbmirror-events-queue/"
  },
  {
@@ -479,7 +479,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check the mirroring performance counters (SQL Server:Database Mirroring), particularly send queue and transaction delay, to confirm the backlog and its trend.",
+  "what_to_do": "Check the mirroring performance counters (SQL Server:Database Mirroring), particularly send queue and transaction delay, to confirm the backlog and its trend. If the session is synchronous and users are suffering, weigh switching to asynchronous mode. Performance recovers at the cost of a larger potential data loss window; that is a business decision, make it consciously. Reduce log bursts: tune index maintenance so it does not rebuild everything nightly, and batch bulk operations. Fix the pipe or the partner: more bandwidth, lower latency, faster log disk on the mirror. Longer term, plan the migration to Availability Groups; mirroring is deprecated and AGs give you far better visibility into exactly this bottleneck.",
   "url": "https://sqldba.blog/sql-server-wait-dbmirror-send/"
  },
  {
@@ -491,7 +491,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Check sys.database_mirroring state and the mirroring counters when mirroring health is the actual question. Keep the AG migration on the roadmap; the mirroring feature is deprecated.",
   "url": "https://sqldba.blog/sql-server-wait-dbmirror-worker-queue/"
  },
  {
@@ -503,7 +503,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. If a monitoring tool hammers the waiting-tasks DMV every second, relaxing its interval is good citizenship anyway.",
   "url": "https://sqldba.blog/sql-server-wait-deadlock-enum-mutex/"
  },
  {
@@ -515,7 +515,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis with the other benign background waits; our Get-WaitStatistics script does this by default.",
+  "what_to_do": "Filter it out of wait analysis with the other benign background waits; our Get-WaitStatistics script does this by default. If you are actually investigating checkpoint behaviour, look at SLEEP_BPOOL_FLUSH, data-file write latency, and the TARGET_RECOVERY_TIME setting per database instead. Resist the urge to \"fix\" it by switching back to automatic checkpoints; indirect checkpoints are the better default, and this wait is not a cost.",
   "url": "https://sqldba.blog/sql-server-wait-dirty-page-poll/"
  },
  {
@@ -527,7 +527,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Confirm the pairing: this wait on the secondary, sustained write rate on the primary, and reporting concurrency at the same time.",
+  "what_to_do": "Confirm the pairing: this wait on the secondary, sustained write rate on the primary, and reporting concurrency at the same time. Schedule around it: separate the primary's heaviest write windows from the secondary's heaviest read windows where the business allows. Reduce primary-side write amplification (index maintenance scope, fill factor tuning) to cut what redo must process. If read-scale demands outgrow one secondary, additional readable replicas spread the reader side.",
   "url": "https://sqldba.blog/sql-server-wait-dirty-page-table-lock/"
  },
  {
@@ -539,7 +539,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Pull the freeze/resume pairs from the error log and measure real freeze durations per database (our recent-errors script surfaces these).",
+  "what_to_do": "Pull the freeze/resume pairs from the error log and measure real freeze durations per database (our recent-errors script surfaces these). Take long freezes to the backup team or vendor; the fix is on their side (snapshot method, agent version, storage performance). Reschedule snapshot backups away from busy windows. Reconsider the strategy where freezes are chronic: native SQL Server backups (or storage-level backups that do not require guest freezes) avoid this wait entirely.",
   "url": "https://sqldba.blog/sql-server-wait-diskio-suspend/"
  },
  {
@@ -551,7 +551,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default. Investigate the owning feature directly when it misbehaves; this wait will not tell you which feature anyway. Do not read idle pool threads as wasted resources; the pools are deliberately provisioned ahead of demand.",
   "url": "https://sqldba.blog/sql-server-wait-dispatcher-queue-semaphore/"
  },
  {
@@ -563,7 +563,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the overlapping tables: what the secondary's queries read versus what the primary's write workload churns.",
+  "what_to_do": "Identify the overlapping tables: what the secondary's queries read versus what the primary's write workload churns. Break the overlap: pre-aggregated reporting tables, or a small ETL step that copies hot data into read-optimised structures the redo stream does not fight over. Apply the general remedies too (scheduling separation, reduced write amplification on the primary), as with DIRTY_PAGE_TABLE_LOCK.",
   "url": "https://sqldba.blog/sql-server-wait-dpt-entry-lock/"
  },
  {
@@ -575,7 +575,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Pull the \"Drop Temp Obj:\" entries and any deadlock graphs from the error log and system_health; they identify the other party.",
+  "what_to_do": "Pull the \"Drop Temp Obj:\" entries and any deadlock graphs from the error log and system_health; they identify the other party. Check build currency if the pattern is persistent; retry-storm defects belong to old builds. Reduce needless temp object churn in hot code paths (cached temp tables in procedures help several tempdb pressures at once).",
   "url": "https://sqldba.blog/sql-server-wait-droptemp/"
  },
  {
@@ -587,7 +587,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter the waits; they meter your own forensics.",
+  "what_to_do": "Filter the waits; they meter your own forensics. Prefer running log archaeology on a restored copy off the production instance. For live-log questions, fn_dblog (also undocumented) reads the active log with lighter machinery.",
   "url": "https://sqldba.blog/sql-server-wait-dump-log-coordinator/"
  },
  {
@@ -599,7 +599,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Confirm BPE state and size: sys.dm_os_buffer_pool_extension_configuration, and how much of the buffer pool lives in the extension ( sys.dm_os_buffer_descriptors with is_in_bpool_extension ).",
+  "what_to_do": "Confirm BPE state and size: sys.dm_os_buffer_pool_extension_configuration, and how much of the buffer pool lives in the extension ( sys.dm_os_buffer_descriptors with is_in_bpool_extension ). Weigh the honest fix: more RAM beats BPE in nearly every case where the hardware allows it; BPE is a stopgap for boxes that cannot grow. Make sure the BPE file sits on genuinely fast local SSD, and size it per guidance (a small multiple of max server memory).",
   "url": "https://sqldba.blog/sql-server-wait-ec/"
  },
  {
@@ -611,7 +611,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check the average wait (total time over count); microseconds means ignore it.",
+  "what_to_do": "Check the average wait (total time over count); microseconds means ignore it. If it genuinely features, reduce the churn: batch chatty per-row calls, improve plan reuse so execution setup work shrinks. Read it alongside CMEMTHREAD; if both rise, the memory-object story is broader than the execution engine.",
   "url": "https://sqldba.blog/sql-server-wait-ee-pmolock/"
  },
  {
@@ -623,7 +623,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the queries running in parallel: sys.dm_exec_query_stats filtered to plans with max_dop > 1, ordered by elapsed time.",
+  "what_to_do": "Identify the queries running in parallel: sys.dm_exec_query_stats filtered to plans with max_dop > 1, ordered by elapsed time. Raise cost threshold for parallelism to 25 to 50 so only genuinely expensive queries parallelise. Set MAXDOP sensibly for the box (per NUMA node guidance), rather than leaving it unlimited. Fix skew at the source: update statistics, and index the predicates driving the big scans.",
   "url": "https://sqldba.blog/sql-server-wait-exchange/"
  },
  {
@@ -635,7 +635,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script treats it as benign.",
+  "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script treats it as benign. If a specific query regresses with high EXECSYNC, check its plan for spools; removing the need for a spool (better indexes, rewritten predicates) removes the serialisation point. Leave parallelism settings out of it unless the broader CX picture says otherwise.",
   "url": "https://sqldba.blog/sql-server-wait-execsync/"
  },
  {
@@ -648,7 +648,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Attribute the activity: user snapshots in play ( sys.databases with source_database_id ) versus DBCC windows.",
+  "what_to_do": "Attribute the activity: user snapshots in play ( sys.databases with source_database_id ) versus DBCC windows. Keep snapshot sparse files on storage that can absorb the copy-on-write load; by default they sit beside the data files. Apply the standing snapshot hygiene: short lifetimes, few concurrent snapshots, integrity checks off-peak or offloaded.",
   "url": "https://sqldba.blog/sql-server-wait-fcb-replica-waits/"
  },
  {
@@ -661,7 +661,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter both in routine analysis.",
+  "what_to_do": "Filter both in routine analysis. If a FileTable-enabled database recovers slowly, FFT_RECOVERY time confirms the FileTable share of it; heavy FileTable estates pay this at every failover. FileTable performance generally is FILESTREAM performance: the file I/O path, AV exclusions on containers, and share access patterns.",
   "url": "https://sqldba.blog/sql-server-wait-filetable-waits/"
  },
  {
@@ -673,7 +673,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Find the growth events: the default trace records them (our Get-AutogrowthHistory script reads this), including duration and which file grew.",
+  "what_to_do": "Find the growth events: the default trace records them (our Get-AutogrowthHistory script reads this), including duration and which file grew. Pre-size data and log files to their expected size plus headroom, so autogrowth is an emergency backstop, not a routine event. Enable instant file initialization (the Perform volume maintenance tasks right) so data file growth is metadata-only. Note it never applies to log files. Set fixed-size growth increments appropriate to the file (for example 256MB to 1GB for busy data files), not percentages. Size tempdb properly at startup; it is rebuilt on every restart and grows from its configured size.",
   "url": "https://sqldba.blog/sql-server-wait-fgcb-add-remove/"
  },
  {
@@ -686,7 +686,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter both in routine analysis.",
+  "what_to_do": "Filter both in routine analysis. For genuine full-text work, check population status and the crawl logs, and stagger indexing versus reorganize operations (see the FT_MASTER_MERGE page for the known concurrency issue).",
   "url": "https://sqldba.blog/sql-server-wait-ft-internal-waits/"
  },
  {
@@ -698,7 +698,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script does by default.",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script does by default. For full-text performance work, check catalog population status ( FULLTEXTCATALOGPROPERTY ) and the crawl logs in the instance's log directory. Spend zero tuning effort on this wait.",
   "url": "https://sqldba.blog/sql-server-wait-ft-ifts-scheduler-idle-wait/"
  },
  {
@@ -710,7 +710,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Stagger full-text maintenance: population jobs and reorganize jobs in sequence, not in parallel, across catalogs.",
+  "what_to_do": "Stagger full-text maintenance: population jobs and reorganize jobs in sequence, not in parallel, across catalogs. Schedule master merges off-peak; they are I/O-real work on large catalogs. Check the full-text crawl logs (instance log directory) after failures; they name what went wrong.",
   "url": "https://sqldba.blog/sql-server-wait-ft-master-merge/"
  },
  {
@@ -722,7 +722,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "When an AG command hangs, look for the other one: sys.dm_exec_requests shows what else is touching the AG, and the cluster log covers WSFC-initiated operations.",
+  "what_to_do": "When an AG command hangs, look for the other one: sys.dm_exec_requests shows what else is touching the AG, and the cluster log covers WSFC-initiated operations. Serialise your own automation; AG management commands to one group should not race each other. During incidents, let in-flight failover operations complete before issuing more AG DDL; stacking commands behind the mutex helps nothing.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-ag-mutex/"
  },
  {
@@ -735,7 +735,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter both with the AG background set.",
+  "what_to_do": "Filter both with the AG background set. AG health continues to live in the replica-state DMVs and the actionable waits ( HADR_SYNC_COMMIT, flow control, redo).",
   "url": "https://sqldba.blog/sql-server-wait-hadr-internal-waits/"
  },
  {
@@ -747,7 +747,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script already does.",
+  "what_to_do": "Filter it from routine analysis; our Get-WaitStatistics script already does. During AG incident review, check the cluster log and Windows event logs alongside any anomaly in this wait; the story will be in WSFC, not SQL Server. Do not tune anything based on this wait alone; there is no SQL-side knob for it.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-clusapi-call/"
  },
  {
@@ -759,7 +759,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Quantify the backlog per database and replica: log_send_queue_size and log_send_rate in sys.dm_hadr_database_replica_states.",
+  "what_to_do": "Quantify the backlog per database and replica: log_send_queue_size and log_send_rate in sys.dm_hadr_database_replica_states. Compare log generation rate on the primary with what the network can actually carry. If generation exceeds capacity, either reduce the log volume (tune index maintenance, batch loads) or upgrade the link. Check the secondary is pulling its weight: log disk latency and redo queue on the replica. On current builds, review Microsoft's guidance on AG flow control gates; recent versions raised the per-database gates, and trace flag 12310 exists for specific older builds. Test before touching flags.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-database-flow-control/"
  },
  {
@@ -771,7 +771,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. If a monitoring tool flags it, fix the tool's benign-wait list. For genuine FILESTREAM-in-AG performance questions (rare), measure the replica send queues and file I/O directly rather than through this timer.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-filestream-iomgr-iocompletion/"
  },
  {
@@ -783,7 +783,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Baseline first: is transaction throughput actually suffering, or is the wait just present?",
+  "what_to_do": "Baseline first: is transaction throughput actually suffering, or is the wait just present? Present-but-harmless is the common case. If throughput is genuinely capped, test the documented threshold adjustment (KB 4565944) in a controlled environment before considering trace flag 9546. Keep the rest of the commit path healthy (log latency, HADR_SYNC_COMMIT levels); group commit tuning cannot compensate for a slow pipeline.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-group-commit/"
  },
  {
@@ -795,7 +795,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis, the same way you filter other benign background waits.",
+  "what_to_do": "Filter it out of wait analysis, the same way you filter other benign background waits. Our Get-WaitStatistics script focuses on actionable waits for exactly this reason. If you are troubleshooting AG lag, do not start here. Look at log_send_queue_size, redo_queue_size, and waits like HADR_SYNC_COMMIT and HADR_DATABASE_FLOW_CONTROL instead. If this wait's average duration suddenly drops while flow control rises, that combination, not this wait alone, tells you the pipeline is saturating.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-logcapture-wait/"
  },
  {
@@ -807,7 +807,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Distinguish the source of sync-commit pain: check log_send_queue_size and replica health first; if those are clean but HADR_SYNC_COMMIT and this wait rise together, the primary-side gate is the story.",
+  "what_to_do": "Distinguish the source of sync-commit pain: check log_send_queue_size and replica health first; if those are clean but HADR_SYNC_COMMIT and this wait rise together, the primary-side gate is the story. Verify build currency against known fixes for this pattern. Check scheduler health ( sys.dm_os_schedulers, non-yielding warnings in the error log) during the episodes.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-logprogress-sync/"
  },
  {
@@ -819,7 +819,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait statistics analysis with the other AG background waits.",
+  "what_to_do": "Filter it out of wait statistics analysis with the other AG background waits. For cluster-event trouble (failovers, lease timeouts), use the cluster log, Windows event logs, and AG state DMVs; the notification listener's wait time adds nothing.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-notification-dequeue/"
  },
  {
@@ -831,7 +831,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Judge seeding by sys.dm_hadr_automatic_seeding (state, failure reasons) and sys.dm_hadr_physical_seeding_stats (transfer and ETA), not by this wait.",
+  "what_to_do": "Judge seeding by sys.dm_hadr_automatic_seeding (state, failure reasons) and sys.dm_hadr_physical_seeding_stats (transfer and ETA), not by this wait. For slow seedings, the levers are network throughput between replicas and I/O on both ends; compression for seeding (trace flag 9567) trades CPU for bandwidth where the network is the constraint. Filter the wait itself out of analysis.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-seeding-limit-backups/"
  },
  {
@@ -843,7 +843,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "If it's a network latency problem: Co-locate synchronous secondaries, same data centre, same network segment, same rack if possible For secondaries that must be remote (DR in a different city): evaluate whether asynchronous commit is...",
+  "what_to_do": "If it's a network latency problem: Co-locate synchronous secondaries, same data centre, same network segment, same rack if possible For secondaries that must be remote (DR in a different city): evaluate whether asynchronous commit is acceptable for that replica. Asynchronous commit eliminates HADR_SYNC_COMMIT for that replica entirely, at the cost of potential data loss on failover (RPO > 0). You can have one synchronous secondary local and one asynchronous secondary remote. If it's a slow secondary log disk: Move the secondary log file to faster storage, ideally matching the primary's storage tier Ensure the secondary log disk isn't shared with other high-I/O workloads If the secondary is a readable secondary under load: Review the read workload going to the secondary, heavy reporting queries during peak hours can degrade secondary I/O and redo performance Consider Resource Governor on the secondary to limit read workload resource consumption Schedule heavy reports for off-peak hours If it's commit frequency: Batch transactions where the application allows, reduce the number of individual commits Review application code for row-by-row commit loops",
   "url": "https://sqldba.blog/sql-server-wait-statistics-hadr-sync-commit/"
  },
  {
@@ -855,7 +855,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis with the rest of the AG background set.",
+  "what_to_do": "Filter it out of wait analysis with the rest of the AG background set. For AG lag or commit latency, go straight to sys.dm_hadr_database_replica_states and the sync/flow-control waits. Change nothing on the basis of this wait; there is nothing behind it to change.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-timer-task/"
  },
  {
@@ -867,7 +867,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out with the other AG background waits.",
+  "what_to_do": "Filter it out with the other AG background waits. Keep AG diagnosis on the established path: replica-state DMVs for queues and rates, HADR_SYNC_COMMIT and flow control for latency. No action exists at this wait's level.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-work-pool/"
  },
  {
@@ -879,7 +879,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait statistics analysis.",
+  "what_to_do": "Filter it out of wait statistics analysis. Our Get-WaitStatistics script excludes it by default, precisely so real waits surface. For genuine AG performance questions, go to the replica DMVs: sys.dm_hadr_database_replica_states for send and redo queues, and waits like HADR_SYNC_COMMIT for commit latency. Do not tune, reconfigure, or restart anything on the basis of this wait. There is nothing to fix.",
   "url": "https://sqldba.blog/sql-server-wait-hadr-work-queue/"
  },
  {
@@ -891,7 +891,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check your build and patch forward; the successor CUs removed the problematic change.",
+  "what_to_do": "Check your build and patch forward; the successor CUs removed the problematic change. If a query misbehaves on an affected build and patching must wait, plan-shape workarounds that avoid the parallel spool (rewrites, hints) sidestep the path. Spend no effort on the wait itself; it is a build artefact.",
   "url": "https://sqldba.blog/sql-server-wait-hp-spool-barrier/"
  },
  {
@@ -903,7 +903,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Confirm the skew: the actual execution plan shows per-thread row counts on the hash operators; a 90/10 split across threads is your answer.",
+  "what_to_do": "Confirm the skew: the actual execution plan shows per-thread row counts on the hash operators; a 90/10 split across threads is your answer. Update statistics on the join and grouping columns so the distribution is understood. Experiment with lower MAXDOP for the affected queries; less parallelism means less synchronisation overhead when skew is unavoidable. If one hot key value causes the skew, consider whether the query can pre-aggregate or split that value's processing.",
   "url": "https://sqldba.blog/sql-server-wait-htbuild/"
  },
  {
@@ -915,7 +915,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check per-thread row counts in the actual plan of the biggest batch-mode queries; confirm skew before changing anything.",
+  "what_to_do": "Check per-thread row counts in the actual plan of the biggest batch-mode queries; confirm skew before changing anything. For the columnstore update case, check rowgroup health in sys.dm_db_column_store_row_group_physical_stats (deleted_rows) and rebuild affected indexes. Update statistics on the hash keys, and reconsider MAXDOP for chronically skewed queries. Accept a baseline: batch mode with real-world data always shows some HT* time.",
   "url": "https://sqldba.blog/sql-server-wait-htdelete/"
  },
  {
@@ -927,7 +927,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Look at per-thread actual row counts on the hash operators in the plan; skew is visible at a glance.",
+  "what_to_do": "Look at per-thread actual row counts on the hash operators in the plan; skew is visible at a glance. Update statistics on the columns driving the hash distribution. Test the worst queries at lower MAXDOP; when skew cannot be fixed, less parallelism often nets faster wall-clock. Consider whether the query really needs the outer join semantics driving the full-table output scan.",
   "url": "https://sqldba.blog/sql-server-wait-htmemo/"
  },
  {
@@ -939,7 +939,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check the biggest batch-mode queries for hash spills (warnings in the actual plan, or sys.dm_exec_query_stats spill columns); multi-pass hashing often traces to undersized grants.",
+  "what_to_do": "Check the biggest batch-mode queries for hash spills (warnings in the actual plan, or sys.dm_exec_query_stats spill columns); multi-pass hashing often traces to undersized grants. Fix the grant story: updated statistics, and on modern versions let batch-mode memory grant feedback settle in. Confirm and address thread skew via per-thread row counts in the plan, as with all HT* waits. Test lower MAXDOP where skew is inherent to the data.",
   "url": "https://sqldba.blog/sql-server-wait-htreinit/"
  },
  {
@@ -951,7 +951,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Find the plans doing it: big batch-mode queries with hash spill warnings or large estimate-vs-actual gaps on the hash operators.",
+  "what_to_do": "Find the plans doing it: big batch-mode queries with hash spill warnings or large estimate-vs-actual gaps on the hash operators. Update statistics on the hash key columns; better estimates mean right-sized hash tables that never repartition. On SQL Server 2017+ let memory grant feedback correct repeat offenders, and check it is not being defeated by wildly varying parameter values. Address thread skew as with the rest of the family (per-thread row counts, MAXDOP experiments).",
   "url": "https://sqldba.blog/sql-server-wait-htrepartition/"
  },
  {
@@ -963,7 +963,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Compare the wait's average duration with the expected latency of the source storage; a share across a WAN will never feed a fast load.",
+  "what_to_do": "Compare the wait's average duration with the expected latency of the source storage; a share across a WAN will never feed a fast load. Move import files closer: local SSD on the SQL Server beats a share for hot load paths. Split giant source files and load in parallel streams where the table design allows. Check filter drivers (AV exclusions for the import directory) if local reads are mysteriously slow.",
   "url": "https://sqldba.blog/sql-server-wait-impprov-iowait/"
  },
  {
@@ -975,7 +975,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "For sort spills (the most common cause): The root cause is almost always a missing index or stale statistics.",
+  "what_to_do": "For sort spills (the most common cause): The root cause is almost always a missing index or stale statistics. A query that spills to disk is doing work it should not need to do. Identify the spilling queries from dm_exec_query_stats above Run their execution plans in SSMS with \"Include Actual Execution Plan\", look for Sort operators with a yellow warning triangle (\"Warnings: Operator used tempdb to spill data\") Check for missing indexes on the tables involved:.\\run.ps1 Get-MissingIndexes Update statistics on the involved tables If the query legitimately needs to sort large data sets (e.g. a reporting query), consider whether the result set can be reduced before sorting For tempdb I/O performance in general: Tempdb data files should be on fast storage, ideally the same SSD/NVMe tier as production data Multiple tempdb data files (one per physical core, up to 8) reduce allocation contention, though they do not directly improve sort spill I/O For backup-driven IO_COMPLETION: Enable backup compression, less data written means faster backup I/O Schedule backups during low-traffic windows Consider offloading backups to an AG secondary replica For DBCC-driven IO_COMPLETION: Run DBCC CHECKDB during off-peak hours On Enterprise Edition, DBCC with PHYSICAL_ONLY is faster and generates less tempdb I/O (though it checks less)",
   "url": "https://sqldba.blog/sql-server-wait-statistics-io-completion/"
  },
  {
@@ -987,7 +987,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "In Azure, check resource governance telemetry ( sys.dm_db_resource_stats, avg_data_io_percent) to confirm you are riding the tier's I/O ceiling.",
+  "what_to_do": "In Azure, check resource governance telemetry ( sys.dm_db_resource_stats, avg_data_io_percent) to confirm you are riding the tier's I/O ceiling. Reduce the I/O appetite first: missing indexes turn seeks into scans, and scans are what flood the queue. Cheaper than a tier upgrade. If the workload is already lean, scale the tier (or storage performance on-premises) to match real demand. Schedule the I/O-heavy maintenance (rebuilds, integrity checks) away from peak hours so they are not competing for the same queue.",
   "url": "https://sqldba.blog/sql-server-wait-io-queue-limit/"
  },
  {
@@ -999,7 +999,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out, and recognise its session in sys.dm_exec_requests as a permanent system resident, not a stuck query.",
+  "what_to_do": "Filter it out, and recognise its session in sys.dm_exec_requests as a permanent system resident, not a stuck query. Use it as a teaching example: system sessions (SPIDs below ~50) routinely show enormous benign waits, and killing or worrying about them is never the move.",
   "url": "https://sqldba.blog/sql-server-wait-ksource-wakeup/"
  },
  {
@@ -1011,7 +1011,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Query sys.dm_os_latch_stats ordered by wait_time_ms and note the top latch classes; that, not the DT mode, is your lead.",
+  "what_to_do": "Query sys.dm_os_latch_stats ordered by wait_time_ms and note the top latch classes; that, not the DT mode, is your lead. Correlate with what changed: workload spikes, cache flushes, memory pressure trimming caches aggressively. Address the subsystem the class points at (plan cache churn, temp table churn, and similar), the same way you would for LATCH_EX contention. If nothing correlates and the number is trivial, leave it alone.",
   "url": "https://sqldba.blog/sql-server-wait-latch-dt/"
  },
  {
@@ -1023,7 +1023,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Look at sys.dm_os_latch_stats and find the latch class with the most wait time.",
+  "what_to_do": "Look at sys.dm_os_latch_stats and find the latch class with the most wait time. The DMV groups all latch modes together per class, which is the right altitude for analysis anyway. Target that subsystem. For ACCESS_METHODS_DATASET_PARENT, review parallelism (MAXDOP, cost threshold) and index the large scans driving it. Treat the latch class as the real signal, not the generic LATCH_EX name. For before/after comparisons, latch stats can be reset with DBCC SQLPERF ('sys.dm_os_latch_stats', CLEAR); so you measure just your test window.",
   "url": "https://sqldba.blog/sql-server-wait-latch-ex/"
  },
  {
@@ -1035,7 +1035,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Ignore it in isolation.",
+  "what_to_do": "Ignore it in isolation. If latch waits matter on your system, work from sys.dm_os_latch_stats by class; the mode split adds nothing.",
   "url": "https://sqldba.blog/sql-server-wait-latch-kp/"
  },
  {
@@ -1059,7 +1059,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Check sys.dm_os_latch_stats for the top latch class by wait time.",
+  "what_to_do": "Check sys.dm_os_latch_stats for the top latch class by wait time. Address the subsystem that class belongs to, rather than the generic wait. If a parallel dataset class dominates, review parallelism settings ( cost threshold for parallelism, MAXDOP) and index the queries generating the large scans so they stop scanning.",
   "url": "https://sqldba.blog/sql-server-wait-latch-sh/"
  },
  {
@@ -1071,7 +1071,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Query sys.dm_os_latch_stats ordered by wait time and take the top class as the real lead.",
+  "what_to_do": "Query sys.dm_os_latch_stats ordered by wait time and take the top class as the real lead. Follow the class to its subsystem, exactly as you would for LATCH_EX. For before/after tests, clear latch stats with DBCC SQLPERF ('sys.dm_os_latch_stats', CLEAR); and measure just your window.",
   "url": "https://sqldba.blog/sql-server-wait-latch-up/"
  },
  {
@@ -1083,7 +1083,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. For memory pressure questions, use Lazy writes/sec, page life expectancy, and free list stalls; the sleep time between checks is irrelevant. Change nothing on the basis of this wait.",
   "url": "https://sqldba.blog/sql-server-wait-lazywriter-sleep/"
  },
  {
@@ -1095,7 +1095,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Catch it live. sys.dm_os_waiting_tasks joined to sys.dm_exec_requests shows who is waiting and, more importantly, the blocking_session_id.",
+  "what_to_do": "Catch it live. sys.dm_os_waiting_tasks joined to sys.dm_exec_requests shows who is waiting and, more importantly, the blocking_session_id. Look at what the head blocker is running. A big modification that escalated to a table lock is the usual suspect. Break large modifications into smaller batches so they stay under the escalation threshold, or schedule them away from read activity. If reads must coexist with heavy writes, consider READ_COMMITTED_SNAPSHOT, which lets readers use row versions instead of shared locks. That removes the reader side of the queue, though writers still block writers.",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-is/"
  },
  {
@@ -1107,7 +1107,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Find the head blocker in sys.dm_os_waiting_tasks while the wait is live.",
+  "what_to_do": "Find the head blocker in sys.dm_os_waiting_tasks while the wait is live. The resource_description tells you the object being fought over. If a reporting query with table hints is blocking writers, remove the hint, or move the report to a readable replica or snapshot isolation. Batch large modifications to stay under the lock escalation threshold, and keep transactions short so table-level locks are held for milliseconds, not minutes. Check sys.dm_db_index_operational_stats for the table to confirm which index the contention concentrates on.",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-ix/"
  },
  {
@@ -1119,7 +1119,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Confirm who runs serializable ( sys.dm_exec_sessions.transaction_isolation_level = 4 ) and whether it is intentional.",
+  "what_to_do": "Confirm who runs serializable ( sys.dm_exec_sessions.transaction_isolation_level = 4 ) and whether it is intentional. Rework upserts: unique constraint plus catch-duplicate-and-retry under READ COMMITTED beats a serializable existence check for both throughput and deadlocks. If serializable must stay, serialise the writers on an application lock ( sp_getapplock ) so they queue rather than deadlock.",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-rin-nl/"
  },
  {
@@ -1131,7 +1131,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Confirm who is using serializable: sys.dm_exec_sessions.transaction_isolation_level = 4.",
+  "what_to_do": "Confirm who is using serializable: sys.dm_exec_sessions.transaction_isolation_level = 4. Trace it back to the application or job. If it is unintentional, fix the source, the ORM setting, the DTC usage, or the hint. Most workloads are fine with READ COMMITTED or snapshot-based isolation. If serializable is required, index the predicate columns so range locks stay narrow, and keep those transactions short. Watch for connection pool leakage. Reset the isolation level explicitly on connection open, or use sp_reset_connection -safe drivers (modern ones reset by default).",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-rs-s/"
  },
  {
@@ -1143,7 +1143,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the serializable sessions and their statements ( sys.dm_exec_sessions isolation level 4, joined to requests).",
+  "what_to_do": "Identify the serializable sessions and their statements ( sys.dm_exec_sessions isolation level 4, joined to requests). Index the predicate so the range lock covers a handful of keys instead of a scan's worth. Downgrade isolation where the semantics allow; snapshot isolation gives consistency without range locks for many of these patterns. Partition the key ranges of concurrent batch jobs so they stop overlapping.",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-rs-u/"
  },
  {
@@ -1155,7 +1155,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the statements involved via sys.dm_os_waiting_tasks and the deadlock graph in the system_health Extended Events session.",
+  "what_to_do": "Identify the statements involved via sys.dm_os_waiting_tasks and the deadlock graph in the system_health Extended Events session. Rework upserts. On modern versions, a plain INSERT... WHERE NOT EXISTS under READ COMMITTED with a unique constraint plus retry-on-duplicate is simpler and far less deadlock-prone than serializable checks. Index the key you probe. A seek locks one narrow range; a scan under serializable locks everything it reads. If serializable is genuinely required, serialize the writers themselves, for example with sp_getapplock, so they queue politely instead of deadlocking.",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-rx-x/"
  },
  {
@@ -1167,7 +1167,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "When DDL hangs, check sys.dm_os_waiting_tasks for the SCH-M waiter and follow blocking_session_id to the culprit.",
+  "what_to_do": "When DDL hangs, check sys.dm_os_waiting_tasks for the SCH-M waiter and follow blocking_session_id to the culprit. sys.dm_tran_locks shows what it still holds. Kill or complete the blocker if it is an abandoned transaction; DBCC OPENTRAN in the database points at the oldest one. Schedule DDL for quiet windows, and use ONLINE = ON operations where the edition allows, which need SCH-M only briefly at the start and end. On SQL Server 2014 and later, use WAIT_AT_LOW_PRIORITY with ABORT_AFTER_WAIT so index operations fail fast or kill blockers deliberately, instead of freezing the table for everyone.",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-sch-m/"
  },
  {
@@ -1179,7 +1179,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Find the SCH-M holder in sys.dm_tran_locks ( request_mode = 'Sch-M' ) and see what DDL is running.",
+  "what_to_do": "Find the SCH-M holder in sys.dm_tran_locks ( request_mode = 'Sch-M' ) and see what DDL is running. Move DDL to quiet windows, and use ONLINE = ON index operations on Enterprise edition where possible. Use WAIT_AT_LOW_PRIORITY (SQL Server 2014 and later) on index operations so DDL yields instead of queuing the world behind it. Keep user transactions short. DDL blocked behind an idle open transaction is the most common trigger for a pile-up.",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-sch-s/"
  },
  {
@@ -1191,7 +1191,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the statement waiting on SIX via sys.dm_os_waiting_tasks and sys.dm_exec_requests.",
+  "what_to_do": "Identify the statement waiting on SIX via sys.dm_os_waiting_tasks and sys.dm_exec_requests. The query text usually makes the scan-then-update pattern obvious. Index the predicate. If the update can seek instead of scan, it takes narrow intent locks instead of a table-wide SIX, and the wait disappears. Serialize competing jobs. If two instances of the same batch process fight each other, run them in sequence or partition their key ranges. Keep the transaction around the update as short as possible so the SIX lock, once granted, is released quickly.",
   "url": "https://sqldba.blog/sql-server-wait-lck-m-six/"
  },
  {
@@ -1204,7 +1204,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "Short, infrequent lock waits, a small amount of LCK_M_X from occasional row-level conflicts is normal.",
-  "what_to_do": "Find and fix the head blocker first, killing it buys time, but does not fix the root cause.",
+  "what_to_do": "Find and fix the head blocker first, killing it buys time, but does not fix the root cause. Identify the application responsible ( program_name, host_name ) and the transaction pattern. Enable Read Committed Snapshot Isolation (RCSI), for LCK_M_S (reader blocked by writer), RCSI eliminates most reader/writer conflicts. Readers take no shared locks; they read from the version store instead. Enable per database: ALTER DATABASE [YourDatabase] SET READ_COMMITTED_SNAPSHOT ON; This requires no application changes, has no compatibility level requirement, but does increase tempdb usage (version store). Shorten transaction scope, move logic outside BEGIN TRAN/COMMIT. Do not call external services, do expensive calculations, or wait for user input inside a transaction. Add missing indexes, reduce lock duration by making queries faster, and reduce lock scope by turning scans into seeks. For hot rows, avoid updating a single shared row from many sessions simultaneously. Common patterns: Sequence tables: use IDENTITY or sequences instead Counter tables: use UPDATE... WITH (ROWLOCK) and avoid scanning Queue tables: use READPAST hint to skip locked rows For serializable-level blocking, review whether SERIALIZABLE isolation is actually needed. Most OLTP workloads run fine on READ COMMITTED.",
   "url": "https://sqldba.blog/sql-server-wait-statistics-lock-waits/"
  },
  {
@@ -1216,7 +1216,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Measure log write latency per log file in sys.dm_io_virtual_file_stats; write stalls above a few milliseconds make this whole wait family worse.",
+  "what_to_do": "Measure log write latency per log file in sys.dm_io_virtual_file_stats; write stalls above a few milliseconds make this whole wait family worse. Reduce log volume where design allows: batch small commits, avoid churning indexes needlessly, use minimally logged operations for bulk work. Put the log on dedicated low-latency storage; log writes are latency-sensitive and hate sharing. For workloads that can tolerate a small durability window, delayed durability ( DELAYED_DURABILITY ) removes the commit-time flush wait entirely; understand the data-loss trade before using it.",
   "url": "https://sqldba.blog/sql-server-wait-logbuffer/"
  },
  {
@@ -1228,7 +1228,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Check for auto-close: SELECT name FROM sys.databases WHERE is_auto_close_on = 1; and turn it off on anything a user or application touches: ALTER DATABASE [db] SET AUTO_CLOSE OFF;.",
+  "what_to_do": "Check for auto-close: SELECT name FROM sys.databases WHERE is_auto_close_on = 1; and turn it off on anything a user or application touches: ALTER DATABASE [db] SET AUTO_CLOSE OFF;. If shutdowns or offlines hang, look at log write latency in sys.dm_io_virtual_file_stats before blaming the engine; the close is waiting on the same slow disk your commits are. Quiesce write activity before planned detach or offline operations so there is little log left to drain.",
   "url": "https://sqldba.blog/sql-server-wait-logmgr/"
  },
  {
@@ -1240,7 +1240,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Measure log write latency first: sys.dm_io_virtual_file_stats write stall per write on each log file.",
+  "what_to_do": "Measure log write latency first: sys.dm_io_virtual_file_stats write stall per write on each log file. Single-digit milliseconds is healthy; tens of milliseconds is your bottleneck. Fix the storage path if latency is high. Dedicated, low-latency storage for the log file gives the flush pipeline room. Reduce log volume: minimally logged operations where appropriate, fewer and larger transactions instead of row-by-row commits, and index maintenance tuned to only what needs rebuilding. Confirm with the WRITELOG picture. If WRITELOG is quiet, LOGMGR_FLUSH on its own is not worth engineering time.",
   "url": "https://sqldba.blog/sql-server-wait-logmgr-flush/"
  },
  {
@@ -1252,7 +1252,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. For log pressure questions, look at WRITELOG and LOGBUFFER plus log-file write latency; this wait contributes nothing. If a report or tool ranks it as a top wait, treat that as a filtering gap, not a finding.",
   "url": "https://sqldba.blog/sql-server-wait-logmgr-queue/"
  },
  {
@@ -1264,7 +1264,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check SELECT name, log_reuse_wait_desc FROM sys.databases; for the affected database.",
+  "what_to_do": "Check SELECT name, log_reuse_wait_desc FROM sys.databases; for the affected database. It names exactly what is blocking truncation. Pre-size the log to cover your largest normal burst (biggest batch job, index maintenance, checkpoint interval) plus headroom, so growth is the exception. Set autogrowth to a fixed sensible increment and confirm the drive actually has space for it. In full recovery, verify log backups run frequently enough for your churn. In simple recovery, look for the long transaction holding the log active.",
   "url": "https://sqldba.blog/sql-server-wait-logmgr-reserve-append/"
  },
  {
@@ -1276,7 +1276,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter the family out of wait analysis.",
+  "what_to_do": "Filter the family out of wait analysis. Judge log readers by their own health: log_send_queue_size for AGs, sys.dm_cdc_log_scan_sessions for CDC, agent latency for replication. Nothing in the log pool itself is user-tunable in a supported way.",
   "url": "https://sqldba.blog/sql-server-wait-logpool-waits/"
  },
  {
@@ -1288,7 +1288,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Check the average: total wait time divided by count.",
+  "what_to_do": "Check the average: total wait time divided by count. Microseconds means ignore it and move on. If it genuinely ranks with meaningful average durations, look for the pattern: which queries or functions run at very high frequency, and whether memory pressure indicators (page life expectancy dips, RESOURCE_SEMAPHORE waits) accompany it. Address the source: cache results of expensive deterministic functions, reduce the calling frequency, or fix the memory pressure with proper max server memory sizing. Patch level matters for the known edge cases; check release notes if a specific function correlates.",
   "url": "https://sqldba.blog/sql-server-wait-memory-allocation-ext/"
  },
  {
@@ -1300,7 +1300,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it; and if you are genuinely reading it from a live system, note the version you are on and plan accordingly.",
+  "what_to_do": "Filter it; and if you are genuinely reading it from a live system, note the version you are on and plan accordingly. Metadata churn problems, where real, are addressed by reducing the churn (cached temp tables, saner deployment patterns).",
   "url": "https://sqldba.blog/sql-server-wait-metadata-lazycache-rwlock/"
  },
  {
@@ -1312,7 +1312,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the distributed queries via sys.dm_exec_requests during the wait, and get their plans; look for remote query operators pulling large rowsets.",
+  "what_to_do": "Identify the distributed queries via sys.dm_exec_requests during the wait, and get their plans; look for remote query operators pulling large rowsets. Push work to the source: OPENQUERY with the full filtered query, or restructure so joins happen remotely. Performance-tune the remote side as its own problem; the local wait is just the bill. For recurring pulls, stage remote data locally on a schedule instead of querying live per request.",
   "url": "https://sqldba.blog/sql-server-wait-msql-dq/"
  },
  {
@@ -1324,7 +1324,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify which XPs run and from where: catch sessions in this wait via sys.dm_exec_requests and capture the calling SQL text.",
+  "what_to_do": "Identify which XPs run and from where: catch sessions in this wait via sys.dm_exec_requests and capture the calling SQL text. Time-box and monitor the external work the XP performs; a hung XP usually traces to a hung external dependency. Modernise where possible. CLR integration, Agent job steps, or application-side services replace most legacy XP use cases without loading foreign DLLs into the engine's address space. For third-party XPs, take the evidence (wait times, thread dumps if needed) to the vendor; that code is theirs to fix.",
   "url": "https://sqldba.blog/sql-server-wait-msql-xp/"
  },
  {
@@ -1336,7 +1336,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Rule DBCC activity in or out by correlating the wait's growth with your integrity check schedule.",
+  "what_to_do": "Rule DBCC activity in or out by correlating the wait's growth with your integrity check schedule. For genuine linked server pain, find the calling queries ( sys.dm_exec_requests filtered to this wait) and see which endpoint they target. Push filters and aggregation to the remote side ( OPENQUERY or REMOTE JOIN hints where appropriate) so less data crosses the link. Cache or stage remote data locally for recurring workloads, and take endpoint-side slowness to the team that owns the remote system.",
   "url": "https://sqldba.blog/sql-server-wait-oledb/"
  },
  {
@@ -1348,7 +1348,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. Investigate DTC problems through MSDTC and the DTC wait family when they actually occur. Nothing else; there is no tuning surface here.",
   "url": "https://sqldba.blog/sql-server-wait-ondemand-task-queue/"
  },
  {
@@ -1360,7 +1360,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Ignore it in isolation.",
+  "what_to_do": "Ignore it in isolation. Check whether the rest of the PAGEIOLATCH family is elevated. If the family is elevated, measure storage: sys.dm_io_virtual_file_stats read and write stalls per operation, and take the investigation down the standard slow-storage path. Spend no time on PAGEIOLATCH_DT specifically; there is nothing to tune at the destroy-mode level.",
   "url": "https://sqldba.blog/sql-server-wait-pageiolatch-dt/"
  },
  {
@@ -1372,7 +1372,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Faster storage, if avg_write_ms is high and the storage is spinning disk or an overloaded shared SAN, moving data files to SSD or NVMe is the most direct fix.",
+  "what_to_do": "Faster storage, if avg_write_ms is high and the storage is spinning disk or an overloaded shared SAN, moving data files to SSD or NVMe is the most direct fix. Write latency on NVMe should be sub-millisecond. Enable Instant File Initialisation, add the SQL Server service account to the \"Perform volume maintenance tasks\" local security policy. This eliminates the zeroing cost on file extensions. Requires a SQL Server service restart to take effect. Enable Indirect Checkpoint, on SQL Server 2016+, indirect checkpoint is the default for new databases. For older databases or ones created before 2016, confirm it is set: ALTER DATABASE [YourDatabase] SET TARGET_RECOVERY_TIME = 60 SECONDS; -- 60 seconds is the recommended default Indirect checkpoint spreads write I/O more evenly over time rather than bursting. This reduces PAGEIOLATCH_EX spikes. Address page splits, if the culprit is a GUID-keyed clustered index on a table with heavy inserts: Consider switching to a sequential key (IDENTITY, SEQUENCE, newsequentialid() ) Or use a fill factor < 100 on the index to leave room for row insertions before splits are needed (trading space for fewer splits) Schedule write-heavy operations off-peak, large bulk loads, index rebuilds, and batch updates that generate checkpoint pressure should run during maintenance windows to avoid competing with production I/O.",
   "url": "https://sqldba.blog/sql-server-wait-statistics-pageiolatch-ex/"
  },
  {
@@ -1384,7 +1384,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Nothing for this mode.",
+  "what_to_do": "Nothing for this mode. For I/O latch analysis, measure sys.dm_io_virtual_file_stats latency and follow the PAGEIOLATCH_SH playbook.",
   "url": "https://sqldba.blog/sql-server-wait-pageiolatch-kp/"
  },
  {
@@ -1408,7 +1408,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "After a restart, the buffer pool is empty.",
-  "what_to_do": "If storage latency is high ( avg_read_ms > 15ms consistently): Move data files to faster storage (SSD or NVMe) Check if the storage array is shared and overloaded Check for disk queue depth in Windows Performance Monitor (...",
+  "what_to_do": "If storage latency is high ( avg_read_ms > 15ms consistently): Move data files to faster storage (SSD or NVMe) Check if the storage array is shared and overloaded Check for disk queue depth in Windows Performance Monitor ( PhysicalDisk\\Current Disk Queue Length ) If storage latency is fine but buffer pool churn is high: Check available memory on the server, has SQL Server's max server memory been set too low? Look for other processes consuming RAM (antivirus scans, CLR, memory-leaking apps) Add RAM if the working set genuinely does not fit Add indexes to reduce logical read counts for the top-offending queries If it is a specific query causing the problem: Add the missing index (validate with an execution plan first) Consider partitioning if only a subset of the table is needed Review whether the query needs to return all those rows, or whether it can be filtered earlier",
   "url": "https://sqldba.blog/sql-server-wait-statistics-pageiolatch-sh/"
  },
  {
@@ -1420,7 +1420,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check storage latency first: sys.dm_io_virtual_file_stats read stalls per read, per file.",
+  "what_to_do": "Check storage latency first: sys.dm_io_virtual_file_stats read stalls per read, per file. If reads average tens of milliseconds, this is a storage problem, not an allocation problem. Look at buffer pool health: page life expectancy trends and max server memory, since eviction pressure sends more reads to disk. If it clusters in tempdb alongside PAGELATCH_UP, treat it as part of the tempdb allocation story and apply the multi-file guidance. No query-level fix exists for this wait alone; it improves as storage and memory pressure improve.",
   "url": "https://sqldba.blog/sql-server-wait-pageiolatch-up/"
  },
  {
@@ -1432,7 +1432,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Ignore it in isolation.",
+  "what_to_do": "Ignore it in isolation. For real page latch work, use sys.dm_os_waiting_tasks to find the contended pages under the SH / UP / EX modes and follow the tempdb or hot-page playbooks.",
   "url": "https://sqldba.blog/sql-server-wait-pagelatch-dt/"
  },
  {
@@ -1444,7 +1444,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "Low levels alongside other waits, if PAGELATCH_EX is a few percent of total waits and nothing points at tempdb allocation pages, it's just normal latch coordination.",
-  "what_to_do": "Add tempdb data files, equally sized.",
+  "what_to_do": "Add tempdb data files, equally sized. The long-standing guidance: one data file per logical core up to 8, then add more (in fours) only if contention persists. All files the same size with the same autogrowth so proportional fill stays balanced. -- Example: add a second, equally-sized tempdb data file ALTER DATABASE tempdb ADD FILE ( NAME = tempdev2, FILENAME = 'T:\\tempdb\\tempdev2.ndf', SIZE = 1024MB, FILEGROWTH = 256MB ); Keep the files uniform. On SQL Server 2016 and later, uniform autogrowth across tempdb files is the default behaviour. On older versions enable trace flags 1117 (grow all files together) and 1118 (uniform extents) to get the same effect. Use memory-optimized tempdb metadata (SQL Server 2019+). If the contention is on system-table metadata rather than allocation pages, this removes it: ALTER SERVER CONFIGURATION SET MEMORY_OPTIMIZED TEMPDB_METADATA = ON; -- requires a restart to take effect Fix last-page insert contention (user databases). When the hot page is in a user database, adding tempdb files won't help. On SQL Server 2019+ use OPTIMIZE_FOR_SEQUENTIAL_KEY on the offending index; on older versions consider a non-sequential key (e.g. a hash or reversed key) to spread inserts across pages. ALTER INDEX PK_Orders ON dbo.Orders SET (OPTIMIZE_FOR_SEQUENTIAL_KEY = ON);",
   "url": "https://sqldba.blog/sql-server-wait-statistics-pagelatch-ex-temp-db-contention/"
  },
  {
@@ -1456,7 +1456,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Nothing for this mode.",
+  "what_to_do": "Nothing for this mode. For actual page latch contention, get the db:file:page from sys.dm_os_waiting_tasks under the real modes and follow the tempdb/hot-page playbooks.",
   "url": "https://sqldba.blog/sql-server-wait-pagelatch-kp/"
  },
  {
@@ -1480,7 +1480,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Read resource_description to identify the page.",
+  "what_to_do": "Read resource_description to identify the page. If it is tempdb ( 2:... ), treat it as tempdb contention. For tempdb, use multiple equally sized data files. One per logical core up to eight is a good starting point, which spreads allocation across more pages. For last page insert hotspots on SQL Server 2019 and later, consider OPTIMIZE_FOR_SEQUENTIAL_KEY = ON on the index. For a hot lookup page, reduce how often it is read, or accept the small latch cost if the table is tiny and already cached.",
   "url": "https://sqldba.blog/sql-server-wait-pagelatch-sh/"
  },
  {
@@ -1492,7 +1492,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Confirm the target pages via sys.dm_os_waiting_tasks while the wait is live.",
+  "what_to_do": "Confirm the target pages via sys.dm_os_waiting_tasks while the wait is live. For tempdb: use multiple equally sized data files (one per logical core up to eight is a solid start), keep them the same size with autogrowth uniform. On SQL Server 2022 and later much of this is relieved automatically (concurrent PFS/GAM updates); on 2016 to 2019, trace flags 1117 and 1118 behaviour is already the default for tempdb. Cut tempdb churn at the source: fewer needless temp objects, cached temp tables in frequently called procedures.",
   "url": "https://sqldba.blog/sql-server-wait-pagelatch-up/"
  },
  {
@@ -1504,7 +1504,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Nothing for the wait itself.",
+  "what_to_do": "Nothing for the wait itself. If backup interrogation jobs are slow, measure read throughput from the backup target; that is where the time goes. Keep verification jobs off peak windows if they share storage with production backups.",
   "url": "https://sqldba.blog/sql-server-wait-parallel-backup-queue/"
  },
  {
@@ -1516,7 +1516,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Judge redo health by redo_queue_size and redo_rate, plus PARALLEL_REDO_FLOW_CONTROL when the queue grows. No action attaches to the drain wait itself.",
   "url": "https://sqldba.blog/sql-server-wait-parallel-redo-drain-worker/"
  },
  {
@@ -1528,7 +1528,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Measure the backlog: redo_queue_size and redo_rate in sys.dm_hadr_database_replica_states, per database.",
+  "what_to_do": "Measure the backlog: redo_queue_size and redo_rate in sys.dm_hadr_database_replica_states, per database. Patch. If you are on an affected older build, current CUs substantially improved parallel redo. If redo still cannot keep up, test serial redo with trace flag 3459; for some workloads serial redo is actually faster than parallel coordination overhead. Test on your workload before committing. Reduce the incoming burst (tune index maintenance on the primary) or strengthen the secondary's storage and CPU.",
   "url": "https://sqldba.blog/sql-server-wait-parallel-redo-flow-control/"
  },
  {
@@ -1540,7 +1540,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of routine analysis with the other redo bookkeeping waits.",
+  "what_to_do": "Filter it out of routine analysis with the other redo bookkeeping waits. If it prompts curiosity, check redo_queue_size trends and PARALLEL_REDO_FLOW_CONTROL on the same database; act on those if they warrant it. Nothing attaches to this wait directly.",
   "url": "https://sqldba.blog/sql-server-wait-parallel-redo-log-cache/"
  },
  {
@@ -1552,7 +1552,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Track redo health through sys.dm_hadr_database_replica_states when it matters. No direct action exists for this wait.",
   "url": "https://sqldba.blog/sql-server-wait-parallel-redo-tran-list/"
  },
  {
@@ -1564,7 +1564,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Confirm the pairing: redo lag on the secondary plus this wait, and page split indicators on the primary (fragmentation growth, Page Splits/sec ).",
+  "what_to_do": "Confirm the pairing: redo lag on the secondary plus this wait, and page split indicators on the primary (fragmentation growth, Page Splits/sec ). Reduce splits at the source: appropriate fill factors on hot indexes, and fix ever-ascending-key hotspots where relevant. Deal with heaps: forwarded records mean a heap taking updates, which usually deserves a clustered index anyway (our index design checks flag these). Re-measure redo rate after the primary-side hygiene; the improvement shows up in the DMVs.",
   "url": "https://sqldba.blog/sql-server-wait-parallel-redo-tran-turn/"
  },
  {
@@ -1576,7 +1576,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Watch redo health where it is actually visible: redo_queue_size, redo_rate, and the flow-control and tran-turn waits when the queue grows. No action exists at this wait's level.",
   "url": "https://sqldba.blog/sql-server-wait-parallel-redo-worker-sync/"
  },
  {
@@ -1588,7 +1588,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis alongside the other benign background waits.",
+  "what_to_do": "Filter it out of wait analysis alongside the other benign background waits. Judge redo health by redo_queue_size and redo_rate in sys.dm_hadr_database_replica_states, never by this wait. If you genuinely suspect redo dispatch is the bottleneck (rare), look for high PARALLEL_REDO_FLOW_CONTROL and a growing redo queue on the same database; idle-worker time is not evidence either way.",
   "url": "https://sqldba.blog/sql-server-wait-parallel-redo-worker-wait-work/"
  },
  {
@@ -1600,7 +1600,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Nothing else; the counter registry manages itself.",
   "url": "https://sqldba.blog/sql-server-wait-performance-counters-rwlock/"
  },
  {
@@ -1612,7 +1612,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the calling queries ( sys.dm_exec_requests during the waits) and the providers involved ( sys.servers ).",
+  "what_to_do": "Identify the calling queries ( sys.dm_exec_requests during the waits) and the providers involved ( sys.servers ). Cut the data movement: push filters and joins to the remote side, and fetch only needed columns, LOB columns especially (the SEQSTRMREAD driver). Tune or replace slow providers, and performance-tune the remote system as its own project.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-com-waits/"
  },
  {
@@ -1624,7 +1624,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Attribute the load: which applications and linked-server calls run distributed transactions, and do they need to?",
+  "what_to_do": "Attribute the load: which applications and linked-server calls run distributed transactions, and do they need to? Many can be redesigned to local transactions plus idempotent messaging. For slow DTC calls, test MSDTC health: service state, DTCPing between the involved machines, RPC and firewall configuration. In clusters and AGs, verify the DTC configuration matches Microsoft's guidance for your topology; misconfigured clustered DTC is a classic source of slow or failing enlistments.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-dtc-waits/"
  },
  {
@@ -1636,7 +1636,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Correlate its occurrences with cluster log lease timeout entries and AG state changes; the timestamps reconstruct the incident.",
+  "what_to_do": "Correlate its occurrences with cluster log lease timeout entries and AG state changes; the timestamps reconstruct the incident. Chase the platform cause: network path health between nodes, CPU saturation at the times in question, hypervisor operations on the same timeline. Consider raising LeaseTimeout (cluster-side AG resource property) only after fixing the cause; masking a sick platform with longer timeouts trades alerts for slower failure detection.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-hadr-lease-mechanism/"
  },
  {
@@ -1648,7 +1648,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Read it with the family: OLEDB and MSQL_DQ carry the main signal; this one adds the provider-plumbing dimension.",
+  "what_to_do": "Read it with the family: OLEDB and MSQL_DQ carry the main signal; this one adds the provider-plumbing dimension. If connection-heavy patterns drive it, reduce per-call connection churn (connection pooling behaviour of the provider, fewer chatty distributed calls). Test remote endpoint health directly when the family rises together; the bottleneck is usually the far side.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-oledbops/"
  },
  {
@@ -1660,7 +1660,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Correlate with login rates and connection behaviour; storms show in the count, AD slowness in the averages.",
+  "what_to_do": "Correlate with login rates and connection behaviour; storms show in the count, AD slowness in the averages. Hand infrastructure the evidence when durations grow: which server, what windows, which DC ( nltest /dsgetdc: ). For connection churn on the app side, connection pooling hygiene fixes the volume at the source.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-security-waits/"
  },
  {
@@ -1672,7 +1672,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Correlate with connection behaviour: if login times degrade while this wait's average climbs, the evidence points firmly outside SQL Server.",
+  "what_to_do": "Correlate with connection behaviour: if login times degrade while this wait's average climbs, the evidence points firmly outside SQL Server. Hand your infrastructure team the specifics: which server, what times, and that the SQL side is waiting on Windows authentication calls. nltest /sc_query:<domain> and DC event logs pick it up from there. Check which DC the server actually uses ( nltest /dsgetdc:<domain> ) and whether sites and subnets route it sensibly. For token bloat, group cleanup for the affected service accounts is the real fix.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-authenticationops/"
  },
  {
@@ -1685,7 +1685,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Map accumulation to the file-touching activity at the time (backups, FILESTREAM, file growth).",
+  "what_to_do": "Map accumulation to the file-touching activity at the time (backups, FILESTREAM, file growth). Confirm antivirus exclusions for data, log, backup, and FILESTREAM paths; filter drivers tax every one of these calls. If calls are genuinely slow, prove it OS-side and hand it to the platform team.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-file-waits/"
  },
  {
@@ -1697,7 +1697,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Map accumulation to the crypto activity: TDE operations, encrypted backup windows, EKM usage, service or CLR startup.",
+  "what_to_do": "Map accumulation to the crypto activity: TDE operations, encrypted backup windows, EKM usage, service or CLR startup. For HSM/EKM latency, measure the provider from the host; the fix is in that infrastructure. For revocation stalls on offline servers, apply Microsoft's guidance on disabling the relevant network retrieval, a Windows setting, deliberately made.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-crypto-waits/"
  },
  {
@@ -1709,7 +1709,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter them in routine analysis on clustered instances.",
+  "what_to_do": "Filter them in routine analysis on clustered instances. During cluster incidents, line their anomalies up with the cluster log and system event log timestamps. No SQL-side tuning exists; cluster responsiveness is a platform property.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-cluster-waits/"
  },
  {
@@ -1730,7 +1730,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Filter them in routine analysis.",
+  "what_to_do": "Filter them in routine analysis. Treat unusual growth in any member as a pointer to its owning feature, and investigate there.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-misc-waits/"
  },
  {
@@ -1742,7 +1742,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the file-touching operations running when the wait accumulates (FILESTREAM access, backups, file-growth events).",
+  "what_to_do": "Identify the file-touching operations running when the wait accumulates (FILESTREAM access, backups, file-growth events). Check AV exclusions cover data, log, backup, and FILESTREAM container paths. For remote paths, test open latency outside SQL Server; if a plain file open is slow from the OS, the fix is infrastructure-side. For FILESTREAM specifically, review whether frequently accessed small values belong in FILESTREAM at all; in-row storage avoids the file-open cost entirely.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-createfile/"
  },
  {
@@ -1757,7 +1757,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "For GETADDRINFO growth: test resolution of the actual names involved (linked servers, replicas) from the host with nslookup / Resolve-DnsName; slowness reproduces outside SQL Server.",
+  "what_to_do": "For GETADDRINFO growth: test resolution of the actual names involved (linked servers, replicas) from the host with nslookup / Resolve-DnsName; slowness reproduces outside SQL Server. Consider hosts-file or IP-based configuration only as a stopgap; fixing DNS is the real answer. Disable unused protocols (named pipes where nothing uses it) as general hygiene.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-network-waits/"
  },
  {
@@ -1769,7 +1769,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check which DC the server resolves: nltest /dsgetdc:<domain> from the SQL Server host, and whether it is the expected nearby one.",
+  "what_to_do": "Check which DC the server resolves: nltest /dsgetdc:<domain> from the SQL Server host, and whether it is the expected nearby one. Verify DNS configuration on the host (the servers it queries, and their health). Escalate with specifics; slow DsGetDcName is an AD/DNS work item, not a SQL Server one.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-dsgetdcname/"
  },
  {
@@ -1781,7 +1781,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Correlate the wait with backup windows and file operations; most accumulation maps cleanly to scheduled activity.",
+  "what_to_do": "Correlate the wait with backup windows and file operations; most accumulation maps cleanly to scheduled activity. If it grows without an obvious driver, test basic file operations on the relevant volumes from the OS; slowness there is an infrastructure fix. Confirm antivirus exclusions for SQL Server's data, log, and backup paths.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-fileops/"
  },
  {
@@ -1793,7 +1793,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "On Linux: read Microsoft's guidance on the forced flush behaviour, verify what your storage actually guarantees, and only then consider trace flag 3979.",
+  "what_to_do": "On Linux: read Microsoft's guidance on the forced flush behaviour, verify what your storage actually guarantees, and only then consider trace flag 3979. Measure write latency ( sys.dm_io_virtual_file_stats ); a flush is only as fast as the device honouring it. On Windows, correlate the wait with the operations generating it before tuning anything; modest background amounts are noise.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-flushfilebuffers/"
  },
  {
@@ -1807,7 +1807,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Inventory what loads: registered XPs, and anything else configured to bring DLLs in-process.",
+  "what_to_do": "Inventory what loads: registered XPs, and anything else configured to bring DLLs in-process. Keep loaded binaries local and AV-excluded (the binaries, not the whole system). Reduce load churn by moving legacy XP functionality out of process where practical.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-library-waits/"
  },
  {
@@ -1819,7 +1819,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "If counts are high, moderate the monitoring cadence; per-minute is plenty for disk space.",
+  "what_to_do": "If counts are high, moderate the monitoring cadence; per-minute is plenty for disk space. If durations grow, test volume responsiveness from the OS and review filter drivers (AV) on the data volumes. Nothing engine-side needs tuning for this wait.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-getdiskfreespace/"
  },
  {
@@ -1831,7 +1831,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Inventory the XPs in use: catch callers via sys.dm_exec_requests during the wait, and list registered XPs in the master database.",
+  "what_to_do": "Inventory the XPs in use: catch callers via sys.dm_exec_requests during the wait, and list registered XPs in the master database. Time-box and monitor what the XP code does externally; hangs trace to hung dependencies. Migrate away where practical: CLR, Agent job steps, or application services replace most legacy XP patterns without foreign DLLs inside the engine process.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-getprocaddress/"
  },
  {
@@ -1843,7 +1843,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Inventory the credential users: Agent proxies ( msdb.dbo.sysproxies ) and linked server mappings ( sys.linked_logins ).",
+  "what_to_do": "Inventory the credential users: Agent proxies ( msdb.dbo.sysproxies ) and linked server mappings ( sys.linked_logins ). Reduce per-call churn where volume is the issue: fewer, longer job steps under one proxy beat many tiny ones. For duration problems, hand the AD latency evidence to the infrastructure team, as with the other authentication waits.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-logonuser/"
  },
  {
@@ -1855,7 +1855,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Find the calling code: catch sessions in this wait via sys.dm_exec_requests and look for SID translation in the SQL text.",
+  "what_to_do": "Find the calling code: catch sessions in this wait via sys.dm_exec_requests and look for SID translation in the SQL text. Fix the pattern: translate SIDs once and cache or join the result, instead of calling per row. If per-call latency is the issue, hand the evidence to the infrastructure team; nltest /dsgetdc: shows which DC the server actually uses. For audit reports, consider persisting name mappings on a schedule rather than resolving live.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-lookupaccountsid/"
  },
  {
@@ -1867,7 +1867,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Find the frequent callers (audit jobs, apps doing per-request membership checks) and cache results instead of re-asking.",
+  "what_to_do": "Find the frequent callers (audit jobs, apps doing per-request membership checks) and cache results instead of re-asking. For duration problems, it is the standard AD latency escalation with evidence attached. Keep group nesting sane for SQL-facing groups; token size and lookup cost both follow it.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-ad-lookup-waits/"
  },
  {
@@ -1879,7 +1879,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Find the callers: sys.dm_exec_requests filtered to this wait type shows the sessions and their SQL text live.",
+  "what_to_do": "Find the callers: sys.dm_exec_requests filtered to this wait type shows the sessions and their SQL text live. Ask whether the shell-out should exist. Most xp_cmdshell usage predates better options: Agent CmdExec/PowerShell steps, external ETL tooling, or application-side code all avoid burning SQL worker threads. If it must stay, make the external command fast and bounded: timeouts, error handling, and no per-row loops. Review the security posture: xp_cmdshell enabled means the SQL Server service account's OS rights are reachable from T-SQL. Our security surface-area check flags it for that reason.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-pipeops/"
  },
  {
@@ -1891,7 +1891,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "On SQL Server 2022: confirm CU5 or later; patch if not.",
+  "what_to_do": "On SQL Server 2022: confirm CU5 or later; patch if not. Otherwise, find the registry-reading callers via sys.dm_exec_requests during the wait and moderate their frequency. Registry reads themselves are fast when healthy; sustained slowness would implicate the OS, which is a different investigation.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-queryregistry/"
  },
  {
@@ -1903,7 +1903,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Read the messages: the error log and Application event log around the accumulation window name the source.",
+  "what_to_do": "Read the messages: the error log and Application event log around the accumulation window name the source. Fix the generator: the retrying app, the recurring error, or the over-chatty logging pattern. Keep login auditing at \"failed only\" unless a policy requires more; success auditing multiplies event volume for little insight.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-reportevent/"
  },
  {
@@ -1915,7 +1915,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the waiting sessions and their client applications ( sys.dm_exec_sessions host and program names).",
+  "what_to_do": "Identify the waiting sessions and their client applications ( sys.dm_exec_sessions host and program names). Fix the consumption pattern: fetch everything promptly then process, and select only needed rows and columns. Follow the full ASYNC_NETWORK_IO playbook; it applies verbatim.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-waitforsingleobject/"
  },
  {
@@ -1927,7 +1927,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check whether instant file initialization is on: SELECT instant_file_initialization_enabled FROM sys.dm_server_services WHERE servicename LIKE 'SQL Server (%';.",
+  "what_to_do": "Check whether instant file initialization is on: SELECT instant_file_initialization_enabled FROM sys.dm_server_services WHERE servicename LIKE 'SQL Server (%';. Grant the service account Perform volume maintenance tasks if not (an install-time checkbox since SQL Server 2016). Pre-size data and log files so growth is rare, and use fixed growth increments sized for the file rather than percentages. Keep log growth increments moderate (say 512MB to 1GB); giant increments mean giant synchronous zeroing pauses. Correlate the wait's spikes with autogrowth events from the default trace (our Get-AutogrowthHistory script) to confirm the source before changing anything.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-os-writefilegather/"
  },
  {
@@ -1939,7 +1939,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. If an endpoint stop hangs (extraordinary), look at what network activity the endpoint still serves and the error log's endpoint messages.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-sb-stopendpoint/"
  },
  {
@@ -1951,7 +1951,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it with its sleep sibling.",
+  "what_to_do": "Filter it with its sleep sibling. Keep the manual sp_server_diagnostics trick in the incident toolbox. AG failover sensitivity tuning lives in HEALTH_CHECK_TIMEOUT and failure condition levels, not in these waits.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-sp-server-diagnostics/"
  },
  {
@@ -1963,7 +1963,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter the family in routine analysis.",
+  "what_to_do": "Filter the family in routine analysis. Keep XE file targets on reasonable storage, and moderate tools that poll target state at high frequency. Session capture overhead, when that is the question, is about event choice and predicates, not these lifecycle calls.",
   "url": "https://sqldba.blog/sql-server-wait-preemptive-xe-waits/"
  },
  {
@@ -1975,7 +1975,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Before state changes, look at what is running: DBCC OPENTRAN or sys.dm_tran_active_transactions shows the transactions you are about to kill, and roughly how much undo you are signing up for.",
+  "what_to_do": "Before state changes, look at what is running: DBCC OPENTRAN or sys.dm_tran_active_transactions shows the transactions you are about to kill, and roughly how much undo you are signing up for. Track rollback progress on the victims with KILL <spid> WITH STATUSONLY. Prefer a drain (block new work, let transactions finish) over ROLLBACK IMMEDIATE when giant transactions are in flight; killing them is often the slowest path to your maintenance window.",
   "url": "https://sqldba.blog/sql-server-wait-print-rollback-progress/"
  },
  {
@@ -1987,7 +1987,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Watch PVS health where it matters: sys.dm_tran_persistent_version_store_stats for size and the oldest active transaction holding cleanup back. Keep transactions short, the same discipline ADR rewards everywhere else.",
   "url": "https://sqldba.blog/sql-server-wait-pvs-preallocate/"
  },
  {
@@ -1999,7 +1999,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Investigate slow startups through the error log timeline when needed.",
   "url": "https://sqldba.blog/sql-server-wait-pwait-all-components-initialized/"
  },
  {
@@ -2011,7 +2011,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Judge log-consumer health through the owning features' queues and latencies.",
   "url": "https://sqldba.blog/sql-server-wait-pwait-directlogconsumer-getnext/"
  },
  {
@@ -2023,7 +2023,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. If you do not use Machine Learning Services and want less surface area, the feature can be left uninstalled or disabled; do that for security posture reasons, not because of this wait. For genuine external-script tuning, look at sys.dm_external_script_requests and external resource pool configuration.",
   "url": "https://sqldba.blog/sql-server-wait-pwait-extensibility-cleanup-task/"
  },
  {
@@ -2035,7 +2035,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "For a long-running AG command, check what the async side is doing: AG DMVs for the database/replica states involved, the error log, and the cluster log for the same window.",
+  "what_to_do": "For a long-running AG command, check what the async side is doing: AG DMVs for the database/replica states involved, the error log, and the cluster log for the same window. Genuinely wedged operations usually need the initiating session killed and the state cleaned up; if the hang reproduces, capture details and check your build's fix list. Do not stack retries behind a stalled operation; resolve the stall first.",
   "url": "https://sqldba.blog/sql-server-wait-pwait-hadr-workitem-completed/"
  },
  {
@@ -2047,7 +2047,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out with the other QDS_* background waits; our Get-WaitStatistics script does.",
+  "what_to_do": "Filter it out with the other QDS_* background waits; our Get-WaitStatistics script does. Check per-database Query Store health via the options DMV when that is the actual question. Leave capture and flush settings alone on account of this wait; it does not measure their cost.",
   "url": "https://sqldba.blog/sql-server-wait-qds-async-queue/"
  },
  {
@@ -2059,7 +2059,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. For stores hitting their caps, tune CLEANUP_POLICY (stale query threshold) and MAX_STORAGE_SIZE_MB per database rather than anything wait-related. Nothing else attaches to this wait.",
   "url": "https://sqldba.blog/sql-server-wait-qds-cleanup-stale-queries-task-main-loop-sleep/"
  },
  {
@@ -2071,7 +2071,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. If Query Store overhead is the genuine question, look at QDS_STMT, capture mode, and store sizing rather than this wait.",
   "url": "https://sqldba.blog/sql-server-wait-qds-dyn-vector/"
  },
  {
@@ -2083,7 +2083,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "On SQL Server 2016/2017: enable trace flag 7752 as a startup flag if failover time matters.",
+  "what_to_do": "On SQL Server 2016/2017: enable trace flag 7752 as a startup flag if failover time matters. On 2019+, confirm you are simply current; the default is async. Right-size Query Store: cap MAX_STORAGE_SIZE_MB sensibly and let cleanup policies trim stale history; smaller stores load faster regardless of mode. Measure it once: after a controlled failover, this wait's duration tells you exactly what Query Store adds to database availability.",
   "url": "https://sqldba.blog/sql-server-wait-qds-loaddb/"
  },
  {
@@ -2095,7 +2095,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis with the other timer-based background waits; our Get-WaitStatistics script already does.",
+  "what_to_do": "Filter it out of wait analysis with the other timer-based background waits; our Get-WaitStatistics script already does. For actual Query Store health, check sys.database_query_store_options per database: actual_state vs desired_state, and current size vs max_storage_size_mb (our Query Store status script covers this). Leave the flush interval alone unless you have a measured reason; shortening it buys more frequent persistence at more background I/O for no analytical gain.",
   "url": "https://sqldba.blog/sql-server-wait-qds-persist-task-main-loop-sleep/"
  },
  {
@@ -2107,7 +2107,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out alongside QDS_PERSIST_TASK_MAIN_LOOP_SLEEP; our Get-WaitStatistics script excludes both.",
+  "what_to_do": "Filter it out alongside QDS_PERSIST_TASK_MAIN_LOOP_SLEEP; our Get-WaitStatistics script excludes both. For Query Store issues, check each database's options DMV and size headroom (our Query Store status script covers it). Do not disable Query Store to chase this wait; you would lose real capability to remove a harmless number.",
   "url": "https://sqldba.blog/sql-server-wait-qds-shutdown-queue/"
  },
  {
@@ -2119,7 +2119,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Set QUERY_CAPTURE_MODE = AUTO on the affected databases (the default from SQL Server 2019); confirm with sys.database_query_store_options.",
+  "what_to_do": "Set QUERY_CAPTURE_MODE = AUTO on the affected databases (the default from SQL Server 2019); confirm with sys.database_query_store_options. Attack the root: parameterise the application's hot statements, or use forced parameterization for a targeted database. Watch the plan cache stats too; the same ad hoc churn bloats it in parallel.",
   "url": "https://sqldba.blog/sql-server-wait-qds-stmt/"
  },
  {
@@ -2131,7 +2131,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "On 2016/2017 with TF 7412: confirm your build against KB 4089239 and patch or drop the flag.",
+  "what_to_do": "On 2016/2017 with TF 7412: confirm your build against KB 4089239 and patch or drop the flag. Otherwise filter it; profiling overhead questions are about profiling level settings, not this mutex.",
   "url": "https://sqldba.blog/sql-server-wait-qry-profile-list-mutex/"
  },
  {
@@ -2143,7 +2143,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "For slow builds, check sort spill evidence during the build window (tempdb activity, memory grants for the build session).",
+  "what_to_do": "For slow builds, check sort spill evidence during the build window (tempdb activity, memory grants for the build session). Give big builds resources: run them in windows with memory headroom, and consider SORT_IN_TEMPDB placement and tempdb health. Where the edition allows, online builds change the profile entirely (different waits, different trade-offs). MAXDOP on the index statement bounds the coordination cost when skew is chronic.",
   "url": "https://sqldba.blog/sql-server-wait-query-execution-index-sort-event-open/"
  },
  {
@@ -2155,7 +2155,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Investigate batch-mode performance through the plan-level evidence when needed.",
   "url": "https://sqldba.blog/sql-server-wait-query-task-enqueue-mutex/"
  },
  {
@@ -2167,7 +2167,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis on secondaries.",
+  "what_to_do": "Filter it out of wait analysis on secondaries. Judge redo health by redo_queue_size and redo_rate in sys.dm_hadr_database_replica_states, never by this wait. If someone cites its huge total as evidence of an AG problem, point them at the redo queue instead; big idle time here is the absence of a problem.",
   "url": "https://sqldba.blog/sql-server-wait-redo-thread-pending-work/"
  },
  {
@@ -2179,7 +2179,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Line up the wait's spikes with CHECKDB schedules and sys.databases ( source_database_id populated = snapshots exist).",
+  "what_to_do": "Line up the wait's spikes with CHECKDB schedules and sys.databases ( source_database_id populated = snapshots exist). Run integrity checks off-peak, or offload them to a restored copy elsewhere, which validates backups at the same time. Audit user snapshots: how many, how old, on what storage; drop stale ones and keep lifetimes short. If snapshots are essential, give their sparse files fast storage; the copy-on-write path is in your write latency now.",
   "url": "https://sqldba.blog/sql-server-wait-replica-writes/"
  },
  {
@@ -2191,7 +2191,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Measure the full freeze window from the error log pairs, and schedule snapshots away from write-heavy periods.",
+  "what_to_do": "Measure the full freeze window from the error log pairs, and schedule snapshots away from write-heavy periods. Chronic long drains argue for native SQL Server backups or better-timed snapshots, the same calculus as DISKIO_SUSPEND.",
   "url": "https://sqldba.blog/sql-server-wait-request-dispenser-pause/"
  },
  {
@@ -2203,7 +2203,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script does by default.",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script does by default. For actual deadlock investigation, pull the deadlock graphs from system_health (our deadlock summary script reads these) and fix the colliding access patterns. Do not tune anything through this wait; the monitor's cadence manages itself.",
   "url": "https://sqldba.blog/sql-server-wait-request-for-deadlock-search/"
  },
  {
@@ -2215,7 +2215,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Compute the average wait duration; microseconds means it is noise regardless of the total.",
+  "what_to_do": "Compute the average wait duration; microseconds means it is noise regardless of the total. For columnstore ETL scaling problems: reduce concurrency of simultaneous large loads, or rework the load to use less memory per operation (smaller batches, staged loads). Large page support (trace flag 834, with locked pages configured) has been used as a workaround for this specific bottleneck, but it changes buffer pool allocation behaviour globally; test carefully and only for dedicated workloads that demonstrably need it. Note it is not supported when columnstore is combined with certain features, so check current guidance first. Confirm memory grants are sane in sys.dm_exec_query_memory_grants; oversized grants amplify all allocation costs.",
   "url": "https://sqldba.blog/sql-server-wait-reserved-memory-allocation-ext/"
  },
  {
@@ -2227,7 +2227,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Attribute it: sys.dm_exec_requests joined to workload groups shows which pool's queries are being idled.",
+  "what_to_do": "Attribute it: sys.dm_exec_requests joined to workload groups shows which pool's queries are being idled. On-premises, revisit the cap against current intent; raise or restructure pools if the throttled workload now matters more. In Azure, read it with sys.dm_db_resource_stats (avg_cpu_percent pinned at the ceiling); either tune the biggest CPU consumers or scale the tier. Do not chase it as a performance bug; it is configuration doing what it says.",
   "url": "https://sqldba.blog/sql-server-wait-resource-governor-idle/"
  },
  {
@@ -2239,7 +2239,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Add missing indexes, this is the fix most of the time.",
+  "what_to_do": "Add missing indexes, this is the fix most of the time. A query that was scanning 5 million rows to sort the result becomes a seek returning 200 rows with no sort at all. The memory grant drops from hundreds of megabytes to nothing. Update statistics, bad cardinality estimates produce both over-grants (hogging workspace memory) and under-grants (causing spills). Update statistics on the tables involved in the offending queries: UPDATE STATISTICS [schema].[table_name] WITH FULLSCAN; For persistent under-estimation on a rapidly changing table, consider increasing the automatic update statistics threshold (SQL Server 2016+ with compat level 130 has a dynamic threshold, enable it if not already on). Review max server memory, if workspace memory is genuinely too small, increasing max server memory gives the workspace pool more room: EXEC sp_configure 'max server memory (MB)', 32768; -- example: 32 GB RECONFIGURE; Leave headroom for the OS and other processes, generally do not allocate more than 80\u201390% of physical RAM to SQL Server. Use Resource Governor (Enterprise), to cap memory grants per workload group, preventing one class of queries from starving others: ALTER RESOURCE POOL [reporting_pool] WITH (MAX_MEMORY_PERCENT = 30); Query hints for specific known-bad queries: -- Cap a specific query's grant to prevent it monopolising workspace memory SELECT... FROM... WHERE... [trimmed for size - the full steps are in the write-up linked below]",
   "url": "https://sqldba.blog/sql-server-wait-statistics-resource-semaphore/"
  },
  {
@@ -2251,7 +2251,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Look at what accompanies it.",
+  "what_to_do": "Look at what accompanies it. sys.dm_exec_query_memory_grants shows queries waiting on grants; sys.dm_os_schedulers shows worker thread saturation. If grants are the issue, follow the RESOURCE_SEMAPHORE playbook: fix the queries demanding huge grants (missing indexes, stale statistics, oversized sorts) before touching configuration. If threads are the issue, follow the THREADPOOL playbook: find the blocking chain or connection storm consuming workers. Spend no effort on the mutex itself; there is no tuning surface there.",
   "url": "https://sqldba.blog/sql-server-wait-resource-semaphore-mutex/"
  },
  {
@@ -2263,7 +2263,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Find the expensive compiles: sys.dm_exec_query_stats (plan generation stats) and the plan cache will show the biggest, most-recompiled offenders.",
+  "what_to_do": "Find the expensive compiles: sys.dm_exec_query_stats (plan generation stats) and the plan cache will show the biggest, most-recompiled offenders. Simplify the worst queries; compile cost scales with query complexity, and breaking a giant statement into steps often removes the gateway problem outright. Improve plan reuse: parameterise the ad hoc patterns (forced parameterization for a targeted database can help) so the same text stops recompiling. Check memory health overall; page life expectancy dips and RESOURCE_SEMAPHORE alongside this wait mean the box is squeezed everywhere, not just at compile.",
   "url": "https://sqldba.blog/sql-server-wait-resource-semaphore-query-compile/"
  },
  {
@@ -2275,7 +2275,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Look at the whole grant picture first: sys.dm_exec_query_memory_grants shows what is waiting, what is granted, and who holds the big reservations.",
+  "what_to_do": "Look at the whole grant picture first: sys.dm_exec_query_memory_grants shows what is waiting, what is granted, and who holds the big reservations. Fix the big-grant offenders (missing indexes, stale statistics, unnecessary sorts); freeing the main pool unclogs the small lane too. Check max server memory and overall memory health so grants have room. On chronic mixed workloads, Resource Governor can carve grant limits per workload group.",
   "url": "https://sqldba.blog/sql-server-wait-resource-semaphore-small-query/"
  },
  {
@@ -2287,7 +2287,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "For a suspected hang on pre-2019: check the error log for a read/write error around when progress stopped; kill and retry the restore, and investigate the failing device or file.",
+  "what_to_do": "For a suspected hang on pre-2019: check the error log for a read/write error around when progress stopped; kill and retry the restore, and investigate the failing device or file. Balance stripe performance: equal-speed destinations keep barrier waits small; one slow device gates all streams. On 2019+, errors surface properly; treat barrier time as ordinary restore mechanics.",
   "url": "https://sqldba.blog/sql-server-wait-restore-msda-thread-barrier/"
  },
  {
@@ -2299,7 +2299,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "On 2014: verify the build against KB 3007050.",
+  "what_to_do": "On 2014: verify the build against KB 3007050. On later versions, balance stats collection granularity against overhead on the hottest native procedures; sample rather than always-on where the workload is extreme.",
   "url": "https://sqldba.blog/sql-server-wait-rtdata-list/"
  },
  {
@@ -2311,7 +2311,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Use sys.dm_exec_session_wait_stats deliberately in troubleshooting; it is the per-session lens this bookkeeping pays for.",
   "url": "https://sqldba.blog/sql-server-wait-session-wait-stats-children/"
  },
  {
@@ -2323,7 +2323,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Identify the runners: sys.dm_exec_requests (from another connection) shows active sessions and their statements.",
+  "what_to_do": "Identify the runners: sys.dm_exec_requests (from another connection) shows active sessions and their statements. Decide per session: wait it out, or KILL it and accept the rollback. Remember big transactions roll back slowly; killing them can extend the wait, not shorten it. For planned maintenance, drain first: stop Agent jobs, block new connections, let work finish, then shut down. SHUTDOWN WITH NOWAIT exists for emergencies but skips the graceful steps.",
   "url": "https://sqldba.blog/sql-server-wait-shutdown/"
  },
  {
@@ -2335,7 +2335,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of routine wait analysis; our Get-WaitStatistics script already treats it as noise.",
+  "what_to_do": "Filter it out of routine wait analysis; our Get-WaitStatistics script already treats it as noise. If it is unusually dominant, measure data-file write latency in sys.dm_io_virtual_file_stats. Persistent 20ms+ write stalls mean checkpoint is throttling because your storage is at capacity. If a specific operation hangs (a backup that never starts), check for TDE scans or other checkpoint blockers before blaming the backup itself. Consider indirect checkpoints ( TARGET_RECOVERY_TIME ), which smooth write bursts into a steadier stream, the default from SQL Server 2016 onward for new databases.",
   "url": "https://sqldba.blog/sql-server-wait-sleep-bpool-flush/"
  },
  {
@@ -2347,7 +2347,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Confirm with the counters: Free list stalls/sec, Lazy writes/sec, and page life expectancy trends.",
+  "what_to_do": "Confirm with the counters: Free list stalls/sec, Lazy writes/sec, and page life expectancy trends. Address the pressure: max server memory sanity (and what else on the box squeezes SQL Server), and the query-side fixes that shrink the working set, missing indexes turning scans into seeks being the perennial biggest lever. If the hardware is simply undersized for the working set, more RAM is the honest answer.",
   "url": "https://sqldba.blog/sql-server-wait-sleep-bpool-memory-waits/"
  },
  {
@@ -2359,7 +2359,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter them from routine analysis, but note SLEEP_DBSTARTUP 's total after restarts as your recovery-time metric.",
+  "what_to_do": "Filter them from routine analysis, but note SLEEP_DBSTARTUP 's total after restarts as your recovery-time metric. For slow startups: check VLF counts (our Get-VlfCount script; thousands of VLFs slow recovery), crash recovery progress messages in the error log, and which databases take longest. Keep logs healthy (sensible size and growth) and consider ADR on 2019+ for databases with long-undo workloads; both shrink recovery time.",
   "url": "https://sqldba.blog/sql-server-wait-sleep-startup-waits/"
  },
  {
@@ -2371,7 +2371,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it from cumulative wait analysis; our Get-WaitStatistics script already does.",
+  "what_to_do": "Filter it from cumulative wait analysis; our Get-WaitStatistics script already does. When a live query waits on it, check the actual plan for hash spill warnings and sys.dm_exec_query_stats spill columns. Fix spills the normal way: better estimates via fresh statistics, memory grant corrections, and indexes that shrink the hashed input.",
   "url": "https://sqldba.blog/sql-server-wait-sleep-task/"
  },
  {
@@ -2383,7 +2383,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. For connection-layer problems, look at login rates, connection pool behaviour on the application side, and the error log's connectivity entries instead.",
   "url": "https://sqldba.blog/sql-server-wait-sni-critical-section/"
  },
  {
@@ -2395,7 +2395,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Verify NUMA layout through sys.dm_os_nodes when topology is the actual question.",
   "url": "https://sqldba.blog/sql-server-wait-sni-task-completion/"
  },
  {
@@ -2407,7 +2407,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Nothing else; pool management is self-governing.",
   "url": "https://sqldba.blog/sql-server-wait-sos-dispatcher-mutex/"
  },
  {
@@ -2419,7 +2419,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Verify build currency against KB 3074434 if you are on 2012/2014.",
+  "what_to_do": "Verify build currency against KB 3074434 if you are on 2012/2014. Audit what shares the process address space: in-process OLE DB providers, extended stored procedures, and similar; move them out of process where options exist. Check sys.dm_os_process_memory and memory clerk distribution ( sys.dm_os_memory_clerks ) for who is demanding the big blocks.",
   "url": "https://sqldba.blog/sql-server-wait-sos-memory-toplevelblockallocator/"
  },
  {
@@ -2431,7 +2431,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check your build if you are on 2012/2014 on NUMA hardware; apply the CU containing the fix.",
+  "what_to_do": "Check your build if you are on 2012/2014 on NUMA hardware; apply the CU containing the fix. Stabilise memory: set max server memory to a value the box can actually sustain so SQL Server is not constantly negotiating pages with Windows. Confirm LPIM is intentional (it usually should be on dedicated servers) and that memory pressure indicators are otherwise healthy.",
   "url": "https://sqldba.blog/sql-server-wait-sos-phys-page-cache/"
  },
  {
@@ -2443,7 +2443,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "Normal background cooperative yielding, a small amount of SOS_SCHEDULER_YIELD is inherent in how SQL Server schedules work.",
-  "what_to_do": "Find and tune the top CPU queries, this is almost always the right starting point: Pull the top 10 queries by total_worker_time from sys.dm_exec_query_stats Look at their execution plans, are they doing table scans they should not be?",
+  "what_to_do": "Find and tune the top CPU queries, this is almost always the right starting point: Pull the top 10 queries by total_worker_time from sys.dm_exec_query_stats Look at their execution plans, are they doing table scans they should not be? Add missing indexes to convert scans to seeks (fewer rows read = less CPU work) Review non-sargable predicates: WHERE YEAR(date_column) = 2024 cannot use an index; WHERE date_column >= '2024-01-01' AND date_column < '2025-01-01' can Reduce MAXDOP, high parallelism amplifies CPU load. If many queries are running parallel and the server is CPU-saturated, reduce max degree of parallelism and raise the cost threshold for parallelism to limit when queries go parallel. Review concurrent workload, are multiple batch jobs scheduled to run simultaneously? Stagger them to spread CPU load across time. Hardware, if the workload is genuinely maxing out the CPUs and cannot be tuned further, more cores or faster cores are the answer. SQL Server NUMA awareness means adding cores properly (not mismatched NUMA configurations) matters. Check for NUMA imbalance, sys.dm_os_schedulers should show roughly equal runnable task counts across schedulers. If one CPU socket's schedulers are consistently more loaded, check NUMA configuration.",
   "url": "https://sqldba.blog/sql-server-wait-statistics-sos-scheduler-yield/"
  },
  {
@@ -2455,7 +2455,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Worker starvation questions belong to THREADPOOL and sys.dm_os_schedulers, not here.",
   "url": "https://sqldba.blog/sql-server-wait-sos-sync-task-enqueue-event/"
  },
  {
@@ -2467,7 +2467,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Assess CPU pressure through the established signals; migrations are the scheduler helping, not hurting.",
   "url": "https://sqldba.blog/sql-server-wait-sos-worker-migration/"
  },
  {
@@ -2479,7 +2479,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait statistics analysis; our Get-WaitStatistics script treats it as noise.",
+  "what_to_do": "Filter it out of wait statistics analysis; our Get-WaitStatistics script treats it as noise. Do not read it as CPU or scheduler trouble. Genuine worker-thread starvation shows up as THREADPOOL, the opposite condition, and CPU pressure shows up in signal wait time and SOS_SCHEDULER_YIELD. If a monitoring tool alarms on it, fix the tool's filter list rather than the server.",
   "url": "https://sqldba.blog/sql-server-wait-sos-work-dispatcher/"
  },
  {
@@ -2491,7 +2491,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. Remember the underlying procedure as an incident tool: EXEC sp_server_diagnostics; gives a live health readout when things are strange. For AG failover sensitivity questions, the related knobs are the AG's HEALTH_CHECK_TIMEOUT and failure condition level, not this wait.",
   "url": "https://sqldba.blog/sql-server-wait-sp-server-diagnostics-sleep/"
  },
  {
@@ -2503,7 +2503,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check the error log for appdomain unload/load message pairs and their stated reasons.",
+  "what_to_do": "Check the error log for appdomain unload/load message pairs and their stated reasons. If memory pressure drives unloads, address the memory story (max server memory, what else squeezes the box); CLR appdomains are early eviction victims. Keep CLR assemblies lean and exception-safe so they do not bring their own domain down.",
   "url": "https://sqldba.blog/sql-server-wait-sqlclr-appdomain/"
  },
  {
@@ -2515,7 +2515,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Read it with SQLCLR_APPDOMAIN and the error log's appdomain messages; stability there quiets this wait too.",
+  "what_to_do": "Read it with SQLCLR_APPDOMAIN and the error log's appdomain messages; stability there quiets this wait too. Consolidate micro-assemblies where practical; fewer, larger assemblies mean fewer list operations. Otherwise leave it alone; there is no direct knob.",
   "url": "https://sqldba.blog/sql-server-wait-sqlclr-assembly/"
  },
  {
@@ -2530,7 +2530,7 @@
   "verdict_question": "Are They a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter the family in routine analysis.",
+  "what_to_do": "Filter the family in routine analysis. Keep trace files on reasonable local storage, not a stressed data volume or a slow share. Migrate tracing needs to Extended Events, which supersedes SQL Trace with lower overhead and better targets; our XE session scripts cover the common cases.",
   "url": "https://sqldba.blog/sql-server-wait-sqltrace-file-waits/"
  },
  {
@@ -2542,7 +2542,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. Keep the default trace on; it costs almost nothing and our autogrowth history tooling reads from it. For trace overhead concerns, look at TRACEWRITE and sys.traces instead.",
   "url": "https://sqldba.blog/sql-server-wait-sqltrace-incremental-flush-sleep/"
  },
  {
@@ -2554,7 +2554,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. For hung shutdowns, read it as a phase marker alongside the error log's shutdown sequence.",
   "url": "https://sqldba.blog/sql-server-wait-terminate-listener/"
  },
  {
@@ -2566,7 +2566,7 @@
   "verdict_question": "Is This Wait Expected?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "If it is happening right now, stop the bleeding first: Find the head blocker causing the blocking chain and kill it: KILL [session_id]; -- the head blocker session This releases all blocked sessions, which release their threads.",
+  "what_to_do": "If it is happening right now, stop the bleeding first: Find the head blocker causing the blocking chain and kill it: KILL [session_id]; -- the head blocker session This releases all blocked sessions, which release their threads. Do not kill random sessions, find the head blocker first. If it is not a blocking problem but a load problem: identify the application sending the most concurrent requests and throttle it at the connection pool level while you investigate. Fix the underlying causes: For blocking-driven THREADPOOL: Investigate and fix the blocking root cause (see LCK_M_X post) Enable RCSI to eliminate reader/writer lock conflicts Shorten transaction scope in applications For connection pool over-provisioning: Reduce max pool size in application connection strings Review whether all connections are necessary, idle pooled connections do not consume threads, but active connections do Set connection timeouts so stale connections fail fast For high-MAXDOP parallel queries: Reduce max degree of parallelism Raise cost threshold for parallelism to prevent trivial queries going parallel Use Resource Governor to limit DOP per workload group Raising max worker threads, this is a last resort, not a first response. If you raise the limit without fixing the root cause, you just move the ceiling: EXEC sp_configure 'max worker threads', 2048; RECONFIGURE; The default auto-configuration is usually appropriate. [trimmed for size - the full steps are in the write-up linked below]",
   "url": "https://sqldba.blog/sql-server-wait-statistics-threadpool/"
  },
  {
@@ -2578,7 +2578,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "See what traces exist: SELECT * FROM sys.traces; shows every running trace, its target, and whether it is the rowset (live consumer) kind.",
+  "what_to_do": "See what traces exist: SELECT * FROM sys.traces; shows every running trace, its target, and whether it is the rowset (live consumer) kind. Stop or narrow the offender: sp_trace_setstatus stops a trace by id; if tracing must continue, capture fewer events with tighter filters, to a fast local file rather than a live rowset. Move to Extended Events. XE is far cheaper for the same visibility and has been the recommended path since SQL Server 2012; our XE session scripts in the repo cover the common capture scenarios. Make trace hygiene routine: check sys.traces during health checks so abandoned traces do not linger.",
   "url": "https://sqldba.blog/sql-server-wait-tracewrite/"
  },
  {
@@ -2590,7 +2590,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Inventory subscriptions: sys.event_notifications and sys.server_event_notifications show what fires messages.",
+  "what_to_do": "Inventory subscriptions: sys.event_notifications and sys.server_event_notifications show what fires messages. Subscribe narrowly; per-event costs are small but multiplied by frequency. For heavyweight auditing needs, SQL Server Audit or targeted Extended Events sessions usually beat notifications on chatty events.",
   "url": "https://sqldba.blog/sql-server-wait-trace-evtnotif/"
  },
  {
@@ -2602,7 +2602,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Route Broker connectivity questions through sys.transmission_queue status text and endpoint configuration.",
   "url": "https://sqldba.blog/sql-server-wait-ucs-session-registration/"
  },
  {
@@ -2614,7 +2614,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. For live seeding progress and throughput, use the seeding DMVs; they show transfer rates and remaining work directly. Do not restart an instance just to clear the idle threads; they are harmless.",
   "url": "https://sqldba.blog/sql-server-wait-vdi-client-other/"
  },
  {
@@ -2626,7 +2626,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Find the sleepers when curious: sys.dm_exec_requests WHERE wait_type = 'WAITFOR' with the SQL text tells you who and why.",
+  "what_to_do": "Find the sleepers when curious: sys.dm_exec_requests WHERE wait_type = 'WAITFOR' with the SQL text tells you who and why. Replace hot polling loops with better patterns where it matters (Service Broker activation, shorter poll intervals only when work exists). Make sure nothing sleeps inside an open transaction; that is the one way WAITFOR hurts others.",
   "url": "https://sqldba.blog/sql-server-wait-waitfor/"
  },
  {
@@ -2638,7 +2638,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Verify activation configuration when Broker processing lags: readers, errors, and queue depths tell the real story.",
   "url": "https://sqldba.blog/sql-server-wait-waitfor-per-queue/"
  },
  {
@@ -2650,7 +2650,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Turn on asynchronous statistics updates for the affected databases: ALTER DATABASE [db] SET AUTO_UPDATE_STATISTICS_ASYNC ON;.",
+  "what_to_do": "Turn on asynchronous statistics updates for the affected databases: ALTER DATABASE [db] SET AUTO_UPDATE_STATISTICS_ASYNC ON;. Queries then compile with the stale statistics while the refresh happens in the background, trading momentary staleness for no stalls. For most OLTP workloads that trade is clearly right. Get ahead of auto-update by maintaining statistics yourself: scheduled UPDATE STATISTICS on the known churners after their load windows (our statistics health script shows which are stale). On SQL Server 2019 and later, remember the sampling improvements and persisted sample rates when tuning how expensive each refresh is.",
   "url": "https://sqldba.blog/sql-server-wait-wait-on-sync-statistics-refresh/"
  },
  {
@@ -2662,7 +2662,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Check sys.dm_db_xtp_checkpoint_files and log truncation health when XTP checkpointing is the actual question.",
   "url": "https://sqldba.blog/sql-server-wait-wait-xtp-ckpt-close/"
  },
  {
@@ -2674,7 +2674,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Investigate XTP topics through the feature's own DMVs when needed.",
   "url": "https://sqldba.blog/sql-server-wait-wait-xtp-host-wait/"
  },
  {
@@ -2686,7 +2686,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it in routine analysis; act only alongside real XTP checkpoint symptoms.",
+  "what_to_do": "Filter it in routine analysis; act only alongside real XTP checkpoint symptoms. If those symptoms exist, measure log-file read latency in sys.dm_io_virtual_file_stats and check sys.dm_db_xtp_checkpoint_files for backlog. Log storage that serves both writes and XTP scans well is the underlying requirement.",
   "url": "https://sqldba.blog/sql-server-wait-wait-xtp-offline-ckpt-log-io/"
  },
  {
@@ -2698,7 +2698,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out of wait analysis; our Get-WaitStatistics script excludes it by default. For real XTP checkpoint health, review sys.dm_db_xtp_checkpoint_files (file counts and states) and log truncation behaviour on the databases involved. Do not remove memory-optimized filegroups just to silence the wait; judge the feature on its own merits.",
   "url": "https://sqldba.blog/sql-server-wait-wait-xtp-offline-ckpt-new-log/"
  },
  {
@@ -2710,7 +2710,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Measure it: after a controlled failover or restart, the error log's recovery timings plus this wait show the XTP share of the outage.",
+  "what_to_do": "Measure it: after a controlled failover or restart, the error log's recovery timings plus this wait show the XTP share of the outage. Keep durable memory-optimized data deliberate: SCHEMA_ONLY tables for data that need not survive restarts, and cleanup of grown-stale durable data. Give checkpoint file storage genuine read throughput; recovery streams from it.",
   "url": "https://sqldba.blog/sql-server-wait-wait-xtp-recovery/"
  },
  {
@@ -2722,7 +2722,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. For slow shutdowns involving XTP databases, read the error log's shutdown sequence; the waiting is downstream of whatever XTP work had to finish.",
   "url": "https://sqldba.blog/sql-server-wait-wait-xtp-task-shutdown/"
  },
  {
@@ -2734,7 +2734,7 @@
   "verdict_question": "Is this wait expected?",
   "matters": true,
   "when_to_ignore": "High transaction volume workloads, if you are doing tens of thousands of commits per second, some WRITELOG is unavoidable.",
-  "what_to_do": "Slow log disk: Move the log file to a dedicated fast disk (SSD or NVMe ideally) Separate log files from data files if they share a volume Check storage queue depth in Performance Monitor ( PhysicalDisk\\Current Disk Queue Length on the log...",
+  "what_to_do": "Slow log disk: Move the log file to a dedicated fast disk (SSD or NVMe ideally) Separate log files from data files if they share a volume Check storage queue depth in Performance Monitor ( PhysicalDisk\\Current Disk Queue Length on the log volume) Chatty commit patterns: Identify the application or job doing frequent small commits Refactor row-by-row inserts into set-based operations Or batch commits, instead of committing after every row, commit every 500 or 1000 rows Review SSIS or ETL packages for Row by Row commit modes AG secondary lag: Check network latency between primary and secondary Check secondary disk write performance For geographically distant secondaries, evaluate whether asynchronous commit is more appropriate As a temporary measure only: For write-heavy applications under strict SLA, delayed durability ( DELAYED_DURABILITY = FORCED ) can reduce WRITELOG by batching log flushes. This trades write performance for a small data loss window, appropriate only for specific use cases (audit logs, telemetry) not for transactional data.",
   "url": "https://sqldba.blog/sql-server-wait-statistics-writelog/"
  },
  {
@@ -2746,7 +2746,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": true,
   "when_to_ignore": "",
-  "what_to_do": "Check the timing against DBCC CHECKDB runs and snapshot usage before anything else.",
+  "what_to_do": "Check the timing against DBCC CHECKDB runs and snapshot usage before anything else. If integrity checks drive it, schedule them off-peak, or run them against a restored copy on another server, which also validates your backups. If user snapshots drive it, review how many exist, how long they live, and what storage their sparse files sit on; drop stale ones. Measure the underlying volumes with sys.dm_io_virtual_file_stats to rule slow storage in or out.",
   "url": "https://sqldba.blog/sql-server-wait-write-completion/"
  },
  {
@@ -2758,7 +2758,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. Check per-session drop counts in sys.dm_xe_sessions when XE delivery is the actual question.",
   "url": "https://sqldba.blog/sql-server-wait-xe-buffermgr-allprocessed-event/"
  },
  {
@@ -2770,7 +2770,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis.",
+  "what_to_do": "Filter it out of wait analysis. If you suspect XE delivery is struggling, check dropped_event_count and buffer metrics in sys.dm_xe_sessions, and tighten event predicates on chatty sessions. Leave the dispatchers alone; they size and pace themselves.",
   "url": "https://sqldba.blog/sql-server-wait-xe-dispatcher-wait/"
  },
  {
@@ -2782,7 +2782,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it in routine analysis.",
+  "what_to_do": "Filter it in routine analysis. For heavy recurring analysis, parse XE files off-box; the TVF works on copied files anywhere. Keep event sessions filtered so the files stay small enough to read cheaply.",
   "url": "https://sqldba.blog/sql-server-wait-xe-file-target-tvf/"
  },
  {
@@ -2794,7 +2794,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Identify live consumers: sys.dm_xe_sessions shows running sessions, and the live streaming target appears in sys.dm_xe_session_targets while a viewer is attached.",
+  "what_to_do": "Identify live consumers: sys.dm_xe_sessions shows running sessions, and the live streaming target appears in sys.dm_xe_session_targets while a viewer is attached. Close viewers that are no longer needed; the wait stops accumulating with them. For continuous monitoring needs, prefer file targets read periodically over permanently attached live streams; same data, less standing machinery. Review the event sessions being watched: if someone needed a live view of a high-frequency event, make sure the session's filters are tight enough for production.",
   "url": "https://sqldba.blog/sql-server-wait-xe-live-target-tvf/"
  },
  {
@@ -2806,7 +2806,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default.",
+  "what_to_do": "Filter it out; our Get-WaitStatistics script excludes it by default. For real XE overhead concerns, review each session's event list and predicates, and prefer tight filters on high-frequency events. Change nothing based on this wait.",
   "url": "https://sqldba.blog/sql-server-wait-xe-timer-event/"
  },
  {
@@ -2818,7 +2818,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it out of wait analysis with the rest of the XE_* background set.",
+  "what_to_do": "Filter it out of wait analysis with the rest of the XE_* background set. Nothing else; there is no tuning surface.",
   "url": "https://sqldba.blog/sql-server-wait-xe-timer-mutex/"
  },
  {
@@ -2830,7 +2830,7 @@
   "verdict_question": "Is It a Problem?",
   "matters": false,
   "when_to_ignore": "",
-  "what_to_do": "Filter it in routine analysis.",
+  "what_to_do": "Filter it in routine analysis. If it inexplicably ranks high, check the state of the telemetry-related XE sessions and current Microsoft guidance on them. Investigate XTP health, when needed, through the feature's own DMVs rather than this wait.",
   "url": "https://sqldba.blog/sql-server-wait-xtp-preemptive-task/"
  }
 ]

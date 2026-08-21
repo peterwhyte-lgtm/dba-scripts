@@ -41,12 +41,22 @@ class TestBoundary(unittest.TestCase):
         self.assertGreater(len(chains['body']), 800)
 
     def test_post_bodies_do_NOT_ship(self):
-        """FAQ answers and wait entries are extracts, never the article."""
+        """FAQ answers and wait entries are extracts, never the article.
+
+        Exception, ruled by Peter 2026-08-21: `what_to_do` ships the FULL step list
+        (exporter caps it at ~1500 plus an explicit trim marker). It is the payload of a
+        WORTH INVESTIGATING verdict, and the 260-char extract was shipping a mid-word
+        trim ("...Performance Monitor (...") on exactly the six most-asked waits. The
+        article body still never crosses - steps are a section, not the write-up.
+        """
         for w in data.waits():
-            for field in ('verdict', 'what_to_do', 'when_to_ignore'):
+            for field in ('verdict', 'when_to_ignore'):
                 self.assertLessEqual(
                     len(w.get(field) or ''), 260,
                     'wait field long enough to be a body: %s' % w['url'])
+            self.assertLessEqual(
+                len(w.get('what_to_do') or ''), 1600,
+                'what_to_do long enough to be a body: %s' % w['url'])
             self.assertNotIn('<h2', json.dumps(w).lower())
         longest = max(data.faqs(), key=lambda f: len(f['answer']))
         self.assertLess(len(longest['answer']), 6000,
