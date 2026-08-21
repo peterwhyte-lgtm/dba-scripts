@@ -150,6 +150,13 @@ class TestRouting(unittest.TestCase):
     def _registered(self):
         mgr = getattr(server.server, '_tool_manager', None)
         if mgr is None:
+            # Locally an SDK bump degrades to a skip; in CI a skip here would mean the
+            # six-tool cap and the routing rules are no longer tested by anything, and
+            # a suite that can vanish without failing is the drift this repo documents.
+            import os
+            if os.environ.get('CI'):
+                self.fail('SDK internals moved (server.server._tool_manager gone) - '
+                          'port _registered() instead of letting these tests skip in CI')
             self.skipTest('SDK internals differ')
         return {t.name: t for t in mgr.list_tools()}
 
@@ -227,8 +234,12 @@ class TestLeakGate(unittest.TestCase):
         d = pathlib.Path(data.DATA_DIR)
         forbidden = [r'PWSQL\d+', r'HPAI\d+', r'sqldba-staging', r'sk-ant-[A-Za-z0-9]',
                      r'[A-Za-z]:\\+Users\\+Peter']
-        for name in ('scripts', 'faqs', 'docs', 'prompts'):
-            blob = (d / ('%s.json' % name)).read_text(encoding='utf-8')
+        # Every shipped dataset, discovered rather than listed: posts.json shipped on
+        # 2026-08-20 and sat outside a hand-kept tuple until 0.3.1. New corpus, new
+        # leak surface, no edit here required.
+        for path in sorted(d.glob('*.json')):
+            blob = path.read_text(encoding='utf-8')
+            name = path.stem
             for pat in forbidden:
                 hit = re.search(pat, blob, re.I)
                 self.assertIsNone(hit, 'PRIVATE DATA IN %s.json: %r'
@@ -506,3 +517,81 @@ class TestDangerLeadsTheAnswer(unittest.TestCase):
             if s['read_only'] is False:
                 with self.subTest(script=s['name']):
                     self.assertIn('NOT READ-ONLY', tools.get_script(s['path']))
+
+
+class TestPosts(unittest.TestCase):
+    """The post tier shipped 2026-08-20 with no tests at all - the newest data is the
+    least trusted, and this tier had already been tried once and reverted. These pin the
+    contract: every record is complete and citable, the count is gated, and the index
+    actually surfaces a post from words a reader would use.
+    """
+
+    def test_every_post_is_complete_and_citable(self):
+        posts = data.posts()
+        self.assertGreaterEqual(len(posts), 400, 'post corpus collapsed')
+        for p in posts:
+            with self.subTest(url=p.get('url')):
+                self.assertTrue(p.get('title'), 'post with no title')
+                self.assertRegex(p.get('url') or '',
+                                 r'^https://sqldba\.blog/[a-z0-9\-/]+/$')
+
+    def test_meta_count_matches(self):
+        self.assertEqual(data.meta().get('counts', {}).get('posts'),
+                         len(data.posts()))
+
+    def test_index_surfaces_a_post_from_reworded_titles(self):
+        """Sampled, reworded, rank-1 - the same discipline as eval_faq, so this cannot
+        become the verbatim-lookup test the README warns about. A handful of misses is
+        retrieval reality, not a defect; total failure is the defect."""
+        import pathlib
+        import sys
+        sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+        import eval_faq
+        posts = data.posts()
+        sample = posts[:: max(1, len(posts) // 25)]
+        hits = 0
+        for p in sample:
+            q = eval_faq._degrade(p['title'], keep=0.6)
+            got = data.post_index().search(q, limit=1, min_coverage=0.0)
+            if got and got[0][0]['url'] == p['url']:
+                hits += 1
+        self.assertGreaterEqual(hits / len(sample), 0.6,
+                                'post index found %d/%d reworded titles'
+                                % (hits, len(sample)))
+
+    def test_answer_question_can_lead_with_a_post(self):
+        """The covered-in path must actually fire: a question that names a post's
+        subject but matches no FAQ pair well should still name the post."""
+        answer = tools.answer_question('sqldba mcp server verified reference')
+        self.assertIn('sqldba.blog', answer)
+
+
+class TestAnswerStamp(unittest.TestCase):
+    """Every answer names the server version and dataset date - refusals included.
+
+    A stale install is invisible at runtime: pip pins a commit, the client says
+    Connected, and the answers are simply older. The stamp makes the one observable
+    surface - the answer itself - state what produced it (BACKLOG, 2026-08-19).
+    """
+
+    def _assert_stamped(self, answer: str):
+        self.assertIn('_sqldba-mcp %s' % server.__version__, answer)
+        self.assertIn('datasets generated %s' % data.meta().get('generated'), answer)
+
+    def test_all_six_wired_handlers_stamp_their_answers(self):
+        for call in (lambda: server.lookup_error('18456'),
+                     lambda: server.explain_wait('PAGEIOLATCH_SH'),
+                     lambda: server.check_build('16.0.4265.3'),
+                     lambda: server.find_script('blocking chains'),
+                     lambda: server.get_script('Get-BlockingChains'),
+                     lambda: server.answer_question('should I add a second data file?')):
+            self._assert_stamped(call())
+
+    def test_refusals_are_stamped_too(self):
+        """A stale refusal misleads exactly like a stale answer - 'not in the library'
+        may be true of an old export and false of the current one."""
+        self._assert_stamped(server.lookup_error('99999999'))
+
+    def test_pure_tools_stay_unstamped(self):
+        """The stamp is wiring-layer dressing; tools.py functions stay pure."""
+        self.assertNotIn('_sqldba-mcp', tools.lookup_error('18456'))

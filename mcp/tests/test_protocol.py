@@ -69,6 +69,8 @@ async def _talk_to_server():
                 'resources': [str(r.uri) for r in resources.resources],
                 'prompts': [p.name for p in prompts.prompts],
                 'error_text': error.content[0].text,
+                'wait_text': (await session.call_tool(
+                    'explain_wait', {'wait_type': 'PAGEIOLATCH_SH'})).content[0].text,
                 'build_text': build.content[0].text,
                 'unknown_text': unknown.content[0].text,
                 'doc_text': first_doc.contents[0].text,
@@ -76,12 +78,21 @@ async def _talk_to_server():
             }
 
 
-@unittest.skipUnless(HAVE_CLIENT, 'the MCP client SDK is not importable')
+@unittest.skipUnless(HAVE_CLIENT or os.environ.get('CI'),
+                     'the MCP client SDK is not importable')
 class TestOverTheWire(unittest.TestCase):
     """One handshake, shared by every assertion - a process launch per test is wasteful."""
 
     @classmethod
     def setUpClass(cls):
+        # Locally a missing client SDK degrades to a skip; in CI it must fail loudly.
+        # This suite is the only thing testing above the function layer, and a silent
+        # skip on an SDK bump would leave the whole protocol surface untested while
+        # every check still shows green - the exact 'required but never run' failure
+        # the rulesets README warns about.
+        if not HAVE_CLIENT:
+            raise AssertionError('CI has no importable MCP client SDK - the protocol '
+                                 'suite would silently skip; fix the environment')
         from sqldba_mcp import server
         cls.expected_version = server.__version__
         cls.result = asyncio.run(asyncio.wait_for(_talk_to_server(), TIMEOUT_SECONDS))
@@ -131,3 +142,21 @@ class TestOverTheWire(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class TestStampOverTheWire(unittest.TestCase):
+    """The version/dataset stamp must survive the protocol, not just the function call.
+
+    It exists for exactly one consumer - a person reading a live answer and asking
+    'which install produced this?' - so the place it must be proven is the wire.
+    """
+
+    @unittest.skipUnless(HAVE_CLIENT or os.environ.get('CI'), 'no MCP client SDK')
+    def test_answers_carry_the_stamp(self):
+        if not HAVE_CLIENT:
+            raise AssertionError('CI has no importable MCP client SDK')
+        from sqldba_mcp import server
+        result = asyncio.run(asyncio.wait_for(_talk_to_server(), TIMEOUT_SECONDS))
+        for key in ('error_text', 'wait_text', 'build_text', 'unknown_text'):
+            self.assertIn('_sqldba-mcp %s' % server.__version__, result[key],
+                          '%s reached the client without the version stamp' % key)

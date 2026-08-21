@@ -3,6 +3,54 @@
 All notable changes to the sqldba MCP server. Follows [Keep a Changelog](https://keepachangelog.com/)
 and [Semantic Versioning](https://semver.org/).
 
+## [0.3.1] - 2026-08-21
+
+Every answer now says which install produced it, and the prose can no longer drift from the data.
+
+### Added
+
+- **A version + dataset stamp on every answer, refusals included.** `_sqldba-mcp 0.3.1 -
+  datasets generated 2026-08-21_` on the end of all six tools' output, applied at the
+  wiring layer so tools.py stays pure. A `pip install git+...` pins a commit,
+  `claude mcp list` says Connected either way, and a stale install simply answers with
+  older data — the BACKLOG's "a stale install is invisible at runtime", closed by making
+  the answer itself state its provenance. Asserted at the function layer and over the wire.
+
+- **`check_prose()` in the freshness gate.** check_freshness gated the datasets and never
+  read the prose wrapped around them; that blind spot shipped "181 scripts" against 183 in
+  0.3.0's fix, and by 2026-08-21 the README claimed 47 errors / 448 answered questions
+  against shipped datasets holding 48 / 492, with pyproject's PyPI description still
+  saying 181 and 434. Twelve count claims in README and pyproject are now regex-checked
+  against the actual datasets on every build. In the process the gate caught its own
+  first subtlety: 234 wait *records* cover 260 wait *types*, and the two are now gated
+  separately instead of assumed equal.
+
+- **The post tier gets tests.** `posts.json` shipped 2026-08-20 with no coverage at all:
+  no count check, no URL check, outside the leak gate's hand-kept file list. Now: every
+  record complete and citable, count gated in `_meta` and `check_freshness`, URLs
+  format-checked, a sampled reworded-title retrieval floor, and the leak gate discovers
+  datasets by glob so a new corpus can never again sit outside it unnoticed.
+
+### Fixed
+
+- **README error-section counts were stale in three places** (47 errors, "17 with no
+  link" over a body saying 16, "31 of 47 carry a URL"). The real figures: 48 errors, 40
+  with a write-up URL, 8 without. The four errors the old text named as the flagship gaps
+  — 102, 701, 823, 824 — have all since been written up; the section now names the
+  actual list.
+
+- **The test harness could silently test the wrong code.** Locally the package was
+  installed non-editable and pinned to a commit, so `unittest discover` ran against
+  site-packages while the evals ran against the tree — the stale-install failure living
+  inside the harness itself (it surfaced mid-development: the new stamp tests failed
+  against an install three edits old). The install is editable now and `gate.sh` fails
+  fast if `import sqldba_mcp` resolves anywhere but the working tree.
+
+- **Two suites could vanish without failing CI.** `test_protocol.py` (the only coverage
+  above the function layer) skipped silently if the MCP client SDK would not import, and
+  `TestRouting` skipped if SDK internals moved. Under CI both now fail loudly instead;
+  locally they still degrade to a skip.
+
 ## [0.3.0] - 2026-08-19
 
 `check_build` learns to identify a build, and FAQ answers learn to say where they came from.

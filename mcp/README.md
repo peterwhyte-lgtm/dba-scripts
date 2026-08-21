@@ -26,8 +26,8 @@ Six is a ceiling, not a target. Past roughly half a dozen, an agent starts picki
 and a wrong pick is worse than no server at all — so anything else this could expose is a Resource
 or a Prompt instead. A test enforces the cap.
 
-Covering **47 errors**, **260 wait types**, **7 SQL Server versions** with all **472 published
-builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **448 answered questions**.
+Covering **48 errors**, **260 wait types**, **7 SQL Server versions** with all **472 published
+builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **492 answered questions**.
 
 ### Also included
 
@@ -47,16 +47,19 @@ Very few MCP servers publish a number for this. Run it yourself: `python tests/e
 
 | Suite | n | top-1 | top-3 |
 |---|---:|---:|---:|
-| **FAQ, questions reworded** | 448 | **95.8%** | **99.6%** |
-| FAQ, verbatim question | 448 | 98.7% | 99.8% |
-| **Errors, phrase reworded** | 47 | **95.7%** | **100%** |
-| Errors, by number | 46 | 100% | 100% |
+| **FAQ, questions reworded** | 492 | **95.1%** | **99.4%** |
+| FAQ, verbatim question | 492 | 98.8% | 99.8% |
+| **Errors, phrase reworded** | 48 | **95.8%** | **100%** |
+| Errors, by number | 47 | 100% | 100% |
 | Wait types, by name | 260 | 100% | 100% |
+| **Scripts, natural-language task** | 44 | **56.8%** | **95.5%** |
 
 **Only the bold rows are retrieval measures.** Searching with the verbatim question that is already
-in the index scores 98.6% and means nothing — it is string equality wearing a costume. The headline
+in the index scores 98.8% and means nothing — it is string equality wearing a costume. The headline
 number asks each question in fewer words than published. Even that is an upper bound: the rewording
-drops terms but cannot introduce synonyms, so treat 95.9% as the ceiling rather than a promise.
+drops terms but cannot introduce synonyms, so treat 95.1% as the ceiling rather than a promise.
+The numbers move with every export as the corpus grows (this table was measured at 492 questions);
+re-run the command above for the current ones.
 
 The error row used to read **100%**, and that number was wrong in exactly the way this section
 warns about. It searched with each error's *verbatim title* against a substring match, so every
@@ -186,26 +189,26 @@ That is why script headers are treated as a product surface here rather than hou
 `Author`, `Purpose`, `Requires`, `SAFE:` and `IMPACT:` are what your assistant shows you
 *before* you run something. The list is in [`scripts-missing-post-url.txt`](scripts-missing-post-url.txt).
 
-## The 17 errors with no link
+## The 8 errors with no link
 
 The same gap on the other surface, and worth stating plainly because the tools promise a source
-link with every answer: **31 of the 47 errors carry a write-up URL, and 16 do not.** Those 16 still
+link with every answer: **40 of the 48 errors carry a write-up URL, and 8 do not.** Those 8 still
 return the message text, what it means and the severity — all hand-written and verified — and the
 answer *says* no article exists rather than quietly omitting the link, so an agent can quote
 them and knows it cannot cite them.
 
 Unlike the scripts above this is a genuine **content** gap, not a header one: those errors have no
-post yet. `102 Incorrect syntax near`, `701 Insufficient system memory`, `823 I/O error` and
-`824 Logical consistency-based I/O error` are on that list, which makes it a fair reading order
-for the Error Library. It was 22 as recently as this week — 208, 245, 547, 3154 and 5030 have
-since been written up.
+post yet. `262 CREATE DATABASE permission denied`, `605 fetched logical page belongs to a
+different object`, `945 database cannot be opened` and `5171 not a primary database file` are on
+that list, which makes it a fair reading order for the Error Library. It was 16 as recently as
+mid-August — 102, 701, 823 and 824, once the flagship gaps, have all since been written up.
 
 A citation whose post is written but not yet live is deliberately shipped *without* the link
 and picked up at the next export, rather than blocking every other correction behind it. 15138
 was the case that earned that behaviour: one scheduled post had been holding up an export
 carrying twelve unrelated fixes. It is live now, and its link attached by itself.
 
-**Where Microsoft publishes a page for an error, the answer cites that too** - 23 of the 47
+**Where Microsoft publishes a page for an error, the answer cites that too** - 23 of the 48
 have one. Those URLs are verified rather than constructed: the pattern is predictable, and a
 guessed link that 404s looks like provenance and is not. Each was fetched once and kept only
 if it returned 200 *and* still named that error. Error 10054 returns 200 and redirects to a

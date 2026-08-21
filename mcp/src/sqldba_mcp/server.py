@@ -22,7 +22,7 @@ from . import data, tools
 READ_ONLY = ToolAnnotations(read_only_hint=True, destructive_hint=False,
                             idempotent_hint=True, open_world_hint=False)
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 server = MCPServer(
     name='sqldba',
@@ -40,6 +40,19 @@ server = MCPServer(
 )
 
 
+def _stamped(answer: str) -> str:
+    """Version and dataset date on every answer, refusals included.
+
+    A `pip install git+...` pins a commit, `claude mcp list` says Connected either way,
+    and a stale install simply answers with older data - nothing at runtime shows it.
+    The one place a running server provably speaks from is its own answers, so each one
+    states which server and which export produced it. tools.py stays pure; this is
+    protocol dressing, applied at the wiring layer.
+    """
+    return '%s\n\n_sqldba-mcp %s - datasets generated %s_' % (
+        answer, __version__, data.meta().get('generated', 'unknown'))
+
+
 @server.tool(
     name='lookup_error',
     title='Look up a SQL Server error',
@@ -53,7 +66,7 @@ server = MCPServer(
 )
 def lookup_error(error: str) -> str:
     """Look up a SQL Server error by number or message phrase."""
-    return tools.lookup_error(error)
+    return _stamped(tools.lookup_error(error))
 
 
 @server.tool(
@@ -70,7 +83,7 @@ def lookup_error(error: str) -> str:
 )
 def explain_wait(wait_type: str) -> str:
     """Explain a SQL Server wait type and whether it matters."""
-    return tools.explain_wait(wait_type)
+    return _stamped(tools.explain_wait(wait_type))
 
 
 @server.tool(
@@ -91,7 +104,7 @@ def explain_wait(wait_type: str) -> str:
 )
 def check_build(build: str) -> str:
     """Identify a build number and report patch level and support status."""
-    return tools.check_build(build)
+    return _stamped(tools.check_build(build))
 
 
 @server.tool(
@@ -114,7 +127,7 @@ def check_build(build: str) -> str:
 )
 def find_script(task: str) -> str:
     """Find a script in the dba-tools library by task."""
-    return tools.find_script(task)
+    return _stamped(tools.find_script(task))
 
 
 @server.tool(
@@ -129,7 +142,7 @@ def find_script(task: str) -> str:
 )
 def get_script(name: str) -> str:
     """Return the full verbatim body of a named script."""
-    return tools.get_script(name)
+    return _stamped(tools.get_script(name))
 
 
 @server.tool(
@@ -148,7 +161,7 @@ def get_script(name: str) -> str:
 )
 def answer_question(question: str) -> str:
     """Answer a how/why question from the published FAQ corpus."""
-    return tools.answer_question(question)
+    return _stamped(tools.answer_question(question))
 
 
 # --- Resources -----------------------------------------------------------------------

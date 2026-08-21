@@ -123,6 +123,9 @@ def check_counts() -> None:
         'faqs': len(load('faqs')), 'scripts': len(load('scripts')),
         'docs': len(load('docs')), 'prompts': len(load('prompts')),
         'versions': len(load('builds')['versions']),
+        # posts joined in 0.3.1 - it shipped for a day with no count check at all,
+        # which is how every other silent drift in this file's history started.
+        'posts': len(load('posts')),
     }
     for key, n in actual.items():
         if c.get(key) != n:
@@ -148,7 +151,7 @@ def check_age() -> None:
 def check_urls() -> None:
     bad = []
     for name, rows in (('errors', load('errors')), ('faqs', load('faqs')),
-                       ('waits', load('waits'))):
+                       ('waits', load('waits')), ('posts', load('posts'))):
         for r in rows:
             url = r.get('url')
             if url and not re.match(r'^https://sqldba\.blog/[a-z0-9\-/]+/$', url):
@@ -157,9 +160,81 @@ def check_urls() -> None:
         problems.append('%d malformed source URL(s): %s' % (len(bad), ', '.join(bad[:3])))
 
 
+def check_prose() -> None:
+    """The counts CLAIMED in prose must match the counts SHIPPED in the datasets.
+
+    check_freshness gated the datasets and never read the prose wrapped around them, and
+    that exact blind spot produced two shipped drifts: find_script's description read 181
+    scripts against a library of 183 (fixed 0.3.0 by computing it), and by 2026-08-21 the
+    README claimed 47 errors / 448 answered questions against shipped datasets holding
+    48 / 492 - with pyproject's PyPI description still saying 181 and 434. Prose numbers
+    cannot be computed at render time the way a tool description can, so they are gated
+    here instead: every count claim below is a regex over the actual file, compared to the
+    actual dataset. Add a claim to a doc, add its pattern here.
+    """
+    errors = load('errors')
+    expected = {
+        'errors': len(errors),
+        'errors_with_url': sum(1 for e in errors if e.get('url')),
+        'errors_without_url': sum(1 for e in errors if not e.get('url')),
+        'errors_ms_docs': sum(1 for e in errors if e.get('ms_docs')),
+        # 234 wait RECORDS cover 260 wait TYPES (a record can cover a family, e.g. the
+        # PAGEIOLATCH_% variants). Prose talks about types; check_counts gates records.
+        'wait_types': sum(len(w.get('wait_types', [])) for w in load('waits')),
+        'faqs': len(load('faqs')),
+        'scripts': len(load('scripts')),
+        'scripts_sql': sum(1 for s in load('scripts') if s.get('language') != 'powershell'),
+        'builds': sum(len(v.get('updates', [])) for v in load('builds')['versions']),
+        'versions': len(load('builds')['versions']),
+    }
+
+    # (file, human label, regex with ONE capture group, expected value)
+    claims = [
+        ('README.md', 'error count',
+         r'Covering \*\*(\d+) errors\*\*', expected['errors']),
+        ('README.md', 'wait type count',
+         r'\*\*(\d+) wait types\*\*', expected['wait_types']),
+        ('README.md', 'version count',
+         r'\*\*(\d+) SQL Server versions\*\*', expected['versions']),
+        ('README.md', 'published build count',
+         r'\*\*(\d+) published\s+builds\*\*', expected['builds']),
+        ('README.md', 'script count',
+         r'\*\*(\d+) scripts\*\* \((\d+) SQL', expected['scripts']),
+        ('README.md', 'answered question count',
+         r'\*\*(\d+) answered questions\*\*', expected['faqs']),
+        ('README.md', 'errors-without-link heading',
+         r'## The (\d+) errors with no link', expected['errors_without_url']),
+        ('README.md', 'errors-with-link sentence',
+         r'\*\*(\d+) of the \d+ errors carry a write-up URL', expected['errors_with_url']),
+        ('README.md', 'errors-without-link sentence',
+         r'errors carry a write-up URL, and (\d+) do not', expected['errors_without_url']),
+        ('README.md', 'ms-docs sentence',
+         r'cites that too\D*(\d+) of the \d+\s*\nhave one', expected['errors_ms_docs']),
+        ('pyproject.toml', 'PyPI description script count',
+         r'description = ".*?(\d+) scripts', expected['scripts']),
+        ('pyproject.toml', 'PyPI description question count',
+         r'description = ".*?(\d+) answered questions', expected['faqs']),
+    ]
+
+    checked = 0
+    for fname, label, pattern, want in claims:
+        text = (HERE.parent / fname).read_text(encoding='utf-8')
+        m = re.search(pattern, text)
+        if not m:
+            problems.append('prose claim not found (%s: %s) - pattern needs updating '
+                            'alongside the doc: %s' % (fname, label, pattern))
+            continue
+        checked += 1
+        got = int(m.group(1))
+        if got != want:
+            problems.append('prose drift in %s: %s says %d, datasets hold %d'
+                            % (fname, label, got, want))
+    notes.append('prose: %d count claim(s) checked against the datasets' % checked)
+
+
 def main() -> int:
     for check in (check_scripts, check_docs_and_prompts, check_counts,
-                  check_age, check_urls):
+                  check_age, check_urls, check_prose):
         check()
 
     for n in notes:

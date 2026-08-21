@@ -26,6 +26,16 @@ run() {
 }
 
 echo "MCP gate - the same steps as .github/workflows/mcp.yaml"
+# The tests import sqldba_mcp; if that resolves to a pinned site-packages install
+# instead of this tree, every step below tests the WRONG CODE and passes anyway.
+# That happened on 2026-08-21: the suite ran green against an install three edits
+# behind the working tree. Fix: pip install -e . from mcp/.
+run "editable install (tests run the tree)" python -c "
+import pathlib, sqldba_mcp
+mod = pathlib.Path(sqldba_mcp.__file__).resolve()
+tree = pathlib.Path('src').resolve()
+assert str(mod).startswith(str(tree)), 'sqldba_mcp imports from %s, not this tree' % mod
+"
 run "selftest (datasets load)"        python -m sqldba_mcp --selftest
 run "unittest discover"               python -m unittest discover -s tests
 run "retrieval eval"                  python tests/eval_faq.py
