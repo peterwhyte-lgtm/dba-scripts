@@ -3,7 +3,7 @@ Script Name : Get-IndexFragmentation
 Category    : maintenance-and-reliability
 Purpose     : Top fragmented indexes across all user databases, ranked by fragmentation pct.
 Author      : Peter Whyte (https://sqldba.blog)
-Requires    : VIEW SERVER STATE to cover all databases (what this script does). Narrower
+Requires    : VIEW SERVER STATE plus access to each online user database (it opens each one). Narrower
               scopes need less: VIEW DATABASE STATE for a single database, CONTROL on the
               object for a single index. SQL Server 2022+ accepts the granular
               VIEW SERVER PERFORMANCE STATE / VIEW DATABASE PERFORMANCE STATE instead.

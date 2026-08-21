@@ -5,7 +5,7 @@ Purpose     : Lists SQL Agent proxies and server-level credentials with their id
               and associated subsystems. Proxies that use stored credentials to run Agent
               steps under a different account are a common privilege escalation path.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/)
-Requires    : VIEW SERVER STATE; membership in sysadmin or SQLAgentOperatorRole in msdb
+Requires    : VIEW SERVER STATE, db_datareader on msdb (or sysadmin); the Agent roles alone cannot SELECT sysproxylogin
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low

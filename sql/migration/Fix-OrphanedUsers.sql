@@ -5,7 +5,7 @@ Purpose     : Generate ALTER USER statements to re-map orphaned database users t
               matching server-level logins across all user databases. Run on TARGET after
               databases are restored and logins are created.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-fix-orphaned-users/)
-Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
+Requires    : VIEW ANY DATABASE, VIEW SERVER STATE, plus access to each online database it inspects
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low

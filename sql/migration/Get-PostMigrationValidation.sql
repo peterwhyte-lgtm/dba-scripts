@@ -5,7 +5,7 @@ Purpose     : Run on both SOURCE and TARGET and compare the CSV outputs to confi
               migration is complete and consistent. Surfaces database count mismatches,
               databases not ONLINE, orphaned users, and login count deltas.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-migration-login-audit-and-post-migration-validation/)
-Requires    : VIEW ANY DATABASE, VIEW SERVER STATE
+Requires    : VIEW ANY DATABASE, VIEW SERVER STATE, db_datareader on msdb (job checks)
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low

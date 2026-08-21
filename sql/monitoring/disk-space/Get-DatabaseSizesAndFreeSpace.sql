@@ -7,7 +7,7 @@ Purpose     : Data and log file sizes with used and free space for all online us
               The original CTE approach querying sys.master_files from master caused
               FILEPROPERTY to return NULL for other databases' files.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-sizes-and-free-space/)
-Requires    : VIEW ANY DATABASE
+Requires    : VIEW ANY DATABASE, plus access to each online database it inspects (it opens every database)
 HealthCheck : Yes
 */
 -- SAFE:ReadOnly

@@ -3,7 +3,7 @@ Script Name : Get-JobDurationTrends
 Category    : monitoring
 Purpose     : SQL Agent job duration over the last 30 days — flags jobs that are running significantly longer than their average.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-job-schedules-and-duration-trends/)
-Requires    : msdb access (SQLAgentReaderRole or sysadmin)
+Requires    : db_datareader on msdb (or sysadmin); SQLAgentReaderRole alone cannot SELECT the job tables
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low

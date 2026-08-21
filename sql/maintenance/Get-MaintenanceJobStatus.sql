@@ -6,7 +6,7 @@ Purpose     : Reports last run outcome, duration, and next scheduled run for all
               Use after deploying the maintenance framework to confirm jobs are
               running on schedule and not failing silently.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-maintenance-job-status/)
-Requires    : SQLAgentReaderRole or sysadmin
+Requires    : db_datareader on msdb (or sysadmin); SQLAgentReaderRole alone cannot SELECT the job tables
 HealthCheck : Yes
 */
 -- SAFE:ReadOnly
@@ -29,7 +29,11 @@ SELECT
 
     -- Last run timestamp (run_date is yyyymmdd int, run_time is HHmmss int)
     CASE WHEN h.run_date IS NULL THEN NULL
-         ELSE msdb.dbo.agent_datetime(h.run_date, h.run_time)
+         /* Inline conversion - agent_datetime() is a scalar UDF that db_datareader
+            cannot EXECUTE, so using it would break the stated Requires */
+         ELSE CONVERT(DATETIME,
+                  STUFF(STUFF(CAST(h.run_date AS CHAR(8)), 7, 0, '-'), 5, 0, '-') + ' ' +
+                  STUFF(STUFF(RIGHT('000000' + CAST(h.run_time AS VARCHAR(6)), 6), 5, 0, ':'), 3, 0, ':'))
     END AS last_run_at,
 
     -- Duration formatted as HH:MM:SS
@@ -44,7 +48,9 @@ SELECT
 
     -- Next scheduled run
     CASE WHEN sch.next_run_date = 0 THEN NULL
-         ELSE msdb.dbo.agent_datetime(sch.next_run_date, sch.next_run_time)
+         ELSE CONVERT(DATETIME,
+                  STUFF(STUFF(CAST(sch.next_run_date AS CHAR(8)), 7, 0, '-'), 5, 0, '-') + ' ' +
+                  STUFF(STUFF(RIGHT('000000' + CAST(sch.next_run_time AS VARCHAR(6)), 6), 5, 0, ':'), 3, 0, ':'))
     END AS next_run_at,
 
     j.date_created AS created_at

@@ -14,7 +14,12 @@ SELECT
     j.name AS job_name,
     h.step_id,
     h.step_name,
-    msdb.dbo.agent_datetime(h.run_date, h.run_time) AS run_datetime,
+    /* Inline yyyymmdd/HHmmss conversion - agent_datetime() is a scalar UDF that
+       db_datareader cannot EXECUTE, so using it would break the stated Requires */
+    CONVERT(DATETIME,
+        STUFF(STUFF(CAST(h.run_date AS CHAR(8)), 7, 0, '-'), 5, 0, '-') + ' ' +
+        STUFF(STUFF(RIGHT('000000' + CAST(h.run_time AS VARCHAR(6)), 6), 5, 0, ':'), 3, 0, ':')
+    ) AS run_datetime,
     CAST(h.run_duration / 10000 AS VARCHAR(4)) + 'h '
     + RIGHT('0' + CAST(h.run_duration / 100 % 100 AS VARCHAR(2)), 2) + 'm '
     + RIGHT('0' + CAST(h.run_duration % 100 AS VARCHAR(2)), 2) + 's' AS run_duration,
