@@ -27,7 +27,7 @@ and a wrong pick is worse than no server at all — so anything else this could 
 or a Prompt instead. A test enforces the cap.
 
 Covering **48 errors**, **260 wait types**, **7 SQL Server versions** with all **472 published
-builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **492 answered questions**.
+builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **504 answered questions**.
 
 ### Also included
 
@@ -189,19 +189,19 @@ That is why script headers are treated as a product surface here rather than hou
 `Author`, `Purpose`, `Requires`, `SAFE:` and `IMPACT:` are what your assistant shows you
 *before* you run something. The list is in [`scripts-missing-post-url.txt`](scripts-missing-post-url.txt).
 
-## The 8 errors with no link
+## The 5 errors with no link
 
 The same gap on the other surface, and worth stating plainly because the tools promise a source
-link with every answer: **40 of the 48 errors carry a write-up URL, and 8 do not.** Those 8 still
+link with every answer: **43 of the 48 errors carry a write-up URL, and 5 do not.** Those 5 still
 return the message text, what it means and the severity — all hand-written and verified — and the
 answer *says* no article exists rather than quietly omitting the link, so an agent can quote
 them and knows it cannot cite them.
 
 Unlike the scripts above this is a genuine **content** gap, not a header one: those errors have no
-post yet. `262 CREATE DATABASE permission denied`, `605 fetched logical page belongs to a
-different object`, `945 database cannot be opened` and `5171 not a primary database file` are on
-that list, which makes it a fair reading order for the Error Library. It was 16 as recently as
-mid-August — 102, 701, 823 and 824, once the flagship gaps, have all since been written up.
+post yet. `605 fetched logical page belongs to a different object`, `5171 not a primary database
+file` and `8623 query processor ran out of internal resources` are on that list, which makes it a
+fair reading order for the Error Library. It was 8 as recently as late August — 262, 945 and 5123
+have since been written up, each verified against a real instance before publishing.
 
 A citation whose post is written but not yet live is deliberately shipped *without* the link
 and picked up at the next export, rather than blocking every other correction behind it. 15138

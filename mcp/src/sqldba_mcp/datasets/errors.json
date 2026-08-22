@@ -66,7 +66,7 @@
   "message": "CREATE DATABASE permission denied in database 'master'.",
   "meaning": "Needs dbcreator or sysadmin, and it is the same shape for most CREATE permissions.",
   "category": "Permissions",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-create-database-permission-denied-262/",
   "ms_docs": null
  },
  {
@@ -176,7 +176,7 @@
   "message": "Database 'X' cannot be opened due to inaccessible files or insufficient memory or disk space.",
   "meaning": "The files are missing, the service account lost access, or the volume is gone.",
   "category": "Space, log and files",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-database-cannot-be-opened-945/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-945-database-engine-error"
  },
  {
@@ -326,7 +326,7 @@
   "message": "CREATE FILE encountered operating system error 5(Access is denied.) while attempting to open the file 'X'.",
   "meaning": "Service account permissions on the target folder, or a path that does not exist.",
   "category": "Space, log and files",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-create-file-operating-system-error-5123/",
   "ms_docs": null
  },
  {

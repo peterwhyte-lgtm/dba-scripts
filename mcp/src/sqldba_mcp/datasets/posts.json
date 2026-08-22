@@ -976,7 +976,7 @@
  },
  {
   "title": "SQL Server Builds: Complete Version List and Support Lifecycle",
-  "lead": "\ud83d\udd16 Living reference. Every build number, KB and support date on this page comes from Microsoft\u2019s official build and lifecycle pages, and the page is regenerated after each patch release.",
+  "lead": "\ud83d\udd16 Living reference Every build number, KB and support date on this page comes from Microsoft\u2019s official build and lifecycle pages, and the page is regenerated after each patch release.",
   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/"
  },
  {
@@ -1013,6 +1013,21 @@
   "title": "Conversion Failed When Converting the varchar Value to Data Type int (Error 245)",
   "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
   "url": "https://sqldba.blog/sql-server-conversion-failed-245/"
+ },
+ {
+  "title": "CREATE DATABASE Permission Denied (Error 262)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-create-database-permission-denied-262/"
+ },
+ {
+  "title": "CREATE FILE Encountered Operating System Error (Error 5123)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-create-file-operating-system-error-5123/"
+ },
+ {
+  "title": "Database Cannot Be Opened Due to Inaccessible Files (Error 945)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-database-cannot-be-opened-945/"
  },
  {
   "title": "The Database Could Not Be Exclusively Locked to Perform the Operation (Error 5030)",

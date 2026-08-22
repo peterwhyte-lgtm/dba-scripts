@@ -2268,6 +2268,78 @@
   "url": "https://sqldba.blog/sql-server-conversion-failed-245/"
  },
  {
+  "question": "My application hit this, not a person. Same fix?",
+  "answer": "Same fix, applied to the login in the application\u2019s connection string. Find the login name in the error output or the connection string, then use the smallest grant that fits what the application genuinely needs to do at runtime rather than what its installer needed once.",
+  "post_title": "CREATE DATABASE Permission Denied (Error 262)",
+  "url": "https://sqldba.blog/sql-server-create-database-permission-denied-262/"
+ },
+ {
+  "question": "The catalog says severity 16, but my error shows Level 14. Which is right?",
+  "answer": "Both, oddly. The message template sits in sys.messages with severity 16, but when the engine raises 262 it arrives at Level 14, the severity band SQL Server uses for permission errors. Measured on SQL Server 2025 for both the CREATE DATABASE and CREATE TABLE variants while writing this.",
+  "post_title": "CREATE DATABASE Permission Denied (Error 262)",
+  "url": "https://sqldba.blog/sql-server-create-database-permission-denied-262/"
+ },
+ {
+  "question": "Which should I ask for: CREATE ANY DATABASE, dbcreator, or sysadmin?",
+  "answer": "Ask for the smallest one that covers the job. A process that only creates databases wants CREATE ANY DATABASE. A person who also restores and drops what they create wants dbcreator, granted in the knowledge that it covers every database on the instance. sysadmin is not a fix for a missing create permission; it is a different job description.",
+  "post_title": "CREATE DATABASE Permission Denied (Error 262)",
+  "url": "https://sqldba.blog/sql-server-create-database-permission-denied-262/"
+ },
+ {
+  "question": "Why does it say master when I never touched master?",
+  "answer": "Because CREATE DATABASE is a server-level operation and the permission for it lives in master. The message names the database where the check failed, which is not necessarily the one your session was using.",
+  "post_title": "CREATE DATABASE Permission Denied (Error 262)",
+  "url": "https://sqldba.blog/sql-server-create-database-permission-denied-262/"
+ },
+ {
+  "question": "Does the same thing happen when attaching a database?",
+  "answer": "Yes, the message says \u201copen or create\u201d for exactly that reason. Files copied in from another machine or restored by backup tooling often arrive owned by whoever copied them, and the engine cannot open what it cannot read. Same account, same grant, same fix.",
+  "post_title": "CREATE FILE Encountered Operating System Error (Error 5123)",
+  "url": "https://sqldba.blog/sql-server-create-file-operating-system-error-5123/"
+ },
+ {
+  "question": "I am an administrator on the machine. Why am I denied?",
+  "answer": "Because the file is not created under your token. Your session asked SQL Server, and SQL Server\u2019s service account asked Windows. It is the service account that was refused, and it is the service account that needs the grant.",
+  "post_title": "CREATE FILE Encountered Operating System Error (Error 5123)",
+  "url": "https://sqldba.blog/sql-server-create-file-operating-system-error-5123/"
+ },
+ {
+  "question": "It works in the default data directory but fails on my D: folder. Why?",
+  "answer": "Setup grants the service account full rights on the default directories at install time. Any folder you create afterwards starts with whatever it inherited, which usually does not include the SQL Server service. The icacls grant above is the missing step.",
+  "post_title": "CREATE FILE Encountered Operating System Error (Error 5123)",
+  "url": "https://sqldba.blog/sql-server-create-file-operating-system-error-5123/"
+ },
+ {
+  "question": "What does operating system error 3 mean instead of 5?",
+  "answer": "Path not found: the folder in the FILENAME does not exist from the service\u2019s point of view. Check for typos first, then for the difference between your drive mappings and what the service session can see, because a mapped drive letter that exists for you frequently does not exist for a service.",
+  "post_title": "CREATE FILE Encountered Operating System Error (Error 5123)",
+  "url": "https://sqldba.blog/sql-server-create-file-operating-system-error-5123/"
+ },
+ {
+  "question": "Can this happen to tempdb or master?",
+  "answer": "The system databases play by harsher rules: if master cannot open, the instance does not start at all, and tempdb is recreated at startup so a bad tempdb path also stops the service. 945 as a running-instance message is a user database story.",
+  "post_title": "Database Cannot Be Opened Due to Inaccessible Files (Error 945)",
+  "url": "https://sqldba.blog/sql-server-database-cannot-be-opened-945/"
+ },
+ {
+  "question": "Is RECOVERY_PENDING the same as SUSPECT?",
+  "answer": "No, and the difference decides how worried to be. RECOVERY_PENDING means recovery has not started because a file cannot be opened; fix the file and the database usually comes back untouched. SUSPECT means recovery ran and failed, which is a genuinely harder situation. 945 belongs to the first world.",
+  "post_title": "Database Cannot Be Opened Due to Inaccessible Files (Error 945)",
+  "url": "https://sqldba.blog/sql-server-database-cannot-be-opened-945/"
+ },
+ {
+  "question": "The message mentions memory and disk space, but my disk is fine. Why say it?",
+  "answer": "The message text covers every reason the open can fail and cannot know which one applied. The error log can: it records the specific operating system error, and in the reproduction for this post that was error 2, file not found. Read the log before acting on any of the three causes.",
+  "post_title": "Database Cannot Be Opened Due to Inaccessible Files (Error 945)",
+  "url": "https://sqldba.blog/sql-server-database-cannot-be-opened-945/"
+ },
+ {
+  "question": "Why does my error say Level 14 when the catalog says severity 16?",
+  "answer": "Both are real. The template sits in sys.messages at severity 16, and the engine raises it at Level 14 when a session hits it. Measured on SQL Server 2025 while writing this post.",
+  "post_title": "Database Cannot Be Opened Due to Inaccessible Files (Error 945)",
+  "url": "https://sqldba.blog/sql-server-database-cannot-be-opened-945/"
+ },
+ {
   "question": "Is WITH ROLLBACK IMMEDIATE safe?",
   "answer": "It is decisive, not safe. It rolls back every open transaction in that database rather than waiting for them, so it belongs in a maintenance window. Other people\u2019s in-flight work is what gets rolled back.",
   "post_title": "The Database Could Not Be Exclusively Locked to Perform the Operation (Error 5030)",
@@ -2905,7 +2977,7 @@
  },
  {
   "question": "What happens when it does not know something?",
-  "answer": "It says so. It tells you the topic is not in the library rather than filling the gap, and it points you at the index so you can check for yourself. Of the 47 errors it carries, 39 have a full write-up to link to and 8 do not. Those 16 still return the message text, meaning and severity, and the answer says no article exists yet, so an assistant can quote them and knows it cannot cite them.",
+  "answer": "It says so. It tells you the topic is not in the library rather than filling the gap, and it points you at the index so you can check for yourself. Of the 48 errors it carries, 43 have a full write-up to link to and 5 do not. Those 5 still return the message text, meaning and severity, and the answer says no article exists yet, so an assistant can quote them and knows it cannot cite them.",
   "post_title": "The sqldba MCP Server: Give Your AI Assistant a Verified SQL Server Reference",
   "url": "https://sqldba.blog/sqldba-mcp-server/"
  },
