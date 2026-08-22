@@ -179,8 +179,6 @@ the datasets are re-exported. PAGEIOLATCH_SH now ships all 883 chars of its step
 
 ---
 
-## Open
-
 ### R07 needs a ruling: two posts now tie on "how do i get the sid of a sql login"
 
 **Observed 2026-08-22**, the day the login-migration set published. The new WITHOUT LOGIN
