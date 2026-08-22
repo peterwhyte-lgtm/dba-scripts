@@ -435,6 +435,11 @@
   "url": "https://sqldba.blog/dba-scripts-get-login-and-job-inventory/"
  },
  {
+  "title": "DBA Scripts: Get Login Migration Parity",
+  "lead": "Counting logins passes a broken migration. Compare SIDs, disabled state, default database and password policy between two SQL Servers.",
+  "url": "https://sqldba.blog/dba-scripts-get-login-migration-parity/"
+ },
+ {
   "title": "DBA Scripts: Get Login Security Audit",
   "lead": "\ud83d\udd27 Part of the DBA-Tools Project, copy/paste SQL Server scripts and health checks.",
   "url": "https://sqldba.blog/dba-scripts-get-login-security-audit/"
@@ -2418,6 +2423,11 @@
   "title": "XTP_PREEMPTIVE_TASK Wait Type in SQL Server",
   "lead": "\u23f3 Part of the SQL Server Wait Types Library, every wait type explained.",
   "url": "https://sqldba.blog/sql-server-wait-xtp-preemptive-task/"
+ },
+ {
+  "title": "CREATE USER WITHOUT LOGIN vs Contained Database Users",
+  "lead": "Both look like a user with no login and they are opposites. How to tell them apart, what each is for, and the migration break that fails silently.",
+  "url": "https://sqldba.blog/sql-server-without-login-vs-contained-database-user/"
  },
  {
   "title": "sqlcmd Examples for SQL Server",

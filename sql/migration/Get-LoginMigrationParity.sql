@@ -6,7 +6,7 @@ Purpose     : Compare logins between two servers to verify a migration. Returns 
               and language, password policy, password hash, server roles). Run on SOURCE and
               TARGET, export both as CSV, then diff. Catches what a login migration silently
               drops and a login count check cannot see.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-login-migration-parity/)
 Requires    : VIEW ANY DEFINITION (VIEW SERVER STATE for full detail); CONTROL SERVER to
               compare password hashes, which are otherwise reported as 'no-permission'
 Notes       : Get-PostMigrationValidation.sql compares COUNTS. A count matches while every

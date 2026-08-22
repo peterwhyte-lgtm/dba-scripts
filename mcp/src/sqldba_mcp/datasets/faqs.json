@@ -1002,6 +1002,42 @@
   "url": "https://sqldba.blog/dba-scripts-get-login-and-job-inventory/"
  },
  {
+  "question": "Can I run this against a server I only have read access to?",
+  "answer": "Mostly. VIEW ANY DEFINITION gets you every column except the password fingerprint, which needs CONTROL SERVER. Without it the column reads no-permission rather than blank, so you can tell the difference between \"no hash\" and \"not allowed to look\".",
+  "post_title": "DBA Scripts: Get Login Migration Parity",
+  "url": "https://sqldba.blog/dba-scripts-get-login-migration-parity/"
+ },
+ {
+  "question": "Do I need a linked server between the two instances?",
+  "answer": "No, and that is deliberate. The script runs standalone on one instance and writes a CSV. You compare the files, not the servers. That works across an air gap, across a firewall, and after the source has been taken off the network, as long as you captured its CSV first.",
+  "post_title": "DBA Scripts: Get Login Migration Parity",
+  "url": "https://sqldba.blog/dba-scripts-get-login-migration-parity/"
+ },
+ {
+  "question": "The password_hash_id differs but I know the password is the same. Is that a bug?",
+  "answer": "No, and it is the most useful column to understand properly. SQL Server salts the password hash, so creating two logins with an identical password produces two completely different hashes. A matching fingerprint proves the login was scripted with WITH PASSWORD = <hash> HASHED and the stored hash was carried across. A differing one tells you somebody re-typed the password by hand, which is worth knowing even when they typed the right one.",
+  "post_title": "DBA Scripts: Get Login Migration Parity",
+  "url": "https://sqldba.blog/dba-scripts-get-login-migration-parity/"
+ },
+ {
+  "question": "What does connect_denied show that is_disabled does not?",
+  "answer": "They are two different mechanisms that look similar from the outside. is_disabled is a flag on the principal. DENY CONNECT SQL is a permission stored separately, and a login-transfer script that carries the principal will not carry the permission. A login can be enabled on the target and still correctly refused on the source, which is a difference worth seeing.",
+  "post_title": "DBA Scripts: Get Login Migration Parity",
+  "url": "https://sqldba.blog/dba-scripts-get-login-migration-parity/"
+ },
+ {
+  "question": "Why are NT SERVICE and BUILTIN logins excluded?",
+  "answer": "They belong to the target instance's own installation rather than to your migration. Every SQL Server creates its own service accounts and built-in groups, so including them would guarantee a difference on every single run and train you to ignore the output.",
+  "post_title": "DBA Scripts: Get Login Migration Parity",
+  "url": "https://sqldba.blog/dba-scripts-get-login-migration-parity/"
+ },
+ {
+  "question": "Why not just compare login counts?",
+  "answer": "Because a count survives nearly every mistake you can make. Recreate all forty logins by name, with fresh SIDs, no password policy and every disabled account enabled, and the count is still forty. Counting tells you nothing arrived missing. It cannot tell you anything arrived wrong.",
+  "post_title": "DBA Scripts: Get Login Migration Parity",
+  "url": "https://sqldba.blog/dba-scripts-get-login-migration-parity/"
+ },
+ {
   "question": "Does this tell me exactly when a login last connected, historically?",
   "answer": "Not by default. SQL Server doesn\u2019t track historical last-login time without a configured Server Audit with the LOGIN action group enabled. Get-LoginLastActivity shows what\u2019s available without one: current active sessions and login metadata, genuinely useful, but not a substitute for audit-based history if you need it.",
   "post_title": "DBA Scripts: Get Login Security Audit",
@@ -2932,6 +2968,42 @@
   "answer": "It depends on both ends, and the runbook lists the matrix. The assessment flags whether your specific source-to-target path is direct or needs a hop, which is better than finding out from setup.exe.",
   "post_title": "SQL Server Version Upgrade Runbook: Side-by-Side and In-Place",
   "url": "https://sqldba.blog/sql-server-version-upgrade-runbook/"
+ },
+ {
+  "question": "Are contained users a security risk?",
+  "answer": "They shift where the risk sits rather than adding to it. Password policy for a contained user is enforced by the host Windows policy of whichever instance the database is attached to, so moving the database can move the policy. More importantly, anyone with ALTER ANY USER in a contained database can create an account that connects to that database, without going anywhere near a server administrator. That is the whole feature, and it is a real delegation of authority worth making deliberately.",
+  "post_title": "CREATE USER WITHOUT LOGIN vs Contained Database Users",
+  "url": "https://sqldba.blog/sql-server-without-login-vs-contained-database-user/"
+ },
+ {
+  "question": "Can I convert a WITHOUT LOGIN user into a real one?",
+  "answer": "Yes, in both directions, with ALTER USER. ALTER USER [x] WITH LOGIN = [SomeLogin] binds it to a server login, and in a contained database ALTER USER [x] WITH PASSWORD gives it its own password. Be deliberate about it though: converting a WITHOUT LOGIN user that exists purely for EXECUTE AS into something connectable hands out a login-capable account carrying whatever permissions that impersonation identity was granted.",
+  "post_title": "CREATE USER WITHOUT LOGIN vs Contained Database Users",
+  "url": "https://sqldba.blog/sql-server-without-login-vs-contained-database-user/"
+ },
+ {
+  "question": "Do contained users work without CONTAINMENT = PARTIAL?",
+  "answer": "No. You need two things: the instance option contained database authentication set to 1, and the database itself set to CONTAINMENT = PARTIAL. Without both, CREATE USER... WITH PASSWORD fails outright. This is worth knowing before a migration, because the target database has to be configured the same way before you can recreate the user at all.",
+  "post_title": "CREATE USER WITHOUT LOGIN vs Contained Database Users",
+  "url": "https://sqldba.blog/sql-server-without-login-vs-contained-database-user/"
+ },
+ {
+  "question": "Does a WITHOUT LOGIN user have a SID?",
+  "answer": "It does, and that surprises people. SQL Server generates one so the principal can own objects and hold permissions like any other. It just does not correspond to any server login, which is exactly why a tool that matches users to logins by SID finds nothing and has to decide what that means. Deciding it means \u201cscript it as WITHOUT LOGIN\u201d is right for this user and wrong for a contained one.",
+  "post_title": "CREATE USER WITHOUT LOGIN vs Contained Database Users",
+  "url": "https://sqldba.blog/sql-server-without-login-vs-contained-database-user/"
+ },
+ {
+  "question": "How do I tell a contained user from a WITHOUT LOGIN user?",
+  "answer": "Read authentication_type_desc in sys.database_principals, not type_desc. A contained user with a password reports DATABASE. A WITHOUT LOGIN user reports NONE. Both report SQL_USER for type_desc, which is why looking at that column alone is what causes the confusion in the first place.",
+  "post_title": "CREATE USER WITHOUT LOGIN vs Contained Database Users",
+  "url": "https://sqldba.blog/sql-server-without-login-vs-contained-database-user/"
+ },
+ {
+  "question": "Why can't a migration script just carry the contained user's password across?",
+  "answer": "Because it cannot read it. A server login's password hash is exposed in sys.sql_logins.password_hash to anyone with CONTROL SERVER, which is what makes WITH PASSWORD = <hash> HASHED possible for logins. There is no equivalent exposure for a contained user's password at any permission level. That is a deliberate design decision, not a gap, and it means recreating a contained user is always a manual step involving whoever holds the secret.",
+  "post_title": "CREATE USER WITHOUT LOGIN vs Contained Database Users",
+  "url": "https://sqldba.blog/sql-server-without-login-vs-contained-database-user/"
  },
  {
   "question": "Can it run scripts against my instance for me?",

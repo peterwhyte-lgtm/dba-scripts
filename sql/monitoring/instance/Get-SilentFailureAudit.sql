@@ -4,7 +4,7 @@ Category    : monitoring
 Purpose     : Find the SQL Server problems that never raise an error. One row per finding across
               integrity, backup chain, constraint trust, statistics, security and Agent jobs, with
               why each one stays silent and what to do about it. Run when taking over an instance.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/sql-server-silent-failures/)
 Requires    : VIEW ANY DATABASE, VIEW SERVER STATE, VIEW ANY DEFINITION; db_datareader on msdb
 Notes       : Every check here is chosen on one rule: SQL Server does not complain about it.
               Nothing in this script appears in the error log, fails a job, or throws to an
