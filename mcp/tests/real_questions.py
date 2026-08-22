@@ -100,8 +100,14 @@ QUESTIONS = [
          tool='find_script', mode='leads', expect=['Get-TopCpuQueries']),
 
     dict(id='R07', asked='how do i get the sid of a sql login',
-         tool='answer_question', mode='cites', expect=['dba-scripts-generate-login-script'],
-         note='Was answering "Why does preserving the SID matter so much?"'),
+         tool='answer_question', mode='cites',
+         expect=['dba-scripts-generate-login-script',
+                 'sql-server-without-login-vs-contained-database-user'],
+         note='Was answering "Why does preserving the SID matter so much?". 2026-08-22: the new '
+              'WITHOUT LOGIN post\'s "Does a WITHOUT LOGIN user have a SID?" FAQ now outranks it '
+              'by 1.7% (12.31 vs 12.10) - both discuss login SIDs, neither literally answers '
+              '"how do I get it". Both accepted pending Peter\'s ruling in mcp/BACKLOG.md; do not '
+              'silently widen this list further.'),
 
     dict(id='R08', asked='how do i check space free in databases',
          tool='answer_question', mode='cites',

@@ -179,6 +179,22 @@ the datasets are re-exported. PAGEIOLATCH_SH now ships all 883 chars of its step
 
 ---
 
+## Open
+
+### R07 needs a ruling: two posts now tie on "how do i get the sid of a sql login"
+
+**Observed 2026-08-22**, the day the login-migration set published. The new WITHOUT LOGIN
+post's FAQ "Does a WITHOUT LOGIN user have a SID?" outranks the old verified answer
+("Why does preserving the SID matter so much?", generate-login-script) by 1.7% — 12.31 vs
+12.10. Neither literally answers "how do I get it"; the old one is closer in intent, the
+new one leads with trivia. `real_questions.py` R07 temporarily accepts either citation so
+CI reflects reality rather than blocking on a coin-flip. **Held for Peter:** the clean
+fixes are (a) reword the new FAQ's question so it stops colliding, (b) add a real
+"getting a login's SID" FAQ to the login-script post, which would win outright, or
+(c) accept the tie permanently. Do not widen the R07 list further without a ruling.
+
+---
+
 ## Noted, not yet an entry
 
 - **Tool descriptions interact, and layer-2 single runs are noisy (2026-08-22).** A/B

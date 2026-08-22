@@ -27,7 +27,7 @@ and a wrong pick is worse than no server at all — so anything else this could 
 or a Prompt instead. A test enforces the cap.
 
 Covering **48 errors**, **260 wait types**, **7 SQL Server versions** with all **472 published
-builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **504 answered questions**.
+builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **516 answered questions**.
 
 ### Also included
 

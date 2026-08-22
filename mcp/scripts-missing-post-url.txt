@@ -33,14 +33,12 @@ sql/inventory/Get-VersionAndEdition.sql
 sql/lab/Create-BlockingScenario.sql
 sql/lab/Kill-BlockingSession.sql
 sql/maintenance/Generate-IndexMaintenanceScript.sql
-sql/migration/Get-LoginMigrationParity.sql
 sql/monitoring/databases/Get-LastDbccCheckdb.sql
 sql/monitoring/disk-space/Get-AutogrowthHistory.sql
 sql/monitoring/disk-space/Get-DatabaseGrowthEvents.sql
 sql/monitoring/instance/Get-InstanceConfigurationSnapshot.sql
 sql/monitoring/instance/Get-MaxdopConfiguration.sql
 sql/monitoring/instance/Get-MemoryConfigurationAndUsage.sql
-sql/monitoring/instance/Get-SilentFailureAudit.sql
 sql/monitoring/jobs/Get-SqlAgentJobOverview.sql
 sql/performance/Get-DatabaseIoUsage.sql
 sql/performance/active-sessions/Get-LongRunningQueries.sql
