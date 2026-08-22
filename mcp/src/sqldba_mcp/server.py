@@ -95,7 +95,9 @@ def explain_wait(wait_type: str) -> str:
         'along with the version, patch level against the latest update on its servicing '
         'train, how far behind it is, and whether it is still in support. Covers every '
         'published build back to SQL Server 2012, so it answers "what am I running" as '
-        'well as "am I current", including for old and out-of-support builds. Use this for '
+        'well as "am I current", including for old and out-of-support builds. A product '
+        'name alone ("SQL Server 2025") returns the latest CU for that version with its '
+        'KB and download link. Use this for '
         'any question about what version a server is on, whether it needs patching, or '
         'when support ends. Always prefer this over recalled build numbers: CU numbering '
         'and lifecycle dates are exactly what a model misremembers.'
@@ -116,8 +118,8 @@ def check_build(build: str) -> str:
         # check_freshness.py gates the datasets and never reads the prose around them.
         'Search %d production SQL Server scripts plus PowerShell orchestrators by what '
         % sum(1 for s in data.scripts() if s.get('language') != 'powershell') +
-        'you are trying to do ("find blocking chains", "check backup coverage", "missing '
-        'indexes"). Returns each script with its purpose, the permission it needs, and '
+        'you are trying to do ("find blocking chains", "check backup coverage", "who has '
+        'sysadmin", "missing indexes"). Returns each script with its purpose, the permission it needs, and '
         'its SAFE/IMPACT safety class - always report that class to the user, because '
         'ReadOnly and CreatesObjects are very different things to run on production. '
         'Use this before writing a query by hand: a verified script probably exists. '

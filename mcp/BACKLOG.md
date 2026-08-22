@@ -109,7 +109,14 @@ the git clone, so `--force-reinstall` on its own can still land on a stale commi
 
 ---
 
-### check_build's version-only answer is a secret
+### ~~check_build's version-only answer is a secret~~ — CLOSED 2026-08-22 (Peter's ruling)
+
+Peter ruled the change in: the description now says a product name alone returns the
+latest CU with its KB and download link. The eval-gaming worry was weighed and set aside
+on the grounds that the sentence documents capability that already ships
+(`_fmt_version_only` has always emitted the `Download:` line) rather than teaching to the
+probe — the probe exposed missing documentation, not a missing feature. Original entry
+kept below.
 
 **Observed 2026-08-21**, first layer-2 tool-selection run (13 human questions, isolated
 gagged session, model sonnet, 11/13 first-call accuracy).
@@ -125,7 +132,17 @@ tuning descriptions to the probe set is the eval-gaming this repo's own docs war
 
 ---
 
-### find_script loses to the model's own T-SQL on security asks
+### ~~find_script loses to the model's own T-SQL on security asks~~ — CLOSED 2026-08-22 (Peter's ruling)
+
+Same ruling and same reasoning as the entry above: the description's example list gains
+"who has sysadmin", and the empty-task hint in `tools.py` carries the same example. The
+retrieval layer needed nothing — 0.3.1's `normalise_script_query` already maps "show me
+who has sysadmin" onto the script; the miss lived entirely in tool selection. Both fixes
+were kept to the minimum wording deliberately: a fatter first draft ("security and audit
+asks included" + an extra check_build sentence) coincided with L13 flipping to a miss in
+the replay harness, and slimming the wording restored it — see the note below on
+description interaction. L07 and L09 verified fixed by replay, twice each. Original
+entry kept below.
 
 **Observed 2026-08-21**, same layer-2 run.
 
@@ -163,6 +180,17 @@ the datasets are re-exported. PAGEIOLATCH_SH now ships all 883 chars of its step
 ---
 
 ## Noted, not yet an entry
+
+- **Tool descriptions interact, and layer-2 single runs are noisy (2026-08-22).** A/B
+  replays while shipping the two description fixes above: with a wordier draft of the
+  fixes, L13 (answer_question, whose description never changed) missed twice; with the
+  old descriptions it passed; with the slimmed final wording it passed twice. Adding
+  prose to one tool's description can shift selection on ANOTHER tool's questions, so
+  keep description edits minimal and replay the sensitive neighbours. Separately, L08
+  ("something to check my backups are actually running") went 1-pass/4-fail across ALL
+  description variants today after passing 2026-08-21 — environment-side drift (CLI
+  2.1.239, `sonnet` alias), not a description effect. Never quote a layer-2 pass count
+  from one run; same-day A/B is the only comparison that means anything.
 
 - The MCP has no section in `docs/roadmap.md` at all, despite shipping at 0.2.2. The roadmap
   still describes the repo as of 2026-06-21 and predates the server.

@@ -581,7 +581,7 @@ def find_script(task: str) -> str:
     term = (task or '').strip()
     if not term:
         return ("Describe the task, e.g. 'find blocking chains', 'check backup coverage', "
-                "'list missing indexes'.")
+                "'who has sysadmin', 'list missing indexes'.")
 
     # Strip the ask before scoring it. "show me who has sysadmin" and "sysadmin members"
     # are the same question, and only one of them used to work.
