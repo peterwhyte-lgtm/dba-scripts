@@ -1,9 +1,23 @@
 title = "dba-tools gitleaks config"
 
+# Inherit gitleaks' full built-in ruleset. WITHOUT this block a config that
+# declares no [[rules]] of its own runs with ZERO rules, and the scan reports
+# "no leaks found" on every commit no matter what is in them. That is what this
+# file did until 2026-08-21: CI was green because it was looking for nothing.
+# Verified: a planted AWS key pair scored 0 findings under the old config and 5
+# under the default ruleset.
+[extend]
+  useDefault = true
+
 # ── Allow-list false positives specific to this repo ─────────────────────────
 [allowlist]
-  description = "Patterns and paths that are safe to skip for this DBA toolkit"
+  description = "Patterns that are safe to skip for this DBA toolkit"
 
+  # Allow-listing is PATTERN-scoped, never PATH-scoped. Excluding a whole file
+  # (docs/, README.md and CLAUDE.md all used to be excluded here) means a real
+  # credential pasted into it passes CI silently, and those are the files most
+  # likely to receive a pasted connection string. Every rule below describes the
+  # shape of a false positive, so a genuine secret in the same file still fires.
   regexes = [
     # Example passwords in .EXAMPLE comment blocks (clearly documentation)
     '''ConvertTo-SecureString\s+['"][^'"]{3,}['"]\s+-AsPlainText''',
@@ -15,14 +29,4 @@ title = "dba-tools gitleaks config"
     '''DBASCRIPTS_PASS\s*=\s*\$''',
     # Placeholder strings used in documentation and examples
     '''(?i)(MyStr0ng|P@ss|MyP@ss|placeholder|changeme|example|yoursecret)''',
-  ]
-
-  paths = [
-    # INI answer file templates — placeholders only, no real credentials
-    '''admin/installation/templates/.*\.ini''',
-    # Documentation files — contain example values
-    '''docs/.*''',
-    '''blog/.*''',
-    '''README\.md''',
-    '''CLAUDE\.md''',
   ]

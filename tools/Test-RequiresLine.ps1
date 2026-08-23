@@ -11,7 +11,7 @@ Two arms:
 Only scripts whose header declares -- SAFE:ReadOnly are executed. Logins are dropped at the end.
 #>
 param(
-    [string]$RepoRoot = 'C:\Users\Peter\my-data\dba-tools',
+    [string]$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path,
     [string]$OutDir,
     [string]$ServerInstance = '.',
     [string]$Claim = 'VIEW SERVER STATE'

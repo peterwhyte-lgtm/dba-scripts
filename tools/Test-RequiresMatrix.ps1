@@ -11,7 +11,7 @@ NONE arm (bare login, CONNECT only) runs for every executed script.
 Never loosen a Requires line on a NONE-arm pass: silent under-report is documented behaviour.
 #>
 param(
-    [string]$RepoRoot = 'C:\Users\Peter\my-data\dba-tools',
+    [string]$RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path,
     [string]$Inv,
     [string]$OutCsv
 )
