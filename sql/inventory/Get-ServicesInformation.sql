@@ -4,7 +4,7 @@ Category    : monitoring
 Purpose     : SQL Server services — startup type, running status, and service account with
               risk flags. Surfaces manual/disabled startup on critical services and
               high-privilege service accounts (LocalSystem, SYSTEM, NetworkService).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-services-information/)
 Requires    : VIEW SERVER STATE
 */
 -- SAFE:ReadOnly

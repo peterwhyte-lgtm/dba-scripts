@@ -2,7 +2,7 @@
 Script Name : Get-MemoryConfigurationAndUsage
 Category    : configuration-and-environment
 Purpose     : Show configured memory limits alongside current SQL Server memory consumption.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-memory-configuration-and-usage/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */

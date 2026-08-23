@@ -2,7 +2,7 @@
 Script Name : Get-VersionAndEdition
 Category    : configuration-and-environment
 Purpose     : Display core instance version, edition, cluster status, and patch level.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-version-and-edition/)
 Requires    : Public (no special permissions required)
 HealthCheck : Yes
 */

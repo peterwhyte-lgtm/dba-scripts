@@ -2,7 +2,7 @@
 Script Name : Get-WorkerThreadsAndActiveSessions
 Category    : performance-troubleshooting
 Purpose     : Active user sessions with CPU, elapsed time, and current worker thread pool usage.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-worker-threads-and-active-sessions/)
 Requires    : VIEW SERVER STATE
 */
 -- SAFE:ReadOnly

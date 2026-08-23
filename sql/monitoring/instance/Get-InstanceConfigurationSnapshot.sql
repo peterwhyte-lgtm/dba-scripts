@@ -2,7 +2,7 @@
 Script Name : Get-InstanceConfigurationSnapshot
 Category    : configuration-and-environment
 Purpose     : Capture all sp_configure settings for baseline review and change tracking.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-instance-configuration-snapshot/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */

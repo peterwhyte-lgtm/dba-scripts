@@ -5,7 +5,7 @@ Purpose     : Reads autogrowth events from the SQL Server default trace.
               Autogrowth events during business hours indicate undersized files;
               frequent events indicate the growth increment is too small.
               Use this to right-size initial file sizes and growth increments.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-autogrowth-history/)
 Requires    : VIEW SERVER STATE, ALTER TRACE (to read trace files)
 HealthCheck : Yes
 Notes       : Default trace rolls over; history depth depends on server activity.

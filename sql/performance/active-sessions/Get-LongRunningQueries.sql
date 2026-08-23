@@ -2,7 +2,7 @@
 Script Name : Get-LongRunningQueries
 Category    : performance-troubleshooting
 Purpose     : Active requests with elapsed and wait details — ordered by elapsed time descending.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-long-running-queries/)
 Requires    : VIEW SERVER STATE
 */
 -- SAFE:ReadOnly

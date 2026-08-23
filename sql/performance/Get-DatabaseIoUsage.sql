@@ -2,7 +2,7 @@
 Script Name : Get-DatabaseIoUsage
 Category    : performance-troubleshooting
 Purpose     : Database I/O totals with percentage share, MB read/written, and latency breakdown.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-io-usage/)
 Requires    : VIEW SERVER STATE
 HealthCheck : Yes
 */

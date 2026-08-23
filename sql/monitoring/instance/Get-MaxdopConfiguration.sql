@@ -2,7 +2,7 @@
 Script Name : Get-MaxdopConfiguration
 Category    : configuration-and-environment
 Purpose     : Show MAXDOP and cost threshold settings alongside current CPU topology.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-maxdop-configuration/)
 Requires    : VIEW SERVER STATE
 */
 -- SAFE:ReadOnly

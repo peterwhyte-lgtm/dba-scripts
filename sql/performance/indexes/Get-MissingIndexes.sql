@@ -2,7 +2,7 @@
 Script Name : Get-MissingIndexes
 Category    : performance-troubleshooting
 Purpose     : Missing index candidates from DMVs, ranked by impact score (seeks x cost x impact).
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-missing-indexes/)
 Requires    : VIEW SERVER STATE, VIEW ANY DATABASE
 Notes       : Impact scores reset on SQL Server restart. Review carefully — DMVs suggest
               individual queries; creating every suggestion causes index bloat and write overhead.

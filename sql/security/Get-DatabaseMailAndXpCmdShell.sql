@@ -2,7 +2,7 @@
 Script Name : Get-DatabaseMailAndXpCmdShell
 Category    : security
 Purpose     : Security surface area audit — xp_cmdshell, CLR, Database Mail, force encryption, and active NTLM connections.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-database-mail-and-xp-cmd-shell/)
 Requires    : VIEW SERVER STATE, sysadmin (for xp_cmdshell value_in_use and registry access)
 HealthCheck : Yes
 */

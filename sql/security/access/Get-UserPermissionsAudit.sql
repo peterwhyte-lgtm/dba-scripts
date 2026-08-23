@@ -5,7 +5,7 @@ Purpose     : Audit one login's effective access across the whole instance in a 
               server roles/connection principals, plus per-database role membership —
               resolved through the real security token, so nested AD group membership
               shows up automatically. EDIT @LoginName below before running.
-Author      : Peter Whyte (https://sqldba.blog)
+Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-user-permissions-audit/)
 Requires    : sysadmin, or IMPERSONATE permission on the target login plus VIEW ANY DATABASE
 */
 -- SAFE:ReadOnly
