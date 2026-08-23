@@ -398,7 +398,7 @@ Dev and test only. Never run these against production.
 
 ## PowerShell scripts
 
-Scripts with real logic — orchestrators, DDL generators, and OS-level tools. The 153 thin wrappers
+Scripts with real logic — orchestrators, DDL generators, and OS-level tools. The 155 thin wrappers
 under `powershell/wrappers/` are not listed here: there is exactly one per SQL script, it carries the
 same name, and it does nothing but pass your parameters to the matching `.sql` file. Adding one is
 what makes a SQL script appear in the web UI.
@@ -538,9 +538,9 @@ Dev and test only.
 
 | Layer | Count |
 |-------|-------|
-| SQL scripts | 181 |
-| — of which have a companion post | 143 |
+| SQL scripts | 183 |
+| — of which have a companion post | 145 |
 | — of which are in the health check suite | 45 |
 | — of which create objects or write data | 6 |
 | PowerShell scripts with real logic | 52 |
-| Thin wrappers (one per SQL script) | 153 |
+| Thin wrappers (one per SQL script) | 155 |

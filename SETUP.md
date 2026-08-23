@@ -29,7 +29,7 @@ The setup script checks everything in the sections below and tells you exactly w
 
 | Requirement | Minimum | Recommended | Notes |
 |-------------|---------|-------------|-------|
-| PowerShell | 5.1 | 7+ | PS7 required for `-Parallel` in multi-server scripts and some collectors |
+| PowerShell | 7 | 7+ | The tooling uses PS7 syntax. `run.ps1` started from Windows PowerShell 5.1 hands off to `pwsh` automatically, but `pwsh` must be installed: `winget install Microsoft.PowerShell` |
 | SQL execution | `sqlcmd.exe` | SqlServer module | Module gives richer output; `sqlcmd.exe` is the fallback |
 | SQL Server | 2016 (13.x) | 2019+ | A few scripts use DMVs added in 2017/2019 — noted in each script header |
 | Network | Port 1433 reachable | — | Or custom port if SQL Server is on a non-default port |

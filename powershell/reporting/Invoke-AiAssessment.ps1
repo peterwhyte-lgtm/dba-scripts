@@ -31,7 +31,7 @@ Path to a healthcheck CSV folder. Defaults to the most recent folder under
 output-files\healthcheck\.
 
 .PARAMETER Model
-Claude model ID. Defaults to claude-opus-4-8.
+Claude model ID. Defaults to claude-opus-5.
 
 .PARAMETER MaxTokens
 Maximum output tokens for the report. Defaults to 16000.
@@ -61,7 +61,7 @@ Use this to review the data before it leaves the machine, or when no API key is 
 
 param(
     [string]$FolderPath,
-    [string]$Model = 'claude-opus-4-8',
+    [string]$Model = 'claude-opus-5',
     [int]$MaxTokens = 16000,
     [int]$MaxRowsPerCsv = 100,
     [string]$OutputRoot,
@@ -215,6 +215,6 @@ Write-Host ''
 Write-Host ('─' * 64) -ForegroundColor DarkCyan
 Write-Host "  Report     : $reportPath" -ForegroundColor Green
 Write-Host ("  Tokens     : {0:N0} in / {1:N0} out" -f $inputTok, [long]$u.output_tokens)
-Write-Host ("  Est. cost  : `${0:N2} (at claude-opus-4-8 rates)" -f $costUsd)
+Write-Host ("  Est. cost  : `${0:N2} (at claude-opus-5 rates)" -f $costUsd)
 Write-Host ('─' * 64) -ForegroundColor DarkCyan
 Write-Host ''

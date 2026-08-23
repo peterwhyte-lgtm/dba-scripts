@@ -12,8 +12,8 @@ We aim for compatibility with:
 
 ## Reporting a vulnerability
 
-Please email security disclosures to: <peterwhyte.mail@gmail.com>
-Subject: `[mssql-tools] Security`
+Please email security disclosures to: <me@peterwhyte.com>
+Subject: `[dba-tools] Security`
 
 Include: what you found, which file(s) are affected, and steps to reproduce. Response within 48 hours.
 

@@ -1,12 +1,12 @@
 # DBA Scripts Roadmap
 
-## Current state (updated 2026-06-21)
+## Current state (updated 2026-08-23)
 
 Fully functional production DBA toolkit. The repo has a category-first layout: `sql/` for SQL scripts, `powershell/` for wrappers, orchestrators, and automation (categories mirror `sql/`), and `docs/ops/` for operational runbooks and change templates.
 
 **What is complete:**
-- SQL diagnostic layer — 181 scripts across monitoring, performance, high-availability, backups, security, maintenance, migration
-- Wrapper layer — 153 thin PS wrappers, one per SQL script, colocated with the web UI
+- SQL diagnostic layer — 183 scripts across monitoring, performance, high-availability, backups, security, maintenance, migration
+- Wrapper layer — 155 thin PS wrappers, one per SQL script, colocated with the web UI
 - PowerShell orchestration — healthcheck collection (45 scripts), review, assessment report, multi-server health check
 - Migration toolkit — full pre/post assessment, DDL generators (logins, jobs, linked servers, user mappings), baseline export
 - Collectors — 12 scheduled collectors as SQL Agent job generators in `sql/collectors/` (PS-based Collect-* retired); `Generate-CollectorAlertJob.sql` + `Get-*Delta.sql` for alerting and snapshot analysis
@@ -16,6 +16,7 @@ Fully functional production DBA toolkit. The repo has a category-first layout: `
 - Environment setup — `Initialize-Environment.ps1` + `SETUP.md`
 - Pester tests — SQL header standards, path resolution, wrapper parity (644 tests, all passing)
 - CI — GitHub Actions: Pester, PSScriptAnalyzer, markdownlint, SQL standards audit, secrets scan
+- MCP server — `mcp/`: six reference tools (errors, waits, builds, scripts, Q&A), docs as Resources, the health-triage rubric as a prompt; independent package with its own tests, CI (`mcp.yaml`), and scored retrieval eval
 
 ---
 
@@ -23,7 +24,7 @@ Fully functional production DBA toolkit. The repo has a category-first layout: `
 
 ### Phase 3 — Script blog coverage (in progress, Peter-driven)
 
-143 of the 183 SQL scripts now have a published companion post on sqldba.blog. Drafting happens outside this repo; the only thing that lands here is the URL.
+145 of the 183 SQL scripts now have a published companion post on sqldba.blog. Drafting happens outside this repo; the only thing that lands here is the URL.
 
 For each script that merits a post:
 
@@ -135,6 +136,7 @@ These extend the existing collector and reporting infrastructure into scheduled,
 
 | Date | Item |
 |------|------|
+| 2026-08-23 | Docs alignment pass — counts corrected across repo-structure/roadmap/docs-README (183 SQL scripts, 155 wrappers, 145 with posts); mcp/ added to repo-structure layout + roadmap current state; SETUP.md PowerShell minimum reconciled with README (PS7 required, 5.1 only hands off); CONTRIBUTING gains the datasets-are-generated rule; Invoke-AiAssessment default model claude-opus-4-8 → claude-opus-5 (same rates, request body already compatible); pillar cross-links added (Error Library, builds list, DBA Scripts hub in README MCP section; SSMS Complete Guide in install-ssms.ps1); SECURITY.md subject line [mssql-tools] → [dba-tools] |
 | 2026-07-05 | Phase 6.1 Stage 4 complete — non-blocking collect: per-script manifest.csv in the collector (+ -OutputFolder param), /api/status endpoint, detached launch from /api/run-healthcheck, data strip inline progress bar with poll + resume-on-load; verified end-to-end against local SQL via both the API path and a terminal-launched run (39/39 both) — Phase 6.1 fully complete |
 | 2026-07-05 | Findings delta fixed to compare same-server collections only (previous-folder lookup filtered by server prefix — a different server's folder in between no longer produces false new/resolved findings); collection-scope design question SETTLED: one canonical collection, no -Scope; Phase 6.1 Stage 4 to be built manifest-first (per-script manifest.csv doubles as progress source and future scoped-run provenance) |
 | 2026-07-04 | Root docs restructured around the AI-flagship identity — README leads with "collect everything, then have an AI review it with you" (What This Is moved to top, health check promoted to flagship section, web UI promoted from "Optional" to the view/verify dashboard, AI requirement noted); quick-start health check section now shows all 3 steps incl. AI assessment; CLAUDE.md Purpose rewritten to the flagship framing (prerequisite for the flagship blog post) |

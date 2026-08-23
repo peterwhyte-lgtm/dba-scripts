@@ -7,13 +7,15 @@ This document describes the current folder layout and the purpose of each area.
 ## Top-level layout
 
 ```text
-sql/            SQL scripts (181; read-only, SSMS-ready, single-result-set)
+sql/            SQL scripts (183; read-only unless annotated otherwise, SSMS-ready, single-result-set)
 powershell/     PowerShell orchestrators, automation, migration tools, and the thin wrappers
 web-ui/         Browser UI (Start-WebUi.ps1, Restart-WebUi.ps1, Generate-ScriptIndex.ps1)
+mcp/            The sqldba MCP server — this repo's reference as tools any AI agent can call
 tools/          Repo utilities: SQL runner, triage, scaffolding, maintenance
 docs/           quick-start, script catalog, repo structure, standards, templates, AI guides, roadmap
 docs/ops/       Change orders, runbooks, checklists, rollback playbooks, SQL change templates
 tests/          Pester test suite
+assets/         Logo and README screenshots
 output-files/   Generated output (gitignored — CSVs, healthcheck folders, reports)
 ```
 
@@ -114,6 +116,18 @@ One wrapper per SQL script. Each wrapper resolves the repo root, locates its mat
 | `powershell/wrappers/maintenance/` | `sql/maintenance/` Get-* scripts |
 | `powershell/wrappers/inventory/` | All `sql/inventory/` scripts |
 | `powershell/wrappers/traces/` | All `sql/traces/` scripts |
+
+---
+
+## `mcp/` — The sqldba MCP server
+
+An independent installable Python package (`pip install ./mcp`, entry point `sqldba-mcp`) that
+serves this repo's reference as MCP tools for any AI agent: `lookup_error`, `explain_wait`,
+`check_build`, `find_script`, `get_script`, `answer_question` — plus the docs as Resources
+(`sqldba://docs/...`) and the health-check rubric as the `sql-server-health-triage` prompt. It
+never connects to a SQL Server; the datasets ship inside the package. Datasets under
+`mcp/src/sqldba_mcp/datasets/` are generated — never hand-edit them (CI compares them byte for
+byte against this repo). Full write-up: [`mcp/README.md`](../mcp/README.md).
 
 ---
 

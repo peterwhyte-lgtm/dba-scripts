@@ -1689,7 +1689,7 @@ function Build-AiPage([string]$folder, [string]$report) {
     $runBtns   = "<button class='run-btn' onclick='runAi(1)' title='Builds the exact prompt to a preview file without calling any API'>Preview prompt (DryRun)</button>"
     if ($hasKey) {
         $runBtns += " <button class='run-btn' onclick='runAi(0)'>Run AI Assessment &#9654;</button>"
-        $keyNote  = "<span class='ds-dim'>ANTHROPIC_API_KEY detected &middot; model claude-opus-4-8 &middot; typically under `$1 per run</span>"
+        $keyNote  = "<span class='ds-dim'>ANTHROPIC_API_KEY detected &middot; model claude-opus-5 &middot; typically under `$1 per run</span>"
     } else {
         $keyNote  = "<span class='ds-dim'>No ANTHROPIC_API_KEY set — live runs disabled. Ask a Claude Code session to write the assessment instead, or see <a href='/view?p=docs%5Cai-assessment.md'>docs/ai-assessment.md</a> for key setup (home) and gateway repointing (work).</span>"
     }

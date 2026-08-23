@@ -157,6 +157,12 @@ Six tools, and the ceiling is deliberate — a test fails the build if a seventh
   is the product, and it is measured rather than claimed — see `mcp/tests/real_questions.py`, which
   asks from outside the corpus rather than rewording the corpus back at itself.
 
+The reference behind the tools is the blog's pillar libraries: the
+[Error Library](https://sqldba.blog/sql-server-errors/), the
+[Wait Types Library](https://sqldba.blog/sql-server-wait-statistics/), the
+[builds and support lifecycle list](https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/),
+and the [DBA Scripts hub](https://sqldba.blog/scripts/).
+
 Full write-up, including what the numbers do and do not prove:
 [The sqldba MCP Server](https://sqldba.blog/sqldba-mcp-server/).
 
@@ -265,7 +271,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). This is Peter's toolkit — contribution
 ---
 
 <p align="center">
-  <a href="https://sqldba.blog">sqldba.blog</a> — each script has a companion post with real-world context
+  <a href="https://sqldba.blog">sqldba.blog</a> — each script has a <a href="https://sqldba.blog/scripts/">companion post</a> with real-world context
   <br><br>
   Built and maintained by <a href="https://sqldba.blog">Peter Whyte</a> &nbsp;·&nbsp; <a href="LICENSE">MIT</a>
 </p>

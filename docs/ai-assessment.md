@@ -128,6 +128,6 @@ Edit the rubric to change what every future assessment looks like — that file 
 ## Costs (Way 2)
 
 A full assessment of one instance is roughly 30–60K input tokens and a few thousand output
-tokens. At `claude-opus-4-8` rates ($5 input / $25 output per million tokens) that is
+tokens. At `claude-opus-5` rates ($5 input / $25 output per million tokens) that is
 **well under $1 per server per run**. The script prints exact token usage and estimated
 cost after every call.

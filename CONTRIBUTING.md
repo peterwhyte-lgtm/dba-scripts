@@ -100,6 +100,15 @@ Required `.NOTES` fields:
 
 The wrapper must mirror the SQL path exactly. The web UI discovers scripts through wrappers, not SQL files directly. If a new top-level category is needed, open an issue first.
 
+### The MCP datasets are generated — never edit them by hand
+
+`mcp/src/sqldba_mcp/datasets/*.json` are exported from this repo and from the published
+write-ups. A correction typed into a dataset is lost on the next export, and CI
+(`mcp/tests/check_freshness.py`) compares the datasets byte for byte against their sources, so
+a hand-edit fails the build and names the file. Fix the source instead: a script's purpose or
+safety class belongs in its `.sql` header; a wrong error or wait explanation is a content
+correction — open an issue and it gets fixed at the source. See [mcp/README.md](mcp/README.md).
+
 ---
 
 ## Running tests before submitting
