@@ -985,6 +985,11 @@
   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/"
  },
  {
+  "title": "Cannot Execute As the Database Principal (Error 15517)",
+  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "url": "https://sqldba.blog/sql-server-cannot-execute-as-database-principal-15517/"
+ },
+ {
   "title": "Cannot Open Backup Device: Operating System Error 5 (Access Is Denied)",
   "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
   "url": "https://sqldba.blog/sql-server-cannot-open-backup-device/"
@@ -1021,17 +1026,17 @@
  },
  {
   "title": "CREATE DATABASE Permission Denied (Error 262)",
-  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "lead": "SQL Server error 262, CREATE DATABASE permission denied. Which permission is actually missing, who can grant it, and the least-privilege fix.",
   "url": "https://sqldba.blog/sql-server-create-database-permission-denied-262/"
  },
  {
   "title": "CREATE FILE Encountered Operating System Error (Error 5123)",
-  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "lead": "SQL Server error 5123, CREATE FILE encountered operating system error. Why the service account is refused and how to fix the folder permissions.",
   "url": "https://sqldba.blog/sql-server-create-file-operating-system-error-5123/"
  },
  {
   "title": "Database Cannot Be Opened Due to Inaccessible Files (Error 945)",
-  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "lead": "SQL Server error 945, database cannot be opened due to inaccessible files. How to find which file stopped it and bring the database back online.",
   "url": "https://sqldba.blog/sql-server-database-cannot-be-opened-945/"
  },
  {
@@ -1123,6 +1128,11 @@
   "title": "Troubleshoot \u201cLogin Failed for User\u201d (Error 18456) in SQL Server",
   "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
   "url": "https://sqldba.blog/sql-server-login-failed-error-18456/"
+ },
+ {
+  "title": "SQL Server Login Migration: What Gets Silently Left Behind",
+  "lead": "sp_help_revlogin carries more than you think, including disabled state. What nothing carries, and why the script you actually ran matters more.",
+  "url": "https://sqldba.blog/sql-server-login-migration-what-gets-left-behind/"
  },
  {
   "title": "Login Failed: The Login Is From an Untrusted Domain (Error 18452)",
@@ -1218,6 +1228,11 @@
   "title": "Shrinking a SQL Server Database Causes Fragmentation: Measured, Not Just Stated",
   "lead": "How to Shrink SQL Server Database Files in Chunks already says it plainly in its common pitfalls: shrinking causes index fragmentation, every time.",
   "url": "https://sqldba.blog/sql-server-shrink-fragmentation-measured/"
+ },
+ {
+  "title": "Silent Failures: The SQL Server Problems That Never Raise an Error",
+  "lead": "Twelve SQL Server failures that produce no error, no failed job and no alert, why each stays silent, and one script that finds them all.",
+  "url": "https://sqldba.blog/sql-server-silent-failures/"
  },
  {
   "title": "SSPI Handshake Failed in SQL Server (Error 17806)",

@@ -416,7 +416,7 @@
   "message": "Cannot execute as the database principal because the principal \"dbo\" does not exist.",
   "meaning": "Usually a database whose owner SID no longer resolves, after a restore or a domain change.",
   "category": "Permissions",
-  "url": null,
+  "url": "https://sqldba.blog/sql-server-cannot-execute-as-database-principal-15517/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-15517-database-engine-error"
  },
  {

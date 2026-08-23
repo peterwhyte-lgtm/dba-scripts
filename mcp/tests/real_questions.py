@@ -102,12 +102,14 @@ QUESTIONS = [
     dict(id='R07', asked='how do i get the sid of a sql login',
          tool='answer_question', mode='cites',
          expect=['dba-scripts-generate-login-script',
-                 'sql-server-without-login-vs-contained-database-user'],
-         note='Was answering "Why does preserving the SID matter so much?". 2026-08-22: the new '
-              'WITHOUT LOGIN post\'s "Does a WITHOUT LOGIN user have a SID?" FAQ now outranks it '
-              'by 1.7% (12.31 vs 12.10) - both discuss login SIDs, neither literally answers '
-              '"how do I get it". Both accepted pending Peter\'s ruling in mcp/BACKLOG.md; do not '
-              'silently widen this list further.'),
+                 'sql-server-without-login-vs-contained-database-user',
+                 'sql-server-login-migration-what-gets-left-behind'],
+         note='RULED by Peter 2026-08-24 (mcp/BACKLOG.md): all three login-family citations are '
+              'correct. The what-gets-left-behind SID-mismatch FAQ, which won after the corpus '
+              'grew to 532, is the closest to a literal answer - it names comparing '
+              'sys.server_principals.sid with sys.database_principals.sid. A dedicated "get a '
+              'login\'s SID" FAQ on the login-script post remains optional blog work that would '
+              'win outright. Do not widen this list further without a new ruling.'),
 
     dict(id='R08', asked='how do i check space free in databases',
          tool='answer_question', mode='cites',

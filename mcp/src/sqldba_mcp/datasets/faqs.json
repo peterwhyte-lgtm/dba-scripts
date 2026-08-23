@@ -2202,6 +2202,24 @@
   "url": "https://sqldba.blog/sql-server-builds-complete-version-list-and-support-lifecycle/"
  },
  {
+  "question": "Is TRUSTWORTHY involved?",
+  "answer": "Sometimes, but treat it separately. A database that relies on EXECUTE AS reaching outside itself needs either TRUSTWORTHY ON (broad, discouraged) or module signing (narrow, preferred). If your 15517 appeared after a restore, fix the owner first; TRUSTWORTHY also resets to OFF on every restore (measured on SQL Server 2025: ON before the backup, OFF after the restore) and is its own follow-up decision, not an automatic switch to flip.",
+  "post_title": "Cannot Execute As the Database Principal (Error 15517)",
+  "url": "https://sqldba.blog/sql-server-cannot-execute-as-database-principal-15517/"
+ },
+ {
+  "question": "The principal exists and I still get 15517. What now?",
+  "answer": "Permission. The caller needs IMPERSONATE on the target user (or the target must be in a scope the caller can impersonate). Measured on SQL Server 2025: the message for a permission failure is identical to the missing-principal one, including the words \"does not exist\". GRANT IMPERSONATE ON USER::target TO caller; is the narrow fix.",
+  "post_title": "Cannot Execute As the Database Principal (Error 15517)",
+  "url": "https://sqldba.blog/sql-server-cannot-execute-as-database-principal-15517/"
+ },
+ {
+  "question": "Which features hit this beyond EXECUTE AS in procedures?",
+  "answer": "Anything that impersonates a database principal on your behalf: Service Broker queue activation, DDL and DML triggers with EXECUTE AS, cross-database ownership chains relying on the owner mapping, and jobs that run in a database context. The restore-orphaned owner breaks all of them the same way.",
+  "post_title": "Cannot Execute As the Database Principal (Error 15517)",
+  "url": "https://sqldba.blog/sql-server-cannot-execute-as-database-principal-15517/"
+ },
+ {
   "question": "The path works when I test it, so why does the backup fail?",
   "answer": "Because the backup does not run as you. SQL Server writes as its service account, so your own access to the folder proves nothing. sys.dm_server_services tells you which account is actually being refused.",
   "post_title": "Cannot Open Backup Device: Operating System Error 5 (Access Is Denied)",
@@ -2658,6 +2676,48 @@
   "url": "https://sqldba.blog/sql-server-login-failed-error-18456/"
  },
  {
+  "question": "Do Windows logins need any of this?",
+  "answer": "Less of it, and not none of it. A Windows login has no password or hash to carry, and its SID comes from Active Directory rather than from SQL Server, so the orphaned-user problem mostly disappears. The disabled flag, the default database, the default language and server role membership all still apply exactly as they do for SQL logins. The failure specific to Windows logins is a domain or trust boundary. Script it perfectly onto a server in a domain with no trust to the account's domain and it still cannot authenticate.",
+  "post_title": "SQL Server Login Migration: What Gets Silently Left Behind",
+  "url": "https://sqldba.blog/sql-server-login-migration-what-gets-left-behind/"
+ },
+ {
+  "question": "How do I know whether a password was carried across or re-typed?",
+  "answer": "Compare the stored hash, not the password. The hash is salted, so creating two logins with the identical password produces two completely different hashes. That sounds unhelpful and is actually the useful property: if the hashes match between source and target, the login was genuinely scripted with WITH PASSWORD = <hash> HASHED. If they differ, somebody typed a password in by hand, and you now need to know whether they typed the right one.",
+  "post_title": "SQL Server Login Migration: What Gets Silently Left Behind",
+  "url": "https://sqldba.blog/sql-server-login-migration-what-gets-left-behind/"
+ },
+ {
+  "question": "Is sp_help_revlogin still the right tool in 2026?",
+  "answer": "For what it does, yes, and it covers more than most people assume. Reading the source, it scripts the password hash, the SID, the default database, both password policy options, an ALTER LOGIN... DISABLE for disabled logins and a DENY CONNECT SQL where one exists. It is not deprecated and it still works. What it genuinely does not carry is DEFAULT_LANGUAGE and server role membership, and it has never claimed to handle credentials, proxies or contained users. The real risk is not the procedure. It is that people say \"we scripted the logins\" while having used something else entirely, such as SSMS Script Login as CREATE To, which emits neither the password nor the SID.",
+  "post_title": "SQL Server Login Migration: What Gets Silently Left Behind",
+  "url": "https://sqldba.blog/sql-server-login-migration-what-gets-left-behind/"
+ },
+ {
+  "question": "Is there a single query that tells me if the migration is complete?",
+  "answer": "No, and be wary of anything that claims to be one. What you can have is a comparison: capture the same fingerprint from both servers and diff it. That turns \u201cis it complete\u201d, which nobody can answer from one server, into \u201cwhat is different\u201d, which is a question a text diff answers exactly.",
+  "post_title": "SQL Server Login Migration: What Gets Silently Left Behind",
+  "url": "https://sqldba.blog/sql-server-login-migration-what-gets-left-behind/"
+ },
+ {
+  "question": "Should I just use dbatools Copy-DbaLogin instead?",
+  "answer": "If PowerShell against both servers is an option, it is the strongest tool for the job, and it is what most of the community now recommends: Copy-DbaLogin preserves the password hash and SID the same way, and unlike sp_help_revlogin it can carry server role memberships and server-level permissions across with it. It does not change the thesis of this post. Whichever tool produces your script, the question is still what it emits and what it silently skips. Credentials, linked server passwords and contained users sit outside every login transfer, and the checklist above is how you verify the target regardless of which tool built it.",
+  "post_title": "SQL Server Login Migration: What Gets Silently Left Behind",
+  "url": "https://sqldba.blog/sql-server-login-migration-what-gets-left-behind/"
+ },
+ {
+  "question": "What about logins that own databases or Agent jobs?",
+  "answer": "Ownership is stored by SID as well, so it follows the same rule. A database whose owner SID no longer resolves shows a blank or unresolved owner, and Agent jobs owned by a missing login can fail to start. Re-point them deliberately with ALTER AUTHORIZATION ON DATABASE::[name] TO [login] rather than leaving them, and check job ownership as part of the same pass.",
+  "post_title": "SQL Server Login Migration: What Gets Silently Left Behind",
+  "url": "https://sqldba.blog/sql-server-login-migration-what-gets-left-behind/"
+ },
+ {
+  "question": "Why does my migrated login work but my database user has no permissions?",
+  "answer": "Almost always a SID mismatch. A database user is bound to a login by SID, not by name. Recreate the login by name and it gets a fresh SID, so the user inside the restored database still points at the old one and is now orphaned. The login authenticates fine, which is what makes it confusing, and then has no rights inside the database. Confirm by comparing sys.server_principals.sid on the server with sys.database_principals.sid in the database. Fix with ALTER USER [name] WITH LOGIN = [name], which re-binds the user to the current login.",
+  "post_title": "SQL Server Login Migration: What Gets Silently Left Behind",
+  "url": "https://sqldba.blog/sql-server-login-migration-what-gets-left-behind/"
+ },
+ {
   "question": "Can I just switch to SQL authentication?",
   "answer": "It makes the error go away because it stops using Windows identities entirely. That is sometimes the right call for a machine that cannot be domain-joined, but state it honestly as a decision, not a fix.",
   "post_title": "Login Failed: The Login Is From an Untrusted Domain (Error 18452)",
@@ -2914,6 +2974,42 @@
   "answer": "An ownership chain broke. While view and table shared an owner, the table was never permission-checked through the view. A schema or ownership change ends that, and the caller suddenly needs rights on the base table.",
   "post_title": "The SELECT Permission Was Denied on the Object (Error 229)",
   "url": "https://sqldba.blog/sql-server-select-permission-denied-229/"
+ },
+ {
+  "question": "Does any of this apply to Azure SQL Database?",
+  "answer": "Some of it, differently. Backups and CHECKDB are managed for you there, so those entries fall away. Untrusted constraints, orphaned users, disabled indexes and stale statistics behave exactly the same, because they are properties of the database rather than of the instance. The audit script is written for SQL Server and reads instance-level catalogs, so it is not the tool to point at a single Azure SQL database.",
+  "post_title": "Silent Failures: The SQL Server Problems That Never Raise an Error",
+  "url": "https://sqldba.blog/sql-server-silent-failures/"
+ },
+ {
+  "question": "How often should this run?",
+  "answer": "Once when you take over an instance, then monthly. It is deliberately a slow-moving list: state drifts over months, not hours, and running it nightly would produce an unchanging report that people stop reading. If you want it scheduled, treat a new row appearing as the event worth alerting on rather than the report itself.",
+  "post_title": "Silent Failures: The SQL Server Problems That Never Raise an Error",
+  "url": "https://sqldba.blog/sql-server-silent-failures/"
+ },
+ {
+  "question": "If these are so serious, why does SQL Server not warn about them?",
+  "answer": "Because almost every one of them is a legitimate configuration that somebody chose. AUTO_SHRINK, TRUSTWORTHY, a job step that continues on failure and FULL recovery without log backups are all valid states with real use cases. A warning would be an opinion, and the engine does not hold opinions about how you run your estate. That is the correct design and it is also why the checking has to be yours. The instance can tell you what is true; only you can tell it what should be.",
+  "post_title": "Silent Failures: The SQL Server Problems That Never Raise an Error",
+  "url": "https://sqldba.blog/sql-server-silent-failures/"
+ },
+ {
+  "question": "Is a green backup report really worth so little?",
+  "answer": "It is worth exactly what it says: those backup operations completed. It is not a statement about recoverability, because nothing in the job asked whether the resulting chain restores. A FULL recovery model database with no log backups reports perfect coverage and gives you last night's full backup and nothing since. The only real test is a restore. Everything short of that, including this script, is a way of narrowing down which servers to test first.",
+  "post_title": "Silent Failures: The SQL Server Problems That Never Raise an Error",
+  "url": "https://sqldba.blog/sql-server-silent-failures/"
+ },
+ {
+  "question": "My constraint says it is enabled. Why does the script call it untrusted?",
+  "answer": "Enabled and trusted are two different flags. WITH NOCHECK re-enables a constraint without validating the data already in the table, so SQL Server enforces it going forward but cannot promise the existing rows comply. Since it cannot promise, the optimizer will not use the constraint to simplify a plan. Re-validate with ALTER TABLE... WITH CHECK CHECK CONSTRAINT and the trust comes back.",
+  "post_title": "Silent Failures: The SQL Server Problems That Never Raise an Error",
+  "url": "https://sqldba.blog/sql-server-silent-failures/"
+ },
+ {
+  "question": "Which one should I check first on a server I have just inherited?",
+  "answer": "The backup chain, then integrity. Those two are the only entries on the list where the cost is unbounded: everything else degrades performance or widens a security surface, and both of those can lose data permanently. Run the audit, read the CRITICAL rows for Backups and Integrity, and deal with them before you look at anything else.",
+  "post_title": "Silent Failures: The SQL Server Problems That Never Raise an Error",
+  "url": "https://sqldba.blog/sql-server-silent-failures/"
  },
  {
   "question": "Does restarting SQL Server fix it?",

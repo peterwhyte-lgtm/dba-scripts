@@ -179,7 +179,16 @@ the datasets are re-exported. PAGEIOLATCH_SH now ships all 883 chars of its step
 
 ---
 
-### R07 needs a ruling: two posts now tie on "how do i get the sid of a sql login"
+### R07 — RULED by Peter 2026-08-24: accept all three login-family citations
+
+The tie below resolved itself when the corpus grew to 532: the what-gets-left-behind post's
+SID-mismatch FAQ now wins, and it is the closest of the three to a literal answer (it names
+comparing `sys.server_principals.sid` with `sys.database_principals.sid`). Peter accepted it;
+`real_questions.py` R07 now lists all three citations. Option (b) below — a dedicated
+"getting a login's SID" FAQ on the login-script post, which would win outright — stays open
+as optional blog work. Original entry kept for the record:
+
+### ~~R07 needs a ruling: two posts now tie on "how do i get the sid of a sql login"~~
 
 **Observed 2026-08-22**, the day the login-migration set published. The new WITHOUT LOGIN
 post's FAQ "Does a WITHOUT LOGIN user have a SID?" outranks the old verified answer
