@@ -9,7 +9,7 @@ description = "A working DBA's verified SQL Server reference - errors, wait type
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-authors = [{ name = "Peter Whyte", email = "security@sqldba.blog" }]
+authors = [{ name = "Peter Whyte", email = "me@peterwhyte.com" }]
 keywords = ["sql-server", "mssql", "dba", "mcp", "model-context-protocol", "wait-types"]
 classifiers = [
     "Development Status :: 3 - Alpha",
