@@ -2112,10 +2112,40 @@
   "url": "https://sqldba.blog/get-last-database-backup-times-in-sql-server/"
  },
  {
+  "question": "Can Copilot run queries against my server?",
+  "answer": "Ask mode cannot execute arbitrary queries as of 22.9; you execute what it drafts. Agent Mode (preview) is the mode designed to act, which is exactly why it deserves the production caution above.",
+  "post_title": "GitHub Copilot in SSMS: Setup, and What a DBA Should Let It Do",
+  "url": "https://sqldba.blog/github-copilot-in-ssms/"
+ },
+ {
+  "question": "Can I choose or bring my own model?",
+  "answer": "Yes, model selection within chat arrived in 22.0 and bring-your-own-model in 22.1.",
+  "post_title": "GitHub Copilot in SSMS: Setup, and What a DBA Should Let It Do",
+  "url": "https://sqldba.blog/github-copilot-in-ssms/"
+ },
+ {
+  "question": "Does Copilot in SSMS cost anything?",
+  "answer": "A free tier exists and works in SSMS. Paid GitHub Copilot plans lift the usage limits and open up model selection; the 22.1 release notes list Claude as the default model for paid subscriptions.",
+  "post_title": "GitHub Copilot in SSMS: Setup, and What a DBA Should Let It Do",
+  "url": "https://sqldba.blog/github-copilot-in-ssms/"
+ },
+ {
   "question": "Is VIEW SERVER STATE safe to grant?",
   "answer": "Yes. It is read-only. It exposes what the server is doing, sessions, waits, query text and plans, and grants no ability to change anything, read user data or alter security. It is the correct alternative to handing out sysadmin.",
   "post_title": "Grant VIEW SERVER STATE in SQL Server",
   "url": "https://sqldba.blog/grant-view-server-state-in-sql-server/"
+ },
+ {
+  "question": "Can I get dark mode in SSMS 18 or 19?",
+  "answer": "Not supported. The old community workaround edited a package definition file to unhide the theme, and it left many dialogs unusable. SSMS 21 is free, installs alongside your instance tooling, and does dark mode properly, that is the fix.",
+  "post_title": "How to Enable Dark Mode in SSMS",
+  "url": "https://sqldba.blog/how-to-enable-dark-mode-in-ssms/"
+ },
+ {
+  "question": "Does dark mode change the results grid?",
+  "answer": "Yes, the grid follows the theme in SSMS 21 and later. If you want the grid larger rather than darker, SSMS 22 also lets you zoom the results grid independently of the editor.",
+  "post_title": "How to Enable Dark Mode in SSMS",
+  "url": "https://sqldba.blog/how-to-enable-dark-mode-in-ssms/"
  },
  {
   "question": "Can I run SSMS Release and Preview on the same machine?",
@@ -2138,6 +2168,12 @@
  {
   "question": "How do I uninstall SSMS?",
   "answer": "On SSMS 21+, through the Visual Studio Installer (locate SSMS, select More, choose Uninstall). For a fleet of machines, or a corrupted install the Installer won't fully clean up, see the scripted uninstall above.",
+  "post_title": "Install and Update SQL Server Management Studio (SSMS)",
+  "url": "https://sqldba.blog/install-and-update-sql-server-management-studio-ssms/"
+ },
+ {
+  "question": "How do I update SSMS to the latest version?",
+  "answer": "Open the Visual Studio Installer, find the SSMS entry and click Update. Since SSMS 21 there is no separate download to chase, the installer handles updates, and SSMS 22 ships them roughly monthly. For more than one machine, the scripted install and update does the same thing silently.",
   "post_title": "Install and Update SQL Server Management Studio (SSMS)",
   "url": "https://sqldba.blog/install-and-update-sql-server-management-studio-ssms/"
  },
@@ -2748,8 +2784,26 @@
   "url": "https://sqldba.blog/sql-server-management-studio-complete-guide/"
  },
  {
+  "question": "Can I use git without leaving SSMS?",
+  "answer": "Yes, since SSMS 21. The Git menu covers clone, branch, commit, push and stash against GitHub or Azure DevOps, which is enough to keep your scripts folder under version control on the jump host you already work from. It versions files, not the database; schema-as-source is what the separate Database DevOps workload (preview) is for.",
+  "post_title": "SQL Server Management Studio (SSMS): The Complete Guide",
+  "url": "https://sqldba.blog/sql-server-management-studio-complete-guide/"
+ },
+ {
+  "question": "Does SSMS have a dark theme?",
+  "answer": "Yes, officially, at last. SSMS 21 shipped the first supported dark theme and SSMS 22 extended theming further, adding new themes (and retiring the old Blue one) and bringing more of the dialogs into line. Pick a theme under Tools > Options and expect the odd unthemed dialog at the edges, the coverage has improved with each 22.x release.",
+  "post_title": "SQL Server Management Studio (SSMS): The Complete Guide",
+  "url": "https://sqldba.blog/sql-server-management-studio-complete-guide/"
+ },
+ {
   "question": "Is SSMS still being actively updated?",
-  "answer": "Yes. It ships as a separate download from the SQL Server engine now, with its own release cadence, roughly every few months. See Install & Update above for where to get it and how the update checks work.",
+  "answer": "Yes, more actively than it has been in years. It ships as a separate download from the SQL Server engine with its own release cadence, and the SSMS 22 line has been updating roughly monthly. See Install & Update above for where to get it and how the update checks work, and What Changed in SSMS 21 and 22 for the features worth knowing about.",
+  "post_title": "SQL Server Management Studio (SSMS): The Complete Guide",
+  "url": "https://sqldba.blog/sql-server-management-studio-complete-guide/"
+ },
+ {
+  "question": "What do I need to use Copilot in SSMS, and does it cost anything?",
+  "answer": "SSMS 22 or later, the AI Assistance workload ticked in the Visual Studio Installer, and a GitHub account. A free Copilot tier exists, so trying it costs nothing. It is opt-in per machine, code completions ship disabled by default, and as of 22.9 Ask mode cannot execute arbitrary queries against the connected server, which is the right default for anything production-shaped.",
   "post_title": "SQL Server Management Studio (SSMS): The Complete Guide",
   "url": "https://sqldba.blog/sql-server-management-studio-complete-guide/"
  },
@@ -3166,6 +3220,66 @@
   "answer": "SSMS 20 and ODBC Driver 18 changed their defaults to encrypt and validate. Your server did not change, the client got stricter.",
   "post_title": "SSMS Certificate Chain Not Trusted Error (Trust Server Certificate Fix)",
   "url": "https://sqldba.blog/ssms-certificate-chain-not-trusted-error-trust-server-certificate-fix/"
+ },
+ {
+  "question": "Can a shortcut run a whole script file?",
+  "answer": "No, the mechanism runs a procedure (or a short statement typed into the slot), not a file. For script libraries, keep them in a repo and see Use Git in SSMS.",
+  "post_title": "SSMS Query Shortcuts: Run sp_whoisactive on a Hotkey",
+  "url": "https://sqldba.blog/ssms-query-shortcuts/"
+ },
+ {
+  "question": "Why does my new shortcut do nothing?",
+  "answer": "Almost always the window: query windows keep the shortcut set they opened with, so open a new one after saving changes. Also check the procedure exists in the database your connection is pointed at, the shortcut runs against the current connection.",
+  "post_title": "SSMS Query Shortcuts: Run sp_whoisactive on a Hotkey",
+  "url": "https://sqldba.blog/ssms-query-shortcuts/"
+ },
+ {
+  "question": "Is this the same as copy with headers?",
+  "answer": "No. Ctrl+Shift+C (copy with headers) still exists and is still the quickest route for a few rows. Save Results As writes a proper file in the chosen format, which is what you want for anything that leaves your machine.",
+  "post_title": "SSMS Results Grid: Export to Excel, JSON and Markdown",
+  "url": "https://sqldba.blog/ssms-results-grid-export/"
+ },
+ {
+  "question": "Which SSMS version do I need for the Excel and Markdown export?",
+  "answer": "SSMS 22.4.1 or later for the new formats, and 22.8 or later for it to remember your last-used format. Anything current qualifies; see the install post below if you are behind.",
+  "post_title": "SSMS Results Grid: Export to Excel, JSON and Markdown",
+  "url": "https://sqldba.blog/ssms-results-grid-export/"
+ },
+ {
+  "question": "Can it source-control the database schema itself?",
+  "answer": "Not by itself. Git in SSMS versions files. The Database DevOps workload (preview in SSMS 22) is building the schema-as-source direction, SQL projects, schema compare and publish flows included.",
+  "post_title": "Use Git in SSMS to Version Control Your DBA Scripts",
+  "url": "https://sqldba.blog/use-git-in-ssms/"
+ },
+ {
+  "question": "Do I need git installed separately?",
+  "answer": "No. The git tooling ships with the SSMS 21 and later install through the Visual Studio Installer, that is the point. If you also use command-line git on the same machine, they work against the same repos.",
+  "post_title": "Use Git in SSMS to Version Control Your DBA Scripts",
+  "url": "https://sqldba.blog/use-git-in-ssms/"
+ },
+ {
+  "question": "Does it work with Azure DevOps as well as GitHub?",
+  "answer": "Yes, both are supported for clone, push and pull, with the standard sign-in flows.",
+  "post_title": "Use Git in SSMS to Version Control Your DBA Scripts",
+  "url": "https://sqldba.blog/use-git-in-ssms/"
+ },
+ {
+  "question": "How often does SSMS 22 update?",
+  "answer": "Roughly monthly through 2026 so far. Updates arrive through the Visual Studio Installer, and the scripted route is covered in the install post above.",
+  "post_title": "What\u2019s New in SSMS 22 for DBAs",
+  "url": "https://sqldba.blog/whats-new-in-ssms-22-for-dbas/"
+ },
+ {
+  "question": "Is SSMS 22 free?",
+  "answer": "Yes. SSMS has been a free download for years and 22 does not change that. Copilot is the only part with a subscription attached, and it has a free tier.",
+  "post_title": "What\u2019s New in SSMS 22 for DBAs",
+  "url": "https://sqldba.blog/whats-new-in-ssms-22-for-dbas/"
+ },
+ {
+  "question": "Which SQL Server versions can SSMS 22 manage?",
+  "answer": "SQL Server 2014 and later, plus Azure SQL Database, Azure SQL Managed Instance, Azure Synapse Analytics and Fabric SQL workloads. For older instances, keep an older SSMS alongside.",
+  "post_title": "What\u2019s New in SSMS 22 for DBAs",
+  "url": "https://sqldba.blog/whats-new-in-ssms-22-for-dbas/"
  },
  {
   "question": "Do I need to stop SQL Server first?",

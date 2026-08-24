@@ -825,6 +825,11 @@
   "url": "https://sqldba.blog/get-last-database-restore-date-and-time-in-sql-server/"
  },
  {
+  "title": "GitHub Copilot in SSMS: Setup, and What a DBA Should Let It Do",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/github-copilot-in-ssms/"
+ },
+ {
   "title": "Grant VIEW SERVER STATE in SQL Server",
   "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
   "url": "https://sqldba.blog/grant-view-server-state-in-sql-server/"
@@ -873,6 +878,11 @@
   "title": "How to Enable Change Data Capture (CDC) in SQL Server",
   "lead": "Change Data Capture (CDC) allows SQL Server to track inserts, updates, and deletes on selected tables by reading the transaction log and storing changes in system tables.",
   "url": "https://sqldba.blog/how-to-enable-change-data-capture-cdc-in-sql-server/"
+ },
+ {
+  "title": "How to Enable Dark Mode in SSMS",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/how-to-enable-dark-mode-in-ssms/"
  },
  {
   "title": "How to Get the SQL Server IP Address",
@@ -2460,6 +2470,16 @@
   "url": "https://sqldba.blog/ssms-certificate-chain-not-trusted-error-trust-server-certificate-fix/"
  },
  {
+  "title": "SSMS Query Shortcuts: Run sp_whoisactive on a Hotkey",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/ssms-query-shortcuts/"
+ },
+ {
+  "title": "SSMS Results Grid: Export to Excel, JSON and Markdown",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/ssms-results-grid-export/"
+ },
+ {
   "title": "Testing Remote Server Port Connectivity with PowerShell",
   "lead": "Testing connectivity to remote server ports is a basic skill every DBA should have.",
   "url": "https://sqldba.blog/testing-remote-server-port-connectivity-with-powershell/"
@@ -2480,6 +2500,11 @@
   "url": "https://sqldba.blog/understanding-where-1-1-and-where-1-2-in-sql/"
  },
  {
+  "title": "Use Git in SSMS to Version Control Your DBA Scripts",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/use-git-in-ssms/"
+ },
+ {
   "title": "Using PowerShell to Get Last SQL Failover Time",
   "lead": "When reviewing availability events on SQL Server, one of the first questions is often: Did the cluster move, and when?",
   "url": "https://sqldba.blog/using-powershell-to-get-last-sql-failover-time/"
@@ -2493,6 +2518,11 @@
   "title": "What WITH (NOLOCK) Actually Does in SQL Server",
   "lead": "Almost every SQL Server developer has copied WITH (NOLOCK) onto the end of a query at some point, usually because someone said it \"makes queries faster\" or \"avoids blocking.\" Both of those things are technically true.",
   "url": "https://sqldba.blog/what-with-nolock-actually-does-in-sql-server/"
+ },
+ {
+  "title": "What\u2019s New in SSMS 22 for DBAs",
+  "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
+  "url": "https://sqldba.blog/whats-new-in-ssms-22-for-dbas/"
  },
  {
   "title": "When Shrinking Temp DB Just Won\u2019t Shrink",
