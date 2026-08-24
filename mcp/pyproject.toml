@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sqldba-mcp"
 version = "0.3.1"
-description = "A working DBA's verified SQL Server reference - errors, wait types, builds, 232 scripts and 551 answered questions - as MCP tools"
+description = "A working DBA's verified SQL Server reference - errors, wait types, builds, 232 scripts and 556 answered questions - as MCP tools"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

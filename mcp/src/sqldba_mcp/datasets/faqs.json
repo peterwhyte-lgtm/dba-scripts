@@ -109,7 +109,7 @@
  },
  {
   "question": "Will the deadlock collector insert duplicate rows if I run the job manually while the schedule is also active?",
-  "answer": "No, it filters on deadlock_time newer than the latest one already stored per server, running it twice in quick succession with nothing new happening simply inserts zero rows the second time. Reading and Fixing a SQL Server Deadlock, in Related Scripts below, covers that in full.",
+  "answer": "No, it filters on deadlock_time newer than the latest one already stored per server, running it twice in quick succession with nothing new happening simply inserts zero rows the second time.",
   "post_title": "DBA Scripts: Collect Blocking and Deadlock Events",
   "url": "https://sqldba.blog/dba-scripts-collect-blocking-and-deadlock-events/"
  },
@@ -247,7 +247,7 @@
  },
  {
   "question": "DBCC CHECKDB seems stuck at 0%, is it hung?",
-  "answer": "Check sys.dm_exec_requests for the session's wait_type. A RESOURCE_SEMAPHORE wait means it's queued for a memory grant it hasn't received yet, not hung, it will proceed once memory frees up. Check sys.dm_os_sys_memory for actual free physical memory on the host before assuming a deeper problem. Troubleshoot RESOURCE_SEMAPHORE Waits, in Related Scripts below, covers that in full.",
+  "answer": "Check sys.dm_exec_requests for the session's wait_type. A RESOURCE_SEMAPHORE wait means it's queued for a memory grant it hasn't received yet, not hung, it will proceed once memory frees up. Check sys.dm_os_sys_memory for actual free physical memory on the host before assuming a deeper problem.",
   "post_title": "DBA Scripts: Generate Database Integrity and Housekeeping Jobs",
   "url": "https://sqldba.blog/dba-scripts-generate-database-integrity-and-housekeeping-jobs/"
  },
@@ -282,14 +282,32 @@
   "url": "https://sqldba.blog/dba-scripts-generate-linked-server-script/"
  },
  {
+  "question": "Are Windows logins and Active Directory groups included?",
+  "answer": "Yes, and this is the part that was broken until 2026-08-18. Windows logins are type 'U' in sys.server_principals and Windows groups are type 'G'. The script previously filtered on 'W', which is not a type SQL Server uses, so the Windows section came out empty on every server. Service accounts under NT SERVICE\\, NT AUTHORITY\\ and BUILTIN\\ are still excluded on purpose, they belong to the target instance's own installation and shouldn't be carried over.",
+  "post_title": "DBA Scripts: Generate Login Script",
+  "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
+ },
+ {
   "question": "Does this script move the actual login passwords in plain text?",
   "answer": "No. It extracts the password hash directly from sys.sql_logins and recreates the login with CREATE LOGIN... WITH PASSWORD = <hash> HASHED, the plain-text password itself is never read or exposed.",
   "post_title": "DBA Scripts: Generate Login Script",
   "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
  },
  {
+  "question": "What happens to a login that is disabled on the source server?",
+  "answer": "It is recreated and then disabled again, with ALTER LOGIN [name] DISABLE; emitted directly inside the creation block. This matters because CREATE LOGIN has no syntax for creating a login in a disabled state, it always produces an enabled one. Before the fix, a decommissioned or deliberately locked account arrived on the new server live, with its original password still valid, and nothing in the output said so.",
+  "post_title": "DBA Scripts: Generate Login Script",
+  "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
+ },
+ {
   "question": "Why does preserving the SID matter so much?",
   "answer": "A database user is mapped to a server login by SID, not by name. If the target's login has a different SID than the source database expected, CREATE USER... FOR LOGIN either fails to map correctly or creates an orphaned user, one that exists in the database but can't authenticate through the login it's supposed to be tied to.",
+  "post_title": "DBA Scripts: Generate Login Script",
+  "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
+ },
+ {
+  "question": "Why doesn't it script server-level permissions or DENY CONNECT SQL?",
+  "answer": "Because guessing at them is worse than leaving them out. Explicit grants and denies at server scope are a separate audit, and a generator that half-covers them gives you a false sense that permissions came across. Run Get-MigrationLoginAudit.sql on the source, keep the output, and compare after the migration.",
   "post_title": "DBA Scripts: Generate Login Script",
   "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
  },
@@ -1726,6 +1744,18 @@
   "answer": "It's a genuine inconsistency against the rest of this pillar's scripts, all of which preview without elevation. Worth flagging if you're scripting a fully unattended preview pipeline, since this one script in the set will still stop you.",
   "post_title": "DBA Scripts: Install and Configure SQL Server",
   "url": "https://sqldba.blog/dba-scripts-install-and-configure-sql-server/"
+ },
+ {
+  "question": "Does updating SSMS affect SQL Server itself?",
+  "answer": "No. SSMS is client tooling; updating it touches nothing server-side, no services restart, and no maintenance window is needed. Update it as casually as a browser.",
+  "post_title": "DBA Scripts: Install and Update SSMS via PowerShell",
+  "url": "https://sqldba.blog/dba-scripts-install-and-update-ssms-via-powershell/"
+ },
+ {
+  "question": "How do I know when a new SSMS version is out?",
+  "answer": "The patch-summary status check compares your installed SSMS against the latest release and prints a red BEHIND with this page's link when an update is waiting, so a routine status run catches it without watching release notes.",
+  "post_title": "DBA Scripts: Install and Update SSMS via PowerShell",
+  "url": "https://sqldba.blog/dba-scripts-install-and-update-ssms-via-powershell/"
  },
  {
   "question": "Should I use this script or the manual Visual Studio Installer walkthrough?",
