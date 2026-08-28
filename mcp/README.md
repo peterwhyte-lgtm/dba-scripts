@@ -27,7 +27,7 @@ and a wrong pick is worse than no server at all — so anything else this could 
 or a Prompt instead. A test enforces the cap.
 
 Covering **54 errors**, **260 wait types**, **7 SQL Server versions** with all **472 published
-builds** behind them, **233 scripts** (184 SQL, 49 PowerShell) and **576 answered questions**.
+builds** behind them, **233 scripts** (184 SQL, 49 PowerShell) and **591 answered questions**.
 
 ### Also included
 
@@ -189,10 +189,10 @@ That is why script headers are treated as a product surface here rather than hou
 `Author`, `Purpose`, `Requires`, `SAFE:` and `IMPACT:` are what your assistant shows you
 *before* you run something. The list is in [`scripts-missing-post-url.txt`](scripts-missing-post-url.txt).
 
-## The 8 errors with no link
+## The 4 errors with no link
 
 The same gap on the other surface, and worth stating plainly because the tools promise a source
-link with every answer: **46 of the 54 errors carry a write-up URL, and 8 do not.** Those 8 still
+link with every answer: **50 of the 54 errors carry a write-up URL, and 4 do not.** Those 4 still
 return the message text, what it means and the severity — all hand-written and verified — and the
 answer *says* no article exists rather than quietly omitting the link, so an agent can quote
 them and knows it cannot cite them.

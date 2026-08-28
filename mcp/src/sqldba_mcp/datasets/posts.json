@@ -1005,6 +1005,11 @@
   "url": "https://sqldba.blog/sql-server-cannot-execute-as-database-principal-15517/"
  },
  {
+  "title": "Cannot Insert the Value NULL Into Column (Error 515)",
+  "lead": "SQL Server error 515 names a NULL you may never have written. Leaving a NOT NULL column out of the insert produces the same message, and a default fixes that case but not an explicit NULL.",
+  "url": "https://sqldba.blog/sql-server-cannot-insert-the-value-null-515/"
+ },
+ {
   "title": "Cannot Open Backup Device: Operating System Error 5 (Access Is Denied)",
   "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
   "url": "https://sqldba.blog/sql-server-cannot-open-backup-device/"
@@ -1028,6 +1033,11 @@
   "title": "Cannot Resolve the Collation Conflict (Error 468)",
   "lead": "Nothing is broken when you see 468. Two sides of a comparison store text under different rules, and SQL Server will not guess which should win. The fix is one line, and it does not belong on the column.",
   "url": "https://sqldba.blog/sql-server-collation-conflict-468/"
+ },
+ {
+  "title": "Column Name or Number of Supplied Values Does Not Match (Error 213)",
+  "lead": "SQL Server error 213 means the shape of your insert does not match the table. The four causes, why naming columns does not help INSERT... EXEC, and why TRY/CATCH will not catch it.",
+  "url": "https://sqldba.blog/sql-server-column-name-or-number-of-supplied-values-213/"
  },
  {
   "title": "Compatibility Levels: What Actually Changes When You Bump It",
@@ -1093,6 +1103,16 @@
   "title": "SQL Server Errors: The Complete Guide",
   "lead": "Every entry here is a message somebody pasted into a search box while something was broken.",
   "url": "https://sqldba.blog/sql-server-errors/"
+ },
+ {
+  "title": "The Filegroup Cannot Be Removed Because It Is Not Empty (Error 5042)",
+  "lead": "SQL Server error 5042 means something still lives on the filegroup, often an index rather than the table you were thinking of. How to find it, move it, empty the files and remove it in the right order.",
+  "url": "https://sqldba.blog/sql-server-filegroup-cannot-be-removed-not-empty-5042/"
+ },
+ {
+  "title": "The Filegroup Has No Files Assigned to It (Error 622)",
+  "lead": "SQL Server error 622 arrives long after the mistake: creating a table on an empty filegroup succeeds, and the first insert is what fails. Why it is late, and the one statement that fixes it.",
+  "url": "https://sqldba.blog/sql-server-filegroup-has-no-files-622/"
  },
  {
   "title": "Could Not Allocate Space Because the Filegroup Is Full (Error 1105)",

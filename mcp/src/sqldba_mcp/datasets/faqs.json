@@ -2310,6 +2310,24 @@
   "url": "https://sqldba.blog/sql-server-cannot-execute-as-database-principal-15517/"
  },
  {
+  "question": "Did any rows get inserted before it failed?",
+  "answer": "For a single statement, no. The statement is terminated and the whole thing rolls back, so you do not get a partial row. A multi-row VALUES list is still one statement, so the same applies: all of it or none of it.",
+  "post_title": "Cannot Insert the Value NULL Into Column (Error 515)",
+  "url": "https://sqldba.blog/sql-server-cannot-insert-the-value-null-515/"
+ },
+ {
+  "question": "Should I just make the column nullable?",
+  "answer": "Only if it genuinely is optional. NOT NULL is a rule someone wrote down on purpose, and dropping it to clear an error pushes the problem into the data, where it becomes harder to find. Fix the insert first and change the schema only if the rule was wrong.",
+  "post_title": "Cannot Insert the Value NULL Into Column (Error 515)",
+  "url": "https://sqldba.blog/sql-server-cannot-insert-the-value-null-515/"
+ },
+ {
+  "question": "Why does my default constraint not work?",
+  "answer": "Because you are passing the column explicitly with a NULL value. A default only applies when the column is absent from the statement. Verified on SQL Server 2025: with a default in place, omitting the column succeeded and passing NULL still raised 515.",
+  "post_title": "Cannot Insert the Value NULL Into Column (Error 515)",
+  "url": "https://sqldba.blog/sql-server-cannot-insert-the-value-null-515/"
+ },
+ {
   "question": "The path works when I test it, so why does the backup fail?",
   "answer": "Because the backup does not run as you. SQL Server writes as its service account, so your own access to the folder proves nothing. sys.dm_server_services tells you which account is actually being refused.",
   "post_title": "Cannot Open Backup Device: Operating System Error 5 (Access Is Denied)",
@@ -2398,6 +2416,30 @@
   "answer": "It can, if you collate the indexed column, because applying it to a column makes the predicate non-sargable and costs the seek. Put COLLATE on the other side of the comparison where you have a choice. Collating a temp table column at declaration avoids the question entirely.",
   "post_title": "Cannot Resolve the Collation Conflict (Error 468)",
   "url": "https://sqldba.blog/sql-server-collation-conflict-468/"
+ },
+ {
+  "question": "Can I make INSERT... EXEC ignore the extra columns?",
+  "answer": "No. The shapes must match. If you only want some of the columns, capture the full result set into a staging table that matches the procedure, then select the columns you want out of it.",
+  "post_title": "Column Name or Number of Supplied Values Does Not Match (Error 213)",
+  "url": "https://sqldba.blog/sql-server-column-name-or-number-of-supplied-values-213/"
+ },
+ {
+  "question": "Does an identity column count?",
+  "answer": "Yes, and it is a common trip-up. An identity column is part of the table definition, so a bare INSERT... VALUES with no column list still has to account for it, and you normally cannot supply it. Name your columns and the problem does not arise.",
+  "post_title": "Column Name or Number of Supplied Values Does Not Match (Error 213)",
+  "url": "https://sqldba.blog/sql-server-column-name-or-number-of-supplied-values-213/"
+ },
+ {
+  "question": "Why did TRY/CATCH not catch this?",
+  "answer": "Because a static INSERT with the wrong column count fails at compile time, before the batch runs, so there is no runtime error to catch and the batch aborts. Verified on SQL Server 2025. Wrap it in sp_executesql and it compiles separately, at which point it is catchable.",
+  "post_title": "Column Name or Number of Supplied Values Does Not Match (Error 213)",
+  "url": "https://sqldba.blog/sql-server-column-name-or-number-of-supplied-values-213/"
+ },
+ {
+  "question": "Why does the message not tell me which column?",
+  "answer": "Because at the point it fails, SQL Server is comparing two shapes rather than validating a value. It knows the counts do not line up; it has no single column to blame. Compare your column list with sys.columns for the table and the mismatch is usually obvious.",
+  "post_title": "Column Name or Number of Supplied Values Does Not Match (Error 213)",
+  "url": "https://sqldba.blog/sql-server-column-name-or-number-of-supplied-values-213/"
  },
  {
   "question": "Is ISNUMERIC good enough for the check?",
@@ -2590,6 +2632,54 @@
   "answer": "Severity 20 and above terminate the connection, so the client often reports a generic transport failure instead of the real message. That is why the error log is the first stop rather than the last.",
   "post_title": "SQL Server Errors: The Complete Guide",
   "url": "https://sqldba.blog/sql-server-errors/"
+ },
+ {
+  "question": "Can I remove PRIMARY?",
+  "answer": "No. PRIMARY holds the database metadata and cannot be removed or left empty. If your goal is to get user data off PRIMARY, that is done by moving objects elsewhere and changing the default filegroup, not by removing it.",
+  "post_title": "The Filegroup Cannot Be Removed Because It Is Not Empty (Error 5042)",
+  "url": "https://sqldba.blog/sql-server-filegroup-cannot-be-removed-not-empty-5042/"
+ },
+ {
+  "question": "Is there any risk of data loss?",
+  "answer": "Not from the error itself, which is SQL Server refusing to do something destructive. The risk is in the steps you take to get around it. Rebuilding a clustered index moves real data, and EMPTYFILE relocates pages, so take a backup first and do it in a window.",
+  "post_title": "The Filegroup Cannot Be Removed Because It Is Not Empty (Error 5042)",
+  "url": "https://sqldba.blog/sql-server-filegroup-cannot-be-removed-not-empty-5042/"
+ },
+ {
+  "question": "Why does the message say filegroup sometimes and file other times?",
+  "answer": "Because 5042 is a shared message. In sys.messages the text is The %S_MSG '%.*ls' cannot be removed because it is not empty, and SQL Server fills in which kind of object it is talking about. The fix is the same idea either way: empty it first.",
+  "post_title": "The Filegroup Cannot Be Removed Because It Is Not Empty (Error 5042)",
+  "url": "https://sqldba.blog/sql-server-filegroup-cannot-be-removed-not-empty-5042/"
+ },
+ {
+  "question": "Can this happen to an index rather than a table?",
+  "answer": "Yes. The message lists indexes and LOB columns for that reason. An index built ON an empty filegroup hits the same wall as soon as it needs to store anything, which on an index is at build time.",
+  "post_title": "The Filegroup Has No Files Assigned to It (Error 622)",
+  "url": "https://sqldba.blog/sql-server-filegroup-has-no-files-622/"
+ },
+ {
+  "question": "Could I just put the table on PRIMARY instead?",
+  "answer": "You could, and sometimes that is the right call if the filegroup was created by mistake. But if it was created deliberately, to keep user data off PRIMARY or to sit on different storage, moving the table to PRIMARY throws away the reason it existed. Add the file.",
+  "post_title": "The Filegroup Has No Files Assigned to It (Error 622)",
+  "url": "https://sqldba.blog/sql-server-filegroup-has-no-files-622/"
+ },
+ {
+  "question": "Do I have to drop and recreate the table?",
+  "answer": "No. The table definition is fine and nothing about it is wrong. Add a file to the filegroup and the existing table starts working immediately, with its indexes and permissions intact.",
+  "post_title": "The Filegroup Has No Files Assigned to It (Error 622)",
+  "url": "https://sqldba.blog/sql-server-filegroup-has-no-files-622/"
+ },
+ {
+  "question": "Is this the same as the filegroup being full?",
+  "answer": "No, and they are easy to confuse. 622 means there is no file at all. 1105 means there is a file and it has run out of room. Adding a file fixes both, but only 1105 also responds to autogrowth and disk space.",
+  "post_title": "The Filegroup Has No Files Assigned to It (Error 622)",
+  "url": "https://sqldba.blog/sql-server-filegroup-has-no-files-622/"
+ },
+ {
+  "question": "Why did CREATE TABLE not fail?",
+  "answer": "Because creating a table is a metadata operation, and the filegroup exists as metadata. Nothing needs a page until a row is written, so that is where the check happens. Verified on SQL Server 2025: the create succeeded and only the insert raised 622.",
+  "post_title": "The Filegroup Has No Files Assigned to It (Error 622)",
+  "url": "https://sqldba.blog/sql-server-filegroup-has-no-files-622/"
  },
  {
   "question": "Is this the same as the transaction log being full?",
