@@ -26,8 +26,8 @@ Six is a ceiling, not a target. Past roughly half a dozen, an agent starts picki
 and a wrong pick is worse than no server at all — so anything else this could expose is a Resource
 or a Prompt instead. A test enforces the cap.
 
-Covering **48 errors**, **260 wait types**, **7 SQL Server versions** with all **472 published
-builds** behind them, **232 scripts** (183 SQL, 49 PowerShell) and **556 answered questions**.
+Covering **54 errors**, **260 wait types**, **7 SQL Server versions** with all **472 published
+builds** behind them, **233 scripts** (184 SQL, 49 PowerShell) and **576 answered questions**.
 
 ### Also included
 
@@ -116,7 +116,7 @@ All six tools declare themselves **read-only, non-destructive and closed-world**
 annotations, so a client can auto-approve them instead of asking you to confirm a reference lookup
 six times. That is the same promise as the paragraph above, in the form a client can actually read.
 
-The scripts it hands you are a different matter, and it says so. **14 of the 232 change something**
+The scripts it hands you are a different matter, and it says so. **15 of the 233 change something**
 — they write data, create objects, install, patch or restart — and every one of those leads its
 answer with a warning naming the class, the impact and the reason, before the body. The other 216
 are read-only and stay uncluttered, because a warning on everything is a warning on nothing. A test
@@ -189,10 +189,10 @@ That is why script headers are treated as a product surface here rather than hou
 `Author`, `Purpose`, `Requires`, `SAFE:` and `IMPACT:` are what your assistant shows you
 *before* you run something. The list is in [`scripts-missing-post-url.txt`](scripts-missing-post-url.txt).
 
-## The 4 errors with no link
+## The 8 errors with no link
 
 The same gap on the other surface, and worth stating plainly because the tools promise a source
-link with every answer: **44 of the 48 errors carry a write-up URL, and 4 do not.** Those 4 still
+link with every answer: **46 of the 54 errors carry a write-up URL, and 8 do not.** Those 8 still
 return the message text, what it means and the severity — all hand-written and verified — and the
 answer *says* no article exists rather than quietly omitting the link, so an agent can quote
 them and knows it cannot cite them.

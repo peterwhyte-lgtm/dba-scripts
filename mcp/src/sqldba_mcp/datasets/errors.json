@@ -40,6 +40,16 @@
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-208-database-engine-error"
  },
  {
+  "error_number": 213,
+  "severity": 16,
+  "title": "Column name or number of supplied values does not match",
+  "message": "Column name or number of supplied values does not match table definition.",
+  "meaning": "The shape of the insert does not match the table. The static form fails at compile time, so TRY/CATCH does not catch it, and naming the columns does not help INSERT ... EXEC.",
+  "category": "Query and data errors",
+  "url": null,
+  "ms_docs": null
+ },
+ {
   "error_number": 229,
   "severity": 14,
   "title": "SELECT permission denied",
@@ -90,6 +100,16 @@
   "ms_docs": null
  },
  {
+  "error_number": 515,
+  "severity": 16,
+  "title": "Cannot insert the value NULL into column",
+  "message": "Cannot insert the value NULL into column 'X', table 'Y'; column does not allow nulls. INSERT fails.",
+  "meaning": "Leaving a NOT NULL column out of the insert gives the same message as passing NULL, so check your column list before hunting for NULLs. A default rescues the omitted case but not an explicit NULL.",
+  "category": "Query and data errors",
+  "url": null,
+  "ms_docs": null
+ },
+ {
   "error_number": 547,
   "severity": 16,
   "title": "Conflict with a FOREIGN KEY constraint",
@@ -108,6 +128,16 @@
   "category": "Corruption and hardware",
   "url": null,
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-605-database-engine-error"
+ },
+ {
+  "error_number": 622,
+  "severity": 16,
+  "title": "The filegroup has no files assigned to it",
+  "message": "The filegroup \"X\" has no files assigned to it. Tables, indexes, text columns, ntext columns, and image columns cannot be populated on this filegroup until a file is added.",
+  "meaning": "The filegroup was created and no file was ever added. CREATE TABLE on it succeeds, so the failure lands later, at the first insert.",
+  "category": "Space, log and files",
+  "url": null,
+  "ms_docs": null
  },
  {
   "error_number": 701,
@@ -208,6 +238,16 @@
   "category": "Blocking, deadlocks and memory",
   "url": "https://sqldba.blog/sql-server-lock-request-timeout-1222/",
   "ms_docs": "https://learn.microsoft.com/en-us/sql/relational-databases/errors-events/mssqlserver-1222-database-engine-error"
+ },
+ {
+  "error_number": 1934,
+  "severity": 16,
+  "title": "SET options have incorrect settings",
+  "message": "INSERT failed because the following SET options have incorrect settings: 'QUOTED_IDENTIFIER'. Verify that SET options are correct for use with indexed views and/or indexes on computed columns and/or filtered indexes.",
+  "meaning": "The connection writing to a table with a filtered index or indexed view has the wrong SET options. Reads still work, which is why it usually shows up as one failing job. SSMS sets QUOTED_IDENTIFIER ON and sqlcmd does not.",
+  "category": "Query and data errors",
+  "url": "https://sqldba.blog/sql-server-set-options-have-incorrect-settings-1934/",
+  "ms_docs": null
  },
  {
   "error_number": 2601,
@@ -317,6 +357,26 @@
   "meaning": "Something is connected. Common when setting a database to single user or restoring over it.",
   "category": "Space, log and files",
   "url": "https://sqldba.blog/sql-server-database-could-not-be-exclusively-locked-5030/",
+  "ms_docs": null
+ },
+ {
+  "error_number": 5042,
+  "severity": 16,
+  "title": "The filegroup cannot be removed because it is not empty",
+  "message": "The filegroup 'X' cannot be removed because it is not empty.",
+  "meaning": "Something still lives on it, often a nonclustered index rather than the table you were thinking of. Objects first, then the files, then the filegroup.",
+  "category": "Space, log and files",
+  "url": null,
+  "ms_docs": null
+ },
+ {
+  "error_number": 5120,
+  "severity": 16,
+  "title": "Unable to open the physical file",
+  "message": "Unable to open the physical file \"X\". Operating system error 5: \"5(Access is denied.)\".",
+  "meaning": "Read the operating system error, not the SQL one. Error 5 has two different causes: the file is already open (often by SQL Server itself), or the service account cannot read it. On an attach it arrives with Msg 1802, and TRY/CATCH only sees the 1802.",
+  "category": "Space, log and files",
+  "url": "https://sqldba.blog/sql-server-unable-to-open-the-physical-file-5120/",
   "ms_docs": null
  },
  {

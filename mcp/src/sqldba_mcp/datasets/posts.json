@@ -970,6 +970,11 @@
   "url": "https://sqldba.blog/shrink-database-files-in-chunks/"
  },
  {
+  "title": "sp_who vs sp_who2 vs sp_whoisactive in SQL Server",
+  "lead": "Ever wondered what is happening inside your SQL Server instance right now? sp_who, sp_who2 and sp_whoisactive all answer that question, at very different depths. The first ships documented, the second ships undocumented but better, and the third is a free community procedure that most working DBAs treat as the real answer. This post is the [\u2026]",
+  "url": "https://sqldba.blog/sp-who-vs-sp-who2-vs-sp-whoisactive/"
+ },
+ {
   "title": "SQL Server: Ad hoc Update to System Catalogs is Not Supported (Fix)",
   "lead": "While enabling show advanced options using sp_configure, I encountered an unexpected failure when executing RECONFIGURE: Msg 5808, Level 16, State 1 Ad hoc update to system catalogs is not supported.",
   "url": "https://sqldba.blog/sql-server-ad-hoc-update-system-catalogs-not-supported/"
@@ -996,7 +1001,7 @@
  },
  {
   "title": "Cannot Execute As the Database Principal (Error 15517)",
-  "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
+  "lead": "SQL Server error 15517, cannot execute as the database principal. Why dbo maps to an orphaned owner after a restore and the one-line fix.",
   "url": "https://sqldba.blog/sql-server-cannot-execute-as-database-principal-15517/"
  },
  {
@@ -1235,6 +1240,11 @@
   "url": "https://sqldba.blog/sql-server-select-permission-denied-229/"
  },
  {
+  "title": "SET Options Have Incorrect Settings (Error 1934)",
+  "lead": "SQL Server error 1934 means the connection running the write has the wrong SET options for a filtered index or indexed view. Reads still work, which is why it usually shows up as one failing job.",
+  "url": "https://sqldba.blog/sql-server-set-options-have-incorrect-settings-1934/"
+ },
+ {
   "title": "Shrinking a SQL Server Database Causes Fragmentation: Measured, Not Just Stated",
   "lead": "How to Shrink SQL Server Database Files in Chunks already says it plainly in its common pitfalls: shrinking causes index fragmentation, every time.",
   "url": "https://sqldba.blog/sql-server-shrink-fragmentation-measured/"
@@ -1268,6 +1278,11 @@
   "title": "SQL Server Transaction Log Full",
   "lead": "\ud83d\udea8 Part of the SQL Server Errors series, the exact messages and what actually causes them.",
   "url": "https://sqldba.blog/sql-server-transaction-log-full/"
+ },
+ {
+  "title": "Unable to Open the Physical File (Error 5120)",
+  "lead": "SQL Server error 5120 reports an operating system error, and error 5 has two completely different causes: the file is already open, or the service account cannot read it. The message cannot tell them apart.",
+  "url": "https://sqldba.blog/sql-server-unable-to-open-the-physical-file-5120/"
  },
  {
   "title": "SQL Server Version Upgrade Runbook: Side-by-Side and In-Place",
@@ -2483,6 +2498,11 @@
   "title": "Testing Remote Server Port Connectivity with PowerShell",
   "lead": "Testing connectivity to remote server ports is a basic skill every DBA should have.",
   "url": "https://sqldba.blog/testing-remote-server-port-connectivity-with-powershell/"
+ },
+ {
+  "title": "The Evolution of SQL Server: Every Version from 1989 to 2025",
+  "lead": "\ud83d\udd50 Version history, with the support dates that actually matter Every release from the 1989 OS/2 original to SQL Server 2025, what each one changed for the people running it, and which ones are still receiving security updates today.",
+  "url": "https://sqldba.blog/the-evolution-of-sql-server/"
  },
  {
   "title": "Troubleshooting Database Mirroring Issues in SQL Server",

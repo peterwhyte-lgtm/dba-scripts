@@ -283,13 +283,19 @@
  },
  {
   "question": "Are Windows logins and Active Directory groups included?",
-  "answer": "Yes, and this is the part that was broken until 2026-08-18. Windows logins are type 'U' in sys.server_principals and Windows groups are type 'G'. The script previously filtered on 'W', which is not a type SQL Server uses, so the Windows section came out empty on every server. Service accounts under NT SERVICE\\, NT AUTHORITY\\ and BUILTIN\\ are still excluded on purpose, they belong to the target instance's own installation and shouldn't be carried over.",
+  "answer": "Yes, and this is the part that was broken until 2026-08-18. Windows logins are type 'U' in sys.server_principals and Windows groups are type 'G'. The script previously filtered on 'W', which is not a type SQL Server uses, so the Windows section came out empty on every server. Service accounts under NT SERVICE\\, NT AUTHORITY\\ and BUILTIN\\ are still excluded on purpose, they belong to the target instance\u2019s own installation and shouldn\u2019t be carried over.",
   "post_title": "DBA Scripts: Generate Login Script",
   "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
  },
  {
   "question": "Does this script move the actual login passwords in plain text?",
   "answer": "No. It extracts the password hash directly from sys.sql_logins and recreates the login with CREATE LOGIN... WITH PASSWORD = <hash> HASHED, the plain-text password itself is never read or exposed.",
+  "post_title": "DBA Scripts: Generate Login Script",
+  "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
+ },
+ {
+  "question": "How do I get the SID of a SQL login?",
+  "answer": "Query sys.server_principals. SELECT name, CONVERT(varchar(100), sid, 1) AS sid_hex FROM sys.server_principals WHERE name = 'YourLogin'; returns the SID in readable hex. Run the same query shape against sys.database_principals inside the restored database and compare the two values. If they differ, the user is orphaned. ALTER USER [YourUser] WITH LOGIN = [YourLogin]; re-binds it to the current login. The script on this page avoids the mismatch in the first place by carrying the original SID on its CREATE LOGIN statements.",
   "post_title": "DBA Scripts: Generate Login Script",
   "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
  },
@@ -301,12 +307,12 @@
  },
  {
   "question": "Why does preserving the SID matter so much?",
-  "answer": "A database user is mapped to a server login by SID, not by name. If the target's login has a different SID than the source database expected, CREATE USER... FOR LOGIN either fails to map correctly or creates an orphaned user, one that exists in the database but can't authenticate through the login it's supposed to be tied to.",
+  "answer": "A database user is mapped to a server login by SID, not by name. If the target\u2019s login has a different SID than the source database expected, CREATE USER... FOR LOGIN either fails to map correctly or creates an orphaned user, one that exists in the database but can\u2019t authenticate through the login it\u2019s supposed to be tied to.",
   "post_title": "DBA Scripts: Generate Login Script",
   "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
  },
  {
-  "question": "Why doesn't it script server-level permissions or DENY CONNECT SQL?",
+  "question": "Why doesn\u2019t it script server-level permissions or DENY CONNECT SQL?",
   "answer": "Because guessing at them is worse than leaving them out. Explicit grants and denies at server scope are a separate audit, and a generator that half-covers them gives you a false sense that permissions came across. Run Get-MigrationLoginAudit.sql on the source, keep the output, and compare after the migration.",
   "post_title": "DBA Scripts: Generate Login Script",
   "url": "https://sqldba.blog/dba-scripts-generate-login-script/"
@@ -2214,6 +2220,24 @@
   "url": "https://sqldba.blog/install-and-update-sql-server-management-studio-ssms/"
  },
  {
+  "question": "Does sp_whoisactive need sysadmin?",
+  "answer": "No. It needs VIEW SERVER STATE to see other sessions\u2019 activity, the same permission the DMVs behind it require. Granting that is covered in Grant VIEW SERVER STATE in SQL Server.",
+  "post_title": "sp_who vs sp_who2 vs sp_whoisactive in SQL Server",
+  "url": "https://sqldba.blog/sp-who-vs-sp-who2-vs-sp-whoisactive/"
+ },
+ {
+  "question": "Is it safe to rely on sp_who2 if it is undocumented?",
+  "answer": "For interactive use, yes, it has been stable for decades. For anything automated or scripted, build on the documented DMVs ( sys.dm_exec_sessions, sys.dm_exec_requests ) instead, undocumented means no compatibility promise.",
+  "post_title": "sp_who vs sp_who2 vs sp_whoisactive in SQL Server",
+  "url": "https://sqldba.blog/sp-who-vs-sp-who2-vs-sp-whoisactive/"
+ },
+ {
+  "question": "Why does sp_who show so many sessions I did not create?",
+  "answer": "Most of them are SQL Server\u2019s own background tasks rather than anything you started, and those are never candidates for KILL. Do not go by the number: on a SQL Server 2025 instance checked for this post, system sessions ran as high as 98 and the lowest user session was 56, so the old 50-and-below rule would have misread it. Filter on sys.dm_exec_sessions.is_user_process = 1 instead.",
+  "post_title": "sp_who vs sp_who2 vs sp_whoisactive in SQL Server",
+  "url": "https://sqldba.blog/sp-who-vs-sp-who2-vs-sp-whoisactive/"
+ },
+ {
   "question": "How do I see what is really in the backup file?",
   "answer": "RESTORE HEADERONLY reads it without touching anything, and RESTORE FILELISTONLY gives you the logical file names for WITH MOVE. Both answer \u201cis this the file I think it is\u201d before you commit to anything.",
   "post_title": "The Backup Set Holds a Backup of a Database Other Than the Existing Database (Error 3154)",
@@ -3060,6 +3084,42 @@
   "url": "https://sqldba.blog/sql-server-select-permission-denied-229/"
  },
  {
+  "question": "Can I fix it in the job step instead of changing the code?",
+  "answer": "Yes, and it is often the quickest safe fix. Put the SET statements at the top of the T-SQL job step, before anything else runs. It is a per-connection setting, so it has to be set by whatever opens the connection.",
+  "post_title": "SET Options Have Incorrect Settings (Error 1934)",
+  "url": "https://sqldba.blog/sql-server-set-options-have-incorrect-settings-1934/"
+ },
+ {
+  "question": "Does this affect temporary tables and table variables?",
+  "answer": "Only if they carry one of the features that demand the settings, which is unusual. The common case by far is a permanent table with a filtered index, added long after the code that writes to it.",
+  "post_title": "SET Options Have Incorrect Settings (Error 1934)",
+  "url": "https://sqldba.blog/sql-server-set-options-have-incorrect-settings-1934/"
+ },
+ {
+  "question": "Reads work, so is the index still being used?",
+  "answer": "Yes, and that is the point of the split. Reading through the index does not change it, so no guarantee is needed. Writing has to update it, and if the session's options would change how the filter evaluates, the index could silently stop matching its own definition. Refusing the write is the safe behaviour.",
+  "post_title": "SET Options Have Incorrect Settings (Error 1934)",
+  "url": "https://sqldba.blog/sql-server-set-options-have-incorrect-settings-1934/"
+ },
+ {
+  "question": "Should I just drop the filtered index?",
+  "answer": "That does clear the error, and it also throws away whatever the index was doing for you. Filtered indexes are usually there because someone measured a benefit. Fix the SET options first, and only revisit the index if it turns out nothing depends on it.",
+  "post_title": "SET Options Have Incorrect Settings (Error 1934)",
+  "url": "https://sqldba.blog/sql-server-set-options-have-incorrect-settings-1934/"
+ },
+ {
+  "question": "Which index is causing this?",
+  "answer": "Look for a filtered index, an indexed view, or an index on a computed column on the table you are writing to. SELECT name, filter_definition FROM sys.indexes WHERE object_id = OBJECT_ID('dbo.YourTable') shows filtered indexes immediately, because filter_definition is only populated for them.",
+  "post_title": "SET Options Have Incorrect Settings (Error 1934)",
+  "url": "https://sqldba.blog/sql-server-set-options-have-incorrect-settings-1934/"
+ },
+ {
+  "question": "Why does it work in SSMS but not in my Agent job?",
+  "answer": "Because they connect with different defaults. SSMS sets QUOTED_IDENTIFIER ON; sqlcmd starts with it OFF, and older drivers vary. The code is identical, the session is not. Compare sys.dm_exec_sessions from both and the differing column is the answer.",
+  "post_title": "SET Options Have Incorrect Settings (Error 1934)",
+  "url": "https://sqldba.blog/sql-server-set-options-have-incorrect-settings-1934/"
+ },
+ {
   "question": "Does any of this apply to Azure SQL Database?",
   "answer": "Some of it, differently. Backups and CHECKDB are managed for you there, so those entries fall away. Untrusted constraints, orphaned users, disabled indexes and stale statistics behave exactly the same, because they are properties of the database rather than of the instance. The audit script is written for SQL Server and reads instance-level catalogs, so it is not the tool to point at a single Azure SQL database.",
   "post_title": "Silent Failures: The SQL Server Problems That Never Raise an Error",
@@ -3124,6 +3184,30 @@
   "answer": "It was never designed to. Msg 8152 predates the improvement, and the reason it took so long is that naming the value risks putting data into an error message. Msg 2628 on 2019 and later does name it.",
   "post_title": "Diagnose SQL Server\u2019s \u2018String or Binary Data Would Be Truncated\u2019 Error",
   "url": "https://sqldba.blog/sql-server-string-or-binary-data-truncated/"
+ },
+ {
+  "question": "Could antivirus be holding the file?",
+  "answer": "Yes, and it usually shows as operating system error 32 rather than 5. Database files are a classic antivirus exclusion for this reason: the scanner opens the file, SQL Server cannot, and nothing in the SQL error message points at the scanner.",
+  "post_title": "Unable to Open the Physical File (Error 5120)",
+  "url": "https://sqldba.blog/sql-server-unable-to-open-the-physical-file-5120/"
+ },
+ {
+  "question": "Does this happen on restore as well as attach?",
+  "answer": "Yes, and on startup. Anything that needs SQL Server to open a file on disk can raise it: attaching, restoring to a path it cannot write, or a database failing to come online after a volume changed. The operating system error still tells you which flavour you have.",
+  "post_title": "Unable to Open the Physical File (Error 5120)",
+  "url": "https://sqldba.blog/sql-server-unable-to-open-the-physical-file-5120/"
+ },
+ {
+  "question": "Which account do I actually grant to?",
+  "answer": "Whatever sys.dm_server_services reports, which on a default modern install is a virtual account like NT Service\\MSSQLSERVER rather than a domain user. Grant on the folder with inheritance, so files added later are covered too.",
+  "post_title": "Unable to Open the Physical File (Error 5120)",
+  "url": "https://sqldba.blog/sql-server-unable-to-open-the-physical-file-5120/"
+ },
+ {
+  "question": "Why does my error handler only show 1802?",
+  "answer": "Because 1802 is the terminating error for the statement and 5120 is a related error raised alongside it. Verified on SQL Server 2025: ERROR_NUMBER() returned 1802 for a missing file, a file in use, and a file with no permission. Read the error log for the 5120.",
+  "post_title": "Unable to Open the Physical File (Error 5120)",
+  "url": "https://sqldba.blog/sql-server-unable-to-open-the-physical-file-5120/"
  },
  {
   "question": "Can I upgrade and move hardware at once?",
@@ -3274,6 +3358,42 @@
   "answer": "SSMS 22.4.1 or later for the new formats, and 22.8 or later for it to remember your last-used format. Anything current qualifies; see the install post below if you are behind.",
   "post_title": "SSMS Results Grid: Export to Excel, JSON and Markdown",
   "url": "https://sqldba.blog/ssms-results-grid-export/"
+ },
+ {
+  "question": "Can SQL Server really run on Linux?",
+  "answer": "Yes, since SQL Server 2017. It is the same engine, with differences in the surrounding tooling and a few features. It is a genuine option for new builds rather than a curiosity.",
+  "post_title": "The Evolution of SQL Server: Every Version from 1989 to 2025",
+  "url": "https://sqldba.blog/the-evolution-of-sql-server/"
+ },
+ {
+  "question": "What does 13.0 mean compared to \"SQL Server 2016\"?",
+  "answer": "The year is the marketing name; the engine version is what the product reports. 2016 is 13.0, 2017 is 14.0, 2019 is 15.0, 2022 is 16.0 and 2025 is 17.0. Build numbers use the engine version, which is why a build like 16.0.4265.3 is a SQL Server 2022 build.",
+  "post_title": "The Evolution of SQL Server: Every Version from 1989 to 2025",
+  "url": "https://sqldba.blog/the-evolution-of-sql-server/"
+ },
+ {
+  "question": "What happens when a version goes out of support?",
+  "answer": "Free security updates stop. The database keeps running, which is exactly why this gets missed. The supported routes are Extended Security Updates (paid, or included when the workload runs in Azure) or an upgrade to a supported version.",
+  "post_title": "The Evolution of SQL Server: Every Version from 1989 to 2025",
+  "url": "https://sqldba.blog/the-evolution-of-sql-server/"
+ },
+ {
+  "question": "When did SQL Server stop shipping Service Packs?",
+  "answer": "SQL Server 2017 was the first Cumulative-Update-only release. SQL Server 2016 was the last version with Service Packs in practice, finishing at SP3.",
+  "post_title": "The Evolution of SQL Server: Every Version from 1989 to 2025",
+  "url": "https://sqldba.blog/the-evolution-of-sql-server/"
+ },
+ {
+  "question": "Which SQL Server versions are still supported?",
+  "answer": "SQL Server 2022 and 2025 are in mainstream support. 2017 and 2019 are in extended support, receiving security fixes only, until October 2027 and January 2030. Everything older is out of support, including 2016 since 14 July 2026.",
+  "post_title": "The Evolution of SQL Server: Every Version from 1989 to 2025",
+  "url": "https://sqldba.blog/the-evolution-of-sql-server/"
+ },
+ {
+  "question": "Which release changed the DBA job the most?",
+  "answer": "SQL Server 2012 with Always On Availability Groups, and SQL Server 2016 with Query Store a close second. Availability Groups changed how estates are built and failed over; Query Store changed performance troubleshooting from opinion into evidence.",
+  "post_title": "The Evolution of SQL Server: Every Version from 1989 to 2025",
+  "url": "https://sqldba.blog/the-evolution-of-sql-server/"
  },
  {
   "question": "Can it source-control the database schema itself?",
