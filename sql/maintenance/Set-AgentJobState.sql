@@ -126,6 +126,20 @@ BEGIN
            SUM(CASE WHEN s.job_id IS NULL THEN 1 ELSE 0 END)       AS added_since_snapshot
     FROM   msdb.dbo.sysjobs j
     LEFT   JOIN #snapshot s ON s.job_id = j.job_id;
+
+    -- The statements Disable would run, and the ones that would undo it. Report is a dry run,
+    -- so this is the script you review before committing to anything - or save and run by hand
+    -- if you would rather drive it yourself than let the tool do it.
+    SELECT j.name                                                  AS job,
+           N'EXEC msdb.dbo.sp_update_job @job_name = N'
+             + QUOTENAME(j.name, '''') + N', @enabled = 0;'        AS disable_statement,
+           N'EXEC msdb.dbo.sp_update_job @job_name = N'
+             + QUOTENAME(j.name, '''') + N', @enabled = 1;'        AS enable_statement
+    FROM   msdb.dbo.sysjobs j
+    JOIN   msdb.dbo.syscategories c ON c.category_id = j.category_id
+    WHERE  j.enabled = 1
+    AND    NOT EXISTS (SELECT 1 FROM #excluded e WHERE e.job_id = j.job_id)
+    ORDER  BY c.name, j.name;
     RETURN;
 END
 
@@ -176,6 +190,19 @@ BEGIN
 
     DECLARE @job sysname, @disabled int = 0;
 
+    -- Record WHAT is about to be turned off, before turning it off. Once the loop has run,
+    -- msdb no longer knows which jobs were enabled a moment ago, and a count is not a record.
+    -- The DBA gets the list, and an undo statement per job that works even if the state table
+    -- is lost, the window runs into the next shift, or somebody restores over the database.
+    IF OBJECT_ID('tempdb..#changed') IS NOT NULL DROP TABLE #changed;
+    CREATE TABLE #changed (name sysname, category sysname);
+    INSERT INTO #changed (name, category)
+    SELECT j.name, c.name
+    FROM   msdb.dbo.sysjobs j
+    JOIN   msdb.dbo.syscategories c ON c.category_id = j.category_id
+    WHERE  j.enabled = 1
+    AND    NOT EXISTS (SELECT 1 FROM #excluded e WHERE e.job_id = j.job_id);
+
     DECLARE job_cur CURSOR LOCAL FAST_FORWARD FOR
         SELECT j.name
         FROM   msdb.dbo.sysjobs j
@@ -225,7 +252,17 @@ BEGIN
            (SELECT COUNT(*) FROM #excluded)                             AS jobs_excluded,
            (SELECT COUNT(*) FROM msdb.dbo.sysjobs WHERE enabled = 1)    AS still_enabled;
 
-    SELECT name, reason FROM #excluded ORDER BY name;
+    -- EXACTLY what was turned off, and the statement that puts each one back. Copy the last
+    -- column out and you have a rollback script that depends on nothing but msdb - useful when
+    -- the window runs into somebody else's shift, or the state database is itself being restored.
+    SELECT c.name                                              AS job_disabled,
+           c.category,
+           N'EXEC msdb.dbo.sp_update_job @job_name = N'
+             + QUOTENAME(c.name, '''') + N', @enabled = 1;'    AS undo_statement
+    FROM   #changed c
+    ORDER  BY c.category, c.name;
+
+    SELECT name AS job_left_alone, reason FROM #excluded ORDER BY name;
     RETURN;
 END
 
@@ -239,6 +276,16 @@ BEGIN
     END
 
     DECLARE @rjob sysname, @was tinyint, @changed int = 0;
+
+    -- Same reasoning as Disable: capture the list before the loop changes it, so the DBA gets a
+    -- record of what moved rather than a number.
+    IF OBJECT_ID('tempdb..#restored') IS NOT NULL DROP TABLE #restored;
+    CREATE TABLE #restored (name sysname, was tinyint, is_now tinyint);
+    INSERT INTO #restored (name, was, is_now)
+    SELECT s.name, j.enabled, s.enabled
+    FROM   #snapshot s
+    JOIN   msdb.dbo.sysjobs j ON j.job_id = s.job_id
+    WHERE  j.enabled <> s.enabled;
 
     -- Only where the CURRENT state disagrees with the snapshot. Re-applying every row would
     -- undo anything you changed on purpose after taking it, and would report those as restored.
@@ -261,6 +308,13 @@ BEGIN
 
     PRINT 'Restored ' + CAST(@changed AS varchar(10)) + ' job(s) to the snapshot taken '
           + CONVERT(varchar(19), @snapAt, 120) + '.';
+
+    -- What actually moved, and in which direction.
+    SELECT name        AS job_restored,
+           was         AS state_before_restore,
+           is_now      AS state_after_restore
+    FROM   #restored
+    ORDER  BY name;
 
     -- The proof. Anything returned here is a job that did NOT come back as recorded.
     SELECT s.name, s.enabled AS was, j.enabled AS [now]
