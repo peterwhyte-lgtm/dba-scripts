@@ -945,6 +945,11 @@
   "url": "https://sqldba.blog/kill-all-user-sessions-on-a-database-in-sql-server/"
  },
  {
+  "title": "Log and Filter sp_who2 Results in SQL Server",
+  "lead": "sp_who2 has no WHERE clause. Capture its output into a thirteen column table with INSERT... EXEC and it becomes queryable, including a logging table you can run on a schedule. Plus the two errors that stop most people, and the DMV to use instead.",
+  "url": "https://sqldba.blog/log-and-filter-sp-who2-results/"
+ },
+ {
   "title": "Open SSMS as a Different Domain User",
   "lead": "\ud83d\udee0\ufe0f Part of the SSMS Complete Guide, installing, configuring and fixing SQL Server Management Studio.",
   "url": "https://sqldba.blog/open-ssms-as-a-different-domain-user/"

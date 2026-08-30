@@ -15,7 +15,7 @@ WITH latest_backups AS (
         bs.database_name,
         bs.type,
         bs.backup_finish_date,
-        bs.backup_size / 1024.0 / 1024 AS backup_size_mb,
+        CAST(bs.backup_size / 1024.0 / 1024 AS DECIMAL(18,2)) AS backup_size_mb,
         ROW_NUMBER() OVER (
             PARTITION BY bs.database_name, bs.type
             ORDER BY bs.backup_finish_date DESC

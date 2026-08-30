@@ -18,7 +18,7 @@ SELECT
     bs.backup_start_date,
     bs.backup_finish_date,
     bs.type,
-    bs.backup_size / 1024.0 / 1024 AS backup_size_mb,
+    CAST(bs.backup_size / 1024.0 / 1024 AS DECIMAL(18,2)) AS backup_size_mb,
     bs.recovery_model
 FROM msdb.dbo.backupset AS bs
 WHERE bs.backup_start_date >= DATEADD(MONTH, -@MonthsBack, GETDATE())

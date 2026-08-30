@@ -168,6 +168,24 @@
   "url": "https://sqldba.blog/dba-scripts-collectors-and-baseline-infrastructure/"
  },
  {
+  "question": "Does running this session slow the server down?",
+  "answer": "Extended Events with a file target is the lightweight option, and this session batches writes with a 15-second dispatch latency. The real cost is volume, not overhead: an unscoped session on a busy instance writes a lot of file, which is why the database filter and the rollover cap exist.",
+  "post_title": "DBA Scripts: Create Decommission Audit Session",
+  "url": "https://sqldba.blog/dba-scripts-create-decommission-audit-session/"
+ },
+ {
+  "question": "What happens if a session with this name already exists?",
+  "answer": "The script stops and drops it, then recreates it fresh. One thing that does not reset: the old.xel files already on disk. The companion read-back script picks those up via its wildcard, so delete or archive them first if you want a genuinely clean observation window.",
+  "post_title": "DBA Scripts: Create Decommission Audit Session",
+  "url": "https://sqldba.blog/dba-scripts-create-decommission-audit-session/"
+ },
+ {
+  "question": "Does an Extended Events login trace slow the server down?",
+  "answer": "Not meaningfully. Extended Events is built to have low overhead, that\u2019s the entire design point over the older SQL Trace. Capturing just login and failed-login events, as this session does, is a tiny fraction of the server\u2019s overall event volume.",
+  "post_title": "DBA Scripts: Create Login Activity Session",
+  "url": "https://sqldba.blog/dba-scripts-create-login-activity-session/"
+ },
+ {
   "question": "Does an Extended Events login trace slow the server down?",
   "answer": "Not meaningfully. Extended Events is built to have low overhead, that\u2019s the entire design point over the older SQL Trace. Capturing just login and failed-login events, as this session does, is a tiny fraction of the server\u2019s overall event volume.",
   "post_title": "DBA Scripts: Create Login Activity Session",
@@ -178,6 +196,24 @@
   "answer": "Extended Events is the practical answer. This script sets up a session that captures the sqlserver.login event with the caller\u2019s hostname, application, and account name, then you query the rolling output files with T-SQL. Server-side audit and the default trace can do something similar, but Extended Events is lighter and easier to query directly.",
   "post_title": "DBA Scripts: Create Login Activity Session",
   "url": "https://sqldba.blog/dba-scripts-create-login-activity-session/"
+ },
+ {
+  "question": "How do I see who is connecting to a SQL Server instance?",
+  "answer": "Extended Events is the practical answer. This script sets up a session that captures the sqlserver.login event with the caller\u2019s hostname, application, and account name, then you query the rolling output files with T-SQL. Server-side audit and the default trace can do something similar, but Extended Events is lighter and easier to query directly.",
+  "post_title": "DBA Scripts: Create Login Activity Session",
+  "url": "https://sqldba.blog/dba-scripts-create-login-activity-session/"
+ },
+ {
+  "question": "What happens if a session with this name already exists?",
+  "answer": "The script stops and drops it, then recreates it fresh. Old.xel files on disk are not reset though, and the read-back script picks them up via its wildcard, so archive them first if you want a clean window.",
+  "post_title": "DBA Scripts: Create SP Execution Session",
+  "url": "https://sqldba.blog/dba-scripts-create-sp-execution-session/"
+ },
+ {
+  "question": "Why not just read the plan cache for procedure usage?",
+  "answer": "The plan cache only shows what happens to be cached right now; a restart, memory pressure, or a recompile quietly erases history. A capture session records every call over a window you choose, which is the difference between a real call profile and a snapshot of this afternoon.",
+  "post_title": "DBA Scripts: Create SP Execution Session",
+  "url": "https://sqldba.blog/dba-scripts-create-sp-execution-session/"
  },
  {
   "question": "How do I prove a server is safe to decommission?",
@@ -366,6 +402,18 @@
   "url": "https://sqldba.blog/dba-scripts-get-active-sessions-and-requests/"
  },
  {
+  "question": "A session shows as running but its file is empty. Why?",
+  "answer": "Events sit in memory until dispatch latency flushes them to the file target, so a session only seconds old genuinely has nothing on disk yet. Give it a minute. If it stays empty after that, check the session\u2019s filters, and check dropped_event_count here before assuming the instance is quiet.",
+  "post_title": "DBA Scripts: Get Active XE Sessions",
+  "url": "https://sqldba.blog/dba-scripts-get-active-xe-sessions/"
+ },
+ {
+  "question": "Why does system_health not appear in the results?",
+  "answer": "It is filtered out deliberately, along with telemetry_xevents and the other built-in sessions SQL Server ships and runs itself. This script answers \u201cwhat did we put here,\u201d so an empty result means no DBA-created session is running, not that Extended Events is idle.",
+  "post_title": "DBA Scripts: Get Active XE Sessions",
+  "url": "https://sqldba.blog/dba-scripts-get-active-xe-sessions/"
+ },
+ {
   "question": "What\u2019s the difference between this and AG Replica Role and Synchronization State?",
   "answer": "That script reports current health and sync state per replica. This post goes further: it quantifies what a failover would actually cost right now (RPO in MB, RTO in estimated seconds) and separately checks whether a secondary is actually reachable for read traffic, not just healthy.",
   "post_title": "DBA Scripts: Get AG Failover Readiness and Readable Secondary Usage",
@@ -378,6 +426,12 @@
   "url": "https://sqldba.blog/dba-scripts-get-ag-failover-readiness-and-readable-secondary-usage/"
  },
  {
+  "question": "Alerts, operators and Database Mail are all configured. Why do no emails arrive?",
+  "answer": "Almost always SQL Server Agent\u2019s own mail setting: Agent Properties > Alert System > \u201cEnable mail profile\u201d in SSMS. It is a separate, registry-backed switch that no T-SQL query can read, it ships unticked, and Agent needs a restart after you set it. If that is already on, check msdb.dbo.sysmail_event_log for send errors next.",
+  "post_title": "DBA Scripts: Get Agent Alerts and Operators",
+  "url": "https://sqldba.blog/dba-scripts-get-agent-alerts-and-operators/"
+ },
+ {
   "question": "Does SQL Server alert on critical errors by default?",
   "answer": "No. SQL Server Agent alerts are opt-in, a freshly installed instance has zero alerts and zero operators configured. Alerting has to be explicitly set up, it isn\u2019t part of the default install.",
   "post_title": "DBA Scripts: Get Agent Alerts and Operators",
@@ -385,7 +439,7 @@
  },
  {
   "question": "What are SQL Server severity levels 19-25?",
-  "answer": "They\u2019re the fatal error tier, conditions SQL Server itself treats as serious enough to potentially affect the availability or integrity of a database or the instance: fatal resource errors, database or table integrity failures, and hardware errors. Anything at severity 19 and above is worth an immediate notification, not a note in the log to find later.",
+  "answer": "They\u2019re the fatal error tier, conditions SQL Server itself treats as serious enough to potentially affect the availability or integrity of a database or the instance: fatal resource errors, database or table integrity failures, and hardware errors. Anything at severity 19 and above is worth an immediate notification, not a note in the log to find later. The full tier-by-tier breakdown lives in SQL Server error severities explained, and the error library covers the individual messages.",
   "post_title": "DBA Scripts: Get Agent Alerts and Operators",
   "url": "https://sqldba.blog/dba-scripts-get-agent-alerts-and-operators/"
  },
@@ -960,6 +1014,12 @@
   "url": "https://sqldba.blog/dba-scripts-get-last-dbcc-checkdb/"
  },
  {
+  "question": "What does a last_good_checkdb of 1900-01-01 mean?",
+  "answer": "That is the value DATABASEPROPERTYEX(\u2026, 'LastGoodCheckDbTime') reports when CHECKDB has never completed successfully on that database: the 1900 epoch, not NULL. The script on this page normalizes it, so a never-checked database shows a blank date and NEVER_RUN instead of pretending to be 46,000 days stale.",
+  "post_title": "DBA Scripts: Get Last DBCC CHECKDB",
+  "url": "https://sqldba.blog/dba-scripts-get-last-dbcc-checkdb/"
+ },
+ {
   "question": "What counts as a \u201cnode blip\u201d on an FCI?",
   "answer": "Any event that causes the SQL Server service to move between cluster nodes, whether a manual failover, a resource health check failure, or a node-level issue like a network blip or a hardware fault. Each one restarts the SQL Server instance on whichever node picks it up.",
   "post_title": "DBA Scripts: Get Last Node Blip",
@@ -1015,13 +1075,13 @@
  },
  {
   "question": "How is this different from Permissions and Role Membership?",
-  "answer": "Permissions and Role Membership answers \"what can this login actually do,\" explicit grants, role memberships, server roles. Get-LoginInventory just answers \"what logins exist,\" a plain checklist, useful specifically when you need a source list to build a migration script from, not an access audit.",
+  "answer": "Permissions and Role Membership answers \u201cwhat can this login actually do,\u201d explicit grants, role memberships, server roles. Get-LoginInventory just answers \u201cwhat logins exist,\u201d a plain checklist, useful specifically when you need a source list to build a migration script from, not an access audit.",
   "post_title": "DBA Scripts: Get Login and Job Inventory",
   "url": "https://sqldba.blog/dba-scripts-get-login-and-job-inventory/"
  },
  {
-  "question": "Why does Get-JobInventory show \"(unknown)\" for some job owners?",
-  "answer": "A job's owner_sid no longer matching any current server login, usually because the original owner login was dropped after the job was created. Worth investigating and reassigning to a current login before it becomes a real problem, an unowned job can fail unexpectedly depending on how SQL Agent resolves execution context.",
+  "question": "Why does Get-JobInventory show \u201c(unknown)\u201d for some job owners?",
+  "answer": "A job\u2019s owner_sid no longer matching any current server login, usually because the original owner login was dropped after the job was created. Worth investigating and reassigning to a current login before it becomes a real problem, an unowned job can fail unexpectedly depending on how SQL Agent resolves execution context.",
   "post_title": "DBA Scripts: Get Login and Job Inventory",
   "url": "https://sqldba.blog/dba-scripts-get-login-and-job-inventory/"
  },
@@ -1405,13 +1465,13 @@
  },
  {
   "question": "Does this script show job step details or just the overall outcome?",
-  "answer": "Just the overall outcome. For step-by-step failure detail on jobs that have failed, review the job history directly in SSMS or extend this query to join the SQL Agent job history table.",
+  "answer": "Just the overall outcome. For step-by-step failure detail on jobs that have failed, review the job history directly in SSMS or extend this query to join msdb.dbo.sysjobhistory.",
   "post_title": "DBA Scripts: Get SQL Agent Job Overview",
   "url": "https://sqldba.blog/dba-scripts-get-sql-agent-job-overview/"
  },
  {
   "question": "Why does a job show no last run date at all?",
-  "answer": "It has never executed since it was created, either because it's disabled, its schedule hasn't triggered yet, or it was created without a schedule and is meant to be run manually.",
+  "answer": "It has never executed since it was created, either because it\u2019s disabled, its schedule hasn\u2019t triggered yet, or it was created without a schedule and is meant to be run manually.",
   "post_title": "DBA Scripts: Get SQL Agent Job Overview",
   "url": "https://sqldba.blog/dba-scripts-get-sql-agent-job-overview/"
  },
@@ -1672,6 +1732,12 @@
   "answer": "A worker thread is the operating system thread SQL Server assigns to execute a request. The pool size is finite, calculated from the CPU count at startup, and when all workers are busy new requests queue with THREADPOOL waits.",
   "post_title": "DBA Scripts: Get Worker Threads and Active Sessions",
   "url": "https://sqldba.blog/dba-scripts-get-worker-threads-and-active-sessions/"
+ },
+ {
+  "question": "Can I point this at system_health or another built-in session?",
+  "answer": "Yes, it reads any session with an event_file target, including system_health. Expect the caller columns to read (unknown) and (server-level) though: they are populated from actions (username, hostname, application) that this series\u2019 own Create sessions collect deliberately, and the built-in sessions do not. The event names, counts, and time spans still summarise correctly.",
+  "post_title": "DBA Scripts: Get XE Session Activity",
+  "url": "https://sqldba.blog/dba-scripts-get-xe-session-activity/"
  },
  {
   "question": "How do I read Extended Events.xel file data with T-SQL?",
@@ -1986,6 +2052,18 @@
   "url": "https://sqldba.blog/dba-scripts-query-and-performance-tuning/"
  },
  {
+  "question": "Could this generate a command against system_health or another built-in session?",
+  "answer": "No. The script excludes SQL Server\u2019s own sessions ( system_health, telemetry_xevents, and friends) by name, so the output only ever covers sessions a DBA created. The built-ins are not yours to drop, and this generator will not offer to.",
+  "post_title": "DBA Scripts: Remove XE Session",
+  "url": "https://sqldba.blog/dba-scripts-remove-xe-session/"
+ },
+ {
+  "question": "Does removing a session delete its.xel files?",
+  "answer": "No. Dropping the session ends collection and removes the definition; the files it already wrote stay on disk, still readable. Archive or delete them separately once the evidence has served its purpose.",
+  "post_title": "DBA Scripts: Remove XE Session",
+  "url": "https://sqldba.blog/dba-scripts-remove-xe-session/"
+ },
+ {
   "question": "Are these safe to run on production?",
   "answer": "All the scripts in this pillar are read-only. The single-login audit is the only one that changes session context, and it does so with EXECUTE AS followed by REVERT inside a TRY/CATCH, so the impersonation is released even if a statement fails. It also skips databases the login cannot open, which avoids a Msg 916 aborting the run partway through.",
   "post_title": "DBA Scripts: Security",
@@ -2179,7 +2257,7 @@
  },
  {
   "question": "Does dark mode change the results grid?",
-  "answer": "Yes, the grid follows the theme in SSMS 21 and later. If you want the grid larger rather than darker, SSMS 22 also lets you zoom the results grid independently of the editor.",
+  "answer": "Yes, in SSMS 21 and later, but not until you restart it. Set the theme and the grid stays white in the session you are in; restart SSMS and it comes up dark. That catches people out and reads like the theme is broken when it is not. If you want the grid larger rather than darker, SSMS 22 also lets you zoom the results grid independently of the editor.",
   "post_title": "How to Enable Dark Mode in SSMS",
   "url": "https://sqldba.blog/how-to-enable-dark-mode-in-ssms/"
  },
@@ -2218,6 +2296,30 @@
   "answer": "The Visual Studio Installer, deliberately, when you choose to. Update-on-close and in-app update prompts are fine for a personal workstation, but on a shared or controlled system they make it easy to lose track of when the client actually changed.",
   "post_title": "Install and Update SQL Server Management Studio (SSMS)",
   "url": "https://sqldba.blog/install-and-update-sql-server-management-studio-ssms/"
+ },
+ {
+  "question": "Do I have to declare all thirteen columns?",
+  "answer": "Yes, and in order. Miss one and the insert fails with Msg 213, Column name or number of supplied values does not match table definition. Note that SPID appears twice in sp_who2's output, once at each end of the row, which is why the table below has both SPID and SPID2.",
+  "post_title": "Log and Filter sp_who2 Results in SQL Server",
+  "url": "https://sqldba.blog/log-and-filter-sp-who2-results/"
+ },
+ {
+  "question": "Should I be using sp_who2 at all in 2026?",
+  "answer": "For a quick look, it is fine and it is on every instance. For anything you intend to filter, sort, log or alert on, the DMVs are the better tool: they are queryable directly, they carry far more detail, and they let you exclude system sessions. On the instance used for this post sys.dm_exec_sessions returned 81 rows of which only 7 were user processes.",
+  "post_title": "Log and Filter sp_who2 Results in SQL Server",
+  "url": "https://sqldba.blog/log-and-filter-sp-who2-results/"
+ },
+ {
+  "question": "Why can I not just add a WHERE clause to sp_who2?",
+  "answer": "Because it is a stored procedure, not a view or a function. Its output is a result set on its way to the client, and there is nowhere to attach a predicate. Capturing it into a table is the only way to filter, sort or join it.",
+  "post_title": "Log and Filter sp_who2 Results in SQL Server",
+  "url": "https://sqldba.blog/log-and-filter-sp-who2-results/"
+ },
+ {
+  "question": "Why does my insert fail with Msg 515 on DBName?",
+  "answer": "System background tasks return NULL for DBName, so a NOT NULL column rejects them with Msg 515, Cannot insert the value NULL. Leave the column nullable. This is easy to miss because it depends on what the server happens to be doing when you run it.",
+  "post_title": "Log and Filter sp_who2 Results in SQL Server",
+  "url": "https://sqldba.blog/log-and-filter-sp-who2-results/"
  },
  {
   "question": "Does sp_whoisactive need sysadmin?",

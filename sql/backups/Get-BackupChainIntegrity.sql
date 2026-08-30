@@ -41,7 +41,7 @@ full_details AS (
         bs.last_lsn AS full_last_lsn,
         bs.is_damaged AS full_is_damaged,
         bs.has_incomplete_metadata AS full_incomplete_metadata,
-        bs.compressed_backup_size / 1024.0 / 1024.0 AS full_backup_size_mb,
+        CAST(bs.compressed_backup_size / 1024.0 / 1024.0 AS DECIMAL(18,2)) AS full_backup_size_mb,
         bmf.physical_device_name AS full_backup_file
     FROM last_full lf
     JOIN msdb.dbo.backupset AS bs ON bs.backup_set_id = lf.backup_set_id
