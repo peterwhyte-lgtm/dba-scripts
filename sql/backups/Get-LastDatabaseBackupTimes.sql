@@ -5,6 +5,15 @@ Purpose     : Display the latest backup timestamp per type (Full, Differential, 
 Author      : Peter Whyte (https://sqldba.blog/get-last-database-backup-times-in-sql-server/)
 Requires    : db_datareader on msdb
 HealthCheck : Yes
+Notes       : last_log_backup means "the latest log backup that TRUNCATED the log", not simply
+              the latest log backup: copy-only log backups are excluded (see the CTE below).
+              That is the right signal for "is this log being managed", and it is deliberately
+              not the same question as "is this database recoverable to a point in time" — a
+              database whose only log backups are copy-only shows NULL here and still has
+              restorable log records. Read it alongside Get-RecoveryModelAudit.
+
+              Only ONLINE databases are reported: an offline database cannot be backed up, and
+              including it produced a row that looked like a database with no backups at all.
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low
@@ -43,6 +52,7 @@ LEFT JOIN latest_backups AS lb
     ON d.name = lb.database_name
    AND lb.rn = 1
 WHERE d.database_id > 4
+  AND d.state_desc = 'ONLINE'
 GROUP BY d.name, d.recovery_model_desc
 ORDER BY d.name;
 
