@@ -134,15 +134,18 @@ WHERE mf.is_percent_growth = 1
 -- "backups are running fine" statement is still true.
 INSERT INTO @findings
 SELECT 'CRITICAL', 'Backups', d.name,
-       N'Recovery model is ' + d.recovery_model_desc + N' but no log backup has ever been taken',
+       N'Recovery model is ' + d.recovery_model_desc + N' but no log backup that truncates the log has ever been taken',
        N'Full backups keep succeeding, so every backup report is green. The log cannot truncate, and point-in-time recovery does not actually exist.',
        N'Take a log backup and schedule them, or switch the database to SIMPLE if point-in-time recovery is not required.'
 FROM sys.databases d
 WHERE d.recovery_model_desc IN (N'FULL', N'BULK_LOGGED')
   AND d.database_id > 4
   AND d.state_desc = N'ONLINE'
+  /* is_copy_only = 0 is load-bearing: a copy-only log backup does not truncate the log, so
+     one taken once, ever, would satisfy this NOT EXISTS and delete the finding entirely. */
   AND NOT EXISTS (SELECT 1 FROM msdb.dbo.backupset bs
-                  WHERE bs.database_name = d.name AND bs.type = 'L');
+                  WHERE bs.database_name = d.name AND bs.type = 'L'
+                    AND bs.is_copy_only = 0);
 
 -- Suspect pages are recorded quietly in msdb.
 INSERT INTO @findings

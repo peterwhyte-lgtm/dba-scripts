@@ -21,6 +21,12 @@ WITH latest_backups AS (
             ORDER BY bs.backup_finish_date DESC
         ) AS rn
     FROM msdb.dbo.backupset AS bs
+    /* Copy-only LOG backups are excluded, so last_log_backup means "latest log backup that
+       truncated the log" rather than "latest log backup". Review-HealthCheckOutput.ps1 turns
+       this column straight into the "log will grow unbounded" finding, and a copy-only log
+       backup would make that finding vanish while the log kept growing. Copy-only FULL
+       backups are kept: a copy-only full is a valid restore base. */
+    WHERE bs.type <> 'L' OR bs.is_copy_only = 0
 )
 SELECT
     d.name AS database_name,

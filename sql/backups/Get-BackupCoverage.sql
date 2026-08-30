@@ -21,6 +21,11 @@ WITH latest_backups AS (
             ORDER BY bs.backup_finish_date DESC
         ) AS rn
     FROM msdb.dbo.backupset AS bs
+    /* Copy-only LOG backups are excluded: they preserve the log archive point and do not
+       truncate the log, so counting one would suppress FULL_RECOVERY_NO_LOG and STALE_LOG
+       and report OK against a log that is still growing without bound. Copy-only FULL
+       backups are deliberately kept, because a copy-only full is a valid restore base. */
+    WHERE bs.type <> 'L' OR bs.is_copy_only = 0
 )
 SELECT
     d.name                                                                              AS database_name,

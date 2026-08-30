@@ -18,7 +18,9 @@ WITH backup_dates AS (
     SELECT
         database_name,
         MAX(CASE WHEN type = 'D' THEN backup_finish_date END) AS last_full,
-        MAX(CASE WHEN type = 'L' THEN backup_finish_date END) AS last_log
+        /* Copy-only log backups do not truncate the log, so they must not satisfy the
+           WARN:log-backup-overdue test below. Copy-only fulls stay counted above. */
+        MAX(CASE WHEN type = 'L' AND is_copy_only = 0 THEN backup_finish_date END) AS last_log
     FROM msdb.dbo.backupset
     GROUP BY database_name
 ),

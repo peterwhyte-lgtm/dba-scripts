@@ -23,7 +23,11 @@ SET NOCOUNT ON;
         database_name,
         MAX(backup_finish_date) AS last_log_backup
     FROM msdb.dbo.backupset
+    /* The status column comes from log_reuse_wait_desc and is already copy-only proof, but
+       this date sits next to it as supporting evidence. A copy-only log backup would show a
+       recent date beside "ACTION: take a log backup" and send the reader hunting a phantom. */
     WHERE type = 'L'
+      AND is_copy_only = 0
     GROUP BY database_name
 )
 

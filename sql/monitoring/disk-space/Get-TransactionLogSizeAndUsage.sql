@@ -30,7 +30,10 @@ EXEC ('DBCC SQLPERF(LOGSPACE) WITH NO_INFOMSGS');
         database_name,
         MAX(backup_finish_date) AS last_log_backup
     FROM msdb.dbo.backupset
+    /* Copy-only log backups excluded: this date is read as "when did the log last truncate",
+       and a copy-only log backup does not truncate it. */
     WHERE type = 'L'
+      AND is_copy_only = 0
     GROUP BY database_name
 )
 
