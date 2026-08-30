@@ -4,7 +4,7 @@ Category    : maintenance-and-reliability
 Purpose     : Show when each user database last had a successful DBCC CHECKDB run.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-last-dbcc-checkdb/)
 Requires    : VIEW ANY DATABASE
-Notes       : Uses DATABASEPROPERTYEX('LastGoodCheckDbTime') — available SQL Server 2012+.
+Notes       : Uses DATABASEPROPERTYEX('LastGoodCheckDbTime') — available SQL Server 2016 SP2+.
               Returns 1900-01-01 (not NULL) when CHECKDB has never completed successfully;
               the script maps that sentinel to NULL / NEVER_RUN.
               Microsoft recommends running CHECKDB at least weekly.
