@@ -27,8 +27,10 @@ SET NOCOUNT ON;
   SID does not match any login on this instance. It assumes login name = user name (common case).
   Review the output before executing — not every orphan can be fixed with a simple name match.
 
-  To EXECUTE the output directly:
-    Uncomment the EXEC sp_executesql lines below (currently commented for safety).
+  This script never applies a fix. It RETURNS the ALTER USER statements as text for you to
+  review and run yourself, which is why it is classed ReadOnly. There are no commented-out
+  EXEC lines to uncomment: the one EXEC sp_executesql below collects the orphan list, it does
+  not repair anything.
 */
 
 DECLARE @ddl  nvarchar(max) = N'';

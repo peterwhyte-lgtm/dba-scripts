@@ -11,7 +11,8 @@ Requires    : VIEW DATABASE STATE (iterates each user database)
 Notes       : Small read-only lookup tables as heaps are usually acceptable.
             Prioritise by reserved_mb and forwarded_fetch_count.
             forwarded_fetch_count = how often SQL Server chased a forwarded-record pointer
-            since the last restart (IO cost; forwarded_fetch_count was removed in SS 2025).
+            since the last restart (IO cost). Counters reset on restart, so a low value on a
+            recently restarted instance means "not measured yet", not "no forwarded records".
             has_primary_key = 0 means no PK exists at all — highest priority to fix.
             Fix: add a clustered index on the natural key, or add an identity
             column and cluster on that if no natural candidate exists.

@@ -11,7 +11,7 @@ RiskLevel    : SAFE (read-only locally — but sends healthcheck CSV contents to
 .DESCRIPTION
 The AI layer of the healthcheck workflow:
 
-  1. Invoke-HealthCheckCollection.ps1  — collect 39 CSVs        (deterministic)
+  1. Invoke-HealthCheckCollection.ps1  — collect 45 CSVs        (deterministic)
   2. Review-HealthCheckOutput.ps1      — threshold findings.csv (deterministic)
   3. Invoke-AiAssessment.ps1           — THIS: correlation, root cause, prioritized
                                          written assessment across security, performance,
