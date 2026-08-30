@@ -6,6 +6,10 @@ Purpose     : Reads and summarises Extended Events file target data for a named 
               Primary use: reviewing DecommissionAudit or LoginActivity session output to determine if a database or server is still in active use.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-xe-session-activity/)
 Requires    : VIEW SERVER STATE, read access to the XE output folder
+Notes       : Windows path handling (backslash split); adjust the separator for a Linux
+              file target. Large captures take real time to shred - a full 14-file rollover
+              set at the Create scripts' defaults exceeded a 10-minute query timeout on the
+              lab; archive old .xel files first if you only need the current window.
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low
@@ -68,8 +72,10 @@ DECLARE @Pattern NVARCHAR(500) = @Folder + N'\' + @SessionName + N'*.xel';
 )
 SELECT
     event_name,
-    COALESCE(database_name, '(server-level)') AS database_name,
-    COALESCE(nt_username, username) AS login_name,
+    /* An action that was collected but empty comes back as '', not NULL, so a plain
+       COALESCE never falls through - NULLIF makes both forms behave the same */
+    COALESCE(NULLIF(database_name, N''), '(server-level)') AS database_name,
+    COALESCE(NULLIF(nt_username, N''), NULLIF(username, N''), N'(unknown)') AS login_name,
     client_hostname,
     client_app_name,
     COUNT(*) AS occurrences,
