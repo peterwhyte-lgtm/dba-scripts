@@ -4,10 +4,31 @@ Category    : backups
 Purpose     : Full restore history from msdb — when each database was last restored, from which backup, and by whom. Use to verify DR restore tests have actually been run.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-last-restore-history/)
 Requires    : msdb access (db_datareader on msdb or sysadmin)
+Notes       : A database only appears here if it has ever been restored. An instance with no
+              restore history returns an explicit NO RESTORE HISTORY row rather than an empty
+              result set — zero restores is the finding, not a blank screen.
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low
 SET NOCOUNT ON;
+
+/* ── Empty history is the headline finding, so say it, don't return nothing ─ */
+IF NOT EXISTS (SELECT 1 FROM msdb.dbo.restorehistory)
+BEGIN
+    SELECT
+        CAST('NO RESTORE HISTORY - no restore has ever been recorded on this instance'
+             AS NVARCHAR(128))          AS database_name,
+        CAST(NULL AS DATETIME)          AS restore_date,
+        CAST(NULL AS INT)               AS days_since_restore,
+        CAST(NULL AS NVARCHAR(12))      AS restore_type,
+        CAST(NULL AS NVARCHAR(128))     AS source_database,
+        CAST(NULL AS DATETIME)          AS backup_taken_date,
+        CAST(NULL AS INT)               AS backup_age_at_restore_days,
+        CAST(NULL AS NVARCHAR(128))     AS user_name,
+        CAST(NULL AS BIT)               AS with_recovery,
+        CAST(NULL AS BIT)               AS with_replace;
+    RETURN;
+END
 
 /* ── Most recent restore per database ────────────────────────────────────── */
 ;WITH ranked AS (
