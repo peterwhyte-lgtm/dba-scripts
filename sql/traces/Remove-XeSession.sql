@@ -22,7 +22,7 @@ SELECT
             '(EventFileTarget/File/@name)[1]', 'nvarchar(500)') AS NVARCHAR(500)),
         CONVERT(NVARCHAR(500), f.value)
     ) AS output_file,
-    'ALTER EVENT SESSION ' + QUOTENAME(ses.name) + ' ON SERVER STATE = STOP; DROP EVENT SESSION ' + QUOTENAME(ses.name) + ' ON SERVER;' AS remove_cmd
+    'IF EXISTS (SELECT 1 FROM sys.dm_xe_sessions WHERE name = ' + QUOTENAME(ses.name, '''') + ') ALTER EVENT SESSION ' + QUOTENAME(ses.name) + ' ON SERVER STATE = STOP; DROP EVENT SESSION ' + QUOTENAME(ses.name) + ' ON SERVER;' AS remove_cmd
 FROM sys.server_event_sessions ses
 LEFT JOIN sys.dm_xe_sessions dm ON dm.name = ses.name
 LEFT JOIN sys.dm_xe_session_targets tgt ON tgt.event_session_address = dm.address

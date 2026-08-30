@@ -40,8 +40,14 @@ DECLARE @sql NVARCHAR(MAX);
 
 IF EXISTS (SELECT 1 FROM sys.server_event_sessions WHERE name = @SessionName)
 BEGIN
-    SET @sql = N'ALTER EVENT SESSION ' + QUOTENAME(@SessionName) + N' ON SERVER STATE = STOP;
-    DROP EVENT SESSION '  + QUOTENAME(@SessionName) + N' ON SERVER;';
+    /* STOP only if it is actually running - ALTER ... STATE = STOP on an already
+       stopped session raises Msg 25704 and prints a red error over a successful run */
+    IF EXISTS (SELECT 1 FROM sys.dm_xe_sessions WHERE name = @SessionName)
+    BEGIN
+        SET @sql = N'ALTER EVENT SESSION ' + QUOTENAME(@SessionName) + N' ON SERVER STATE = STOP;';
+        EXEC sp_executesql @sql;
+    END;
+    SET @sql = N'DROP EVENT SESSION ' + QUOTENAME(@SessionName) + N' ON SERVER;';
     EXEC sp_executesql @sql;
     PRINT 'Existing session ' + @SessionName + ' stopped and dropped.';
 END;
@@ -128,7 +134,7 @@ BEGIN TRY
              ELSE 'manual stop (pre-2025)'
         END AS session_lifetime,
         'RUNNING' AS status,
-        'ALTER EVENT SESSION ' + QUOTENAME(@SessionName) + ' ON SERVER STATE = STOP; DROP EVENT SESSION ' + QUOTENAME(@SessionName) + ' ON SERVER;' AS remove_cmd;
+        'IF EXISTS (SELECT 1 FROM sys.dm_xe_sessions WHERE name = ' + QUOTENAME(@SessionName, '''') + ') ALTER EVENT SESSION ' + QUOTENAME(@SessionName) + ' ON SERVER STATE = STOP; DROP EVENT SESSION ' + QUOTENAME(@SessionName) + ' ON SERVER;' AS remove_cmd;
 
     PRINT 'Session ' + @SessionName + ' created and started.';
     PRINT 'Output file : ' + @FilePathRaw;
