@@ -79,8 +79,9 @@ SELECT
     client_hostname,
     client_app_name,
     COUNT(*) AS occurrences,
-    MIN(event_time) AS first_seen,
-    MAX(event_time) AS last_seen,
+    /* whole-second precision - this is a who-and-when summary, not a latency trace */
+    CAST(MIN(event_time) AS DATETIME2(0)) AS first_seen,
+    CAST(MAX(event_time) AS DATETIME2(0)) AS last_seen,
     DATEDIFF(HOUR, MIN(event_time), MAX(event_time)) AS span_hours
 FROM raw
 GROUP BY event_name, database_name, nt_username, username, client_hostname, client_app_name
