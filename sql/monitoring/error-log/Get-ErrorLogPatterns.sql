@@ -40,6 +40,33 @@ WITH categorised AS (
             WHEN Txt LIKE '%login failed%'
               OR Txt LIKE '%18456%'
               OR Txt LIKE '%password%incorrect%' THEN 'Login Failure'
+            /* Corruption is tested BEFORE IO and Backup, and its patterns match the way the
+               error log actually writes these lines. Verified 2026-08-30, and the category was
+               inverted before that: 'Error: 823, Severity: 24' matched nothing at all and fell
+               through to Error / Failure, the real 824 text ('logical consistency-based I/O
+               error') matched IO Issue first and never reached here, and the ONLY thing landing
+               in Corruption / Integrity was 'CHECKDB ... finished without errors', a success
+               message. The bucket a DBA scans first for corruption could not detect corruption. */
+            WHEN Txt LIKE '%corrupt%'
+              OR Txt LIKE '%consistency-based I/O error%'
+              OR Txt LIKE '%Error: 823%'
+              OR Txt LIKE '%Error: 824%'
+              OR Txt LIKE '%Error: 825%'
+              OR Txt LIKE '% 823 %'
+              OR Txt LIKE '% 824 %'
+              OR Txt LIKE '% 825 %'
+              OR Txt LIKE '%suspect_pages%'
+              OR (Txt LIKE '%CHECKDB%'
+                  AND Txt NOT LIKE '%without errors%'
+                  AND Txt NOT LIKE '%0 allocation errors and 0 consistency errors%')
+                 THEN 'Corruption / Integrity'
+            /* A clean integrity check is good news and must not be filed as a failure. Both
+               wordings are excluded above and caught here, because 'finished without errors'
+               and 'found 0 allocation errors' both contain the word errors and would otherwise
+               be swept up by the generic Error / Failure branch further down. */
+            WHEN Txt LIKE '%without errors%'
+              OR Txt LIKE '%0 allocation errors and 0 consistency errors%'
+                 THEN 'Informational'
             WHEN Txt LIKE '%Backup%'
               OR Txt LIKE '%BACKUP%'
               OR Txt LIKE '%backup of database%'
@@ -48,11 +75,6 @@ WITH categorised AS (
               OR Txt LIKE '%stall%'
               OR Txt LIKE '%stalled%'
               OR Txt LIKE '%disk%' THEN 'IO Issue'
-            WHEN Txt LIKE '%corrupt%'
-              OR Txt LIKE '% 824 %'
-              OR Txt LIKE '% 823 %'
-              OR Txt LIKE '% 825 %'
-              OR Txt LIKE '%checkdb%' THEN 'Corruption / Integrity'
             WHEN Txt LIKE '%suspect%'
               OR Txt LIKE '%offline%'
               OR Txt LIKE '%emergency%'
