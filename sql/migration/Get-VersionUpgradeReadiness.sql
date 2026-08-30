@@ -118,6 +118,23 @@ FROM (
                    THEN 'INFO - Backup checksums off. Enable for stronger backup integrity checks.'
                WHEN name = 'remote query timeout (s)' AND value_in_use = 600
                    THEN 'INFO - Remote query timeout at default 600s. Review if linked servers are in use.'
+               /* Settings below were listed but never evaluated, so an instance with
+                  xp_cmdshell enabled reported OK. A silent OK on a security setting is
+                  worse than not listing it at all. */
+               WHEN name = 'xp_cmdshell' AND value_in_use = 1
+                   THEN 'HIGH - Enabled. Grants shell access from T-SQL; confirm it is required before carrying it to the target.'
+               WHEN name = 'cross db ownership chaining' AND value_in_use = 1
+                   THEN 'HIGH - Enabled server-wide. Ownership chains cross database boundaries; prefer enabling per database.'
+               WHEN name = 'priority boost' AND value_in_use = 1
+                   THEN 'HIGH - Enabled. Microsoft advises against it; it can destabilise the instance and is not carried forward.'
+               WHEN name = 'lightweight pooling' AND value_in_use = 1
+                   THEN 'WARN - Fiber mode enabled. Blocks CLR and some features; rarely justified on modern builds.'
+               WHEN name = 'clr enabled' AND value_in_use = 1
+                   THEN 'INFO - CLR enabled. Check assemblies still load under the target version strict security rules.'
+               WHEN name = 'Database Mail XPs' AND value_in_use = 1
+                   THEN 'INFO - Database Mail enabled. Profiles and accounts do not migrate with the databases.'
+               WHEN name = 'backup compression default' AND value_in_use = 0
+                   THEN 'INFO - Backup compression off by default. Enabling it shortens the migration backup window.'
                ELSE 'OK'
            END,
            200
@@ -132,6 +149,9 @@ FROM (
         'Database Mail XPs', 'xp_cmdshell')
 
 -- ── 4. Sizing per database, for migration window planning ─────────────────────
+--    NOTE: sys.master_files.size is the ALLOCATED file size, not space in use. A 500GB
+--    file holding 20GB of data reports 500GB here. That is the right number for disk
+--    provisioning on the target, and the wrong one for estimating a backup/restore window.
     UNION ALL
     SELECT '4-sizing', d.name,
            'data ' + CAST(CAST(SUM(CASE WHEN mf.type = 0 THEN mf.size ELSE 0 END) * 8.0 / 1024 / 1024 AS DECIMAL(12,2)) AS NVARCHAR(20))
