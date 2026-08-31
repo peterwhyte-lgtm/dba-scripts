@@ -1,11 +1,23 @@
 /*
 Script Name : Get-ResourceGovernorConfig
 Category    : monitoring
-Purpose     : Resource Governor configuration — enabled state, resource pools, workload groups,
+Purpose     : Resource Governor configuration, enabled state, resource pools, workload groups,
               and classifier function. An active but misconfigured RG can silently throttle
               queries or starve the DBA's own sessions on an inherited server.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-trace-flags-and-resource-governor/)
 Requires    : VIEW SERVER STATE
+Notes       : The classifier function lives in master (Microsoft require it), so the OBJECT_NAME
+              and OBJECT_SCHEMA_NAME calls below pass DB_ID(N'master') explicitly. Without that
+              second argument they resolve against the CURRENT database and the classifier name
+              comes back NULL whenever this is run from a user database - which is how most
+              people will run it, and it is the column the WARN verdict depends on.
+
+              BLIND SPOT: sys.resource_governor_resource_pools and
+              sys.resource_governor_workload_groups are catalog views holding the STORED
+              configuration. Microsoft: the matching dm_ views "show the in-memory
+              configuration". After an ALTER RESOURCE GOVERNOR without a RECONFIGURE the two
+              disagree, and this script reports the stored side. If a pool here does not match
+              the behaviour you are seeing, check whether RECONFIGURE was ever run.
 */
 -- SAFE:ReadOnly
 -- IMPACT:Low
@@ -16,8 +28,8 @@ SELECT
     CASE WHEN c.is_enabled = 1 THEN 'ENABLED' ELSE 'DISABLED' END AS rg_state,
     CASE
         WHEN c.classifier_function_id IS NOT NULL
-        THEN OBJECT_SCHEMA_NAME(c.classifier_function_id) + '.'
-             + OBJECT_NAME(c.classifier_function_id)
+        THEN OBJECT_SCHEMA_NAME(c.classifier_function_id, DB_ID(N'master')) + '.'
+             + OBJECT_NAME(c.classifier_function_id, DB_ID(N'master'))
         ELSE NULL
     END AS classifier_function,
     p.name AS pool_name,

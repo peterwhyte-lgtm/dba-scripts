@@ -16,7 +16,9 @@ SELECT
     startup_type_desc,
     status_desc,
     process_id,
-    last_startup_time,
+    -- datetimeoffset carries 7 fractional digits; style 120 needs VARCHAR(19), and a
+    -- shorter target silently truncates to minutes
+    CONVERT(VARCHAR(19), last_startup_time, 120) AS last_startup_time,
     service_account,
     is_clustered,
     cluster_nodename,
