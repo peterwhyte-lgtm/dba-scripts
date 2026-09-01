@@ -98,6 +98,7 @@ point of the collection; see `docs/ai-assessment.md`):
 Preflight and discovery:
 ```powershell
 .\tools\triage\Show-RepoOverview.ps1                          # inventory: script counts by category
+.\tools\triage\Test-BranchesMerged.ps1                        # END OF SESSION: anything stranded on a branch?
 .\tools\triage\Find-UsefulScript.ps1 -Keyword blocking        # find scripts by keyword
 .\tools\local-sql\Test-SqlConnectivity.ps1 -ServerInstance .  # verify SQL connectivity
 .\tools\maintenance\Clear-OutputFiles.ps1                     # wipe output-files\ before a fresh run
@@ -111,6 +112,26 @@ Migration DDL generators:
 .\powershell\migration\Generate-UserMappingScript.ps1
 # Output: output-files\migration\*.sql
 ```
+
+## Finish by merging, not by committing (2026-09-01)
+
+**A fix committed to a branch and never merged is not shipped, and it is worse than not fixed,
+because it looks done.** This bit twice in one day:
+
+- `fix/trace-flags-resource-governor-services` was live on sqldba.blog but absent from `main`, so
+  **the MCP server served 6 wrong trace-flag descriptions** and a classifier bug to every agent
+  that asked.
+- An em-dash fix landed on a branch at 10:21 and was **re-reported as an open defect hours later**
+  by a session reading `main`. The second fix was character-for-character identical to the first.
+
+Neither is a code defect, so no test could catch either. **Run
+`.\tools\triage\Test-BranchesMerged.ps1` before calling a session done** (`-Remote` also catches
+main committed but never pushed). It exits 1 and names the commits. **CI cannot do this job:** both
+incidents involved branches that were local and never pushed, and a CI checkout cannot see them, so
+a CI gate would have gone green through both.
+
+**And before fixing a reported defect, check `git log --all` for it.** It may already be fixed on a
+branch, which is exactly how the duplicate above happened.
 
 ## Blog / content guidance
 
