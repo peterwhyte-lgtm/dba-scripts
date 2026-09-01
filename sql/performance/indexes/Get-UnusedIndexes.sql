@@ -5,10 +5,11 @@ Purpose     : Identifies indexes with zero read activity but non-zero write over
               since the last SQL Server restart. These indexes slow every INSERT,
               UPDATE, and DELETE on the table without benefiting any query.
               Run in the context of the database you want to audit.
-              SCOPE: the filter is type_desc <> 'HEAP', so CLUSTERED indexes are
-              included as well as non-clustered. Read the type_desc column before
-              acting on drop_statement: DROP INDEX against a clustered index is valid
-              T-SQL and converts the table to a heap.
+              SCOPE: the filter is type_desc <> 'HEAP' AND is_primary_key = 0, so a
+              CLUSTERED index that is not a primary key IS returned. A clustered PK
+              is excluded. Read type_desc before acting on drop_statement: DROP INDEX
+              against a clustered index is valid T-SQL and converts the table to a
+              heap. Verified 2026-09-01 on a lab database holding both.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-unused-indexes/)
 Requires    : VIEW SERVER STATE, VIEW DATABASE STATE
 Notes       : Usage stats reset on SQL Server restart, so run only after several days
