@@ -2,7 +2,7 @@
 Script Name : Get-IndexDesignIssues
 Category    : performance
 Purpose     : Tables with index design problems: excessive index count (write amplification),
-              wide key columns (>900 bytes — approaching the 1700-byte nonclustered key limit),
+              wide key columns (>900 bytes, approaching the 1700-byte nonclustered key limit),
               and tables where Missing Index DMV has > 3 recommendations (optimizer giving up
               on existing index coverage). Complements Get-DuplicateIndexes.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-index-design-issues/)
@@ -60,7 +60,7 @@ BEGIN
         s.name,
         t.name,
         ''WIDE_KEY_COLUMNS'',
-        i.name + '' — key width ~'' +
+        i.name + '' - key width ~'' +
             CAST(SUM(CASE WHEN c.max_length = -1 THEN 900 ELSE c.max_length END) AS VARCHAR) +
             '' bytes (avoid keys > 900 bytes; limits: 1700 nonclustered, 900 clustered)'',
         SUM(CASE WHEN c.max_length = -1 THEN 900 ELSE c.max_length END),
@@ -90,7 +90,7 @@ BEGIN
         mi_details.schema_name,
         mi_details.table_name,
         ''MISSING_INDEX_FLOOD'',
-        CAST(mi_details.missing_count AS VARCHAR) + '' missing index recommendations — index coverage likely poor; review before applying all'',
+        CAST(mi_details.missing_count AS VARCHAR) + '' missing index recommendations - index coverage likely poor; review before applying all'',
         mi_details.missing_count,
         CASE WHEN mi_details.missing_count >= 10 THEN ''WARN''
              ELSE ''INFO'' END
