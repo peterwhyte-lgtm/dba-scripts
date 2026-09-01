@@ -59,13 +59,13 @@ BEGIN
             readonly_reason,
             CASE
                 WHEN actual_state_desc = ''OFF''
-                    THEN ''WARN — Query Store not enabled''
+                    THEN ''WARN - Query Store not enabled''
                 WHEN actual_state_desc = ''READ_ONLY'' AND readonly_reason <> 0
-                    THEN ''WARN — auto-switched to READ_ONLY (check fill ratio)''
+                    THEN ''WARN - auto-switched to READ_ONLY (check fill ratio)''
                 WHEN 100.0 * current_storage_size_mb / NULLIF(max_storage_size_mb, 0) > 80
-                    THEN ''WARN — fill > 80%; risk of auto READ_ONLY switch''
+                    THEN ''WARN - fill > 80%; risk of auto READ_ONLY switch''
                 WHEN desired_state_desc <> actual_state_desc
-                    THEN ''WARN — desired/actual state mismatch''
+                    THEN ''WARN - desired/actual state mismatch''
                 ELSE ''OK''
             END
         FROM ' + QUOTENAME(@db) + N'.sys.database_query_store_options;';

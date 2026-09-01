@@ -29,7 +29,7 @@ CREATE TABLE #cdc_ct (
     status               NVARCHAR(200)
 );
 
--- CDC — join to cdc_jobs only if the table exists
+-- CDC: join to cdc_jobs only if the table exists
 IF OBJECT_ID('msdb.dbo.cdc_jobs', 'U') IS NOT NULL
 BEGIN
     INSERT INTO #cdc_ct
@@ -39,11 +39,11 @@ BEGIN
         cj.retention, CAST(cj.retention / 60.0 AS DECIMAL(10,1)), cj.threshold,
         CASE
             WHEN d.is_cdc_enabled = 0
-                THEN ''INFO — CDC not enabled on this database''
+                THEN ''INFO - CDC not enabled on this database''
             WHEN cj.job_type = ''capture'' AND cj.retention IS NULL
-                THEN ''WARN — capture job exists but no cleanup job found; log growth risk''
+                THEN ''WARN - capture job exists but no cleanup job found; log growth risk''
             WHEN cj.retention < 1440
-                THEN ''WARN — retention < 24 hours; downstream consumers may miss changes''
+                THEN ''WARN - retention < 24 hours; downstream consumers may miss changes''
             ELSE ''OK''
         END
     FROM sys.databases AS d

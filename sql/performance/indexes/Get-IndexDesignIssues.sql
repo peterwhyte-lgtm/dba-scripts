@@ -41,7 +41,7 @@ BEGIN
         s.name,
         t.name,
         ''TOO_MANY_INDEXES'',
-        CAST(COUNT(i.index_id) AS VARCHAR) + '' indexes on this table (> 20 harms INSERT/UPDATE/DELETE throughput)'',
+        CAST(COUNT(i.index_id) AS VARCHAR) + '' indexes on this table (reported above 10; above 20 starts to harm INSERT/UPDATE/DELETE throughput)'',
         COUNT(i.index_id),
         CASE WHEN COUNT(i.index_id) > 30 THEN ''CRITICAL''
              WHEN COUNT(i.index_id) > 20 THEN ''WARN''

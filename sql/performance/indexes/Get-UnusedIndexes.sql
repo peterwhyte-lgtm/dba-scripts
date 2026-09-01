@@ -1,15 +1,19 @@
 /*
 Script Name : Get-UnusedIndexes
 Category    : performance
-Purpose     : Identifies non-clustered indexes with zero read activity but non-zero
-              write overhead since the last SQL Server restart. These indexes slow
-              every INSERT, UPDATE, and DELETE on the table without benefiting any query.
+Purpose     : Identifies indexes with zero read activity but non-zero write overhead
+              since the last SQL Server restart. These indexes slow every INSERT,
+              UPDATE, and DELETE on the table without benefiting any query.
               Run in the context of the database you want to audit.
+              SCOPE: the filter is type_desc <> 'HEAP', so CLUSTERED indexes are
+              included as well as non-clustered. Read the type_desc column before
+              acting on drop_statement: DROP INDEX against a clustered index is valid
+              T-SQL and converts the table to a heap.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-unused-indexes/)
 Requires    : VIEW SERVER STATE, VIEW DATABASE STATE
-Notes       : Usage stats reset on SQL Server restart — run only after several days
+Notes       : Usage stats reset on SQL Server restart, so run only after several days
               of representative workload to avoid false positives.
-              Do NOT drop without checking all environments — a zero-read index on
+              Do NOT drop without checking all environments. A zero-read index on
               PROD may be critical for a month-end report or a rarely-run job.
               PKs and unique constraints are excluded (structural, cannot be dropped).
               Review write_count vs total_reads ratio. Drop candidates: write_count

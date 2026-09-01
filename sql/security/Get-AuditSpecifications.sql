@@ -3,7 +3,7 @@ Script Name : Get-AuditSpecifications
 Category    : security
 Purpose     : SQL Server Audit objects and specifications with compliance gap analysis.
               SQL Audit (the formal mechanism for SOX, GDPR, PCI-DSS) is completely
-              separate from login monitoring — most inherited servers have none configured.
+              separate from login monitoring. Most inherited servers have none configured.
               Surfaces missing critical action groups (FAILED_LOGIN_GROUP, privilege changes)
               and database-level audit specifications across all user databases.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-audit-triggers-and-proxy-credentials/)
@@ -112,7 +112,7 @@ BEGIN
         NULL,
         CASE s.is_state_enabled WHEN 1 THEN ''ENABLED'' ELSE ''DISABLED'' END,
         NULL,
-        CASE WHEN s.is_state_enabled = 0 THEN ''WARN — specification disabled''
+        CASE WHEN s.is_state_enabled = 0 THEN ''WARN - specification disabled''
              ELSE ''OK'' END
     FROM ' + QUOTENAME(@db) + N'.sys.database_audit_specifications s
     JOIN sys.server_audits a
