@@ -2,14 +2,14 @@
 Script Name : Get-LogReuseWaits
 Category    : monitoring
 Purpose     : Reports why each database's transaction log cannot truncate and reuse
-              space — the log_reuse_wait_desc reason per database, with recovery model,
+              space, the log_reuse_wait_desc reason per database, with recovery model,
               log size, and last log backup for context. This is the first question to
               answer when a log file is full or growing and won't shrink.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-log-reuse-waits/)
 Requires    : VIEW ANY DATABASE, db_datareader on msdb
 Notes       : NOTHING / CHECKPOINT are healthy. LOG_BACKUP means the FULL/BULK_LOGGED
               log is waiting on a log backup (the most common cause of a full log).
-              ACTIVE_TRANSACTION points at a long-running or orphaned transaction —
+              ACTIVE_TRANSACTION points at a long-running or orphaned transaction.
               run Get-OpenTransactions next. AVAILABILITY_REPLICA / DATABASE_MIRRORING /
               REPLICATION mean a partner or agent hasn't consumed the log yet.
 */
@@ -53,6 +53,14 @@ SELECT
         WHEN 'REPLICATION' THEN 'INVESTIGATE: replication has not drained the log'
         WHEN 'OLDEST_PAGE' THEN 'MONITOR: indirect checkpoint / oldest dirty page'
         WHEN 'XTP_CHECKPOINT' THEN 'MONITOR: in-memory OLTP checkpoint'
+        /* The three below were missing and fell through to REVIEW, which reads as "this is
+           unusual, go and look it up" when in fact Microsoft documents all three as routine.
+           Counted 2026-09-01 against the log_reuse_wait_desc list on the sys.databases page:
+           Microsoft documents 13 strings, this CASE handled 10. A generic REVIEW on a value
+           the docs call "routine, and typically brief" sends a DBA hunting a non-problem. */
+        WHEN 'DATABASE_SNAPSHOT_CREATION' THEN 'MONITOR: snapshot being created (DBCC CHECKDB builds one too)'
+        WHEN 'LOG_SCAN' THEN 'MONITOR: routine log scan, normally brief'
+        WHEN 'SLOG_SCAN' THEN 'MONITOR: Accelerated Database Recovery sLog scan (SQL 2019+)'
         ELSE 'REVIEW'
     END AS status
 FROM sys.databases AS d
