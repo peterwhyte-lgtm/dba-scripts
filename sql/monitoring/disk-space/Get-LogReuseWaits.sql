@@ -9,8 +9,8 @@ Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-log-reuse-waits/)
 Requires    : VIEW ANY DATABASE, db_datareader on msdb
 Notes       : NOTHING / CHECKPOINT are healthy. LOG_BACKUP means the FULL/BULK_LOGGED
               log is waiting on a log backup (the most common cause of a full log).
-              ACTIVE_TRANSACTION points at a long-running or orphaned transaction.
-              run Get-OpenTransactions next. AVAILABILITY_REPLICA / DATABASE_MIRRORING /
+              ACTIVE_TRANSACTION points at a long-running or orphaned transaction,
+              so run Get-OpenTransactions next. AVAILABILITY_REPLICA / DATABASE_MIRRORING /
               REPLICATION mean a partner or agent hasn't consumed the log yet.
 */
 -- SAFE:ReadOnly
