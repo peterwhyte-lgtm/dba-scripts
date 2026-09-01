@@ -1,9 +1,9 @@
 /*
 Script Name : Create-IndexProblemScenario
 Category    : lab
-Purpose     : Build a database that trips every detection in Get-DuplicateIndexes and
-              Get-IndexDesignIssues, so both can be demonstrated against visible findings
-              instead of an empty result set.
+Purpose     : Build a database that trips every detection in Get-DuplicateIndexes,
+              Get-IndexDesignIssues and Get-UnusedIndexes, so all three can be demonstrated
+              against visible findings instead of an empty result set.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-duplicate-indexes/)
 Requires    : sysadmin on a LAB instance. Creates one database.
 */
@@ -15,6 +15,9 @@ Requires    : sysadmin on a LAB instance. Creates one database.
 --
 -- WHAT IT TRIPS, and why each threshold was chosen by reading the two scripts rather than
 -- guessing at what "looks broken":
+--
+--   Get-UnusedIndexes  (SCOPE:CurrentDatabase - run it INSIDE zzidx_db, not master)
+--     34 nonclustered indexes with reads = 0 and writes > 0, each with a DROP statement.
 --
 --   Get-DuplicateIndexes
 --     EXACT_DUPLICATE   dbo.Orders has IX_Orders_Cust_Date and IX_Orders_Duplicate, identical
@@ -112,7 +115,7 @@ FROM sys.all_objects a CROSS JOIN sys.all_objects b CROSS JOIN sys.all_objects c
 
 -- Six different equality predicates, so the optimizer asks for six different indexes.
 --
--- THE `ORDER BY` IS LOad-BEARING, and this took two attempts to get right. SQL Server does NOT
+-- THE `ORDER BY` IS LOAD-BEARING, and this took two attempts to get right. SQL Server does NOT
 -- record missing-index data for a TRIVIALLY optimised plan, and a bare
 -- `SELECT ... WHERE A = 7` over a single-index table is exactly that. The first version of this
 -- script used `SELECT COUNT(*) ... WHERE A = 7 AND Padding > ''` and produced ZERO
