@@ -9,7 +9,12 @@ Purpose     : Identifies indexes with zero read activity but non-zero write over
               CLUSTERED index that is not a primary key IS returned. A clustered PK
               is excluded. Read type_desc before acting on drop_statement: DROP INDEX
               against a clustered index is valid T-SQL and converts the table to a
-              heap. Verified 2026-09-01 on a lab database holding both.
+              heap. This is not hypothetical: run against this repo's own DBAMonitor
+              database on 2026-09-01 it returned 2 rows, both CLUSTERED, on the
+              collector history tables. Acting on those drop_statements would have
+              turned the monitoring history into heaps.
+              Results depend entirely on which database you are sitting in, so quote
+              the database name whenever you report what this script returned.
 Author      : Peter Whyte (https://sqldba.blog/dba-scripts-get-unused-indexes/)
 Requires    : VIEW SERVER STATE, VIEW DATABASE STATE
 Notes       : Usage stats reset on SQL Server restart, so run only after several days
